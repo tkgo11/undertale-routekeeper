@@ -1,86 +1,51 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-// Independent parser/interpreter for the emitted GML subset, not a GameMaker VM.
-// Parses control flow and comparisons instead of consulting RouteCatalog.
+// Independent executable interpreter of the generated numeric/control-flow GML subset.
+// String output is tokenized but not rendered. This is not a GameMaker runtime.
 internal sealed class GmlSubsetInterpreter
 {
-    private readonly string[] tokens;
-    private readonly Dictionary<string, int> variables;
-    private int position;
-    private int? result;
-    public GmlSubsetInterpreter(string source, IReadOnlyDictionary<string, int?> facts)
+    readonly string[] tokens;
+    readonly Dictionary<string,int> values;
+    int cursor;
+    int? returned;
+    public GmlSubsetInterpreter(string source,IReadOnlyDictionary<string,int?> facts)
     {
-        source = Regex.Replace(source, @"//[^\r\n]*", "");
-        tokens = Regex.Matches(source, @"[A-Za-z_][A-Za-z_0-9.]*|-?\d+|\|\||!=|==|[<>=;{},()]")
-            .Select(m => m.Value).ToArray();
-        variables = facts.ToDictionary(x => "global.rk_" + x.Key, x => x.Value ?? -1);
+        source=Regex.Replace(source,@"//[^\r\n]*","");
+        tokens=Regex.Matches(source,"\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z_][A-Za-z_0-9.]*|-?\\d+|\\|\\||&&|!=|==|<=|>=|\\+=|[+<>=;{},()]").Select(x=>x.Value).ToArray();
+        values=facts.ToDictionary(x=>"global.rk_"+x.Key,x=>x.Value??-1);
     }
-    public int Run()
+    public int Run() { while(cursor<tokens.Length) Statement(true);return returned??throw new Exception("No return"); }
+    string Next()=>tokens[cursor++];
+    bool Is(string text)=>cursor<tokens.Length&&tokens[cursor]==text;
+    void Need(string text) { var found=Next();if(found!=text)throw new Exception($"Expected {text},found {found}"); }
+    void Statement(bool execute)
     {
-        while (position < tokens.Length) Statement(true);
-        return result ?? throw new InvalidOperationException("No return statement executed");
+        if(Is("var")) { while(Next()!=";"){};return; }
+        if(Is("{")) { Next();while(!Is("}"))Statement(execute);Next();return; }
+        if(Is("if")) { Next();Need("(");var condition=Expression()!=0;Need(")");Statement(execute&&condition);if(Is("else")){Next();Statement(execute&&!condition);}return; }
+        if(Is("return")) { Next();var v=Expression();Need(";");if(execute&&returned is null)returned=v;return; }
+        var key=Next();var op=Next();if(op is not ("=" or "+="))throw new Exception("Bad assignment "+op);
+        var value=Expression();Need(";");if(execute&&returned is null)values[key]=op=="+="?Read(key)+value:value;
     }
-    private string Next() => position < tokens.Length ? tokens[position++] : throw new InvalidOperationException("Unexpected end");
-    private bool Is(string token) => position < tokens.Length && tokens[position] == token;
-    private void Expect(string token)
+    int Expression()
     {
-        var actual = Next();
-        if (actual != token) throw new InvalidOperationException($"Expected {token}; got {actual}");
+        int value=And();while(Is("||")){Next();var r=And();value=value!=0||r!=0?1:0;}return value;
     }
-    private void Statement(bool execute)
+    int And()
     {
-        if (Is("var"))
-        {
-            Next();
-            while (!Is(";")) Next();
-            Next();
-        }
-        else if (Is("{"))
-        {
-            Next();
-            while (!Is("}")) Statement(execute);
-            Next();
-        }
-        else if (Is("if"))
-        {
-            Next(); Expect("("); var condition = Expression() != 0; Expect(")");
-            Statement(execute && condition);
-            if (Is("else")) { Next(); Statement(execute && !condition); }
-        }
-        else if (Is("return"))
-        {
-            Next(); var value = Expression(); Expect(";");
-            if (execute && result is null) result = value;
-        }
-        else
-        {
-            var variable = Next(); Expect("="); var value = Expression(); Expect(";");
-            if (execute && result is null) variables[variable] = value;
-        }
+        int value=Compare();while(Is("&&")){Next();var r=Compare();value=value!=0&&r!=0?1:0;}return value;
     }
-    private int Expression()
+    int Compare()
     {
-        var value = Comparison();
-        while (Is("||"))
-        {
-            Next(); var right = Comparison();
-            value = value != 0 || right != 0 ? 1 : 0;
-        }
-        return value;
+        var left=Atom();if(!(Is("==")||Is("!=")||Is("<")||Is(">")||Is("<=")||Is(">=")))return left;
+        var op=Next();var right=Atom();return (op switch {"=="=>left==right,"!="=>left!=right,"<"=>left<right,">"=>left>right,"<="=>left<=right,">="=>left>=right,_=>false})?1:0;
     }
-    private int Comparison()
+    int Atom()
     {
-        var left = Atom();
-        if (!(Is("<") || Is(">") || Is("!=") || Is("=="))) return left;
-        var op = Next(); var right = Atom();
-        return (op switch { "<" => left < right, ">" => left > right, "!=" => left != right, "==" => left == right, _ => false }) ? 1 : 0;
+        if(Is("(")){Next();var value=Expression();Need(")");return value;}
+        var token=Next();if(token.StartsWith('"'))return 0;
+        return int.TryParse(token,NumberStyles.Integer,CultureInfo.InvariantCulture,out var n)?n:Read(token);
     }
-    private int Atom()
-    {
-        var token = Next();
-        if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) return value;
-        return variables.TryGetValue(token, out value) ? value : token.StartsWith("global.rk_", StringComparison.Ordinal) ? -1 :
-            throw new InvalidOperationException("Uninitialized local " + token);
-    }
+    int Read(string key)=>values.GetValueOrDefault(key,-1);
 }

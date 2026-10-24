@@ -1,64 +1,96 @@
-# Route rules and evidence
+# Route rules and dependency model
 
-Status: partial research-backed model, not complete ending coverage. Research checked
-2026-10-24 using `curl -L https://undertale.wiki/w/True_Pacifist_Route` and
-`curl -L https://undertale.wiki/w/Genocide_Route`; both returned article HTML in
-this session. Python urllib requests were denied (403). Article text is an
-external reference, not proof that a particular native variable or hook works.
-See `compatibility.md` for binary evidence and integration limits.
+The executable model now implements the inspected ordinary ending families and
+Neutral call decision tree. `CompleteCoverage` describes these declared rules;
+it does not approve an adapter, intervention, Steam build or gameplay scenario.
+All native gameplay verification remains NOT_RUN. The exact source signatures and
+binding expressions are in profiles/bindings.json and integration/hooks.csx.
 
-## Implemented normalized conditions
+## Pacifist and Soulless Pacifist
 
-[True Pacifist Route — Requirements](https://undertale.wiki/w/True_Pacifist_Route#Requirements)
-identifies no EXP, the Papyrus and Undyne friendships, giving Undyne water,
-prior defeat of Omega Flowey, the letter/Alphys date, and the True Lab. The
-engine models these as observations; unobserved facts stay UNKNOWN. Existing
-EXP, dead Papyrus/Undyne, or leaving collapsed Undyne without water invalidate
-the *current state*, not every possible reload/reset. The engine does not
-recommend or execute RESET and never rewrites save files.
+Requirements are no EXP and no kills, Papyrus/Undyne survival, the water opportunity
+not missed, Papyrus/Undyne/Alphys friendships, prior Omega Flowey completion,
+True Lab completion, barrier completion, and the selected existing SOUL history.
+A restored world and ordinary mode are required. Stay/Leave can be selected as an
+epilogue variant; it becomes invalidated only after an incompatible choice commits.
+The mod never creates, removes or sells a SOUL or clears permanent history.
 
-`prior_neutral_completion` is an adapter contract for the persistent prerequisite
-(the article specifically describes defeating Asgore/Omega Flowey). It must not
-mean merely seeing any credits. The prior run need not itself be pacifist; the
-current run must preserve its own requirements. Letter availability additionally
-depends on current-run progress including Mettaton EX; a friendship flag alone
-cannot prove availability.
+Verified inputs include XP/kill count, flags 67/350 for survival, 88/389/493 for
+friendship/story progression, flag 7 for the barrier, General.Won for the earlier
+Flowey prerequisite, and system_information_963 for sold-SOUL history. Exact
+predicates and qualified domains are in the source, not inferred from flag names.
+The final choice is observed from the outside-world scene and flag 512 only once
+that choice is actually committed; its initial zero is not mistaken for Stay.
 
-`ObjectivePlanner` therefore gates hangout/date/lab actions on explicit verified
-availability observations. Dependencies prevent Undyne before Papyrus, Alphys
-before the required friendships and prior completion, and the True Lab before
-Alphys. Unknown availability suppresses an action. This is a conservative planner;
-it does not yet plan all travel, inventory, battle, or phone-call prerequisites.
+Objectives respect availability and dependencies: help a collapsed character now,
+visit a currently available friendship event, complete the earlier ending before
+the letter/date, explore the True Lab, return to the barrier, finish farewells,
+then observe the selected epilogue. Minimal text omits unnecessary names/events.
 
-[Genocide Route — Requirements](https://undertale.wiki/w/Genocide_Route#Requirements)
-lists quotas of 20 Ruins, 16 Snowdin, 18 Waterfall, and 40 combined Hotland/CORE.
-Quota counts alone are insufficient. Snowdrake has an ordering constraint;
-Lesser Dog is required if encountered; named bosses/unique encounters are also
-required. Toriel is an exception to a simplistic rule that every regional boss
-must follow quota exhaustion: killing her can contribute to the Ruins count.
-The implementation stores the quota reference and accepts explicit normalized
-aborted/completed observations; it does **not** yet infer these from counts.
+## Genocide and Soulless Genocide
 
-[Genocide Route — Ending](https://undertale.wiki/w/Genocide_Route#Ending)
-describes exchanging the SOUL to restore the world, and altered subsequent
-True Pacifist/Genocide endings despite a True Reset. `soul_sold` is read-only;
-it distinguishes the modeled pacifist variants. Missing history remains UNKNOWN.
-No guidance objective instructs the player to create or remove permanent history.
+`scr_murderlv` supplies the verified ordered 0..16 encounter chain. It combines
+regional populations (flags 202..205), Toriel, Doggo, Dogamy/Dogaressa, Greater Dog,
+Snowdrake, Papyrus, Shyren, Glad Dummy, Monster Kid/Undying, Royal Guards, Muffet
+and Mettaton NEO. Flag 27 separately records abandonment, including Lesser Dog.
+Debug murder overrides remain UNKNOWN rather than legitimate progress.
 
-## Coverage and runtime contract
+Quotas are 20 Ruins, 16 Snowdin, 18 Waterfall and 40 Hotland/CORE. Toriel can be
+the twentieth Ruins kill. Missing Snowdrake once Snowdin is exhausted is blocked
+before Papyrus. Resolved-boss guards distinguish future prerequisites from missed
+deadlines. The final Sans event sets current-run XP to 99999; the adapter qualifies
+this observation with murder stage 16 instead of treating persistent Sans.SK as a
+current-run win. Objectives and progress advance beyond Sans toward the throne.
 
-All catalog entries currently have `CompleteCoverage = false`. Satisfying the
-implemented subset yields UNKNOWN, never a claim of complete reachability.
-Neutral sub-endings are explicitly unclassified. Soulless Genocide variants,
-Hard Mode, debug outcomes, full boss survival/event ordering, ordinary versus
-True Reset persistence, and end-to-end actual endings remain unimplemented.
+## Neutral taxonomy
 
-C# and generated GML consume the same declarative requirements. GML uses
-`global.rk_*` normalized fields; unknown is -1, boolean facts are 0/1, and EXP
-must be nonnegative. The generator neither invents native globals nor reads
-save files. Invalid booleans/negative values produce UNKNOWN in both evaluators.
+The original obj_mainend Create selector, Step subbranches and optional greetings
+produce these selectable targets. ID 0 means any ordinary Neutral outcome.
 
-Tests execute the emitted GML subset through an independent parser/interpreter
-across 6,000 deterministic randomized snapshots and compare its status to C#.
-This checks emitted control-flow semantics, not a real GameMaker runtime.
-Authentic-bytecode compilation/readback and gameplay tests are separate evidence.
+| IDs | Family / variant |
+|---|---|
+| 1 | Family |
+| 2–5 | Betrayed: friendship history × Mettaton survival |
+| 6–9 | Exiled: Undyne survival × Papyrus survival |
+| 10–11 | Undyne: Papyrus survival |
+| 12–13 | Mettaton: Papyrus survival |
+| 14 | Papyrus |
+| 15 | Dog: only the four required bosses killed |
+| 16–17 | Leaderless: below 20 / at least 20 kills |
+| 18 | Alphys: late Genocide abandonment |
+
+The classifier also implements eight optional call conditions: Alphys cameo,
+Mettaton's two Exiled survival variants, carried Snowman Piece, no file0 SAVE,
+Bandage, no healing items, and the composite LV1/no-healing/Bandage greeting.
+Several conditions overwrite shared dialogue slots; a condition mask is not a
+claim that all matching lines play. C# and native generated classifiers agree.
+These optional conditions are observed/classified; individual greeting modifiers
+are not yet selectable guidance targets.
+
+Reachability checks expected boss outcomes with encounter-resolution guards,
+kill minima/maxima, friendship dependencies and the late-Genocide override.
+True Lab commitment, full Genocide commitment, Hard Mode and an erased world do
+not masquerade as ordinary Neutral reachability. The normally unreachable/debug
+fallback is excluded from selectable targets. A projection is not proof that the
+ending has actually played.
+
+## Reset and history
+
+HistoryTransitions is a pure preview of the inspected naming-screen branch.
+Ordinary RESET preserves the relevant INI memories. TRUE RESET replaces ordinary
+INI state, retains explicit backup/unlock keys, and loses the playable Won
+prerequisite. Neither reset branch removes system_information_* or file8. A new
+random fun value is explicitly unspecified. This code has no save-writing API.
+
+## Shared execution and limits
+
+Core emits status, objectives, progress and unknown defaults into native GML;
+Neutral emits its target table/classifier/protection rules; Decisions emits
+pre-action risk and reserved-kill-budget policies. Independent source interpreters
+exercise status/text/progress semantics, not a real GameMaker VM. Exact authentic
+compilation/reload and preservation tests are separate evidence.
+
+Sources: authentic scripts named in profiles/bindings.json; upstream implementation
+inspection in integration-research.md; https://undertale.wiki/w/True_Pacifist_Route
+and https://undertale.wiki/w/Genocide_Route. No complete original source/dialogue
+is committed. No release-readiness or universal Forced guarantee is claimed.
