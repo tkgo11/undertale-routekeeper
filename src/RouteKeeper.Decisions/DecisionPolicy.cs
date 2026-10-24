@@ -6,15 +6,15 @@ public enum RouteFamily { Pacifist, Genocide, Neutral }
 public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue }
 public enum DecisionEnemy { Ordinary, Toriel, Papyrus, Undyne, Mettaton, UndyneUndying, RequiredUnique, MettatonNeo, MonsterKid, Snowdrake }
 public enum DecisionMode { Off, Passive, Active, Forced }
-public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship }
+public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity }
 public sealed record DecisionState(RouteFamily Family, DecisionAction Action, DecisionEnemy Enemy,
     bool ExperienceRisk = false, int RuinsKills = 0, int SnowdinKills = 0, int WaterfallKills = 0,
     int HotlandKills = 0, bool WaterUnresolved = false, int NeutralOutcome = 0, bool NeutralKillCapReached = false,
-    bool RequiredEncounter = false, bool EpilogueMismatch = false, bool RegionalPrerequisitesMissing = false, bool NeutralFriendshipPending = false)
+    bool RequiredEncounter = false, bool EpilogueMismatch = false, bool RegionalPrerequisitesMissing = false, bool NeutralFriendshipPending = false, bool LastSnowdrakeOpportunity = false)
 {
     public int[] Values => [(int)Family, (int)Action, (int)Enemy, ExperienceRisk ? 1 : 0,
         RuinsKills, SnowdinKills, WaterfallKills, HotlandKills, WaterUnresolved ? 1 : 0,
-        NeutralOutcome, NeutralKillCapReached ? 1 : 0, RequiredEncounter ? 1 : 0, EpilogueMismatch ? 1 : 0, RegionalPrerequisitesMissing ? 1 : 0, NeutralFriendshipPending ? 1 : 0];
+        NeutralOutcome, NeutralKillCapReached ? 1 : 0, RequiredEncounter ? 1 : 0, EpilogueMismatch ? 1 : 0, RegionalPrerequisitesMissing ? 1 : 0, NeutralFriendshipPending ? 1 : 0, LastSnowdrakeOpportunity ? 1 : 0];
 }
 public sealed record DecisionResponse(bool Refuse, WarningCode Warning, bool AcknowledgementConsumed, bool Intervention);
 
@@ -39,6 +39,7 @@ public static class DecisionPolicy
     private static Test Lt(int argument, int value) => new(argument, "<", value);
     private static Rule R(WarningCode warning, params Test[] tests) => new(warning, tests);
     private static readonly Rule[] Rules = [
+        R(WarningCode.SnowdrakeOpportunity, Eq(0,1), Eq(1,1), Eq(3,1), Eq(15,1)),
         R(WarningCode.Friendship, Eq(0,2), Eq(1,1), Eq(3,1), Eq(14,1)),
         R(WarningCode.WaterDeparture, Eq(0,2), Eq(1,4), Eq(8,1), Eq(14,1)),
         R(WarningCode.Epilogue, Eq(0,0), Eq(1,6), Eq(12,1)),
@@ -84,14 +85,20 @@ public static class DecisionPolicy
         return new(!acknowledged, warning, acknowledged, false);
     }
 
-    public static bool RequiresDefeat(DecisionEnemy enemy, DecisionAction action)
+    public static bool RequiresDefeat(DecisionEnemy enemy, DecisionAction action, int snowdinKills = 0, bool snowdrakeKilled = false)
     {
         if (!Enum.IsDefined(enemy) || !Enum.IsDefined(action)) throw new ArgumentOutOfRangeException(nameof(enemy));
+        if (enemy == DecisionEnemy.Snowdrake && action is DecisionAction.Spare or DecisionAction.Flee && snowdinKills >= 16 && !snowdrakeKilled) return true;
         // Snowdrake can be encountered again until the population is exhausted;
         // one-time unique encounters set the abandonment flag on removal.
         return action == DecisionAction.Flee ? enemy == DecisionEnemy.RequiredUnique : enemy is not (DecisionEnemy.Ordinary or DecisionEnemy.Snowdrake);
     }
-    public static string EmitRequiredGml() => "// Generated one-time encounter classification.\nif (argument1 == 3) return argument0 == 6;\nreturn argument0 > 0 && argument0 != 9;\n";
+    public static string EmitRequiredGml() => "// Generated one-time encounter classification.\nif (argument0 == 9 && argument2 >= 16 && argument3 == 0 && (argument1 == 2 || argument1 == 3)) return 1;\nif (argument1 == 3) return argument0 == 6;\nreturn argument0 > 0 && argument0 != 9;\n";
+
+    // Authentic scr_itemuseb dispatches Spider Donut/Cider to Muffet's user event 6.
+    // Treat that route-ending item action like Spare, before consumption or healing.
+    public static bool ItemResolvesRequiredEncounter(int itemId, bool muffetPresent) => muffetPresent && itemId is 7 or 10;
+    public static string EmitItemGml() => "// Generated item escape classification; source-validated Muffet path only.\nreturn argument1 && (argument0 == 7 || argument0 == 10);\n";
 
     public static bool ExhaustedKillBudget(int kills, int maximumKills, int reservedBossKills, bool requiredBossKill)
     {
@@ -103,7 +110,7 @@ public static class DecisionPolicy
     public static string EmitGml()
     {
         var source = new StringBuilder("// Generated from DecisionPolicy. Source-level policy, not runtime certification.\n");
-        source.Append("// args: family,action,enemy,xpRisk,ruins,snowdin,waterfall,hotland,waterPending,neutralOutcome,killCap,requiredEncounter,epilogueMismatch,regionalPrerequisitesMissing,neutralFriendshipPending.\n");
+        source.Append("// args: family,action,enemy,xpRisk,ruins,snowdin,waterfall,hotland,waterPending,neutralOutcome,killCap,requiredEncounter,epilogueMismatch,regionalPrerequisitesMissing,neutralFriendshipPending,lastSnowdrakeOpportunity.\n");
         foreach (var rule in Rules)
             source.Append($"if ({string.Join(" && ", rule.Tests.Select(t => t.Gml))}) return {(int)rule.Warning};\n");
         source.Append("return 0;\n");

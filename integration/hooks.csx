@@ -60,6 +60,9 @@ public static class RoutekeeperHooks
         string mercy="if (global.bmenuno == 4)\n                {\n                    OBJ_WRITER.halt = 3;";
         modified=ReplaceOne(modified,mercy,
             "if (global.bmenuno == 4)\n                {\n                    if (global.bmenucoord[4] == 0 && scr_routekeeper_decision_guard(2, -1)) { control_clear(0); exit; }\n                    if (global.bmenucoord[4] == 1 && scr_routekeeper_decision_guard(3, -1)) { control_clear(0); exit; }\n                    OBJ_WRITER.halt = 3;");
+        string item="if (obj_time.right == 0 && obj_time.left == 0)\n                    {\n                        OBJ_WRITER.halt = 3;";
+        modified=ReplaceOne(modified,item,
+            "if (obj_time.right == 0 && obj_time.left == 0)\n                    {\n                        if (scr_routekeeper_decision_item(global.item[global.bmenucoord[3] + ((global.bmenuno - 3) * 8)], instance_exists(obj_spiderb))) { if (scr_routekeeper_decision_guard(2, obj_spiderb.myself)) { control_clear(0); exit; } }\n                        OBJ_WRITER.halt = 3;");
         import.QueueReplace(battle,modified);
         changed.Add(battle);
         var encounterPrefixes = new Dictionary<string,string> {

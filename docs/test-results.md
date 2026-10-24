@@ -1,32 +1,30 @@
-# Test evidence
+# Verification evidence
 
-Date: 2026-10-24. Host: Debian 13 Linux x64. SDK 10.0.402, CLI 0.9.2.0.
-PASS means only the scope stated in the row, not overall game compatibility.
+Updated 2026-10-24. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
+PASS applies only to the stated scope. No official game runner has executed.
 
-| Check | Result | Evidence / limits |
+| Scope | Result | Command / evidence |
 |---|---|---|
-| Release solution build | PASS | `dotnet build RouteKeeper.slnx -c Release`; zero warnings/errors |
-| Core executable suite | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 29/29 |
-| Shared evaluator parity | PASS | Included above: independent GML-subset interpreter executes generated control flow for 6,000 seeded snapshots across four route IDs. Not a GameMaker VM. |
-| Generated source freshness | PASS | Core runner `--verify-gml integration/gml/route_evaluate.gml` |
-| Tool executable suite | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 24/24; identity, refusal, locking, backups, updates, recovery, restore, malformed inputs, discovery |
-| Save preservation suite | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7/7 synthetic checks |
-| Supplied saves read-only | PASS | Save runner `--authentic private-data`: file0/file8/file9 parse, inventory before/after identical; no positional mapping or RESET performed |
-| Authentic data parsing | PASS | CLI info + tool inspect, exact hash recorded in compatibility.md |
-| Actual GML patch generation | PASS | `UndertaleModCli load private-data/data.win -s integration/patch.csx -o .research/routekeeper-data.win` |
-| Actual output reload/decompile | PASS | `ROUTEKEEPER_ORIGINAL=private-data/data.win UndertaleModCli load .research/routekeeper-data.win -s integration/verify.csx` |
-| Original code preservation | PASS | All 6,271 non-hook original code resources have identical disassembly; four new code resources and one intentional startup-hook append |
-| Font resource coverage | PASS | Added atlas/font contains all Hangul used by shipped native GUI; on-screen rendering NOT_RUN |
-| Already-modified patch rejection | PASS | Reapplying to generated data exits 1 and creates no accepted output |
-| Cross-platform CI/tool packaging | PASS | Windows x64, Linux x64, macOS ARM64/x64; [run 40087764774](https://github.com/tkgo11/undertale-routekeeper/actions/runs/40087764774), commit 7d6e187; synthetic only |
-| Original overwrite refusal | PASS | Patch generation with original as output exits 1; original hash unchanged |
-| Linux self-contained packaging | PASS | `dotnet publish src/RouteKeeper.Tool -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/tool-linux-x64`; resulting executable inspects authentic data and discovers candidates |
-| Native startup, visuals and controls | BLOCKED | No legitimate matching runner/executable was supplied or found; no GUI runtime launched |
-| Room transitions, battles, cutscenes, save/reload | NOT_RUN | Requires matching runner and gameplay scenario harness |
-| Pre-decision native warnings | NOT_RUN | Current native passive slice warns after observed EXP; no pre-decision hook installed |
-| Forced route preservation | NOT_RUN | Deliberately unavailable; no verified intervention adapter |
-| Complete endings/reset/history scenarios | NOT_RUN | Route coverage partial, no end-to-end ending tests |
-| Power-loss recovery | NOT_RUN | Synthetic journal states tested; actual process/power interruption not injected |
+| Release build | PASS | `dotnet build RouteKeeper.slnx -c Release` (0 warnings/errors) |
+| Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 36 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
+| Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 54 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
+| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 47 checks; 10,000 risk, 1,000 budget, 62 encounter/action and 200 item-escape comparisons |
+| History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
+| Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 41 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
+| Saves | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7 synthetic checks; supplied saves previously read without byte changes |
+| Generated source freshness | PASS | Core `--verify-native integration/gml`; Neutral `--verify-gml integration/gml`; Decisions `--verify-adapters integration/gml` |
+| Font metadata | PASS | `python integration/generate_font.py --verify`; embedded glyph coverage/bounds; original font for English |
+| Authentic generation/reload | PASS | `python tools/validate-authentic.py --input private-data/data.win --cli /path/to/UndertaleModCli`; original overwrite/modified input rejected |
+| Authentic original preservation | PASS | 6,250 non-hook code resources identical; original texture payloads, embedded audio, font glyphs and room/sprite/sound counts unchanged |
+| Independent builder | PASS | `RouteKeeper.Tool build SOURCE NEW_OUTPUT CLI ASSET_ROOT`; compiler receives a disposable copy; compile/verify succeeds; same output hash at tested snapshot |
+| Executable header parser | PASS | Synthetic PE/ELF/Mach-O cases plus four official compiler executables; not game provenance |
+| Version diff | PASS | `ROUTEKEEPER_COMPARE=ORIGINAL UndertaleModCli load CANDIDATE -s integration/compare.csx`; code/event signature diff only |
+| Virtual display / alternative VM | PASS / BLOCKED | Xvfb and Mesa OpenGL4.6 context created; OpenGM built; authentic conversion stops at missing abc_123_a.ogg before mod gameplay |
+| Official startup / UI / controls | BLOCKED | No matching legitimate game runner/full media/Steam manifest |
+| Battles, transitions, warnings, Forced outcomes | NOT_RUN | Source policies/compilation tested; actual gameplay scenarios not executed |
+| Actual saves/RESET/endings/history invariance | NOT_RUN | Static/pure/read-only tests do not establish runtime safety |
+| Authentic installation / power loss | NOT_RUN | VerifiedPatch approval absent; synthetic transactions only |
 
-Cross-platform CI execution and package results are recorded in PROGRESS.md with
-the run URL. Merely configuring Actions is not a platform test result.
+Actions run [40114230381](https://github.com/tkgo11/undertale-routekeeper/actions/runs/40114230381) at 113d922 passed all eight jobs (four synthetic/package and four private authentic structural). Later source changes require their own CI result. Expanded cross-platform runs are tracked on PR #1. The earlier foundation run
+40087764774 is not substituted for new commits. No private data/source is uploaded
+as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.

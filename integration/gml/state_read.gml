@@ -88,6 +88,7 @@ global.rk_neutral_toriel_dead = -1;
     global.rk_royal_guards_killed = -1;
     global.rk_shyren_killed = -1;
     global.rk_snowdrake_killed = -1;
+    global.rk_snowdrake_lost = -1;
     global.rk_soul_sold = -1;
     global.rk_toriel_alive = -1;
     global.rk_toriel_resolved = -1;
@@ -140,6 +141,8 @@ global.rk_sans_defeated = (global.rk_genocide_stage == 16 && global.xp >= 99999)
 global.rk_genocide_aborted = (global.flag[27] != 0);
 global.rk_genocide_requirements_completed = (global.rk_genocide_stage >= 16 && global.flag[27] == 0);
 global.rk_snowdrake_killed = (global.flag[57] == 2);
+// A final multi-enemy encounter can still contain a live Snowdrake after the quota.
+global.rk_snowdrake_lost = (global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake));
 global.rk_doggo_killed = (global.flag[52] == 1);
 global.rk_dogi_killed = (global.flag[53] == 1);
 global.rk_greater_dog_killed = (global.flag[54] == 1);

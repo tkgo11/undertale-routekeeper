@@ -6,7 +6,7 @@ if (!variable_global_exists("flag")) return 0;
 if (global.flag[26] > 0) return 0;
 if (variable_global_exists("debug") && global.debug != 0) return 0;
 var family, action, slot, enemy, target, xp_risk, required, water_pending;
-var neutral_outcome, kill_cap, risk, context, first_slot, last_slot, candidate, enforceable, reserved_kills, epilogue_mismatch, regional_missing, friendship_pending;
+var neutral_outcome, kill_cap, risk, context, first_slot, last_slot, candidate, enforceable, reserved_kills, epilogue_mismatch, regional_missing, friendship_pending, snowdrake_opportunity;
 family = -1;
 if (global.rk_target_route == 0 || global.rk_target_route == 1) family = 0;
 if (global.rk_target_route == 2 || global.rk_target_route == 4) family = 1;
@@ -14,10 +14,10 @@ if (global.rk_target_route == 3) family = 2;
 if (family < 0) return 0;
 // An already abandoned route cannot be repaired by refusing unrelated actions.
 if (family == 1 && global.flag[27] != 0) return 0;
-if (family == 1 && global.flag[203] >= 16 && global.flag[57] != 2) return 0;
+if (family == 1 && global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake)) return 0;
 action = argument0; slot = argument1;
 enemy = 0; target = -1; xp_risk = 0; required = 0;
-water_pending = 0; neutral_outcome = 0; kill_cap = 0; risk = 0; epilogue_mismatch = 0; regional_missing = 0; friendship_pending = 0;
+water_pending = 0; neutral_outcome = 0; kill_cap = 0; risk = 0; epilogue_mismatch = 0; regional_missing = 0; friendship_pending = 0; snowdrake_opportunity = 0;
 if (family == 2 && variable_global_exists("rk_neutral_friendship_min")) {
     if (global.rk_neutral_friendship_min > 0 && global.flag[389] < global.rk_neutral_friendship_min && global.kills == 0)
         friendship_pending = 1;
@@ -34,7 +34,7 @@ if (action >= 1 && action <= 3) {
                 enemy = scr_routekeeper_decision_enemy(target);
                 xp_risk = (global.xpreward[candidate] > 0);
                 if ((enemy >= 1 && enemy <= 5) || enemy == 7) xp_risk = 1;
-                required = scr_routekeeper_decision_required(enemy, action);
+                required = scr_routekeeper_decision_required(enemy, action, global.flag[203], global.flag[57] == 2);
                 if (family == 2) neutral_outcome = scr_routekeeper_neutral_protect(enemy);
                 if (family == 2 && variable_global_exists("rk_neutral_kill_cap")) {
                     reserved_kills = 0;
@@ -44,9 +44,13 @@ if (action >= 1 && action <= 3) {
                     if (global.rk_neutral_keep_mettaton == 0 && global.flag[425] != 1) reserved_kills += 1;
                     kill_cap = scr_routekeeper_decision_budget(global.kills, global.rk_neutral_kill_cap, reserved_kills, neutral_outcome == -1);
                 }
+                // Refuse only recoverable random fights; a live Snowdrake in the
+                // same encounter can still satisfy the requirement after quota.
+                if (family == 1 && action == 1 && enemy == 0 && global.mercy > 0
+                    && global.flag[203] == 15 && global.flag[57] != 2 && !instance_exists(obj_snowdrake)) snowdrake_opportunity = 1;
                 risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
                     global.flag[202], global.flag[203], global.flag[204], global.flag[205],
-                    0, neutral_outcome, kill_cap, required, 0, 0, friendship_pending);
+                    0, neutral_outcome, kill_cap, required, 0, 0, friendship_pending, snowdrake_opportunity);
                 if (risk != 0) break;
             }
         }
@@ -64,7 +68,7 @@ if (action >= 1 && action <= 3) {
     if (action == 6 && family == 0 && global.rk_target_epilogue > 0) epilogue_mismatch = (global.rk_target_epilogue - 1 != slot);
     risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
         global.flag[202], global.flag[203], global.flag[204], global.flag[205],
-        water_pending, neutral_outcome, kill_cap, required, epilogue_mismatch, regional_missing, friendship_pending);
+        water_pending, neutral_outcome, kill_cap, required, epilogue_mismatch, regional_missing, friendship_pending, 0);
 }
 if (risk == 0) { global.rk_warning_pending = 0; global.rk_warning_ack = 0; return 0; }
 context = string(global.rk_target_route) + ":" + string(global.rk_target_neutral)

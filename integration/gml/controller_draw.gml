@@ -69,6 +69,7 @@ if (pending) {
         if (global.rk_warning_code == 8) message = "Finish the required regional encounters before proceeding.";
         if (global.rk_warning_code == 9) message = "This final choice differs from your selected epilogue.";
         if (global.rk_warning_code == 10) message = "Build the required friendship before gaining EXP.";
+        if (global.rk_warning_code == 11) message = "Flee and find the missing required enemy before using the final quota slot.";
     } else {
         if (global.rk_warning_code == 1) message = "이 공격으로 적을 쓰러뜨리면 경로가 막힐 수 있습니다.";
         if (global.rk_warning_code == 2) message = "이 방을 떠나기 전에 물을 건네세요.";
@@ -80,6 +81,7 @@ if (pending) {
         if (global.rk_warning_code == 8) message = "진행하기 전에 지역의 필수 조우를 마치세요.";
         if (global.rk_warning_code == 9) message = "이 마지막 선택은 목표한 결말과 다릅니다.";
         if (global.rk_warning_code == 10) message = "EXP를 얻기 전에 필요한 우정을 쌓으세요.";
+        if (global.rk_warning_code == 11) message = "도망친 뒤 마지막 처치 수를 채우기 전에 남은 필수 적을 찾으세요.";
     }
     draw_set_color(c_black); draw_rectangle(4, 4, 635, 130, false);
     draw_set_color(c_white); draw_rectangle(4, 4, 635, 130, true);

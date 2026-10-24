@@ -15,12 +15,14 @@ Private release `dev-game-data` provides `data.win`, `file0`, `file8`, `file9`, 
 
 The uploaded filename does not establish OS or architecture. No runner, Steam appmanifest/depot manifest, or build metadata was supplied. Nominal internal version cannot identify Steam build. This is an analyzed exact hash, **not a runtime-supported Steam profile**.
 
-Read-only decompilation verified `obj_time` is persistent and its Create event can spawn our persistent controller. `scr_load` binds the saved XP value to **`global.xp`**, not `global.exp`; this is the only game prerequisite bound by the initial native slice. `obj_mainchara` initializes `cutscene` to zero; `global.interact` controls ordinary world interaction. `obj_battlecontroller` and `obj_heart` are present. Existing F10-F12 player key handlers are guarded by debug mode. We disable our UI in debug mode rather than altering vanilla debug events.
+Read-only decompilation verified `obj_time` is persistent and its Create event can spawn our persistent controller. `scr_load` binds the saved XP value to **`global.xp`**, not `global.exp`; this was the initial slice; the current adapter also binds the separately signature-verified predicates in profiles/bindings.json. `obj_mainchara` initializes `cutscene` to zero; `global.interact` controls ordinary world interaction. `obj_battlecontroller` and `obj_heart` are present. Existing F10-F12 player key handlers are guarded by debug mode. We disable our UI in debug mode rather than altering vanilla debug events.
 
 Verification checks the exact startup-hook decompilation SHA-256 `2c96d9edfaab627915a0b7d8c05eb5c57353225602c52f772e36bb50730aba88`, in addition to the whole-file hash. The signature is specific to the pinned decompiler tool. It detects tool drift, not only binary drift.
 
-No friendship, event-order, ending, genocide, regional quota, or permanent history index has been bound based on guesswork. Save layout research is handled separately; these observations do not authorize mutation of any save field.
+The expanded binding manifest now records the inspected friendship, event-order, ending, quota and history predicates. See state-bindings.md and profiles/bindings.json for current evidence. No save mutation is authorized by observation.
 
 ## Limits and immediate next evidence
 
 Acquire the legitimate matching runner and Steam metadata. Test startup and controller lifetime, text rendering, draw-state restoration, hotkeys, settings persistence, safe UI gating, room transitions, battle timing and save/reload. Bind the next normalized prerequisite only after inspecting its exact game implementation and writing a scenario test. Keep `StructuralPatchTested` profiles rejected by the installer until these tests establish supported behavior.
+
+The pre-consumption battle-item adapter classifies Spider Donut (7) and Spider Cider (10) as a potential Muffet resolution. Pinned scr_itemuseb and spider user/step events establish the path to the abandonment flag. It reuses the generated Spare policy before writer, item, HP or turn changes; ordinary items and non-Muffet encounters remain available. Last-live Snowdrake remains recoverable after population exhaustion and is protected from Spare/Flee; the final random kill is refused only while fleeing remains available. Runtime behavior remains NOT_RUN.

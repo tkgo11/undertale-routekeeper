@@ -1,76 +1,55 @@
 # ROUTEKEEPER
 
-Private development of native UNDERTALE route guidance. **Experimental, incomplete,
-and not approved for installation into a live Steam game.** No game binaries or
-personal saves are distributed by this source tree.
+Private development of native UNDERTALE route guidance. The implementation now
+includes five ending families, 18 specific Neutral targets plus Any, Pacifist
+Stay/Leave variants, live state bindings, objectives/progress, bilingual settings
+and scoped pre-decision protections. **Runtime-unverified; not release-ready.**
 
-The current vertical slice compiles a persistent native GML controller, an
-English/Korean HUD and settings into one inspected, authentic game data file.
-Only EXP observation is currently bound to verified vanilla state. Other facts
-remain unknown. No complete ending guarantee or Forced intervention is available.
-A compiled patch is not evidence that gameplay works.
+Game data compiles with a persistent GML controller, original-style EN/KR UI and
+Off/Passive/Active/Forced modes. It uses the original runner without a runtime
+loader. The current authentic profile is diagnostic-only, so installation is
+refused until legitimate gameplay scenarios establish support. Forced is scoped;
+it does not guarantee every ending or rewrite EXP, survival or permanent history.
 
-## Build and test
+## Build and verify
 
-Install the SDK pinned in `global.json`, then:
+Install the SDK pinned in global.json. Executable test runners use `dotnet run`:
 
 ```sh
 dotnet build RouteKeeper.slnx -c Release
 dotnet run --project tests/RouteKeeper.Core.Tests -c Release
+dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release
+dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release
+dotnet run --project tests/RouteKeeper.History.Tests -c Release
 dotnet run --project tests/RouteKeeper.Tool.Tests -c Release
 dotnet run --project tests/RouteKeeper.Saves.Tests -c Release
-dotnet run --project tests/RouteKeeper.Core.Tests -c Release -- --verify-gml integration/gml/route_evaluate.gml
+python integration/generate_font.py --verify
 ```
 
-Tests are dependency-free executable runners with nonzero failure exit codes.
-They are intentionally invoked with `dotnet run`, not `dotnet test`.
+AGENTS.md lists generated-source freshness/regeneration commands. The private
+structural harness compiles the supplied authentic data, reloads it, checks the
+intended hook footprint and preserves original code/assets. It is not gameplay.
 
-## Inspect game data safely
+## Standalone source builder and installer
 
 ```sh
 dotnet run --project src/RouteKeeper.Tool -- discover
-dotnet run --project src/RouteKeeper.Tool -- inspect /path/to/data.win
-dotnet run --project src/RouteKeeper.Tool -- diff /path/to/original /path/to/candidate
-```
-
-Discovery reads conventional Steam library locations and appmanifest hints. It
-never approves a build based on filenames, display version or Steam metadata
-alone. `diff` compares FORM chunks; script-level semantic comparison is pending.
-The compatibility registry requires exact hashes, sizes, bytecode, structural
-signatures, platform/architecture and one explicitly verified patch profile.
-Current authentic profiles are diagnostic-only, so production installation fails
-closed. Do not change their status to bypass this requirement.
-
-## Development patch generation
-
-See [integration research](docs/integration-research.md) for the pinned
-UndertaleModCli release, commands and actual-bytecode verification evidence.
-Game data and generated patched files belong only in ignored private directories.
-The development script accepts one exact original hash and adds native GML;
-Steam would launch the game normally after a future verified installation.
-No external runtime mod loader is introduced.
-
-## Installer foundation
-
-```sh
-dotnet run --project src/RouteKeeper.Tool -- install TARGET CANDIDATE profiles/registry.json PLATFORM ARCH
-dotnet run --project src/RouteKeeper.Tool -- restore TARGET
+dotnet run --project src/RouteKeeper.Tool -- inspect DATA
+dotnet run --project src/RouteKeeper.Tool -- inspect-runner EXECUTABLE
+dotnet run --project src/RouteKeeper.Tool -- build DATA NEW_OUTPUT CLI .
 dotnet publish src/RouteKeeper.Tool -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/tool
 ```
 
-`install` consumes a separately generated candidate, verifies it against an
-approved output hash, retains a verified pristine backup, and records a recovery
-journal beside the target. It refuses external modifications and corrupt backups.
-`restore` retains the original backup and journal to permit verification/recovery.
-Only the data file is modified; saves and permanent history are untouched.
-No current authentic profile authorizes installation. Installer crash recovery is
-synthetically tested; real power loss and live-game installation remain untested.
-
-GitHub Actions builds/tests on Windows, Linux, Apple Silicon macOS and Intel
-macOS, then packages self-contained installer tools. CI does not download private
-game inputs and never uploads game data.
+Published packages include native source/assets/profiles and runtime notices, with
+no game data. [Installer instructions](docs/installer.md) explain build/install/
+restore and the separately installed official compiler. Candidate generation uses
+a disposable original copy. Actual installation requires a runtime-verified exact
+profile and retains a pristine backup/journal. No current authentic profile has
+that approval. Existing unknown modifications are not patched automatically.
 
 See [progress](docs/PROGRESS.md), [test evidence](docs/test-results.md),
-[compatibility](docs/compatibility.md), [route rules](docs/route-rules.md), and
-[private data/cleanup](docs/private-data.md). Preserve repository privacy until a
-proprietary-data audit authorizes publication.
+[route rules](docs/route-rules.md), [state/hook evidence](docs/state-bindings.md),
+[compatibility](docs/compatibility.md), [runtime needs](docs/runtime-validation.md),
+and [private input cleanup](docs/private-data.md). Repository privacy and data
+exposure must be audited before any public release. No game binaries, substantial
+original resources or personal saves belong in commits or ordinary CI artifacts.

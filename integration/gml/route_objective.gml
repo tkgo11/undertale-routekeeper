@@ -589,11 +589,9 @@ else { rk_action = 1; rk_blocked = 1; }
 if (global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1 && global.rk_genocide_aborted == 0) { global.rk_progress_met = global.rk_progress_met + 1; }
 else if (global.rk_genocide_aborted < 0 || global.rk_genocide_aborted > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
-// requirement 3: snowdrake_killed
-if (global.rk_snowdrake_killed >= 0 && global.rk_snowdrake_killed <= 1 && global.rk_snowdrake_killed == 1) { global.rk_progress_met = global.rk_progress_met + 1; }
-else if (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647 && global.rk_kills_snowdin < 16) { global.rk_progress_met = global.rk_progress_met + 1; }
-else if (global.rk_kills_snowdin < 0 || global.rk_kills_snowdin > 2147483647) rk_unknown = 1;
-else if (global.rk_snowdrake_killed < 0 || global.rk_snowdrake_killed > 1) rk_unknown = 1;
+// requirement 3: snowdrake_lost
+if (global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1 && global.rk_snowdrake_lost == 0) { global.rk_progress_met = global.rk_progress_met + 1; }
+else if (global.rk_snowdrake_lost < 0 || global.rk_snowdrake_lost > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
 // requirement 4: genocide_stage
 if (global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage >= 2) { global.rk_progress_met = global.rk_progress_met + 1; }
@@ -662,13 +660,13 @@ if (global.rk_language == 1) {
 }
 return rk_text;
 }
-if ((global.rk_snowdrake_killed >= 0 && global.rk_snowdrake_killed <= 1) && !(global.rk_snowdrake_killed == 1) && (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647) && global.rk_kills_snowdin >= 16) {
-global.rk_objective_id = "snowdrake_killed";
+if ((global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1) && !(global.rk_snowdrake_lost == 0)) {
+global.rk_objective_id = "snowdrake_lost";
 rk_text = "A required enemy can no longer be found.";
-if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before Snowdin's population is exhausted.";
+if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before no further encounters or live Snowdrake remain.";
 if (global.rk_language == 1) {
  rk_text = "필수 적을 더는 찾을 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘의 적이 사라지기 전에 스노우드레이크를 처치해야 합니다.";
+ if (global.rk_spoilers == 1) rk_text = "새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다.";
 }
 return rk_text;
 }
@@ -917,11 +915,9 @@ else { rk_action = 1; rk_blocked = 1; }
 if (global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1 && global.rk_genocide_aborted == 0) { global.rk_progress_met = global.rk_progress_met + 1; }
 else if (global.rk_genocide_aborted < 0 || global.rk_genocide_aborted > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
-// requirement 3: snowdrake_killed
-if (global.rk_snowdrake_killed >= 0 && global.rk_snowdrake_killed <= 1 && global.rk_snowdrake_killed == 1) { global.rk_progress_met = global.rk_progress_met + 1; }
-else if (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647 && global.rk_kills_snowdin < 16) { global.rk_progress_met = global.rk_progress_met + 1; }
-else if (global.rk_kills_snowdin < 0 || global.rk_kills_snowdin > 2147483647) rk_unknown = 1;
-else if (global.rk_snowdrake_killed < 0 || global.rk_snowdrake_killed > 1) rk_unknown = 1;
+// requirement 3: snowdrake_lost
+if (global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1 && global.rk_snowdrake_lost == 0) { global.rk_progress_met = global.rk_progress_met + 1; }
+else if (global.rk_snowdrake_lost < 0 || global.rk_snowdrake_lost > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
 // requirement 4: genocide_stage
 if (global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage >= 2) { global.rk_progress_met = global.rk_progress_met + 1; }
@@ -990,13 +986,13 @@ if (global.rk_language == 1) {
 }
 return rk_text;
 }
-if ((global.rk_snowdrake_killed >= 0 && global.rk_snowdrake_killed <= 1) && !(global.rk_snowdrake_killed == 1) && (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647) && global.rk_kills_snowdin >= 16) {
-global.rk_objective_id = "snowdrake_killed";
+if ((global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1) && !(global.rk_snowdrake_lost == 0)) {
+global.rk_objective_id = "snowdrake_lost";
 rk_text = "A required enemy can no longer be found.";
-if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before Snowdin's population is exhausted.";
+if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before no further encounters or live Snowdrake remain.";
 if (global.rk_language == 1) {
  rk_text = "필수 적을 더는 찾을 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘의 적이 사라지기 전에 스노우드레이크를 처치해야 합니다.";
+ if (global.rk_spoilers == 1) rk_text = "새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다.";
 }
 return rk_text;
 }

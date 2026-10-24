@@ -199,6 +199,12 @@
       "Expression": "(global.rk_genocide_stage == 16 && global.xp >= 99999)",
       "Domain": "boolean",
       "EvidenceResource": "gml_Object_obj_sansb_body_Draw_0"
+    },
+    {
+      "Fact": "snowdrake_lost",
+      "Expression": "(global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake))",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Script_scr_murderlv"
     }
   ],
   "Evidence": [
@@ -505,6 +511,51 @@
       "DecompilerSha256": "cd4d78d59506422b75b65961c2b00187d14fcd8461499d56cb769d0b565a9c3e",
       "Markers": [
         "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_steps",
+      "DecompilerSha256": "5e6cfd3f612a0c671391489e36aa34b0b53a71b17163498671677ef22104afdf",
+      "Markers": [
+        "argument2 - global.flag[argument3]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_battlegroup",
+      "DecompilerSha256": "4cb00dcf68275e54372540d6f49fb1aa9848ffcfe18e5c92b134504b909a6ed0",
+      "Markers": [
+        "obj_snowdrake"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_itemuseb",
+      "DecompilerSha256": "d3673dcc0589a0e244f79cdec43719611bdc691c79dfc71784fe502b4852fcf3",
+      "Markers": [
+        "case 7:",
+        "case 10:",
+        "event_user(6);"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Other_16",
+      "DecompilerSha256": "9c1b86606f15cb94df2b2a071c9658c21ba0e4debfa69c75b9643382922465a0",
+      "Markers": [
+        "itemuse = 1;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Step_0",
+      "DecompilerSha256": "afff1b4b8df88caf3458eef26ce26c4f659e0bd4eafe4a61f6cb110737bfb6e4",
+      "Markers": [
+        "itemuse == 1",
+        "event_user(5);"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Other_15",
+      "DecompilerSha256": "3a98d8e4258f2881f1a9146ee1889dbb2b692223f6b642228e0b5ba9dec956f0",
+      "Markers": [
+        "global.flag[27] = 1;"
       ]
     }
   ],

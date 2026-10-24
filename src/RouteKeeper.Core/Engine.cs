@@ -23,7 +23,7 @@ public static class FactDomains
         "doggo_killed", "dogi_killed", "greater_dog_killed", "shyren_killed", "glad_dummy_killed",
         "monster_kid_attacked", "royal_guards_killed", "muffet_killed", "barrier_broken",
         "toriel_alive", "mettaton_alive", "save_exists", "snowman_piece_carried",
-        "prior_pacifist_completion", "true_reset_available", "sans_defeated"
+        "prior_pacifist_completion", "true_reset_available", "sans_defeated", "snowdrake_lost"
     };
     public static int Maximum(string fact) => Booleans.Contains(fact) ? 1 : fact is "genocide_stage" or "murder_level" ? 16 :
         fact == "area" ? 4 : int.MaxValue;
@@ -103,7 +103,7 @@ public static class RouteCatalog
     private static readonly Requirement[] Genocide = [
         R("hard_mode",0,true,"This challenge cannot reach the selected ending.","Hard Mode cannot reach a Genocide ending.","이 도전에서는 선택한 엔딩에 도달할 수 없습니다.","하드 모드에서는 몰살 엔딩에 도달할 수 없습니다."),
         R("genocide_aborted",0,true,"A required encounter was missed.","A required enemy was spared or another Genocide abandonment flag was set.","필수 조우를 놓쳤습니다.","필수 적을 살렸거나 몰살 중단 플래그가 설정되었습니다."),
-        R("snowdrake_killed",1,true,"A required enemy can no longer be found.","Snowdrake must be killed before Snowdin's population is exhausted.","필수 적을 더는 찾을 수 없습니다.","스노우딘의 적이 사라지기 전에 스노우드레이크를 처치해야 합니다.",guard:"kills_snowdin",guardMinimum:16),
+        R("snowdrake_lost",0,true,"A required enemy can no longer be found.","Snowdrake must be killed before no further encounters or live Snowdrake remain.","필수 적을 더는 찾을 수 없습니다.","새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다."),
         R("genocide_stage",2,true,"The first region's requirements were missed.","Complete the Ruins kill quota and kill Toriel before leaving the Ruins.","첫 지역의 조건을 놓쳤습니다.","폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요.",Comparison.AtLeast,"toriel_resolved"),
         R("genocide_stage",8,true,"The forest's requirements were missed.","Complete Snowdin's quota and unique encounters before killing Papyrus.","숲 지역의 조건을 놓쳤습니다.","파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요.",Comparison.AtLeast,"papyrus_resolved"),
         R("genocide_stage",12,true,"The cavern's requirements were missed.","Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.","동굴 지역의 조건을 놓쳤습니다.","워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요.",Comparison.AtLeast,"undyne_resolved"),

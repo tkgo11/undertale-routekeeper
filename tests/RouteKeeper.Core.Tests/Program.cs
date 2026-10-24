@@ -129,7 +129,7 @@ Check("Erased world is blocked without touching permanent history", () => {
 });
 Check("Future Genocide deadlines do not block early progress", () => {
     var state=GameState.From(("hard_mode",0),("world_erased",0),("genocide_aborted",0),("genocide_stage",0),
-        ("soul_sold",0),("toriel_resolved",0),("papyrus_resolved",0),("undyne_resolved",0),("mettaton_defeated",0),("kills_ruins",3),("kills_snowdin",0),("sans_defeated",0));
+        ("soul_sold",0),("toriel_resolved",0),("papyrus_resolved",0),("undyne_resolved",0),("mettaton_defeated",0),("kills_ruins",3),("kills_snowdin",0),("snowdrake_lost",0),("sans_defeated",0));
     Assert(RouteEvaluator.Evaluate(RouteId.Genocide,state).Status==RouteStatus.ACTION_REQUIRED);
     Assert(RouteEvaluator.Evaluate(RouteId.Genocide,state).Objectives.Single().Text.Contains("17"));
     Assert(RouteEvaluator.Evaluate(RouteId.Genocide,With(state,"toriel_resolved",1)).Status==RouteStatus.BLOCKED);
@@ -148,8 +148,9 @@ Check("Epilogue mismatch only blocks after the choice resolves", () => {
 Check("Missing Snowdrake blocks before an exhausted region's boss", () => {
     var state=GameState.From(("hard_mode",0),("world_erased",0),("genocide_aborted",0),("genocide_stage",5),
         ("soul_sold",0),("toriel_resolved",1),("papyrus_resolved",0),("undyne_resolved",0),("mettaton_defeated",0),
-        ("snowdrake_killed",0),("kills_snowdin",16),("sans_defeated",0));
+        ("snowdrake_killed",0),("kills_snowdin",16),("snowdrake_lost",1),("sans_defeated",0));
     Assert(RouteEvaluator.Evaluate(RouteId.Genocide,state).Status==RouteStatus.BLOCKED);
+    Assert(RouteEvaluator.Evaluate(RouteId.Genocide,With(state,"snowdrake_lost",0)).Status==RouteStatus.ACTION_REQUIRED,"A live final-encounter Snowdrake is still recoverable");
 });
 Check("Final objectives advance after the barrier and Sans", () => {
     var complete=With(With(Candidate(),"epilogue_resolved",1),"barrier_broken",1);

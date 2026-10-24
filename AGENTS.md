@@ -25,3 +25,27 @@ binaries to CI. Keep the repository private. Do not commit generated patched dat
 Structural compilation is not runtime verification. Every result must distinguish
 PASS, FAIL, NOT_RUN and BLOCKED. Update docs/PROGRESS.md and docs/test-results.md.
 Review risky save, Forced and installation changes before merging.
+
+## Expanded native implementation
+
+- `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`
+- `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`
+- `dotnet run --project tests/RouteKeeper.History.Tests -c Release`
+- `dotnet run --project tests/RouteKeeper.Core.Tests -- --emit-native integration/gml`
+- `dotnet run --project tests/RouteKeeper.Neutral.Tests -- --emit-gml integration/gml`
+- `dotnet run --project tests/RouteKeeper.Decisions.Tests -- --emit-gml integration/gml/decision_risk.gml`
+- `dotnet run --project tests/RouteKeeper.Decisions.Tests -- --emit-adapters integration/gml`
+- `dotnet run --project tests/RouteKeeper.Decisions.Tests -- --verify-adapters integration/gml`
+- `python integration/generate_font.py --verify` (regenerate after changing strings)
+- `python tools/validate-authentic.py --input private-data/data.win --cli /path/to/UndertaleModCli`
+
+Do not hand-edit generated evaluators/objectives/Neutral policies. Core owns route
+and objective tables; Decisions owns intervention predicates; the native adapter
+owns exact variable bindings. `bindings.csx` validates pinned source evidence;
+`hooks.csx` verifies unique anchors before pre-effect insertions. Keep each new
+hook in the preservation allowlist through `RoutekeeperHooks.Names`. Compile and
+reload an authentic output after changes. Current Forced adapters are experimental
+source-validated refusals; original runner evidence is still required for release.
+Private structural CI downloads only data.win, captures diagnostics privately,
+removes working copies and never uploads proprietary artifacts. Do not enable it
+in a public repository or a fork.

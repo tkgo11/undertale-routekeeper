@@ -14,11 +14,9 @@ else { rk_action = 1; rk_blocked = 1; }
 if (global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1 && global.rk_genocide_aborted == 0) { }
 else if (global.rk_genocide_aborted < 0 || global.rk_genocide_aborted > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
-// requirement 3: snowdrake_killed
-if (global.rk_snowdrake_killed >= 0 && global.rk_snowdrake_killed <= 1 && global.rk_snowdrake_killed == 1) { }
-else if (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647 && global.rk_kills_snowdin < 16) { }
-else if (global.rk_kills_snowdin < 0 || global.rk_kills_snowdin > 2147483647) rk_unknown = 1;
-else if (global.rk_snowdrake_killed < 0 || global.rk_snowdrake_killed > 1) rk_unknown = 1;
+// requirement 3: snowdrake_lost
+if (global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1 && global.rk_snowdrake_lost == 0) { }
+else if (global.rk_snowdrake_lost < 0 || global.rk_snowdrake_lost > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
 // requirement 4: genocide_stage
 if (global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage >= 2) { }

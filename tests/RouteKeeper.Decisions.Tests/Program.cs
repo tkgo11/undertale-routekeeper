@@ -11,7 +11,7 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()}};
+var adapterSources=new Dictionary<string,string>{{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
@@ -69,7 +69,7 @@ Check("One-time required encounter cannot flee",DecisionPolicy.Risk(toriel with 
 Check("Repeatable Snowdrake is not an irreversible spare",!DecisionPolicy.RequiresDefeat(DecisionEnemy.Snowdrake,DecisionAction.Spare));
 Check("Toriel fleeing remains recoverable",!DecisionPolicy.RequiresDefeat(DecisionEnemy.Toriel,DecisionAction.Flee));
 foreach(var enemy in Enum.GetValues<DecisionEnemy>())foreach(var action in Enum.GetValues<DecisionAction>()) {
-    var requiredSource=$"argument0 = {(int)enemy}; argument1 = {(int)action};\n"+DecisionPolicy.EmitRequiredGml();
+    var requiredSource=$"argument0 = {(int)enemy}; argument1 = {(int)action}; argument2 = 0; argument3 = 0;\n"+DecisionPolicy.EmitRequiredGml();
     var actual=new GmlObjectiveInterpreter(requiredSource,new Dictionary<string,int?>()).Run();
     if((actual=="1")!=DecisionPolicy.RequiresDefeat(enemy,action))throw new Exception("Required encounter source parity");
 }
@@ -78,6 +78,26 @@ Check("All 60 encounter/action categories match generated source",true);
 Check("Neutral friendship is protected before the first kill",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,NeutralFriendshipPending=true})==WarningCode.Friendship);
 Check("Neutral friendship targets protect the water event",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,Action=DecisionAction.LeaveWaterRoom,WaterUnresolved=true,NeutralFriendshipPending=true})==WarningCode.WaterDeparture);
 Check("Unbefriended Neutral targets may decline water",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,Action=DecisionAction.LeaveWaterRoom,WaterUnresolved=true,NeutralFriendshipPending=false})==WarningCode.None);
+
+Check("Last recoverable Snowdrake opportunity protected before a random kill",DecisionPolicy.BeforeAction(DecisionMode.Forced,attack with {Family=RouteFamily.Genocide,LastSnowdrakeOpportunity=true}).Warning==WarningCode.SnowdrakeOpportunity);
+
+Check("Live Snowdrake becomes irreplaceable after population exhaustion",DecisionPolicy.RequiresDefeat(DecisionEnemy.Snowdrake,DecisionAction.Spare,16));
+Check("Last live Snowdrake cannot be fled",DecisionPolicy.RequiresDefeat(DecisionEnemy.Snowdrake,DecisionAction.Flee,16));
+foreach(var action in new[]{DecisionAction.Spare,DecisionAction.Flee}) {
+    var lastSnowSource=$"argument0 = 9; argument1 = {(int)action}; argument2 = 16; argument3 = 0;\n"+DecisionPolicy.EmitRequiredGml();
+    if(new GmlObjectiveInterpreter(lastSnowSource,new Dictionary<string,int?>()).Run()!="1")throw new Exception("Last Snowdrake source parity");
+}
+Check("Last-live-enemy source cases agree",true);
+
+Check("Spider Donut resolves Muffet encounter",DecisionPolicy.ItemResolvesRequiredEncounter(7,true));
+Check("Spider Cider resolves Muffet encounter",DecisionPolicy.ItemResolvesRequiredEncounter(10,true));
+Check("Ordinary healing remains available",!DecisionPolicy.ItemResolvesRequiredEncounter(11,true));
+Check("Spider items remain available outside Muffet",!DecisionPolicy.ItemResolvesRequiredEncounter(7,false));
+for(int item=0;item<100;item++)foreach(var present in new[]{false,true}) {
+    var itemSource=$"argument0 = {item}; argument1 = {(present?1:0)};\n"+DecisionPolicy.EmitItemGml();
+    if((new GmlObjectiveInterpreter(itemSource,new Dictionary<string,int?>()).Run()=="1")!=DecisionPolicy.ItemResolvesRequiredEncounter(item,present))throw new Exception("Item escape source parity");
+}
+Check("200 item escape cases agree with emitted GML",true);
 
 // Independently interpret emitted conjunction predicates and first-match returns.
 int Interpret(string gml,int[] values) {
@@ -88,7 +108,7 @@ int Interpret(string gml,int[] values) {
 }
 var rng=new Random(9147);var emitted=DecisionPolicy.EmitGml();
 for(var i=0;i<10000;i++) {
- var state=new DecisionState((RouteFamily)rng.Next(3),(DecisionAction)rng.Next(1,7),(DecisionEnemy)rng.Next(10),rng.Next(2)==1,rng.Next(22),rng.Next(18),rng.Next(20),rng.Next(42),rng.Next(2)==1,rng.Next(-1,2),rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1);
+ var state=new DecisionState((RouteFamily)rng.Next(3),(DecisionAction)rng.Next(1,7),(DecisionEnemy)rng.Next(10),rng.Next(2)==1,rng.Next(22),rng.Next(18),rng.Next(20),rng.Next(42),rng.Next(2)==1,rng.Next(-1,2),rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1);
  if((int)DecisionPolicy.Risk(state)!=Interpret(emitted,state.Values))throw new Exception("C#/GML policy mismatch");
 }
 Check("10000 randomized C#/emitted GML policy cases",true);

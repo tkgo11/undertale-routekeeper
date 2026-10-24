@@ -50,6 +50,8 @@ foreach(var fact in new[]{"global.rk_experience = global.xp","global.rk_plot10",
 foreach(var hook in RoutekeeperHooks.Names)
     Check(Get(hook).Contains("scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
 var guard=Get("gml_Script_scr_routekeeper_decision_guard");
+var battle=Get("gml_Object_obj_battlecontroller_Step_0");
+Check(battle.Contains("scr_routekeeper_decision_item") && battle.IndexOf("scr_routekeeper_decision_item",StringComparison.Ordinal)<battle.IndexOf("scr_itemuseb",StringComparison.Ordinal),"item escape guard precedes consumption");
 Check(guard.Contains("global.rk_warning_enforced") && guard.Contains("global.rk_warning_pending"),"limited Forced and dismissible warning policies");
 var draw=Get("gml_Object_obj_routekeeper_Draw_64");
 Check(draw.Contains("한국어") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
