@@ -59,6 +59,52 @@ try
         var found = SteamDiscovery.Discover([steam]);
         Assert(found.Count == 1 && found[0].BuildId == "123456" && found[0].Status == "UnverifiedCandidate");
     });
+    string runner=Path.Combine(root,"runner.bin");
+    void LE16(byte[] bytes,int offset,ushort value)=>System.Buffers.Binary.BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(offset),value);
+    void LE32(byte[] bytes,int offset,uint value)=>System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(offset),value);
+    void BE32(byte[] bytes,int offset,uint value)=>System.Buffers.Binary.BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(offset),value);
+    byte[] PE(ushort machine) {
+        var bytes=new byte[128];bytes[0]=77;bytes[1]=90;LE32(bytes,0x3c,64);
+        bytes[64]=80;bytes[65]=69;LE16(bytes,68,machine);return bytes;
+    }
+    foreach(var (machine,arch) in new[]{((ushort)0x14c,"x86"),((ushort)0x8664,"x64"),((ushort)0xaa64,"arm64")})
+        Check("PE header "+arch,()=>{File.WriteAllBytes(runner,PE(machine));var r=ExecutableInspector.Inspect(runner);Assert(r.Architectures.Single()==arch&&r.Verification=="HeaderOnly_NotGameProvenance");});
+    Check("Bad PE signature denied",()=>{var bytes=PE(0x8664);bytes[64]=0;File.WriteAllBytes(runner,bytes);Reject(()=>ExecutableInspector.Inspect(runner));});
+    Check("PE offset beyond file denied",()=>{var bytes=PE(0x8664);LE32(bytes,0x3c,uint.MaxValue);File.WriteAllBytes(runner,bytes);Reject(()=>ExecutableInspector.Inspect(runner));});
+    byte[] ELF(byte width,ushort machine) {
+        var bytes=new byte[width==1?52:64];new byte[]{127,69,76,70}.CopyTo(bytes,0);
+        bytes[4]=width;bytes[5]=1;bytes[6]=1;LE16(bytes,18,machine);LE32(bytes,20,1);LE16(bytes,width==1?40:52,(ushort)bytes.Length);return bytes;
+    }
+    foreach(var (width,machine,arch) in new[]{((byte)1,(ushort)3,"x86"),((byte)2,(ushort)62,"x64"),((byte)2,(ushort)183,"arm64")})
+        Check("ELF header "+arch+" retains OS uncertainty",()=>{File.WriteAllBytes(runner,ELF(width,machine));var r=ExecutableInspector.Inspect(runner);Assert(r.Architectures.Single()==arch&&r.PlatformFamily=="ELFUnix");});
+    Check("ELF machine width mismatch denied",()=>{File.WriteAllBytes(runner,ELF(1,62));Reject(()=>ExecutableInspector.Inspect(runner));});
+    Check("Linux-specific ELF ABI recorded",()=>{var bytes=ELF(2,62);bytes[7]=3;File.WriteAllBytes(runner,bytes);Assert(ExecutableInspector.Inspect(runner).PlatformFamily=="LinuxABI");});
+    byte[] Mach(uint cpu) {var bytes=new byte[32];LE32(bytes,0,0xfeedfacf);LE32(bytes,4,cpu);return bytes;}
+    Check("Thin Mach-O arm64 header",()=>{File.WriteAllBytes(runner,Mach(0x0100000c));Assert(ExecutableInspector.Inspect(runner).Architectures.Single()=="arm64");});
+    Check("Mach-O universal preserves both architectures",()=>{
+        var bytes=new byte[128];BE32(bytes,0,0xcafebabe);BE32(bytes,4,2);
+        BE32(bytes,8,0x01000007);BE32(bytes,16,64);BE32(bytes,20,32);
+        BE32(bytes,28,0x0100000c);BE32(bytes,36,96);BE32(bytes,40,32);
+        Mach(0x01000007).CopyTo(bytes,64);Mach(0x0100000c).CopyTo(bytes,96);
+        File.WriteAllBytes(runner,bytes);Assert(ExecutableInspector.Inspect(runner).Architectures.SequenceEqual(new[]{"x64","arm64"}));
+        BE32(bytes,36,999999);File.WriteAllBytes(runner,bytes);Reject(()=>ExecutableInspector.Inspect(runner));
+    });
+    Check("Java magic cannot masquerade as a universal runner",()=>{var bytes=new byte[128];BE32(bytes,0,0xcafebabe);BE32(bytes,4,61);File.WriteAllBytes(runner,bytes);Reject(()=>ExecutableInspector.Inspect(runner));});
+    Check("Candidate builder refuses source overwrite before compiler invocation",()=>Reject(()=>ModBuilder.BuildAsync(original,original,"missing-compiler",root).GetAwaiter().GetResult()));
+    Check("Candidate builder refuses an existing output",()=>Reject(()=>ModBuilder.BuildAsync(original,candidate,"missing-compiler",root).GetAwaiter().GetResult()));
+    string buildAssets=Path.Combine(root,"build-assets");Directory.CreateDirectory(Path.Combine(buildAssets,"profiles"));
+    File.WriteAllText(Path.Combine(buildAssets,"profiles","registry.json"),"[]");
+    Check("Unknown input cannot create a candidate or invoke a compiler",()=>{
+        var destination=Path.Combine(root,"never-created","candidate.win");
+        Reject(()=>ModBuilder.BuildAsync(original,destination,"missing-compiler",buildAssets).GetAwaiter().GetResult());
+        Assert(!Directory.Exists(Path.GetDirectoryName(destination)));
+    });
+    File.WriteAllText(Path.Combine(buildAssets,"profiles","registry.json"),JsonSerializer.Serialize(new[]{profile with {Status="InspectedOnly"}}));
+    Check("Source installation rejects diagnostic profiles before compiler invocation",()=>{
+        var before=Directory.GetFiles(root).Order().ToArray();
+        Reject(()=>SourceInstaller.InstallAsync(original,"missing-compiler","Synthetic","test",buildAssets).GetAwaiter().GetResult());
+        Assert(before.SequenceEqual(Directory.GetFiles(root).Order())&&SafeInstaller.Hash(original)==identity.Sha256);
+    });
     Console.WriteLine($"PASS {passed} synthetic tests; authentic gameplay NOT_RUN"); return 0;
 }
 finally { Directory.Delete(root, recursive: true); }
