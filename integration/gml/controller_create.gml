@@ -1,0 +1,23 @@
+// ROUTEKEEPER experimental True Pacifist slice. No vanilla state writes.
+rk_menu = 0;
+rk_dismissed = 0;
+rk_previous = -1;
+rk_warning = 0;
+rk_safe = 0;
+rk_status = 4;
+ini_open("routekeeper.ini");
+rk_mode = ini_read_real("Guidance", "mode", 2);
+if (rk_mode != 0 && rk_mode != 1 && rk_mode != 2) rk_mode = 2;
+rk_language = ini_read_real("Guidance", "language", 0);
+if (rk_language != 0 && rk_language != 1) rk_language = 0;
+ini_close();
+global.rk_experience = -1;
+global.rk_papyrus_alive = -1;
+global.rk_undyne_alive = -1;
+global.rk_water_opportunity_missed = -1;
+global.rk_papyrus_friendship = -1;
+global.rk_undyne_friendship = -1;
+global.rk_prior_neutral_completion = -1;
+global.rk_alphys_friendship = -1;
+global.rk_true_lab_completed = -1;
+global.rk_soul_sold = -1;

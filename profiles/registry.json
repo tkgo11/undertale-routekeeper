@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "provided-b718f822-experimental",
+    "Status": "InspectedOnly",
+    "Platform": "Unknown",
+    "Architecture": "Unknown",
+    "OriginalSize": 62921978,
+    "OriginalSha256": "b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7",
+    "OriginalMd5": "5903fc5cb042a728d4ad8ee9e949c6eb",
+    "BytecodeVersion": 16,
+    "StructuralSha256": "665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa",
+    "PatchedSha256": "b7f2b83f93446a5d62da50db69172bc93f128fe07b312ce111c62ce9b0787dfb",
+    "SteamBuildId": null,
+    "SteamDepotId": null
+  }
+]
