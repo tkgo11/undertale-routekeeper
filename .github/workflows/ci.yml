@@ -47,4 +47,4 @@ jobs:
     if: github.event_name == 'push' && github.event.repository.private == true && github.repository == 'tkgo11/undertale-routekeeper'
     uses: ./.github/workflows/authentic.yml
     permissions:
-      contents: read
+      contents: write

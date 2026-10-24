@@ -3,7 +3,8 @@ on:
   workflow_dispatch:
   workflow_call:
 permissions:
-  contents: read
+  # Draft release visibility requires push access; this job only reads assets.
+  contents: write
 jobs:
   private-structural:
     if: github.event.repository.private == true
@@ -29,8 +30,13 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force private-data | Out-Null
-          gh release download dev-game-data --repo $env:GITHUB_REPOSITORY --pattern data.win --dir private-data
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $fetch = gh release download dev-game-data --repo $env:GITHUB_REPOSITORY --pattern data.win --dir private-data 2>&1 | Out-String
+          $fetchExit = $LASTEXITCODE
+          if ($fetchExit -ne 0) {
+            $http = [regex]::Match($fetch, 'HTTP [0-9]{3}').Value
+            Write-Output "::error title=Private input access failed::Cannot download draft dev-game-data/data.win ($http). No private response or signed URL is logged."
+            exit $fetchExit
+          }
           python tools/install-utmt.py --directory .research/utmt-ci
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Compile, reload, compare original code and reject unsafe patch attempts
