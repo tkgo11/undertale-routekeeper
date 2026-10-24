@@ -1,23 +1,51 @@
-// ROUTEKEEPER experimental True Pacifist slice. No vanilla state writes.
+// Persistent native UI. All save/history observations are read-only.
 rk_menu = 0;
+rk_menu_row = 0;
 rk_dismissed = 0;
-rk_previous = -1;
-rk_warning = 0;
+rk_previous_signature = "";
 rk_safe = 0;
 rk_status = 4;
+rk_pad_ready = 0;
+rk_pad_signature = "";
+rk_pad_device = -1;
+rk_pad_backend = 0;
+for (var i = 0; i < 4; i += 1) {
+    rk_pad_button[i] = -1;
+    rk_pad_previous[i] = 0;
+    rk_pad_pressed[i] = 0;
+    rk_pad_label[i] = "";
+}
 ini_open("routekeeper.ini");
-rk_mode = ini_read_real("Guidance", "mode", 2);
-if (rk_mode != 0 && rk_mode != 1 && rk_mode != 2) rk_mode = 2;
-rk_language = ini_read_real("Guidance", "language", 0);
-if (rk_language != 0 && rk_language != 1) rk_language = 0;
+var schema, saved_mode;
+schema = ini_read_real("Guidance", "schema", 1);
+saved_mode = ini_read_real("Guidance", "mode", 2);
+// Schema 1 used 1=Active,2=Passive; schema 2 matches Core's enum.
+if (schema < 2) {
+    if (saved_mode == 1) saved_mode = 2;
+    else if (saved_mode == 2) saved_mode = 1;
+}
+if (saved_mode != 0 && saved_mode != 1 && saved_mode != 2 && saved_mode != 3) saved_mode = 1;
+global.rk_mode = saved_mode;
+global.rk_target_route = ini_read_real("Guidance", "target_route", 0);
+if (global.rk_target_route != floor(global.rk_target_route) || global.rk_target_route < 0 || global.rk_target_route > 4) global.rk_target_route = 0;
+global.rk_target_epilogue = ini_read_real("Guidance", "target_epilogue", 0);
+if (global.rk_target_epilogue != floor(global.rk_target_epilogue) || global.rk_target_epilogue < 0 || global.rk_target_epilogue > 2) global.rk_target_epilogue = 0;
+global.rk_target_neutral = ini_read_real("Guidance", "target_neutral", 0);
+if (global.rk_target_neutral != floor(global.rk_target_neutral) || global.rk_target_neutral < 0 || global.rk_target_neutral > 18) global.rk_target_neutral = 0;
+global.rk_language = ini_read_real("Guidance", "language", 0);
+if (global.rk_language != 0 && global.rk_language != 1) global.rk_language = 0;
+global.rk_spoilers = ini_read_real("Guidance", "spoilers", 0);
+if (global.rk_spoilers != 0 && global.rk_spoilers != 1) global.rk_spoilers = 0;
 ini_close();
-global.rk_experience = -1;
-global.rk_papyrus_alive = -1;
-global.rk_undyne_alive = -1;
-global.rk_water_opportunity_missed = -1;
-global.rk_papyrus_friendship = -1;
-global.rk_undyne_friendship = -1;
-global.rk_prior_neutral_completion = -1;
-global.rk_alphys_friendship = -1;
-global.rk_true_lab_completed = -1;
-global.rk_soul_sold = -1;
+global.rk_warning_code = 0;
+global.rk_warning_enforced = 0;
+global.rk_warning_text = "";
+global.rk_warning_pending = 0;
+global.rk_warning_ack = 0;
+global.rk_objective_text = "";
+global.rk_objective_id = "";
+global.rk_neutral_projection = -1;
+global.rk_neutral_modifiers = 0;
+global.rk_progress_met = 0;
+global.rk_progress_total = 0;
+scr_routekeeper_init_facts();

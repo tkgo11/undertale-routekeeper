@@ -1,3 +1,5 @@
+#load "bindings.csx"
+#load "hooks.csx"
 // Development patch generation only. Never patches an installed game in place.
 // UndertaleModCli 0.9.2 / UndertaleModLib GPLv3 API.
 using System;
@@ -42,10 +44,11 @@ if (Data.GeneralInfo.BytecodeVersion != 16 || Data.Code.Count != 6272 || Data.Ro
 if (Data.GameObjects.ByName("obj_routekeeper") != null)
     throw new InvalidOperationException("Existing ROUTEKEEPER detected.");
 var folder = Path.GetDirectoryName(ScriptPath);
+RoutekeeperBindings.Validate(Data, folder, FilePath);
 var context = new GlobalDecompileContext(Data);
 string Decompile(string name) {
     var code = Data.Code.ByName(name) ?? throw new Exception("Missing hook: " + name);
-    return new Underanalyzer.Decompiler.DecompileContext(context, code, Data.ToolInfo.DecompilerSettings).DecompileToString();
+    return new Underanalyzer.Decompiler.DecompileContext(context, code, Data.ToolInfo.DecompilerSettings).DecompileToString().Replace("\r\n", "\n");
 }
 // A pinned decompiler signature catches unexpected tool/API drift too.
 string hook = Decompile("gml_Object_obj_time_Create_0");
@@ -66,12 +69,14 @@ foreach (var name in new[] {"obj_mainchara", "obj_battlecontroller", "obj_heart"
 
 // Add a new atlas; never rewrite the game's fonts or texture pages.
 var page = new UndertaleEmbeddedTexture { Name = Data.Strings.MakeString("Routekeeper UI atlas") };
-page.TextureData.Image = GMImage.FromPng(File.ReadAllBytes(Path.Combine(folder, "assets", "ui-font.png")));
+var fontImage = GMImage.FromPng(File.ReadAllBytes(Path.Combine(folder, "assets", "ui-font.png")));
+page.TextureData.Image = fontImage;
 Data.EmbeddedTextures.Add(page);
 var item = new UndertaleTexturePageItem {
     Name = Data.Strings.MakeString("Routekeeper font page"),
-    SourceWidth = 768, SourceHeight = 192, TargetWidth = 768, TargetHeight = 192,
-    BoundingWidth = 768, BoundingHeight = 192, TexturePage = page
+    SourceWidth = (ushort)fontImage.Width, SourceHeight = (ushort)fontImage.Height,
+    TargetWidth = (ushort)fontImage.Width, TargetHeight = (ushort)fontImage.Height,
+    BoundingWidth = (ushort)fontImage.Width, BoundingHeight = (ushort)fontImage.Height, TexturePage = page
 };
 Data.TexturePageItems.Add(item);
 var font = new UndertaleFont {
@@ -92,13 +97,23 @@ var obj = new UndertaleGameObject {
     Name = Data.Strings.MakeString("obj_routekeeper"), Persistent = true, Visible = true, Awake = true
 };
 Data.GameObjects.Add(obj);
-foreach (var function in new[] { "draw_get_font", "draw_get_halign", "draw_get_valign" })
+foreach (var function in new[] { "draw_get_font", "draw_get_halign", "draw_get_valign", "room_get_name" })
     Data.Functions.EnsureDefined(function, Data.Strings);
 var import = new CodeImportGroup(Data) { AutoCreateAssets = true, MainThreadAction = MainThreadAction };
-import.QueueReplace("gml_Script_scr_routekeeper_evaluate", File.ReadAllText(Path.Combine(folder,"gml","route_evaluate.gml")));
+// Import every maintained script; generated route logic and handwritten adapters
+// share the same resource namespace. Event files are bound explicitly below.
+foreach (var path in Directory.GetFiles(Path.Combine(folder,"gml"),"*.gml").OrderBy(p=>p,StringComparer.Ordinal)) {
+    var name = Path.GetFileNameWithoutExtension(path);
+    if (name.StartsWith("controller_",StringComparison.Ordinal)) continue;
+    if (name == "state_read") name = "read_state";
+    if (name == "fact_init") name = "init_facts";
+    if (name.StartsWith("route_",StringComparison.Ordinal)) name = name.Substring(6);
+    import.QueueReplace("gml_Script_scr_routekeeper_" + name, File.ReadAllText(path));
+}
 import.QueueReplace("gml_Object_obj_routekeeper_Create_0", File.ReadAllText(Path.Combine(folder,"gml","controller_create.gml")));
 import.QueueReplace("gml_Object_obj_routekeeper_Step_0", File.ReadAllText(Path.Combine(folder,"gml","controller_step.gml")));
 import.QueueReplace("gml_Object_obj_routekeeper_Draw_64", File.ReadAllText(Path.Combine(folder,"gml","controller_draw.gml")));
+var changedHooks = RoutekeeperHooks.Apply(Data, import);
 import.QueueAppend("gml_Object_obj_time_Create_0", "\nif (!instance_exists(obj_routekeeper)) instance_create(0, 0, obj_routekeeper);\n");
 import.Import();
-Console.WriteLine("PASS: experimental native controller compiled; gameplay verification is NOT_RUN.");
+Console.WriteLine("PASS: native route controller and " + changedHooks.Count + " source-validated decision hooks compiled; gameplay verification is NOT_RUN.");

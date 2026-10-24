@@ -1,0 +1,511 @@
+{
+  "ExpectedInputSha256": "b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7",
+  "BytecodeVersion": 16,
+  "Bindings": [
+    {
+      "Fact": "experience",
+      "Expression": "global.xp",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "level",
+      "Expression": "global.lv",
+      "Domain": "1..20",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "kills_total",
+      "Expression": "global.kills",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "plot10",
+      "Expression": "round(global.plot * 10)",
+      "Domain": "nonnegative integer tenths",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "toriel_alive",
+      "Expression": "(global.flag[45] != 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_torielboss_Alarm_10"
+    },
+    {
+      "Fact": "papyrus_alive",
+      "Expression": "(global.flag[67] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papyrusboss_Other_12"
+    },
+    {
+      "Fact": "undyne_alive",
+      "Expression": "(global.flag[350] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undyneboss_Step_0"
+    },
+    {
+      "Fact": "mettaton_alive",
+      "Expression": "(global.flag[425] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_mettatonex_Step_0"
+    },
+    {
+      "Fact": "toriel_resolved",
+      "Expression": "(global.flag[45] >= 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_torielboss_Step_0"
+    },
+    {
+      "Fact": "papyrus_resolved",
+      "Expression": "(global.flag[67] == 1 || global.plot >= 101)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papyrus8_Step_0"
+    },
+    {
+      "Fact": "undyne_resolved",
+      "Expression": "(global.flag[350] == 1 || global.plot >= 122)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynetrigger_boss2_Step_0"
+    },
+    {
+      "Fact": "mettaton_resolved",
+      "Expression": "(global.flag[425] == 1 || global.plot >= 193)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_mettdestroyed_event_Step_0"
+    },
+    {
+      "Fact": "water_opportunity_missed",
+      "Expression": "(global.flag[350] == 2)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynetrigger_dry_Step_0"
+    },
+    {
+      "Fact": "papyrus_friendship",
+      "Expression": "(global.flag[88] >= 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papdate_Step_0"
+    },
+    {
+      "Fact": "undyne_friendship",
+      "Expression": "(global.flag[389] >= 3)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynebattle2_Step_0"
+    },
+    {
+      "Fact": "alphys_friendship",
+      "Expression": "(global.flag[493] >= 10)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_adate_Step_0"
+    },
+    {
+      "Fact": "true_lab_completed",
+      "Expression": "(global.flag[493] >= 12)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_lab_powerswitch_Step_1"
+    },
+    {
+      "Fact": "kills_ruins",
+      "Expression": "global.flag[202]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_snowdin",
+      "Expression": "global.flag[203]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_waterfall",
+      "Expression": "global.flag[204]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_hotland_core",
+      "Expression": "global.flag[205]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "genocide_stage",
+      "Expression": "scr_murderlv()",
+      "Domain": "0..16; debug override becomes -1",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "genocide_aborted",
+      "Expression": "(global.flag[27] != 0)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_lesserdoge_Destroy_0"
+    },
+    {
+      "Fact": "prior_neutral_completion",
+      "Expression": "(ini_read_real(\"General\", \"Won\", 0) > 0)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_credits_short_Create_0"
+    },
+    {
+      "Fact": "soul_sold",
+      "Expression": "ossafe_file_exists(\"system_information_963\")",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_endmyroom_Create_0"
+    },
+    {
+      "Fact": "world_erased",
+      "Expression": "(ossafe_file_exists(\"system_information_962\") && !global.rk_soul_sold)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_gameshake_Create_0"
+    },
+    {
+      "Fact": "barrier_broken",
+      "Expression": "(global.flag[7] == 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_asriel_overworldanim_Step_0"
+    },
+    {
+      "Fact": "lesser_dog_state",
+      "Expression": "global.flag[55]",
+      "Domain": "0 not killed,1 killed,2 extended interaction",
+      "EvidenceResource": "gml_Object_obj_lesserdoge_Destroy_0"
+    },
+    {
+      "Fact": "water_opportunity_active",
+      "Expression": "(obj_undynefall.waterthing == 0)",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_undynefall_Create_0"
+    },
+    {
+      "Fact": "equipped_armor",
+      "Expression": "global.armor",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "healing_items_used",
+      "Expression": "global.flag[260]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "save_exists",
+      "Expression": "ossafe_file_exists(\"file0\")",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "sans_defeated",
+      "Expression": "(global.rk_genocide_stage == 16 && global.xp >= 99999)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_sansb_body_Draw_0"
+    }
+  ],
+  "Evidence": [
+    {
+      "Resource": "gml_Script_scr_load",
+      "DecompilerSha256": "869541a6a50f630969ff9c01ea4a88b38e9c7dbab7e50f4a81b86c7d8cb7fe56",
+      "Markers": [
+        "global.xp",
+        "global.plot",
+        "global.lv",
+        "global.kills"
+      ]
+    },
+    {
+      "Resource": "gml_Script_SCR_GAMESTART",
+      "DecompilerSha256": "3ec1747684eb4dc288f465a458977333979a9480023f4ca2e8c41efd5d01e931",
+      "Markers": [
+        "global.flag[i] = 0"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_murderlv",
+      "DecompilerSha256": "8ad7bca7520fe3e5b8632e493b92c48106e3df5ea6910dd7c73faa337041c068",
+      "Markers": [
+        "global.flag[202] >= 20",
+        "global.flag[203] >= 16",
+        "global.flag[204] >= 18",
+        "global.flag[205] >= 40"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Alarm_10",
+      "DecompilerSha256": "cd1a3a71456bfc8655b23f9c70034104b9dc42fa0ec5de0787711466d3174193",
+      "Markers": [
+        "global.flag[45] = 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Step_0",
+      "DecompilerSha256": "c7d482077963244ab32a7325b5677163e26d332567f52b9506e0684f6a045eb9",
+      "Markers": [
+        "global.flag[45] = 5"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papyrusboss_Other_12",
+      "DecompilerSha256": "ba8307ddf30989c2c62f2a645b954ef607cfa9763275b4be0df3d3e3d5df3588",
+      "Markers": [
+        "global.flag[67] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papyrus8_Step_0",
+      "DecompilerSha256": "7b22dfadd156264e335d89054fdf0d9b0f4dd7360cf32ac7c9176592f6d4657f",
+      "Markers": [
+        "global.plot = 101"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undyneboss_Step_0",
+      "DecompilerSha256": "868d9ee30509f796a5ae1ceb0c17f6ff02ad41eca082aea22a87e6dbc12401bd",
+      "Markers": [
+        "global.flag[350] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynetrigger_dry_Step_0",
+      "DecompilerSha256": "fd3dae1fc3a03c8840ed7c062aec9864449875bf156cd6dbcbaabcba8fb320f7",
+      "Markers": [
+        "global.flag[350] = 2",
+        "global.plot = 122"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynetrigger_boss2_Step_0",
+      "DecompilerSha256": "6d4d38b48f35ca35fcadb718dce2c84d2a17329f58bcafb7ca2a1fb29f5eeb1d",
+      "Markers": [
+        "global.plot = 122"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Step_0",
+      "DecompilerSha256": "843f6dd4a31890def173acbde96217a42e230cfec089a0530664097f960df754",
+      "Markers": [
+        "global.flag[425] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mettdestroyed_event_Step_0",
+      "DecompilerSha256": "997e8f0bd45d92a59fa95c20b54603d203f8c0f31f51ad770d355aabc9255c52",
+      "Markers": [
+        "global.plot = 193"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papdate_Step_0",
+      "DecompilerSha256": "4a081bb253a0289abf258892713d7ba78a4c6c04b94487a22ae62cbba777ba4f",
+      "Markers": [
+        "global.flag[88] = 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynebattle2_Step_0",
+      "DecompilerSha256": "bb88ed05f788c7da0f7e3c3a8002c108ea861f7742a511b7847092a1edaf904f",
+      "Markers": [
+        "global.flag[389] = 3"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_adate_Step_0",
+      "DecompilerSha256": "46b9110af27f6af0534facec22adf7c0dfb5f72b269d4014b0ba83caf85689f7",
+      "Markers": [
+        "global.flag[493] = 10"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_lab_powerswitch_Step_1",
+      "DecompilerSha256": "d4c41b47765f85ad36152815ff28e369e71f381cac50bf2252ac52b0e32da28e",
+      "Markers": [
+        "global.flag[493] = 12"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynedate_outside_Create_0",
+      "DecompilerSha256": "691dbdcf28d058b7f915fa63ac2bc51ebd748e8dbbb02dd72e798ed10cf8ebf3",
+      "Markers": [
+        "global.plot < 122",
+        "global.kills > 0",
+        "global.flag[354] < 2",
+        "global.flag[88] < 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undyne_lettercall_Create_0",
+      "DecompilerSha256": "f1809ad0986818d3e8d52f2cb3eb36b07e0c0cd17bc12f0f90375ea38ae894e6",
+      "Markers": [
+        "\"General\", \"Won\"",
+        "global.plot <= 198",
+        "global.flag[389] < 3"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_credits_short_Create_0",
+      "DecompilerSha256": "4e171b81452074fd2055d07a11980c09803e3a99d36b26bf7760b58720e06bb4",
+      "Markers": [
+        "ini_write_real(\"General\", \"Won\", won + 1)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_endmyroom_Create_0",
+      "DecompilerSha256": "0b38d0dcdd8bde48d459b86071e9c97648d05803d5a253bf17e2fe5fe0573f4c",
+      "Markers": [
+        "ossafe_file_exists(\"system_information_963\")"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_nothingness_event_Step_0",
+      "DecompilerSha256": "2345a12d285f3176f64e6b2c4db8c9a716408a4771816e4726c36e548735ff67",
+      "Markers": [
+        "ossafe_file_text_open_write(\"system_information_963\")"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_gameshake_Create_0",
+      "DecompilerSha256": "3d680af67d668060039621abb47f2dad1452e7d73ad09f8bdabb5dc64f473d0a",
+      "Markers": [
+        "ossafe_file_text_open_write(\"system_information_962\")"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_namingscreen",
+      "DecompilerSha256": "bf5601a5663d45bb6bd2751636cf400569498c5f2c7ca4c196cebfef517a01c4",
+      "Markers": [
+        "if (truereset > 0)",
+        "\"General\", \"BW\"",
+        "\"General\", \"BP\"",
+        "\"General\", \"BH\""
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_lesserdoge_Destroy_0",
+      "DecompilerSha256": "20e25263ce878757a940f0bc6f2c2c4a08ea132856a1a70aab330ee699422a61",
+      "Markers": [
+        "global.flag[55] = 1",
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_asriel_overworldanim_Step_0",
+      "DecompilerSha256": "26cfac118f0d3b385cfe5922b13c005ee7a03205958e60825380707fdf731e85",
+      "Markers": [
+        "global.flag[7] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mainend_Create_0",
+      "DecompilerSha256": "903a1ccee9e84060a10ca3483fab7bb26bb944ded2db1aaf31c334177020d797",
+      "Markers": [
+        "global.flag[45]",
+        "global.flag[67]",
+        "global.flag[350]",
+        "global.flag[425]"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mainend_Step_0",
+      "DecompilerSha256": "70d16979bddee1e4a79ec0a04bf14d7d761835dc0cb6857b281356d4bd66683e",
+      "Markers": [
+        "scr_itemcheck(16)",
+        "global.armor == 4",
+        "global.flag[260] == 0"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynefall_Create_0",
+      "DecompilerSha256": "89a28fcac9c653cf2a7524c7727d8daa1826286eb5b12b39d290851c39db10ff",
+      "Markers": [
+        "waterthing = 0"
+      ]
+    },
+    {
+      "Resource": "gml_Script_SCR_TEXT",
+      "DecompilerSha256": "f81936770b1a847d84d0bfa760238a8cf2c139db1cffdaa8989a4637091bc924",
+      "Markers": [
+        "obj_outsideworld_event.con = 100",
+        "obj_outsideworld_event.con = 200"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_outsideworld_event_Draw_0",
+      "DecompilerSha256": "4e42270ee1ede919e58201129e466a6c4654ed24647bbc4c4026e707d9da97f4",
+      "Markers": [
+        "global.flag[512] = 0",
+        "global.flag[512] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_the_end_really_Create_0",
+      "DecompilerSha256": "5a8397e194826065cbcce0fdec072d24dbccdac0d06670c217a18fdb3d215a8e",
+      "Markers": [
+        "system_information_963",
+        "global.flag[512] == 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_sansb_body_Draw_0",
+      "DecompilerSha256": "20f7eb769e54c38847d36137c3d2625dd9c285750fd89fc04cc5c91b274a572e",
+      "Markers": [
+        "global.xp = 99999",
+        "\"Sans\", \"SK\""
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_snowdrake_Destroy_0",
+      "DecompilerSha256": "8025c6b76a160d0beaf3e178d45ce682e9a69f993069a3f624754a099dbbc622",
+      "Markers": [
+        "killed"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_movedoge_Destroy_0",
+      "DecompilerSha256": "722f8ed8f26509cf599f831b4b10cdc726c47982c8f8ce570e32521c93bd98b7",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mandog_Destroy_0",
+      "DecompilerSha256": "6fce9c779eefda4a85c4cf80a07de5cbf294fe74b508945dfd7c0e3eab3d0731",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_womandog_Destroy_0",
+      "DecompilerSha256": "0ac2328cbafe04744b720f0eccbb0d2b18dcc0640e731b206728ef666f1d33ff",
+      "Markers": [
+        "instance_destroy()"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_greatdog_Destroy_0",
+      "DecompilerSha256": "b4b10b10f02119eed912d7e72ce44e7cf8df6dd2dacff0eddd20ee6bdeebe30e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_gladdummy_Destroy_0",
+      "DecompilerSha256": "55e4349c94cc23dd5c87ab4debca59a7b565736b4c65b93dfb13f3fa3afc51f7",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_bara01_Destroy_0",
+      "DecompilerSha256": "cd4d78d59506422b75b65961c2b00187d14fcd8461499d56cb769d0b565a9c3e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_bara02_Destroy_0",
+      "DecompilerSha256": "cd4d78d59506422b75b65961c2b00187d14fcd8461499d56cb769d0b565a9c3e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    }
+  ]
+}

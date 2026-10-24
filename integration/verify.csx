@@ -1,48 +1,107 @@
-// Reload verification for the experimental output; writes no game data.
+#load "hooks.csx"
+#load "bindings.csx"
+// Structural integration verification. Never writes data or claims runner compatibility.
 using System;
 using System.IO;
 using System.Linq;
+using UndertaleModLib;
 using System.Security.Cryptography;
 using UndertaleModLib.Decompiler;
-using UndertaleModLib;
 EnsureDataLoaded();
+var folder = Path.GetDirectoryName(ScriptPath);
 var context = new GlobalDecompileContext(Data);
 string Get(string name) {
-    var code = Data.Code.ByName(name) ?? throw new Exception("FAIL missing code: " + name);
+    var code=Data.Code.ByName(name) ?? throw new Exception("Missing code: "+name);
     return new Underanalyzer.Decompiler.DecompileContext(context,code,Data.ToolInfo.DecompilerSettings).DecompileToString();
 }
-void Check(bool condition, string text) { if(!condition) throw new Exception("FAIL: " + text); Console.WriteLine("PASS: " + text); }
-var obj = Data.GameObjects.ByName("obj_routekeeper");
-Check(obj != null && obj.Persistent && obj.Visible,"persistent visible controller");
-Check(Get("gml_Object_obj_time_Create_0").Contains("instance_create(0, 0, obj_routekeeper)"),"verified startup hook retained");
-Check(Get("gml_Object_obj_routekeeper_Create_0").Contains("global.rk_soul_sold = -1"),"unbound persistent history remains unknown");
-var step = Get("gml_Object_obj_routekeeper_Step_0");
-Check(step.Contains("global.rk_experience = global.xp"),"XP observation binding");
-Check(step.Contains("scr_routekeeper_evaluate()"),"shared generated evaluator invoked");
-Check(step.Contains("obj_battlecontroller") && step.Contains("obj_heart") && step.Contains("obj_mainchara.cutscene"),"battle/cutscene visibility gates");
-var evaluator = Get("gml_Script_scr_routekeeper_evaluate");
-Check(evaluator.Contains("global.rk_experience") && evaluator.Contains("return 3") && evaluator.Contains("return 4"),"generated status evaluator roundtrip");
-var draw = Get("gml_Object_obj_routekeeper_Draw_64");
-Check(draw.Contains("fnt_routekeeper") && draw.Contains("한국어"),"localized GUI code roundtrip");
-var font = Data.Fonts.ByName("fnt_routekeeper");
-Check(font != null && font.Texture != null && font.Glyphs.Any(g=>g.Character=='한'),"embedded Hangul font");
-var glyphs = font.Glyphs.Select(g=>(char)g.Character).ToHashSet();
-foreach (char c in draw.Where(c=>c>=0xac00 && c<=0xd7a3).Distinct())
-    Check(glyphs.Contains(c),"Hangul glyph U+" + ((int)c).ToString("X4"));
-Check(Data.Code.Count == 6276,"exactly four new code resources");
-Console.WriteLine("PASS: real-data serialize/reload/decompile verification. Gameplay startup is NOT_RUN.");
-
-var pristinePath = Environment.GetEnvironmentVariable("ROUTEKEEPER_ORIGINAL");
-if (!string.IsNullOrEmpty(pristinePath)) {
-    using var originalFile = File.OpenRead(pristinePath);
-    var pristine = UndertaleIO.Read(originalFile);
-    int unchanged = 0;
-    foreach (var before in pristine.Code) {
-        if (before.Name.Content == "gml_Object_obj_time_Create_0") continue;
-        var after = Data.Code.ByName(before.Name.Content);
-        if (after == null || before.Disassemble(pristine.Variables,pristine.CodeLocals.For(before)) != after.Disassemble(Data.Variables,Data.CodeLocals.For(after)))
-            throw new Exception("FAIL: unexpected code modification: " + before.Name.Content);
-        unchanged++;
-    }
-    Check(unchanged == 6271,"all 6271 non-hook original code resources retain identical disassembly");
+void Check(bool condition,string label) {
+    if(!condition) throw new Exception("FAIL: "+label);
+    Console.WriteLine("PASS: "+label);
 }
+string Resource(string name) {
+    if(name=="state_read") name="read_state";
+    if(name=="fact_init") name="init_facts";
+    if(name.StartsWith("route_")) name=name.Substring(6);
+    return "gml_Script_scr_routekeeper_"+name;
+}
+var scripts=Directory.GetFiles(Path.Combine(folder,"gml"),"*.gml")
+    .Select(Path.GetFileNameWithoutExtension).Where(n=>!n.StartsWith("controller_")).ToArray();
+foreach(var name in scripts) {
+    var codeName=Resource(name);
+    Check(Data.Code.ByName(codeName)!=null,"linked script "+name);
+    Check(Data.Scripts.ByName(codeName.Substring("gml_Script_".Length))?.Code==Data.Code.ByName(codeName),"script reference "+name);
+}
+var controller=Data.GameObjects.ByName("obj_routekeeper");
+Check(controller!=null && controller.Persistent && controller.Visible,"persistent visible controller");
+foreach(var code in new[]{"gml_Object_obj_routekeeper_Create_0","gml_Object_obj_routekeeper_Step_0","gml_Object_obj_routekeeper_Draw_64"})
+    Check(controller.Events.SelectMany(e=>e).SelectMany(e=>e.Actions).Any(a=>a.CodeId?.Name.Content==code),"controller event "+code);
+Check(Get("gml_Object_obj_time_Create_0").Contains("instance_create(0, 0, obj_routekeeper)"),"startup hook");
+var create=Get("gml_Object_obj_routekeeper_Create_0");
+foreach(var setting in new[]{"schema","target_route","target_neutral","target_epilogue","mode","spoilers","language"})
+    Check(create.Contains("\""+setting+"\""),"persistent setting "+setting);
+var step=Get("gml_Object_obj_routekeeper_Step_0");
+Check(step.Contains("scr_routekeeper_read_state()") && step.Contains("scr_routekeeper_evaluate()"),"live shared evaluator");
+Check(step.Contains("obj_battlecontroller") && step.Contains("obj_mainchara.cutscene"),"ordinary UI battle/cutscene gates");
+Check(step.Contains("joystick_check_button") && step.Contains("gamepad_button_check"),"both authentic input backends");
+Check(step.Contains("global.rk_warning_ack = 1"),"deferred warning acknowledgement");
+var state=Get("gml_Script_scr_routekeeper_read_state");
+foreach(var fact in new[]{"global.rk_experience = global.xp","global.rk_plot10","global.rk_papyrus_friendship","global.rk_kills_ruins","global.rk_prior_neutral_completion","global.rk_soul_sold"})
+    Check(state.Contains(fact),"observed normalized fact "+fact.Split(' ')[0]);
+foreach(var hook in RoutekeeperHooks.Names)
+    Check(Get(hook).Contains("scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
+var guard=Get("gml_Script_scr_routekeeper_decision_guard");
+Check(guard.Contains("global.rk_warning_enforced") && guard.Contains("global.rk_warning_pending"),"limited Forced and dismissible warning policies");
+var draw=Get("gml_Object_obj_routekeeper_Draw_64");
+Check(draw.Contains("한국어") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
+foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})
+    Check(draw.Contains(restored),"draw state restored "+restored.Split('(')[0]);
+var font=Data.Fonts.ByName("fnt_routekeeper");
+Check(font?.Texture!=null,"embedded font atlas");
+var glyphs=font.Glyphs.Select(g=>(char)g.Character).ToHashSet();
+var required=string.Concat(Directory.GetFiles(Path.Combine(folder,"gml"),"*.gml").Select(File.ReadAllText))
+    .Where(c=>c>126 && !char.IsControl(c)).Distinct().ToArray();
+Check(required.All(glyphs.Contains),"all "+required.Length+" non-ASCII source characters have glyphs");
+Check(Data.Code.Count==6272+scripts.Length+3,"expected new code footprint");
+var originalPath=Environment.GetEnvironmentVariable("ROUTEKEEPER_ORIGINAL");
+if(!string.IsNullOrEmpty(originalPath)) {
+    using(var source=File.OpenRead(originalPath)) {
+        var pristine=UndertaleIO.Read(source);
+        RoutekeeperBindings.Validate(pristine,folder,originalPath);
+        Check(Data.Rooms.Count==pristine.Rooms.Count && Data.Sprites.Count==pristine.Sprites.Count && Data.Sounds.Count==pristine.Sounds.Count,"original room/sprite/sound resource counts");
+        Check(Data.GameObjects.Count==pristine.GameObjects.Count+1 && Data.Fonts.Count==pristine.Fonts.Count+1
+            && Data.EmbeddedTextures.Count==pristine.EmbeddedTextures.Count+1 && Data.TexturePageItems.Count==pristine.TexturePageItems.Count+1,"additive controller/font footprint");
+        for(int index=0;index<pristine.EmbeddedTextures.Count;index++) {
+            var oldImage=pristine.EmbeddedTextures[index].TextureData.Image;
+            var newImage=Data.EmbeddedTextures[index].TextureData.Image;
+            if(oldImage.Width!=newImage.Width || oldImage.Height!=newImage.Height
+                || !SHA256.HashData(oldImage.ToSpan()).SequenceEqual(SHA256.HashData(newImage.ToSpan())))
+                throw new Exception("Original texture changed at index "+index);
+        }
+        Check(true,"all original texture payloads unchanged");
+        Check(pristine.EmbeddedAudio.Count==Data.EmbeddedAudio.Count && pristine.EmbeddedAudio.Select((audio,index)=>
+            audio.Data.SequenceEqual(Data.EmbeddedAudio[index].Data)).All(equal=>equal),"all original embedded audio unchanged");
+        for(int index=0;index<pristine.Fonts.Count;index++) {
+            var before=pristine.Fonts[index]; var after=Data.Fonts[index];
+            if(before.Name.Content!=after.Name.Content || before.EmSize!=after.EmSize || before.Glyphs.Count!=after.Glyphs.Count)
+                throw new Exception("Original font changed at index "+index);
+            for(int glyph=0;glyph<before.Glyphs.Count;glyph++) {
+                var a=before.Glyphs[glyph]; var b=after.Glyphs[glyph];
+                if(a.Character!=b.Character || a.SourceX!=b.SourceX || a.SourceY!=b.SourceY || a.SourceWidth!=b.SourceWidth
+                    || a.SourceHeight!=b.SourceHeight || a.Shift!=b.Shift || a.Offset!=b.Offset)
+                    throw new Exception("Original font glyph changed.");
+            }
+        }
+        Check(true,"all original font glyphs unchanged");
+        var allowed=RoutekeeperHooks.Names.Concat(new[]{"gml_Object_obj_time_Create_0"}).ToHashSet();
+        int unchanged=0,changed=0;
+        foreach(var before in pristine.Code) {
+            var after=Data.Code.ByName(before.Name.Content);
+            bool identical=after!=null && before.Disassemble(pristine.Variables,pristine.CodeLocals.For(before))
+                ==after.Disassemble(Data.Variables,Data.CodeLocals.For(after));
+            if(allowed.Contains(before.Name.Content)) { Check(!identical,"intended hook changed "+before.Name.Content); changed++; }
+            else { if(!identical) throw new Exception("Unexpected original code modification: "+before.Name.Content); unchanged++; }
+        }
+        Check(unchanged==6272-allowed.Count && changed==allowed.Count,"all "+unchanged+" non-hook originals retain identical disassembly");
+    }
+}
+Console.WriteLine("PASS: authentic compile/serialize/reload/source-contract verification; gameplay NOT_RUN.");
