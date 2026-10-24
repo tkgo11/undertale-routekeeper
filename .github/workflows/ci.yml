@@ -30,6 +30,12 @@ jobs:
       - run: dotnet run --project tests/RouteKeeper.Tool.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Saves.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build -- --verify-gml integration/gml/route_evaluate.gml
+      - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build -- --verify-gml integration/gml
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-adapters integration/gml
+      - run: dotnet run --project tests/RouteKeeper.History.Tests -c Release --no-build
+      - run: python integration/generate_font.py --verify
       - name: Package standalone tool for this host
         run: dotnet publish src/RouteKeeper.Tool -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o artifacts/tool
       - uses: actions/upload-artifact@v4
@@ -37,3 +43,8 @@ jobs:
           name: routekeeper-tool-${{ matrix.rid }}
           path: artifacts/tool/
           retention-days: 7
+  authentic-structural:
+    if: github.event_name == 'push' && github.event.repository.private == true && github.repository == 'tkgo11/undertale-routekeeper'
+    uses: ./.github/workflows/authentic.yml
+    permissions:
+      contents: read

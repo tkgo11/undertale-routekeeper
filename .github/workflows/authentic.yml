@@ -1,0 +1,58 @@
+name: authentic-structural-integration
+on:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  private-structural:
+    if: github.event.repository.private == true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch private original and checksum-pinned official compiler
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force private-data | Out-Null
+          gh release download dev-game-data --repo $env:GITHUB_REPOSITORY --pattern data.win --dir private-data
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/install-utmt.py --directory .research/utmt-ci
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile, reload, compare original code and reject unsafe patch attempts
+        shell: pwsh
+        run: |
+          $cli = if ($IsWindows) { '.research/utmt-ci/UndertaleModCli.exe' } else { '.research/utmt-ci/UndertaleModCli' }
+          dotnet build src/RouteKeeper.Tool -c Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/validate-authentic.py --input private-data/data.win --cli $cli --builder src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Remove temporary proprietary inputs and outputs
+        if: always()
+        shell: pwsh
+        run: |
+          foreach ($path in @('private-data', '.research')) {
+            if (!(Test-Path $path)) { continue }
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              try { Remove-Item -Recurse -Force $path -ErrorAction Stop; break }
+              catch {
+                if ($attempt -eq 3) { throw 'Private working directory cleanup failed.' }
+                Start-Sleep -Seconds 1
+              }
+            }
+          }
+      # Deliberately no artifact upload: game data and decompilation stay private.
