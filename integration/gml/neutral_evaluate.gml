@@ -3,14 +3,17 @@ var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matche
 nt = global.rk_target_neutral; blocked = 0; unknown = 0; action = 0;
 k = global.rk_kills; stage = global.rk_murder_level; friend = global.rk_neutral_undyne_friendship;
 min_kills = 0; max_kills = -1; matched = 0; total = 0;
+global.rk_neutral_friendship_min = 0;
 global.rk_objective_text = "";
 global.rk_neutral_keep_toriel = -1; global.rk_neutral_keep_papyrus = -1;
 global.rk_neutral_keep_undyne = -1; global.rk_neutral_keep_mettaton = -1;
 if (nt < 0 || nt >= 19) return 4;
 if (nt == 0) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 0; max_kills = -1;
 }
 if (nt == 1) {
+global.rk_neutral_friendship_min = 4;
 min_kills = 0; max_kills = 0;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -42,6 +45,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 2) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 0; max_kills = 9;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -73,6 +77,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 3) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 1; max_kills = 9;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -104,6 +109,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 4) {
+global.rk_neutral_friendship_min = 1;
 min_kills = 1; max_kills = 9;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -135,6 +141,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 5) {
+global.rk_neutral_friendship_min = 1;
 min_kills = 1; max_kills = 9;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -166,6 +173,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 6) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 10; max_kills = -1;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -190,6 +198,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 7) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 1; max_kills = -1;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -214,6 +223,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 8) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 1; max_kills = -1;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -238,6 +248,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 9) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 2; max_kills = -1;
 global.rk_neutral_keep_toriel = 1;
 total += 1;
@@ -262,6 +273,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 10) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 1; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -286,6 +298,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 11) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 2; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -310,6 +323,7 @@ else { action = 1; if (global.rk_undyne_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 12) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 2; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -341,6 +355,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 13) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 3; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -372,6 +387,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 14) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 3; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -403,6 +419,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 15) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 4; max_kills = 4;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -434,6 +451,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 16) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 5; max_kills = 19;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -465,6 +483,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 17) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 20; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;
@@ -496,6 +515,7 @@ else { action = 1; if (global.rk_mettaton_resolved < 0) unknown = 1; }
 } else matched += 1;
 }
 if (nt == 18) {
+global.rk_neutral_friendship_min = 0;
 min_kills = 4; max_kills = -1;
 global.rk_neutral_keep_toriel = 0;
 total += 1;

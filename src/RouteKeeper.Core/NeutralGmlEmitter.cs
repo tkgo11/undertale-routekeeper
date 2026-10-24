@@ -66,6 +66,7 @@ var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matche
 nt = global.rk_target_neutral; blocked = 0; unknown = 0; action = 0;
 k = global.rk_kills; stage = global.rk_murder_level; friend = global.rk_neutral_undyne_friendship;
 min_kills = 0; max_kills = -1; matched = 0; total = 0;
+global.rk_neutral_friendship_min = 0;
 global.rk_objective_text = "";
 global.rk_neutral_keep_toriel = -1; global.rk_neutral_keep_papyrus = -1;
 global.rk_neutral_keep_undyne = -1; global.rk_neutral_keep_mettaton = -1;
@@ -73,7 +74,7 @@ if (nt < 0 || nt >= 19) return 4;
 """+"\n");
         foreach(var target in NeutralCatalog.Targets)
         {
-            code.Append($"if (nt == {(int)target.Id}) {{\nmin_kills = {target.MinimumKills}; max_kills = {(target.MaximumKills==int.MaxValue?-1:target.MaximumKills)};\n");
+            code.Append($"if (nt == {(int)target.Id}) {{\nglobal.rk_neutral_friendship_min = {NeutralCatalog.FriendshipMinimum((int)target.Id)};\nmin_kills = {target.MinimumKills}; max_kills = {(target.MaximumKills==int.MaxValue?-1:target.MaximumKills)};\n");
             var names=new[]{"toriel","papyrus","undyne","mettaton"};
             var values=new[]{target.TorielDead,target.PapyrusDead,target.UndyneDead,target.MettatonDead};
             for(int i=0;i<names.Length;i++)

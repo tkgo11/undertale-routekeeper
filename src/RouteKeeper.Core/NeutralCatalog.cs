@@ -73,6 +73,8 @@ public static class NeutralCatalog
         ("neutral_mettaton_dead","mettaton_resolved",t=>t.MettatonDead)
     ];
 
+    public static int FriendshipMinimum(int id)=>id==1?4:id is 4 or 5?1:0;
+
     public static NeutralTarget Get(int id) => id >= 0 && id < SelectableCount ? Targets[id] :
         throw new ArgumentOutOfRangeException(nameof(id),"Unknown or debug-only Neutral target");
 
