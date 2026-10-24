@@ -28,3 +28,12 @@ PASS applies only to the stated scope. No official game runner has executed.
 Actions run [40114230381](https://github.com/tkgo11/undertale-routekeeper/actions/runs/40114230381) at 113d922 passed all eight jobs (four synthetic/package and four private authentic structural). Later source changes require their own CI result. Expanded cross-platform runs are tracked on PR #1. The earlier foundation run
 40087764774 is not substituted for new commits. No private data/source is uploaded
 as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.
+
+Latest commit 806bafd: local 202 checks, generated-source checks, authentic builder
+and packaged Linux builder PASS. Actions PR run
+[40116263118](https://github.com/tkgo11/undertale-routekeeper/actions/runs/40116263118)
+is FAIL: all four synthetic jobs have no step records; their log endpoint returns
+HTTP404 BlobNotFound. One failed-job retry was requested; no successful execution
+evidence was returned. The precise service-side cause is unavailable, so billing,
+permissions and code failures are not asserted. Authentic jobs are skipped on PR
+events by design; later push-run status must be checked separately.

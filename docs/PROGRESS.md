@@ -56,8 +56,10 @@ working copies. The source/tool package contains no game data or personal saves.
 
 ## Next concrete work
 
-1. Finish expanded cross-platform synthetic, structural and package checks; repair
-   failures before recording PASS. Rebuild the published tool with native assets.
+1. Investigate latest Actions run 40116263118: all four synthetic jobs failed
+   before any step records, logs return HTTP404 BlobNotFound, and a retry did not
+   produce executable evidence. Do not substitute the earlier CI success. The
+   latest local suites and standalone package build pass.
 2. Use the legitimate matching full game folder/manifest for official-runner
    startup and disposable scenario fixtures; docs/runtime-validation.md details it.
 3. Extend source adapters to uncovered irreversible friendship/scripted outcomes,
@@ -68,3 +70,8 @@ working copies. The source/tool package contains no game data or personal saves.
 Private data stays in private-data/; decompilation, candidates and experiments in
 .research/. Follow private-data.md for cleanup; provider backup deletion is not
 promised. Development commits are reviewable and no risky changes are auto-merged.
+
+Latest published source commit: 806bafd. Its Linux standalone package generated
+1e547b1e6ade08b0226ba0e47f719461be4313747093893831f43f2831a8ce14
+(63,122,882 bytes), matching the registry. The local ignored distribution archive
+contains only the tool/native source/licensed font and notices, not game inputs.

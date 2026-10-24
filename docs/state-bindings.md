@@ -2,7 +2,7 @@
 
 Input SHA-256: b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7.
 The adapter is specific to this input and pinned UndertaleModCli 0.9.2.0.
-`bindings.csx` checks 40 original code-resource signatures and 33 manifest
+`bindings.csx` checks 46 original code-resource signatures and 34 manifest
 expressions. `state_read.gml` also supplies aliases, availability/context and
 optional Neutral call observations. It rejects vanilla-global assignments and
 save-writing APIs. Actual runner behavior is not yet verified.
@@ -31,7 +31,8 @@ file is written by an observation adapter.
 Pre-action hooks verify complete source hashes and unique anchors. They guard
 battle FIGHT/SPARE/FLEE before action-state effects, relevant doors before transition
 locks, four regional boss entrances before cutscenes, and the final epilogue
-chooser before choice/alarm effects. Forced refuses only supported risks. Active
+chooser before choice/alarm effects. Muffet's Spider Donut/Cider escape reuses
+the Spare policy before any item consumption, healing or turn mutation. Forced refuses only supported risks. Active
 and Passive require acknowledgement then permit one retry. Off bypasses hooks.
 Multi-enemy Spare is aggregated once; kill budgets reserve future required bosses.
 
