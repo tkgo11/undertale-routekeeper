@@ -1,0 +1,7 @@
+private-data/
+.research/
+artifacts/
+**/bin/
+**/obj/
+*.user
+*.tmp
