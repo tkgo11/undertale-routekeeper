@@ -1,0 +1,39 @@
+name: build-and-test
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  synthetic:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+          - os: macos-15-intel
+            rid: osx-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet build RouteKeeper.slnx -c Release
+      - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Tool.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Saves.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build -- --verify-gml integration/gml/route_evaluate.gml
+      - name: Package standalone tool for this host
+        run: dotnet publish src/RouteKeeper.Tool -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o artifacts/tool
+      - uses: actions/upload-artifact@v4
+        with:
+          name: routekeeper-tool-${{ matrix.rid }}
+          path: artifacts/tool/
+          retention-days: 7

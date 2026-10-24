@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RouteKeeper.Core/RouteKeeper.Core.csproj" />
+    <Project Path="src/RouteKeeper.Saves/RouteKeeper.Saves.csproj" />
+    <Project Path="src/RouteKeeper.Tool/RouteKeeper.Tool.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RouteKeeper.Core.Tests/RouteKeeper.Core.Tests.csproj" />
+    <Project Path="tests/RouteKeeper.Saves.Tests/RouteKeeper.Saves.Tests.csproj" />
+    <Project Path="tests/RouteKeeper.Tool.Tests/RouteKeeper.Tool.Tests.csproj" />
+  </Folder>
+</Solution>
