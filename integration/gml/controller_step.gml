@@ -3,6 +3,9 @@ scr_routekeeper_read_state();
 global.rk_neutral_projection = scr_routekeeper_neutral_classify();
 global.rk_neutral_modifiers = scr_routekeeper_neutral_modifiers();
 rk_status = scr_routekeeper_evaluate();
+if (global.rk_warning_pending && (!global.rk_state_ready || global.rk_warning_room != room)) {
+    global.rk_warning_pending = 0; global.rk_warning_ack = 0;
+}
 // An advisory panel must disappear once another action starts a timed battle turn.
 if (global.rk_warning_pending && instance_exists(obj_battlecontroller)
     && variable_global_exists("mnfight") && variable_global_exists("myfight")) {

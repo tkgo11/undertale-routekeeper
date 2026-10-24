@@ -38,6 +38,7 @@ global.rk_spoilers = ini_read_real("Guidance", "spoilers", 0);
 if (global.rk_spoilers != 0 && global.rk_spoilers != 1) global.rk_spoilers = 0;
 ini_close();
 global.rk_warning_code = 0;
+global.rk_warning_room = -1;
 global.rk_warning_enforced = 0;
 global.rk_warning_text = "";
 global.rk_warning_pending = 0;

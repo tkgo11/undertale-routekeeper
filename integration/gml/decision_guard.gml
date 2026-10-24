@@ -79,6 +79,7 @@ if ((global.rk_mode != 3 || !enforceable) && global.rk_warning_ack == 1
 }
 global.rk_decision_context = context;
 global.rk_warning_code = risk;
+global.rk_warning_room = room;
 global.rk_warning_enforced = (global.rk_mode == 3 && enforceable);
 global.rk_warning_ack = 0;
 global.rk_warning_pending = 1;

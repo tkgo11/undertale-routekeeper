@@ -12,6 +12,7 @@ public static class ModBuilder
     public static async Task<BuildReceipt> BuildAsync(string source, string output, string compiler, string assetRoot, string? profileId = null)
     {
         source = Path.GetFullPath(source); output = Path.GetFullPath(output); assetRoot = Path.GetFullPath(assetRoot);
+        if (File.Exists(compiler)) compiler = Path.GetFullPath(compiler);
         if (string.Equals(source, output, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
             throw new InvalidOperationException("Build output must be distinct from the original.");
         if (Path.Exists(output)) throw new InvalidOperationException("Build output must be new.");
