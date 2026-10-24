@@ -159,6 +159,12 @@ global.rk_neutral_alphys_friendship = global.flag[493];
 // resource-name context for the current region; story deadlines use resolved facts.
 if (!variable_global_exists("rk_area")) global.rk_area = -1;
 rk_name = room_get_name(room);
+// Main-room ranges include named exceptions such as room_fogroom. Prefixes below
+// additionally cover later-appended rooms; the exact index map is validated.
+if (room >= room_tundra1 && room < room_water1) global.rk_area = 1;
+if (room >= room_water1 && room < room_fire1) global.rk_area = 2;
+if (room >= room_fire1 && room < room_castle_front) global.rk_area = 3;
+if (room >= room_castle_front && room <= room_castle_trueexit) global.rk_area = 4;
 if (room >= room_area1 && room <= room_ruinsexit) global.rk_area = 0;
 if (string_pos("room_tundra", rk_name) == 1) global.rk_area = 1;
 if (string_pos("room_water", rk_name) == 1) global.rk_area = 2;

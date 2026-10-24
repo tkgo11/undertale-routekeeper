@@ -18,6 +18,11 @@ public static class RoutekeeperBindings
                 throw new InvalidOperationException("Unverified binding input.");
         }
         if (data.GeneralInfo.BytecodeVersion != root.GetProperty("BytecodeVersion").GetInt32()) throw new Exception("Bytecode mismatch.");
+        foreach (var room in root.GetProperty("RequiredRooms").EnumerateArray()) {
+            int index = room.GetProperty("Index").GetInt32();
+            if (index < 0 || index >= data.Rooms.Count || data.Rooms[index].Name.Content != room.GetProperty("Resource").GetString())
+                throw new Exception("Observed region room signature changed.");
+        }
         var context = new GlobalDecompileContext(data);
         int checkedEvidence = 0;
         foreach (var evidence in root.GetProperty("Evidence").EnumerateArray()) {

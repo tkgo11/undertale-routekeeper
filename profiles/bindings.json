@@ -507,5 +507,27 @@
         "global.flag[27] = 1"
       ]
     }
+  ],
+  "RequiredRooms": [
+    {
+      "Resource": "room_tundra1",
+      "Index": 44
+    },
+    {
+      "Resource": "room_water1",
+      "Index": 82
+    },
+    {
+      "Resource": "room_fire1",
+      "Index": 137
+    },
+    {
+      "Resource": "room_castle_front",
+      "Index": 219
+    },
+    {
+      "Resource": "room_castle_trueexit",
+      "Index": 240
+    }
   ]
 }
