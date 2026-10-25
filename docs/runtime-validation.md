@@ -77,6 +77,101 @@ Keep inherited proxy/CA settings during image construction. Game execution has
 network disabled. The smoke script never turns a live process into a gameplay
 PASS; results require scenario assertions and screenshot/log review.
 
+## Same existing Windows account — no Sandbox or extra user (SMOKE ONLY, NOT_RUN)
+
+Use `tools/runtime/run-current-account.ps1` for **early gameplay smoke testing on
+the existing, non-elevated Windows account**. This is optional; it requires
+neither Windows Sandbox nor another Windows user. It deliberately does **not**
+certify SAVE/RESET/TRUE RESET, Genocide ERASE, Soulless or ending replay.
+Steam account-level caches and persistent history may change despite a disabled
+Cloud setting, offline Steam, and local-save restoration. A VM or a separate Steam
+account is more isolated. Use this method only if you accept that residual risk.
+
+### Before beginning
+
+1. In the existing Steam account, disable Steam Cloud for UNDERTALE and globally.
+   Use Steam **Go Offline**; wait until offline mode is configured, then **Exit
+   Steam completely**. Do not run a game with Cloud enabled to set this up.
+2. Manually disconnect Wi-Fi, Ethernet, VPN and other active network adapters.
+   The harness will refuse active adapters and never changes Windows networking.
+   Do not restart Steam manually before running the harness.
+3. Use your *original legitimate Steam library installation* and the already
+   verified private Windows ZIP. Game installation must still match the pinned
+   exact runner/data hashes; an updated build or modified game is rejected.
+4. Prepare a **new** private runtime lab and a new compiled candidate, from the
+   repository root. Paths below are examples; point to actual existing paths.
+   Do not put the lab/candidate inside the Steam game folder.
+
+```powershell
+python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work "$env:USERPROFILE\private\rk-lab"
+dotnet run --project src/RouteKeeper.Tool -c Release -- build "$env:USERPROFILE\private\rk-lab\original\Undertale\data.win" "$env:USERPROFILE\private\candidate.win" "C:\tools\UndertaleModCli.exe" .
+python tools/runtime_lab.py verify --work "$env:USERPROFILE\private\rk-lab"
+powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Preflight
+```
+
+### One-account smoke: original, then patch
+
+Run from the repository root as the same **non-elevated** Windows user, never
+as administrator. Replace the two Steam paths with the genuine locations shown
+by the Steam client and **Properties > Installed Files > Browse**.
+
+```powershell
+$steamExe = "C:\Program Files (x86)\Steam\steam.exe"
+$gameDir = "C:\Program Files (x86)\Steam\steamapps\common\Undertale"
+$lab = "$env:USERPROFILE\private\rk-lab"
+$candidate = "$env:USERPROFILE\private\candidate.win"
+powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Run -Case original -Lab $lab -PatchedData $candidate -SteamExe $steamExe -GameInstall $gameDir -AcceptSteamAccountRisk -CloudDisabledAndOffline -Minutes 30
+```
+
+The script snapshots the original `%LOCALAPPDATA%\UNDERTALE` folder in the
+private lab, verifies the independent copy, and moves the original save folder
+to an identifiable quarantine directory in the **same user profile**. It moves
+only the pinned game installation to an identifiable backup and temporarily
+copies approved original/patch game files into the registered Steam location.
+Steam is launched offline, without a Steam API/DRM replacement. Play only the
+**title screen, UI, language, keyboard/controller inputs, early battles, ordinary
+ACT/MERCY and basic warnings**. **Do not save, RESET, TRUE RESET, erase the
+world, play through Genocide/Soulless or test personal ending history**.
+
+Close the game and **exit Steam completely while disconnected** when asked.
+The script restores the original Steam installation and personal local save
+folder, preserves test-created saves in a separate marked location, and saves
+a JSON observation under `rk-lab\evidence\current-account`. A running game
+does not constitute runtime PASS. The script cannot undo Steam account-level
+cache or history changes.
+
+Only after checking the restoration and private evidence, archive the completed
+session (this does NOT delete your original saves or backups):
+
+```powershell
+powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Archive
+```
+
+Then keep Steam Cloud off and the PC disconnected, and repeat the Run command
+with **`-Case patched`**. The same Windows account is used; private local saves
+are quarantined again and restored. This is a comparative smoke test, **not**
+independent history isolation between original and patch.
+
+### Interrupted session recovery
+
+If power loss, an exception, or Steam shutdown prevents full restoration, **do
+not delete the session folder, Steam backup folder or personal-save quarantine**.
+Keep the network disconnected, close both Steam and UNDERTALE fully, and run:
+
+```powershell
+powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Recover
+```
+
+Recovery checks owner ID, session marker, save hashes and marked Steam installation
+before restoring. It preserves uncertain states rather than overwriting personal
+saves. If a recovery check fails, stop and review both copies manually without
+altering Steam caches. A verified snapshot also remains in the private lab.
+
+The current-account harness is **source-added but NOT_RUN on native Windows**.
+The PowerShell test script includes static assertions; source review does not
+prove real Windows process/Steam/game behavior. Do not mark a profile
+VerifiedPatch or merge/release based on these smoke observations.
+
 ## Native Windows without Sandbox (opt-in; execution NOT_RUN)
 
 Windows Sandbox is **not required**. The script `tools/runtime/run-without-sandbox.ps1` runs on native Windows 11, including Home editions. To protect personal UNDERTALE saves, do not run it in a personal Windows user account. This is an operator-run workflow and **has not yet been executed on native Windows**; it must not be described as a passing runtime test.
