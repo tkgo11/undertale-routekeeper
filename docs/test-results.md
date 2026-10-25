@@ -32,7 +32,7 @@ as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.
 ## Current UI/font/guard/package expansion
 
 - PASS: 218 C# checks (Core37/Neutral54/Decisions56/History17/Tool47/Saves7).
-- PASS: 13 offline UI/font groups with Pillow11.3.0; all warning states/languages,
+- PASS: 14 offline UI/font groups with Pillow11.3.0; all warning states/languages,
   root/paged navigation, objective fit, counter clipping, binary alpha, baseline,
   source hash, overhang metadata and deterministic font generation.
 - PASS: 664 additional emitted-GML navigation/localization cases. Combined declared
@@ -60,8 +60,17 @@ OFFLINE_PREVIEW/gameplay NOT_RUN. No runner, startup, hardware input, battle,
 save/reload or actual ending has been executed. Additional game inputs were neither
 requested nor obtained in this continuation.
 
-Final native candidate SHA-256: 901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2. The local standalone
-package builder produced the same byte hash before the wording refinement, and
-the refined sources again passed authentic builder/serialize/reload validation.
-The latest hosted runs40151265027 (PR) /40151261704 (push) at5e6f8c6 also have
-zero executed steps and the same billing/spending-limit annotation.
+Final native candidate SHA-256:
+901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2
+(63,122,022 bytes). The committed-source standalone Linux package built exactly
+this hash and passed the G3M synthetic roundtrip with the actual current parser.
+All four final tool executables have headers matching their target CPU; foreign
+execution remains NOT_RUN. Latest hosted runs40151265027 (PR) /40151261704 (push)
+at5e6f8c6 have zero executed steps and the same billing/spending-limit annotation.
+
+Preview PNGs now use the same canonical stored-DEFLATE writer as the font atlas,
+with a deterministic sorted palette. The offline renderer reads the actual baked
+atlas/TSV (and validated private native English glyphs), not a second rasterization.
+Byte reproducibility and decoded pixel equality are tested. Gameplay objectives
+no longer expose implementation assurances/file names; lasting RESET consequences
+remain explained in player-facing terms. A Core regression covers this copy.

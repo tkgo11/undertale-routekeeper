@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Offline UI geometry/font renderer. This does not execute the GameMaker VM."""
 from pathlib import Path
-import argparse,json,sys,hashlib
+import argparse,json,sys,hashlib,struct
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from generate_font import chunk,stored_deflate
 from PIL import Image,ImageDraw,__version__ as pillow_version
 from generate import CAT,ROOT
 L=CAT['layout'];WHITE=(255,255,255,255);BLACK=(0,0,0,255);YELLOW=(255,255,0,255);RED=(255,0,0,255)
@@ -85,7 +86,19 @@ class Renderer:
     def hud(self,objective,progress='7/17'):
         self.box(16,L['hud_top'],304,L['hud_bottom']);self.line(L['hud_x'],L['hud_y'],'* '+objective,L['hud_width']);self.line(L['hud_progress_x'],L['hud_y'],progress,L['hud_progress_width'])
     def save(self,path):
-        self.image.resize((640,480),Image.Resampling.NEAREST).save(path)
+        im=self.image.resize((640,480),Image.Resampling.NEAREST)
+        pixels=list(im.getdata());palette=sorted(set(pixels));width,height=im.size
+        if len(palette)>256:raise ValueError('Preview exceeds deterministic pixel palette')
+        bits=next(b for b in [1,2,4,8] if len(palette)<=2**b);lookup={p:i for i,p in enumerate(palette)}
+        scan=bytearray();per_byte=8//bits
+        for row in range(height):
+            scan.append(0)
+            for x in range(0,width,per_byte):
+                scan.append(sum(lookup[pixels[row*width+x+j]] << (8-bits*(j+1)) for j in range(per_byte) if x+j<width))
+        png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,bits,3,0,0,0))
+        png+=chunk(b'PLTE',bytes(c for p in palette for c in p[:3]))+chunk(b'tRNS',bytes(p[3] for p in palette))
+        png+=chunk(b'IDAT',stored_deflate(scan))+chunk(b'IEND',b'')
+        path.write_bytes(png)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--native-font',type=Path);args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)

@@ -26,7 +26,7 @@ no merge, public release, profile promotion or original save/history mutation.
 ## Current evidence
 
 Release build has zero warnings/errors. Local executable suites: Core37,
-Neutral54, Decisions56, History17, Tool47, Saves7 (218 C# checks plus 13 offline UI groups). Source interpreters
+Neutral54, Decisions56, History17, Tool47, Saves7 (218 C# checks plus 14 offline UI groups). Source interpreters
 compare 53,616 status/objective/progress/condition/policy cases. These are not a
 GameMaker VM. Authentic compile/serialize/reload passes; all 6,248 non-hook original
 code resources, original textures/audio/fonts and resource counts are preserved.
@@ -97,3 +97,10 @@ Keep InspectedOnly and refuse live installation/G3M export until sufficient evid
 Private data stays in private-data/; decompilation, native English atlas, candidates
 and experiments in .research/. Follow private-data.md for cleanup; provider backup
 deletion is not promised. No high-risk merge or public release was performed.
+
+Implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
+5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Latest tested
+native output is901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2.
+All four standalone tool packages publish; the Linux package builds that exact
+output and completes the real synthetic G3M roundtrip. Hosted billing is still
+blocked; no official runner evidence exists.

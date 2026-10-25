@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Offline layout/raster invariants using pinned metrics, never a runtime claim."""
-import json,re,unittest
+import json,re,unittest,tempfile
 from pathlib import Path
 from preview import Renderer,ROOT,CAT,L
 import sys
@@ -86,6 +86,13 @@ class UiTests(unittest.TestCase):
         for r in self.renderers:
             self.assertEqual(r.fit('',10),'');self.assertEqual(r.fit('abc',r.width('abc')),'abc')
             self.assertTrue(r.fit('long text',20).endswith('...'))
+    def test_preview_bytes_are_reproducible_and_pixels_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for r in self.renderers:
+                r.menu(2);a=Path(directory)/'a.png';b=Path(directory)/'b.png'
+                r.save(a);r.save(b);self.assertEqual(a.read_bytes(),b.read_bytes())
+                expected=r.image.resize((640,480),Image.Resampling.NEAREST).tobytes()
+                self.assertEqual(Image.open(a).convert('RGBA').tobytes(),expected)
     def test_baseline_cell_bounds(self):
         rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')

@@ -34,6 +34,15 @@ def required_chars():
 def chunk(kind,data):
     return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
 
+def stored_deflate(data):
+    """Canonical zlib stream, independent of host compression tuning/version."""
+    compressed=bytearray(b'\x78\x01')
+    for start in range(0,len(data),65535):
+        block=data[start:start+65535];last=(start+len(block)==len(data))
+        compressed+=bytes([int(last)])+struct.pack('<HH',len(block),65535-len(block))+block
+    compressed+=struct.pack('>I',zlib.adler32(data)&0xffffffff)
+    return bytes(compressed)
+
 def generate():
     glyphs=glyph_source(); codes=required_chars(); cell=24; width=768
     height=1 << max(7,(math.ceil(len(codes)/32)*cell-1).bit_length())
@@ -52,11 +61,7 @@ def generate():
         for x in range(0,width,8):
             scan.append(sum(pixels[y*width+x+i] << (7-i) for i in range(8)))
     # Canonical stored DEFLATE blocks avoid host zlib compression-version drift.
-    compressed=bytearray(b'\x78\x01')
-    for start in range(0,len(scan),65535):
-        block=scan[start:start+65535];last=(start+len(block)==len(scan))
-        compressed+=bytes([int(last)])+struct.pack('<HH',len(block),65535-len(block))+block
-    compressed+=struct.pack('>I',zlib.adler32(scan)&0xffffffff)
+    compressed=stored_deflate(scan)
     png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,1,3,0,0,0))+chunk(b'PLTE',b'\0\0\0\xff\xff\xff')+chunk(b'tRNS',b'\0\xff')+chunk(b'IDAT',bytes(compressed))+chunk(b'IEND',b'')
     return {'ui-font.png':png,'ui-font.tsv':('\n'.join(rows)+'\n').encode(),'ui-font-size.txt':f'{width}\t{height}\n'.encode()},len(codes)
 

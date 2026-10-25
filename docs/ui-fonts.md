@@ -50,6 +50,9 @@ python integration/ui/preview.py --output artifacts/ui-preview
 ```
 
 Pillow11.3.0 is pinned in CI for previews/tests; generation/verification is stdlib.
+Previews consume the baked atlas/TSV and use a canonical sorted palette/stored
+DEFLATE writer, so PNG compression does not depend on host zlib tuning. Decoded
+pixel identity and repeated byte equality are tested.
 The preview default substitutes licensed outlines for English while using observed
 native advance metrics. For actual native English outlines, privately export from
 the already supplied exact input (never commit/upload the atlas):
