@@ -127,6 +127,19 @@ try
         Reject(()=>G3MPackage.CreateAsync(original,candidate,"missing-xdelta",output,[profile with {GameDataRelativePath="data.win",PatchedSha256=new string('0',64)}],"Synthetic","test").GetAwaiter().GetResult());
         Assert(!Directory.Exists(Path.GetDirectoryName(output)));
     });
+    Check("Native verification cannot omit the exact runner pin",()=>Reject(()=>CompatibilityRegistry.RequireVerified(identity,[profile with {Platform="Windows",Architecture="x86"}],"Windows","x86")));
+    string gateDir=Path.Combine(root,"runner-gate");Directory.CreateDirectory(gateDir);
+    string gateData=Path.Combine(gateDir,"data.win"),gateCandidate=Path.Combine(gateDir,"candidate.win"),gateExe=Path.Combine(gateDir,"UNDERTALE.exe");
+    File.WriteAllBytes(gateData,Data(0));File.WriteAllBytes(gateCandidate,Data(1));
+    var exact=profile with {Platform="Windows",Architecture="x86",ExecutableRelativePath="UNDERTALE.exe",ExecutableSha256=new string('0',64)};
+    Check("Pinned runner must exist before backup or replacement",()=>{Reject(()=>SafeInstaller.Install(gateData,gateCandidate,[exact],"Windows","x86"));Assert(!File.Exists(gateData+".routekeeper-original")&&SafeInstaller.Hash(gateData)==identity.Sha256);});
+    File.WriteAllBytes(gateExe,PE(0x14c));exact=exact with {ExecutableSha256=SafeInstaller.Hash(gateExe)};
+    Check("Exact PE runner passes hash and architecture gates",()=>SafeInstaller.ValidateRunner(gateData,exact));
+    Check("Same data with different runner is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {ExecutableSha256=new string('0',64)})));
+    Check("Exact runner with wrong declared architecture is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {Architecture="x64"})));
+    Check("Runner traversal is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {ExecutableRelativePath="../UNDERTALE.exe"})));
+    Check("Partial runner identity is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {ExecutableSha256=null})));
+    Check("Pinned runner installs only the approved candidate",()=>{SafeInstaller.Install(gateData,gateCandidate,[exact],"Windows","x86");Assert(SafeInstaller.Hash(gateData)==profile.PatchedSha256&&SafeInstaller.Hash(gateData+".routekeeper-original")==identity.Sha256);SafeInstaller.Restore(gateData);});
     Console.WriteLine($"PASS {passed} synthetic tests; authentic gameplay NOT_RUN"); return 0;
 }
 finally { Directory.Delete(root, recursive: true); }

@@ -8,7 +8,7 @@ public sealed record ChunkSignature(string Name, long Offset, uint Length, strin
 public sealed record BuildIdentity(string FileName, long Size, string Sha256, string Md5, byte BytecodeVersion, IReadOnlyList<ChunkSignature> Chunks);
 public sealed record CompatibilityProfile(string Id, string Status, string Platform, string Architecture,
     long OriginalSize, string OriginalSha256, string OriginalMd5, byte BytecodeVersion,
-    string StructuralSha256, string? PatchedSha256, string? SteamBuildId = null, string? SteamDepotId = null, string? GameDataRelativePath = null);
+    string StructuralSha256, string? PatchedSha256, string? SteamBuildId = null, string? SteamDepotId = null, string? GameDataRelativePath = null, string? ExecutableRelativePath = null, string? ExecutableSha256 = null, string? SteamDepotManifestId = null);
 
 /// <summary>Read-only FORM inspection; recognition alone never authorizes patching.</summary>
 public static class BuildInspector
@@ -83,7 +83,8 @@ public static class CompatibilityRegistry
         var matches = profiles.Where(p => p.Status == "VerifiedPatch" && p.Platform == platform && p.Architecture == architecture &&
             p.OriginalSize == identity.Size && Equal(p.OriginalSha256, identity.Sha256) && Equal(p.OriginalMd5, identity.Md5) &&
             p.BytecodeVersion == identity.BytecodeVersion && Equal(p.StructuralSha256, BuildInspector.StructuralHash(identity)) &&
-            p.PatchedSha256?.Length == 64).ToArray();
+            p.PatchedSha256?.Length == 64 &&
+            (p.Platform is not ("Windows" or "macOS" or "Linux") || (p.ExecutableSha256?.Length == 64 && !string.IsNullOrWhiteSpace(p.ExecutableRelativePath)))).ToArray();
         return matches.Length == 1 ? matches[0] : throw new InvalidOperationException("Unknown, ambiguous, or unverified build; patching refused.");
     }
     public static bool Equal(string? a, string? b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);

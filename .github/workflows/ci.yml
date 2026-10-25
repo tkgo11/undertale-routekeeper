@@ -43,6 +43,7 @@ jobs:
       - run: python integration/ui/generate.py --verify
       - run: python integration/generate_font.py --verify
       - run: python integration/ui/test_ui.py
+      - run: python tools/test_runtime_lab.py
       - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-ui integration
       - name: Verify real delta packaging on synthetic data
         if: runner.os == 'Linux'

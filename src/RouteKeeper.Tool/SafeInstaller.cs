@@ -34,6 +34,7 @@ public static class SafeInstaller
         }
         string original = previous is null ? target : backup;
         var profile = CompatibilityRegistry.RequireVerified(BuildInspector.Inspect(original), profiles, platform, architecture);
+        ValidateRunner(target, profile);
         // Reopen and hash a private staging copy: candidate may be changed by another process.
         string staged = target + ".routekeeper-stage-" + Guid.NewGuid().ToString("N");
         try
@@ -70,6 +71,21 @@ public static class SafeInstaller
             }
         }
         finally { if (File.Exists(staged)) File.Delete(staged); }
+    }
+
+    public static void ValidateRunner(string target, CompatibilityProfile profile)
+    {
+        if(profile.ExecutableRelativePath is null && profile.ExecutableSha256 is null) return;
+        if(profile.ExecutableRelativePath is null || profile.ExecutableSha256 is null) throw new InvalidDataException("Incomplete exact-runner profile.");
+        var relative=profile.ExecutableRelativePath.Replace('\\','/');
+        if(Path.IsPathRooted(relative)||relative.Split('/').Any(p=>p is "" or "." or "..")||relative.Contains(':')) throw new InvalidDataException("Unsafe runner location.");
+        var path=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(target))!,relative));
+        RejectLinks(path);
+        if(!File.Exists(path))throw new InvalidOperationException("Exact game runner is missing.");
+        RequireHash(path,profile.ExecutableSha256);
+        var executable=ExecutableInspector.Inspect(path);
+        bool platformMatches=profile.Platform switch {"Windows"=>executable.PlatformFamily=="WindowsPE","macOS"=>executable.PlatformFamily=="MachOApple","Linux"=>executable.PlatformFamily is "LinuxABI" or "ELFUnix",_=>false};
+        if(!platformMatches || !executable.Architectures.Contains(profile.Architecture)) throw new InvalidOperationException("Runner architecture/platform differs from the verified profile.");
     }
 
     public static void Restore(string target)

@@ -10,6 +10,7 @@ public static class SourceInstaller
         string backup = target + ".routekeeper-original";
         string original = File.Exists(backup) ? backup : target;
         var profile = CompatibilityRegistry.RequireVerified(BuildInspector.Inspect(original), registry, platform, architecture);
+        SafeInstaller.ValidateRunner(target,profile);
         string candidate = target + ".routekeeper-candidate-" + Guid.NewGuid().ToString("N");
         try
         {
