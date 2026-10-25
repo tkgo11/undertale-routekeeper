@@ -16,8 +16,15 @@ if (!$AttestSeparateWindowsAccount -or !$AttestSteamOfflineAndCloudDisabled) {
     throw 'Explicit separate-account and Steam offline/Cloud-disabled attestations are required.'
 }
 $expectedUser=if ($Case -eq 'original') { 'RKTestOriginal' } else { 'RKTestPatched' }
-if ($env:USERNAME -cne $expectedUser) {
+$actualUser=([Security.Principal.WindowsIdentity]::GetCurrent().Name -split '\\')[-1]
+if ($actualUser -cne $expectedUser -or $env:USERNAME -cne $expectedUser) {
     throw "Log in interactively as $expectedUser. Do not run against a personal Windows profile."
+}
+$actualHome=[Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+$actualLocal=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
+if (-not $env:USERPROFILE.Equals($actualHome,[StringComparison]::OrdinalIgnoreCase) -or
+    -not $env:LOCALAPPDATA.Equals($actualLocal,[StringComparison]::OrdinalIgnoreCase)) {
+    throw 'Untrusted USERPROFILE/LOCALAPPDATA environment override refused.'
 }
 if ($env:USERNAME -eq 'WDAGUtilityAccount') { throw 'Use the non-Sandbox test account.' }
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
