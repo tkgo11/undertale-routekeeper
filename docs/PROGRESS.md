@@ -123,7 +123,8 @@ The pixel UI/Galmuri14 style is unchanged; only string coverage was regenerated.
 
 1. Extend golden audits beyond the extracted conditional slices into more original
    event interactions, including encounter suppression and optional calendar/event
-   battles after friendship. Current fixtures do not enumerate all gameplay traces.
+   battles after friendship, and compound LV1/Exile EXP/kill feasibility. Scalar
+   condition matching is not a complete encounter-path reachability proof.
 2. Expand the offline scheduler beyond warning/modal/rating boundary models to
    actual alarm, Draw, collision and save/reload event interactions. It is not a VM.
 3. Audit remaining scripted automatic resolutions before adding Forced guarantees.

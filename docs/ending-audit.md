@@ -54,7 +54,9 @@ compares the pinned evidence to authentic data during patch validation. Audit
 assertions and shared-source parity tests serve different purposes. This is not a
 GameMaker VM, path explorer or proof of every reachable event combination.
 
-Remaining independent work: more optional post-friendship encounters, alarm/Draw/
+Remaining independent work: full EXP/kill encounter-path feasibility for compound
+goals (including LV1 with an Exile kill minimum), more optional post-friendship
+encounters, alarm/Draw/
 collision interactions and scripted outcomes outside the audited EX boundary.
 Runtime-only uncertainty: startup, real controller input, battle timing, saves,
 RESET/cloud effects and actual final playback. Keep InspectedOnly and Draft.
