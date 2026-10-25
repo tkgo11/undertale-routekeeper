@@ -7,6 +7,7 @@
     <Project Path="src/RouteKeeper.Tool/RouteKeeper.Tool.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/RouteKeeper.Audit.Tests/RouteKeeper.Audit.Tests.csproj" />
     <Project Path="tests/RouteKeeper.Core.Tests/RouteKeeper.Core.Tests.csproj" />
     <Project Path="tests/RouteKeeper.Decisions.Tests/RouteKeeper.Decisions.Tests.csproj" />
     <Project Path="tests/RouteKeeper.History.Tests/RouteKeeper.History.Tests.csproj" />

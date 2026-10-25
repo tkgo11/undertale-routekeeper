@@ -56,4 +56,5 @@ if (argument0 == "warn_16") { if (argument1 == 1) return "처음 방어구는 �
 if (argument0 == "warn_17") { if (argument1 == 1) return "이 전투 결과로 LV가 1을 넘을 수 있습니다."; return "This battle outcome may raise LV above 1."; }
 if (argument0 == "warn_18") { if (argument1 == 1) return "이 통화 조건에서는 몬스터를 죽이면 안 됩니다."; return "This call requires defeating no monsters."; }
 if (argument0 == "warn_19") { if (argument1 == 1) return "이 길로 가면 목표한 뉴트럴 엔딩에서 멀어집니다."; return "This path leads away from your Neutral ending."; }
+if (argument0 == "warn_20") { if (argument1 == 1) return "다음 자동 결과는 처치해야 할 상대를 살려 줍니다."; return "The next scripted outcome spares a required opponent."; }
 return "";

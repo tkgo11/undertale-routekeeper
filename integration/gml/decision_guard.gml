@@ -32,7 +32,11 @@ if (family == 2 && variable_global_exists("rk_neutral_friendship_min")) {
         friendship_pending = 1;
 }
 if (action == 7 && family == 2) friendship_pending = ((global.rk_target_neutral == 2 || global.rk_target_neutral == 3) && global.flag[389] == 0);
-if (action >= 8) {
+if (action == 12) {
+    enemy = scr_routekeeper_decision_enemy(slot);
+    if (family == 2 && enemy == 4) neutral_outcome = scr_routekeeper_neutral_protect(4);
+    risk = scr_routekeeper_decision_risk(family,12,enemy,0,0,0,0,0,0,neutral_outcome,0,0,0,0,0,0);
+} else if (action >= 8) {
     risk = scr_routekeeper_greeting_pending_risk(action, slot, 0, 0);
 } else if (action >= 1 && action <= 3) {
     first_slot = slot; last_slot = slot;

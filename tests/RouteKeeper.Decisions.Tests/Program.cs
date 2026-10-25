@@ -11,7 +11,7 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
+var adapterSources=new Dictionary<string,string>{{"decision_rating_resolution.gml",DecisionPolicy.EmitRatingResolutionGml()},{"decision_ratings.gml",DecisionPolicy.EmitRatingsGml()},{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
@@ -164,7 +164,7 @@ Check("12000 emitted call-policy decisions agree with C#",true);
 // Execute the actual generated native warning transaction after every event.
 var sessionRandom=new Random(20261027);var warning=new WarningState();
 for(int sample=0;sample<20000;sample++){
-    var command=(WarningEvent)sessionRandom.Next(1,4);var mode=(DecisionMode)sessionRandom.Next(4);int code=1+sessionRandom.Next(19);
+    var command=(WarningEvent)sessionRandom.Next(1,4);var mode=(DecisionMode)sessionRandom.Next(4);int code=1+sessionRandom.Next(20);
     string context="room"+sessionRandom.Next(3)+":target"+sessionRandom.Next(9);bool enforceable=sessionRandom.Next(5)!=0;
     var prefix=$"global.rk_mode = {(int)mode}; global.rk_warning_pending = {(warning.Pending?1:0)}; global.rk_warning_ack = {(warning.Acknowledged?1:0)}; global.rk_warning_code = {warning.Code}; global.rk_decision_context = {System.Text.Json.JsonSerializer.Serialize(warning.Context)}; global.rk_warning_enforced = {(warning.Enforced?1:0)}; global.rk_warning_mode = {(int)warning.Mode}; argument0 = {(int)command}; argument1 = {code}; argument2 = {System.Text.Json.JsonSerializer.Serialize(context)}; argument3 = {(enforceable?1:0)};\n";
     var vm=new GmlObjectiveInterpreter(prefix+WarningSession.EmitGml(),new Dictionary<string,int?>());bool refused=vm.Run()=="1";
@@ -230,4 +230,9 @@ foreach(bool previous in new[]{false,true})foreach(bool held in new[]{false,true
     if((!sameDevice||previous)&&pressed)throw new Exception("Phantom pad edge");
 }
 Check("Pad hot-plug/rebind never synthesizes a held press",true);
+foreach(var mode in Enum.GetValues<DecisionMode>())foreach(bool refusal in new[]{false,true}) {
+    var prefix=$"argument0 = {(int)mode}; argument1 = {(refusal?1:0)}; ";
+    if(int.Parse(new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitRatingResolutionGml(),new Dictionary<string,int?>()).Run())!=DecisionPolicy.RatingResolution(mode,refusal))throw new Exception("Rating disposition source mismatch");
+}
+Check("Scripted outcome dispositions preserve original and nonlethal attack paths",true);
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

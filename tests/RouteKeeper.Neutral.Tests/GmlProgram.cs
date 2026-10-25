@@ -47,9 +47,10 @@ internal sealed class GmlProgram
     }
     int Compare()
     {
-        var left=Atom();if(!(Is("==")||Is("!=")||Is("<")||Is(">")||Is("<=")||Is(">=")))return left;
-        var op=Next();var right=Atom();return (op switch {"=="=>left==right,"!="=>left!=right,"<"=>left<right,">"=>left>right,"<="=>left<=right,">="=>left>=right,_=>false})?1:0;
+        var left=Sum();if(!(Is("==")||Is("!=")||Is("<")||Is(">")||Is("<=")||Is(">=")))return left;
+        var op=Next();var right=Sum();return (op switch {"=="=>left==right,"!="=>left!=right,"<"=>left<right,">"=>left>right,"<="=>left<=right,">="=>left>=right,_=>false})?1:0;
     }
+    int Sum() { var value=Atom();while(Is("+")){Next();value+=Atom();}return value; }
     int Atom()
     {
         if(Is("(")){Next();var value=Expression();Need(")");return value;}

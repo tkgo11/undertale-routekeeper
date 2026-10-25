@@ -11,6 +11,7 @@ using UndertaleModLib.Decompiler;
 public static class RoutekeeperHooks
 {
     private static readonly Dictionary<string,string> SourceHashes = new() {
+        ["gml_Object_obj_mettatonex_Step_0"] = "843f6dd4a31890def173acbde96217a42e230cfec089a0530664097f960df754",
         ["gml_Object_obj_overworldcontroller_Draw_0"] = "1dbd8a96e08f3358cc186fd5afda9efb27c2e1dbd1fb96902b36789cf7f488d0",
         ["gml_Object_obj_undynedate_outside_Step_0"] = "dc5dddc4aad73e467846ef84f1d32404ea9a30352d86c5a40b6652ded8a0bccc",
         ["gml_Object_obj_mainchara_Step_0"] = "f1acba1402db35f806153bf8d0ecf94908d209258a891291fed55daf648740e5",
@@ -80,6 +81,11 @@ public static class RoutekeeperHooks
         worldSource=ReplaceOne(worldSource,"                global.menuno = 9;\n                dontthrow = 0;",
             "                if (scr_routekeeper_decision_guard(10, global.item[global.menucoord[1]])) { control_clear(0); exit; }\n                global.menuno = 9;\n                dontthrow = 0;");
         import.QueueReplace(world,worldSource); changed.Add(world);
+        const string ratings = "gml_Object_obj_mettatonex_Step_0";
+        var ratingsSource=Source(ratings);
+        ratingsSource=ReplaceOne(ratingsSource,"        if (qualify == 0)",
+            "        if (qualify == 1) { var rk_rating_resolution; rk_rating_resolution = scr_routekeeper_decision_rating_resolution(global.rk_mode, scr_routekeeper_decision_guard(12, id)); if (rk_rating_resolution == 1) exit; if (rk_rating_resolution == 2) qualify = 0; }\n        if (qualify == 0)");
+        import.QueueReplace(ratings,ratingsSource); changed.Add(ratings);
         const string friendship = "gml_Object_obj_undynedate_outside_Step_0";
         string friendSource = Source(friendship);
         friendSource = ReplaceOne(friendSource,"        global.facing = 2;\n        global.interact = 1;\n        con = 6;",
@@ -97,7 +103,7 @@ public static class RoutekeeperHooks
             import.QueueReplace(pair.Key,pair.Value+"\n"+Source(pair.Key));
             changed.Add(pair.Key);
         }
-        foreach(string name in SourceHashes.Keys.Where(n=>n!=battle && n!=friendship && n!=world && !encounterPrefixes.ContainsKey(n))) {
+        foreach(string name in SourceHashes.Keys.Where(n=>n!=battle && n!=friendship && n!=world && n!=ratings && !encounterPrefixes.ContainsKey(n))) {
             string source=Source(name);
             // Door collision dispatch is before interaction lock, fader and alarm mutation.
             import.QueueReplace(name,"if (scr_routekeeper_decision_guard(4, id)) { with (obj_mainchara) { x = xprevious; y = yprevious; } exit; }\n"+source);

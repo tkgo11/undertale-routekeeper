@@ -676,6 +676,66 @@
       "Markers": [
         "room_goto(room_truelab_elevatorinside)"
       ]
+    },
+    {
+      "Resource": "gml_Object_obj_nicesnowman_Alarm_0",
+      "DecompilerSha256": "eee2d91850ae266a666a7af4743ecd81eddb5d7a9155c0e5b839580a6dd2d0d0",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_asgore_finalintro_Create_0",
+      "DecompilerSha256": "092699548e23f2eb4e9329914a9335f46c01028b0bafc9258534f0bd073df8f5",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mainchara_Step_0",
+      "DecompilerSha256": "f1acba1402db35f806153bf8d0ecf94908d209258a891291fed55daf648740e5",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_monsterdefeat",
+      "DecompilerSha256": "23751692164870453a16f490e266cb1e746a4145ff94486aa60c8ce1822b73e6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battler_Create_0",
+      "DecompilerSha256": "b087278a594a59f3a28b3cef7886d92328bcee1952b6faccf0b24ffa5144145e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Destroy_0",
+      "DecompilerSha256": "0df185740193f1a5e5090411bb86144024502f80757bb6131f2d7364d7adadf9",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_papyrusboss_Alarm_10",
+      "DecompilerSha256": "d89223d0ff483cc56127557cdf3218c20b370b814a29c82050791fb59b4ce592",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Alarm_6",
+      "DecompilerSha256": "706e1b5d1aa167687b8a25c078763174277b3f7abe972e86a724ca31083c2fa8",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_lesserdoge_Other_5",
+      "DecompilerSha256": "45b6b601c3e4a9f8ca4e8e5374a5b1b9208e12f9d49d40be7d372e2345358825",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_intromenu_Create_0",
+      "DecompilerSha256": "364c7179692eff51a27e955856b9f7c9abfafb9d5dc1b09a739cd72b9c2a1ce0",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_truechara_Step_0",
+      "DecompilerSha256": "99b4561d723a22133f3ce1d5f71b0eeecf5340f9d1a49519983a6a9822c1b11a",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_storagecheck",
+      "DecompilerSha256": "3f6ddbf2165c013f32dc1d034e8680af9cbd4a66b3b4ae44faa7acbf05ac952e",
+      "Markers": []
     }
   ],
   "RequiredRooms": [

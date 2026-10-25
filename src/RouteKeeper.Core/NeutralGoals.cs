@@ -29,14 +29,14 @@ public static class NeutralGoals
     private static GreetingRequirement Alive(string who)=>R("neutral_"+who+"_dead",0,"Keep the required characters alive.","필요한 인물을 살려 주세요.",true);
     private static readonly int[] All=Enumerable.Range(0,19).ToArray();
     private static readonly int[] WithPapyrus=[0,1,2,3,4,5,6,8,10,12,14];
-    private static readonly GreetingRequirement[] Greeting=[Alive("papyrus"),R("murder_level",11,"Keep the earlier regional route.","앞선 지역 경로를 유지하세요.",true,comparison:Comparison.AtMost)];
+    private static readonly GreetingRequirement[] Greeting=[Alive("papyrus")];
     private static GreetingRequirement[] Join(params GreetingRequirement[] extra)=>Greeting.Concat(extra).ToArray();
     public static IReadOnlyList<NeutralGreetingGoal> Goals {get;}=new NeutralGreetingGoal[] {
         new(0,"No extra goal","추가 목표 없음",All,[]),
-        new(1,"Friend's call","친구의 전화",[0,1],[Alive("toriel"),Alive("papyrus"),Alive("undyne"),Alive("mettaton"),R("kills",0,"Do not defeat any monsters.","몬스터를 죽이지 마세요.",true),R("neutral_undyne_friendship",4,"Finish the warrior's friendship.","전사와 우정을 쌓으세요.",comparison:Comparison.AtLeast),R("neutral_alphys_friendship",10,"Finish the letter and date, but do not enter the hidden lab.","편지와 데이트를 마치되 숨겨진 연구소에는 들어가지 마세요.",comparison:Comparison.AtLeast)]),
-        new(2,"Exile / robot spared","추방 / 로봇 생존",[0,6,7,8,9],[Alive("toriel"),Alive("mettaton"),new([new(Min("kills",10)),new(Eq("neutral_papyrus_dead",1)),new(Eq("neutral_undyne_dead",1))],"Reach the chosen exile outcome.","선택한 추방 결말의 조건을 채우세요.")]),
-        new(3,"Exile / robot defeated","추방 / 로봇 처치",[0,6,7,8,9],[R("murder_level",11,"Keep the earlier regional route.","앞선 지역 경로를 유지하세요.",true,comparison:Comparison.AtMost),Alive("toriel"),R("neutral_mettaton_dead",1,"Defeat the robot before the last battle.","마지막 전투 전에 로봇을 쓰러뜨리세요.",deadline:"mettaton_resolved"),new([new(Min("kills",10)),new(Eq("neutral_papyrus_dead",1)),new(Eq("neutral_undyne_dead",1))],"Reach the chosen exile outcome.","선택한 추방 결말의 조건을 채우세요.")]),
-        new(4,"Carry a keepsake","기념품 소지",WithPapyrus,Join(R("snowman_piece_carried",1,"Carry a snowy keepsake in your inventory for the call.","통화할 때 눈으로 된 기념품을 소지하세요."))),
+        new(1,"Friend's call","친구의 전화",[0,1],[Alive("toriel"),Alive("papyrus"),Alive("undyne"),Alive("mettaton"),R("water_opportunity_missed",0,"Help the fallen warrior before leaving.","떠나기 전에 쓰러진 전사를 도와주세요.",true),R("kills",0,"Do not defeat any monsters.","몬스터를 죽이지 마세요.",true),R("neutral_undyne_friendship",4,"Finish the warrior's friendship.","전사와 우정을 쌓으세요.",comparison:Comparison.AtLeast),R("neutral_alphys_friendship",10,"Finish the letter and date, but do not enter the hidden lab.","편지와 데이트를 마치되 숨겨진 연구소에는 들어가지 마세요.",comparison:Comparison.AtLeast)]),
+        new(2,"Exile / robot spared","추방 / 로봇 생존",[0,6,7],[Alive("toriel"),Alive("undyne"),Alive("mettaton"),new([new(Min("kills",10)),new(Eq("neutral_papyrus_dead",1)),new(Eq("neutral_undyne_dead",1))],"Reach the chosen exile outcome.","선택한 추방 결말의 조건을 채우세요.")]),
+        new(3,"Exile / robot defeated","추방 / 로봇 처치",[0,6,7],[R("murder_level",11,"Keep the earlier regional route.","앞선 지역 경로를 유지하세요.",true,comparison:Comparison.AtMost),Alive("toriel"),Alive("undyne"),R("neutral_mettaton_dead",1,"Defeat the robot before the last battle.","마지막 전투 전에 로봇을 쓰러뜨리세요.",deadline:"mettaton_resolved"),new([new(Min("kills",10)),new(Eq("neutral_papyrus_dead",1)),new(Eq("neutral_undyne_dead",1))],"Reach the chosen exile outcome.","선택한 추방 결말의 조건을 채우세요.")]),
+        new(4,"Carry a keepsake","기념품 소지",WithPapyrus,Join(R("snowman_piece_carried",1,"Carry a snowy keepsake in your inventory for the call.","통화할 때 눈으로 된 기념품을 소지하세요."),R("keepsake_recoverable",1,"No carried, stored or obtainable keepsake remains in this run.","이번 회차에 소지·보관·획득 가능한 기념품이 남아 있지 않습니다.",true))),
         new(5,"Never SAVE","SAVE 없이 진행",WithPapyrus,Join(R("save_exists",0,"Continue without writing a SAVE.","SAVE를 하지 않고 진행하세요.",true))),
         new(6,"Keep starting armor","처음 방어구 유지",WithPapyrus,Join(R("equipped_armor",4,"Keep your starting armor equipped.","처음 방어구를 계속 착용하세요.",true))),
         new(7,"No healing items","회복 아이템 없이",WithPapyrus,Join(R("healing_items_used",0,"Avoid healing items, even at full HP.","HP가 가득 차 있어도 회복 아이템을 쓰지 마세요.",true))),
@@ -56,6 +56,7 @@ public static class NeutralGoals
             if(r.Permanent||r.Deadline is string d&&state[d]==1)blocked.Add(objective);
             else {actions.Add(objective);if(r.Deadline is string deadline&&state[deadline] is null)unknown=true;}
         }
+        if(id==4 && blocked.Count==0 && state["snowman_piece_carried"]==0 && actions.Count>0) actions[0]=new("greeting",KeepsakeGuidance.Plan(state,language));
         var status=blocked.Count>0?RouteStatus.BLOCKED:unknown?RouteStatus.UNKNOWN:actions.Count>0?RouteStatus.ACTION_REQUIRED:RouteStatus.ON_TRACK;
         if(status==RouteStatus.UNKNOWN && actions.Count==0) actions.Add(new("greeting",language==Language.Korean?"아직 통화 조건을 확인할 수 없습니다.":"The call condition is not clear yet."));
         return new(status,blocked.Count>0?blocked:actions,[],true);
@@ -95,14 +96,15 @@ public static class NeutralGoals
             }
             s.Append("}\n");
         }
+        s.Append(KeepsakeGuidance.EmitGml());
         s.Append("if (gg_action) global.rk_greeting_status = 1;\nif (gg_unknown) global.rk_greeting_status = 4;\nif (gg_blocked) global.rk_greeting_status = 3;\n");
         if(standalone)s.Append("return global.rk_greeting_status;\n");
         return s.ToString();
     }
     public static int BossOutcome(int goal,int enemy)=>goal switch {
         1 when enemy is >=1 and <=4=>1,
-        2 when enemy is 1 or 4=>1,
-        3 when enemy==1=>1,3 when enemy==4=>-1,
+        2 when enemy is 1 or 3 or 4=>1,
+        3 when enemy is 1 or 3=>1,3 when enemy==4=>-1,
         >=4 and <=8 when enemy==2=>1,_=>0};
     public static string EmitProtection()
     {

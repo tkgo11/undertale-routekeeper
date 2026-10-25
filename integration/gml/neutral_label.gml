@@ -15,7 +15,7 @@ if (argument0 == 12) { if (argument1 == 1) return "메타톤: 파피루스 생�
 if (argument0 == 13) { if (argument1 == 1) return "메타톤: 파피루스 사망"; return "Mettaton: Papyrus dead"; }
 if (argument0 == 14) { if (argument1 == 1) return "파피루스"; return "Papyrus"; }
 if (argument0 == 15) { if (argument1 == 1) return "개: 보스 네 명만 처치"; return "Dog: only four bosses killed"; }
-if (argument0 == 16) { if (argument1 == 1) return "지도자 없음: 20킬 미만"; return "Leaderless: fewer than 20 kills"; }
-if (argument0 == 17) { if (argument1 == 1) return "지도자 없음: 20킬 이상"; return "Leaderless: 20 or more kills"; }
+if (argument0 == 16) { if (argument1 == 1) return "지도자 없음: 총 20킬 미만"; return "Leaderless: total below 20"; }
+if (argument0 == 17) { if (argument1 == 1) return "지도자 없음: 총 20킬 이상"; return "Leaderless: total 20+"; }
 if (argument0 == 18) { if (argument1 == 1) return "알피스: 후반 몰살 중단"; return "Alphys: aborted late Genocide"; }
 return "Unknown target";

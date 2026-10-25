@@ -29,6 +29,16 @@ global.rk_snowman_piece_carried = 0;
 for (var rk_item_slot = 0; rk_item_slot < 8; rk_item_slot += 1) {
     if (global.item[rk_item_slot] == 16) global.rk_snowman_piece_carried = 1;
 }
+global.rk_snowman_piece_stored = 0;
+for (rk_item_slot = 0; rk_item_slot < 11; rk_item_slot += 1) {
+    if (global.flag[300 + rk_item_slot] == 16 || global.flag[312 + rk_item_slot] == 16) global.rk_snowman_piece_stored = 1;
+}
+global.rk_inventory_space = 0;
+for (rk_item_slot = 0; rk_item_slot < 8; rk_item_slot += 1) if (global.item[rk_item_slot] == 0) global.rk_inventory_space = 1;
+global.rk_snowman_piece_available = 0;
+if (scr_murderlv() >= 2) { if (global.flag[253] < 3) global.rk_snowman_piece_available = 1; }
+else if (global.flag[7] == 0 && (global.flag[56] == 0 || (global.flag[56] == 1 && !global.rk_snowman_piece_carried && !global.rk_snowman_piece_stored))) global.rk_snowman_piece_available = 1;
+global.rk_keepsake_recoverable = (global.rk_snowman_piece_carried || global.rk_snowman_piece_stored || global.rk_snowman_piece_available);
 global.rk_save_exists = ossafe_file_exists("file0");
 global.rk_equipped_armor = global.armor;
 global.rk_healing_items_used = global.flag[260];

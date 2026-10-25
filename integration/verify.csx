@@ -69,6 +69,10 @@ int[] EffectIds(string marker) => cases.Select((m,i)=>new{Id=int.Parse(m.Groups[
 int[] EmittedIds(string name) => System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(Path.Combine(folder,"gml",name+".gml")),@"argument0 == (\d+)").Cast<System.Text.RegularExpressions.Match>().Select(m=>int.Parse(m.Groups[1].Value)).OrderBy(i=>i).ToArray();
 Check(EffectIds("scr_recoitem").SequenceEqual(EmittedIds("greeting_healing")),"all healing-item cases match authentic effects");
 Check(EffectIds("scr_armoreq").SequenceEqual(EmittedIds("greeting_armor")),"all armor-item cases match authentic effects");
+var automatic=Get("gml_Object_obj_mettatonex_Step_0");
+Check(automatic.Contains("scr_routekeeper_decision_guard(12") && automatic.IndexOf("scr_routekeeper_decision_guard(12",StringComparison.Ordinal)<automatic.IndexOf("con = 90;",StringComparison.Ordinal),"rating outcome hook precedes scripted finale");
+Check(automatic.Contains("global.ratings >= 10000") && automatic.Contains("global.ratings >= 12000"),"original rating thresholds retained");
+Check(step.Contains("global.rk_warning_code == 20"),"scripted turn-boundary warning not cleared as an ordinary battle warning");
 var draw=Get("gml_Object_obj_routekeeper_Draw_64");
 Check(draw.Contains("scr_routekeeper_ui_option") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
 foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})

@@ -10,7 +10,7 @@ if ((global.rk_warning_pending || global.rk_warning_ack) && (!global.rk_state_re
 // An advisory panel must disappear once another action starts a timed battle turn.
 if ((global.rk_warning_pending || global.rk_warning_ack) && instance_exists(obj_battlecontroller)
     && variable_global_exists("mnfight") && variable_global_exists("myfight")) {
-    if (global.mnfight != 0 || global.myfight != 0) { scr_routekeeper_warning_session(3, 0, "", 0); }
+    if ((global.mnfight != 0 || global.myfight != 0) && !(global.rk_warning_code == 20 && instance_exists(obj_mettatonex) && obj_mettatonex.talked == 0 && global.mnfight == 1)) { scr_routekeeper_warning_session(3, 0, "", 0); }
 }
 if (global.rk_warning_pending && global.rk_warning_code == 2 && global.rk_water_opportunity_active == 0) {
     scr_routekeeper_warning_session(3, 0, "", 0);

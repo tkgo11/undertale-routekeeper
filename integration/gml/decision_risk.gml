@@ -1,5 +1,6 @@
 // Generated from DecisionPolicy. Source-level policy, not runtime certification.
 // args: family,action,enemy,xpRisk,ruins,snowdin,waterfall,hotland,waterPending,neutralOutcome,killCap,requiredEncounter,epilogueMismatch,regionalPrerequisitesMissing,neutralFriendshipPending,lastSnowdrakeOpportunity.
+if (argument0 == 2 && argument1 == 12 && argument9 == -1) return 20;
 if (argument0 == 2 && argument1 == 7 && argument14 == 1) return 12;
 if (argument0 == 1 && argument1 == 1 && argument3 == 1 && argument15 == 1) return 11;
 if (argument0 == 2 && argument1 == 1 && argument3 == 1 && argument14 == 1) return 10;

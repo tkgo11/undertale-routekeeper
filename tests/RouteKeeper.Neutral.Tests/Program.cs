@@ -31,7 +31,7 @@ GameState State(int t=0,int p=0,int u=0,int m=0,int kills=0,int friendship=0,int
     ["neutral_toriel_dead"]=t,["neutral_papyrus_dead"]=p,["neutral_undyne_dead"]=u,["neutral_mettaton_dead"]=m,
     ["kills"]=kills,["neutral_undyne_friendship"]=friendship,["neutral_alphys_friendship"]=0,["murder_level"]=stage,
     ["toriel_resolved"]=1,["papyrus_resolved"]=1,["undyne_resolved"]=1,["mettaton_resolved"]=1,
-    ["true_lab_completed"]=0,["hard_mode"]=0,["world_erased"]=0,["water_opportunity_missed"]=0,["language"]=0
+    ["true_lab_completed"]=0,["hard_mode"]=0,["world_erased"]=0,["water_opportunity_missed"]=0,["language"]=0,["keepsake_recoverable"]=1
 });
 GameState With(GameState s,string key,int? value)=>new(new Dictionary<string,int?>(s.Facts){[key]=value});
 var fixtures=new (NeutralEnding Ending,GameState State)[]
@@ -134,7 +134,7 @@ Check("Call-goal boss protections reflect required outcomes",()=>{
 });
 Check("Every selectable goal has an achievable declared fixture",()=>{
     for(int goal=1;goal<=8;goal++){
-        var s=With(With(With(With(With(State(friendship:4),"level",1),"equipped_armor",4),"healing_items_used",0),"save_exists",0),"snowman_piece_carried",1);
+        var s=With(With(With(With(With(With(State(friendship:4),"level",1),"equipped_armor",4),"healing_items_used",0),"save_exists",0),"snowman_piece_carried",1),"keepsake_recoverable",1);
         s=With(s,"neutral_alphys_friendship",10);
         if(goal==2)s=With(s,"kills",10);
         if(goal==3){s=With(s,"kills",10);s=With(s,"neutral_mettaton_dead",1);}

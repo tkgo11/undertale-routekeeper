@@ -1,5 +1,5 @@
 // Generated from NeutralCatalog target table and evaluation policy.
-var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matched, total;
+var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matched, total, reserved;
 nt = global.rk_target_neutral; blocked = 0; unknown = 0; action = 0;
 k = global.rk_kills; stage = global.rk_murder_level; friend = global.rk_neutral_undyne_friendship;
 min_kills = 0; max_kills = -1; matched = 0; total = 0;
@@ -568,6 +568,10 @@ if (((global.rk_neutral_mettaton_dead >= 0 && global.rk_neutral_mettaton_dead <=
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
+if (((global.rk_water_opportunity_missed >= 0 && global.rk_water_opportunity_missed <= 1 && global.rk_water_opportunity_missed == 0))) { } else if (((global.rk_water_opportunity_missed >= 0 && global.rk_water_opportunity_missed <= 1 && global.rk_water_opportunity_missed != 0))) {
+if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Help the fallen warrior before leaving."; if (global.rk_language == 1) global.rk_greeting_text = "떠나기 전에 쓰러진 전사를 도와주세요."; }
+if (1) gg_blocked = 1; else gg_action = 1;
+} else gg_unknown = 1;
 if (((global.rk_kills >= 0 && global.rk_kills <= 2147483647 && global.rk_kills == 0))) { } else if (((global.rk_kills >= 0 && global.rk_kills <= 2147483647 && global.rk_kills != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Do not defeat any monsters."; if (global.rk_language == 1) global.rk_greeting_text = "몬스터를 죽이지 마세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
@@ -582,8 +586,12 @@ if (0) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 }
 if (global.rk_target_greeting == 2) {
-if (global.rk_target_neutral != 0 && global.rk_target_neutral != 6 && global.rk_target_neutral != 7 && global.rk_target_neutral != 8 && global.rk_target_neutral != 9) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
+if (global.rk_target_neutral != 0 && global.rk_target_neutral != 6 && global.rk_target_neutral != 7) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
 if (((global.rk_neutral_toriel_dead >= 0 && global.rk_neutral_toriel_dead <= 1 && global.rk_neutral_toriel_dead == 0))) { } else if (((global.rk_neutral_toriel_dead >= 0 && global.rk_neutral_toriel_dead <= 1 && global.rk_neutral_toriel_dead != 0))) {
+if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
+if (1) gg_blocked = 1; else gg_action = 1;
+} else gg_unknown = 1;
+if (((global.rk_neutral_undyne_dead >= 0 && global.rk_neutral_undyne_dead <= 1 && global.rk_neutral_undyne_dead == 0))) { } else if (((global.rk_neutral_undyne_dead >= 0 && global.rk_neutral_undyne_dead <= 1 && global.rk_neutral_undyne_dead != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
@@ -597,12 +605,16 @@ if (0) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 }
 if (global.rk_target_greeting == 3) {
-if (global.rk_target_neutral != 0 && global.rk_target_neutral != 6 && global.rk_target_neutral != 7 && global.rk_target_neutral != 8 && global.rk_target_neutral != 9) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
+if (global.rk_target_neutral != 0 && global.rk_target_neutral != 6 && global.rk_target_neutral != 7) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
 if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 if (((global.rk_neutral_toriel_dead >= 0 && global.rk_neutral_toriel_dead <= 1 && global.rk_neutral_toriel_dead == 0))) { } else if (((global.rk_neutral_toriel_dead >= 0 && global.rk_neutral_toriel_dead <= 1 && global.rk_neutral_toriel_dead != 0))) {
+if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
+if (1) gg_blocked = 1; else gg_action = 1;
+} else gg_unknown = 1;
+if (((global.rk_neutral_undyne_dead >= 0 && global.rk_neutral_undyne_dead <= 1 && global.rk_neutral_undyne_dead == 0))) { } else if (((global.rk_neutral_undyne_dead >= 0 && global.rk_neutral_undyne_dead <= 1 && global.rk_neutral_undyne_dead != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
@@ -622,23 +634,19 @@ if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
-if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
-if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
-if (1) gg_blocked = 1; else gg_action = 1;
-} else gg_unknown = 1;
 if (((global.rk_snowman_piece_carried >= 0 && global.rk_snowman_piece_carried <= 1 && global.rk_snowman_piece_carried == 1))) { } else if (((global.rk_snowman_piece_carried >= 0 && global.rk_snowman_piece_carried <= 1 && global.rk_snowman_piece_carried != 1))) {
 if ((0) && gg_blocked == 0 || (0) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Carry a snowy keepsake in your inventory for the call."; if (global.rk_language == 1) global.rk_greeting_text = "통화할 때 눈으로 된 기념품을 소지하세요."; }
 if (0) gg_blocked = 1; else gg_action = 1;
+} else gg_unknown = 1;
+if (((global.rk_keepsake_recoverable >= 0 && global.rk_keepsake_recoverable <= 1 && global.rk_keepsake_recoverable == 1))) { } else if (((global.rk_keepsake_recoverable >= 0 && global.rk_keepsake_recoverable <= 1 && global.rk_keepsake_recoverable != 1))) {
+if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "No carried, stored or obtainable keepsake remains in this run."; if (global.rk_language == 1) global.rk_greeting_text = "이번 회차에 소지·보관·획득 가능한 기념품이 남아 있지 않습니다."; }
+if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 }
 if (global.rk_target_greeting == 5) {
 if (global.rk_target_neutral != 0 && global.rk_target_neutral != 1 && global.rk_target_neutral != 2 && global.rk_target_neutral != 3 && global.rk_target_neutral != 4 && global.rk_target_neutral != 5 && global.rk_target_neutral != 6 && global.rk_target_neutral != 8 && global.rk_target_neutral != 10 && global.rk_target_neutral != 12 && global.rk_target_neutral != 14) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
 if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1 && global.rk_neutral_papyrus_dead == 0))) { } else if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1 && global.rk_neutral_papyrus_dead != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
-if (1) gg_blocked = 1; else gg_action = 1;
-} else gg_unknown = 1;
-if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
-if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 if (((global.rk_save_exists >= 0 && global.rk_save_exists <= 1 && global.rk_save_exists == 0))) { } else if (((global.rk_save_exists >= 0 && global.rk_save_exists <= 1 && global.rk_save_exists != 0))) {
@@ -652,10 +660,6 @@ if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
-if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
-if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
-if (1) gg_blocked = 1; else gg_action = 1;
-} else gg_unknown = 1;
 if (((global.rk_equipped_armor >= 0 && global.rk_equipped_armor <= 2147483647 && global.rk_equipped_armor == 4))) { } else if (((global.rk_equipped_armor >= 0 && global.rk_equipped_armor <= 2147483647 && global.rk_equipped_armor != 4))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep your starting armor equipped."; if (global.rk_language == 1) global.rk_greeting_text = "처음 방어구를 계속 착용하세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
@@ -667,10 +671,6 @@ if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
-if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
-if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
-if (1) gg_blocked = 1; else gg_action = 1;
-} else gg_unknown = 1;
 if (((global.rk_healing_items_used >= 0 && global.rk_healing_items_used <= 2147483647 && global.rk_healing_items_used == 0))) { } else if (((global.rk_healing_items_used >= 0 && global.rk_healing_items_used <= 2147483647 && global.rk_healing_items_used != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Avoid healing items, even at full HP."; if (global.rk_language == 1) global.rk_greeting_text = "HP가 가득 차 있어도 회복 아이템을 쓰지 마세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
@@ -680,10 +680,6 @@ if (global.rk_target_greeting == 8) {
 if (global.rk_target_neutral != 0 && global.rk_target_neutral != 1 && global.rk_target_neutral != 2 && global.rk_target_neutral != 4 && global.rk_target_neutral != 6) { gg_blocked = 1; global.rk_greeting_text = "Choose a compatible ending type for this call condition."; if (global.rk_language == 1) global.rk_greeting_text = "이 통화 조건과 맞는 결말 유형을 선택하세요."; }
 if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1 && global.rk_neutral_papyrus_dead == 0))) { } else if (((global.rk_neutral_papyrus_dead >= 0 && global.rk_neutral_papyrus_dead <= 1 && global.rk_neutral_papyrus_dead != 0))) {
 if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the required characters alive."; if (global.rk_language == 1) global.rk_greeting_text = "필요한 인물을 살려 주세요."; }
-if (1) gg_blocked = 1; else gg_action = 1;
-} else gg_unknown = 1;
-if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level <= 11))) { } else if (((global.rk_murder_level >= 0 && global.rk_murder_level <= 16 && global.rk_murder_level > 11))) {
-if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { global.rk_greeting_text = "Keep the earlier regional route."; if (global.rk_language == 1) global.rk_greeting_text = "앞선 지역 경로를 유지하세요."; }
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 if (((global.rk_healing_items_used >= 0 && global.rk_healing_items_used <= 2147483647 && global.rk_healing_items_used == 0))) { } else if (((global.rk_healing_items_used >= 0 && global.rk_healing_items_used <= 2147483647 && global.rk_healing_items_used != 0))) {
@@ -699,16 +695,28 @@ if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { g
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 }
+// Generated source-backed keepsake acquisition/retrieval objectives.
+if (global.rk_target_greeting == 4 && global.rk_snowman_piece_carried == 0 && gg_blocked == 0) {
+if (global.rk_snowman_piece_available == 1) { global.rk_greeting_text = "Return to the snow figure in the forest and ask for a piece."; if (global.rk_language == 1) global.rk_greeting_text = "숲의 눈으로 된 친구에게 돌아가 조각을 부탁하세요."; }
+if (global.rk_snowman_piece_stored == 1) { global.rk_greeting_text = "Retrieve the snowy keepsake from a storage box."; if (global.rk_language == 1) global.rk_greeting_text = "보관함에서 눈으로 된 기념품을 꺼내세요."; }
+if ((global.rk_snowman_piece_stored == 1 || global.rk_snowman_piece_available == 1) && global.rk_inventory_space == 0) { global.rk_greeting_text = "Make room in your inventory for the keepsake."; if (global.rk_language == 1) global.rk_greeting_text = "기념품을 넣을 가방 공간을 비우세요."; }
+}
 if (gg_action) global.rk_greeting_status = 1;
 if (gg_unknown) global.rk_greeting_status = 4;
 if (gg_blocked) global.rk_greeting_status = 3;
 if (global.rk_target_greeting == 1) { global.rk_neutral_friendship_min = 4; max_kills = 0; }
 if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2 || global.rk_target_greeting == 3) global.rk_neutral_keep_toriel = 1;
 if (global.rk_target_greeting == 1 || global.rk_target_greeting >= 4) global.rk_neutral_keep_papyrus = 1;
-if (global.rk_target_greeting == 1) global.rk_neutral_keep_undyne = 1;
+if (global.rk_target_greeting >= 1 && global.rk_target_greeting <= 3) global.rk_neutral_keep_undyne = 1;
 if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2) global.rk_neutral_keep_mettaton = 1;
 if (global.rk_target_greeting == 3) global.rk_neutral_keep_mettaton = 0;
 global.rk_neutral_kill_cap = max_kills;
+reserved = 0;
+if (global.rk_neutral_keep_toriel == 0 && global.rk_neutral_toriel_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_papyrus == 0 && global.rk_neutral_papyrus_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_undyne == 0 && global.rk_neutral_undyne_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_mettaton == 0 && global.rk_neutral_mettaton_dead == 0) reserved += 1;
+if (max_kills >= 0 && k >= 0 && k + reserved > max_kills) blocked = 1;
 if (global.rk_hard_mode < 0 || global.rk_world_erased < 0 || global.rk_true_lab_completed < 0) unknown = 1;
 if (global.rk_hard_mode == 1 || global.rk_world_erased == 1) blocked = 1;
 if (stage < 0) unknown = 1;

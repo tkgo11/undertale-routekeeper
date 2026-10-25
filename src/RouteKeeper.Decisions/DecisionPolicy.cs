@@ -3,10 +3,10 @@ using System.Text;
 namespace RouteKeeper.Decisions;
 
 public enum RouteFamily { Pacifist, Genocide, Neutral }
-public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue, StartFriendship }
+public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue, StartFriendship, ScriptedSpare = 12 }
 public enum DecisionEnemy { Ordinary, Toriel, Papyrus, Undyne, Mettaton, UndyneUndying, RequiredUnique, MettatonNeo, MonsterKid, Snowdrake }
 public enum DecisionMode { Off, Passive, Active, Forced }
-public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity, UnwantedFriendship, NeverSave, HealingItem, LastKeepsake, StartingArmor, LevelIncrease, CallExperience, NeutralLab }
+public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity, UnwantedFriendship, NeverSave, HealingItem, LastKeepsake, StartingArmor, LevelIncrease, CallExperience, NeutralLab, AutomaticSpare }
 public sealed record DecisionState(RouteFamily Family, DecisionAction Action, DecisionEnemy Enemy,
     bool ExperienceRisk = false, int RuinsKills = 0, int SnowdinKills = 0, int WaterfallKills = 0,
     int HotlandKills = 0, bool WaterUnresolved = false, int NeutralOutcome = 0, bool NeutralKillCapReached = false,
@@ -39,6 +39,7 @@ public static class DecisionPolicy
     private static Test Lt(int argument, int value) => new(argument, "<", value);
     private static Rule R(WarningCode warning, params Test[] tests) => new(warning, tests);
     private static readonly Rule[] Rules = [
+        R(WarningCode.AutomaticSpare, Eq(0,2), Eq(1,12), Eq(9,-1)),
         R(WarningCode.UnwantedFriendship, Eq(0,2), Eq(1,7), Eq(14,1)),
         R(WarningCode.SnowdrakeOpportunity, Eq(0,1), Eq(1,1), Eq(3,1), Eq(15,1)),
         R(WarningCode.Friendship, Eq(0,2), Eq(1,1), Eq(3,1), Eq(14,1)),
@@ -106,6 +107,13 @@ public static class DecisionPolicy
 
     public static bool SnowdrakeActMayResolve(int command,bool lastLive)=>command==1&&lastLive;
     public static string EmitSnowActGml()=>"// Generated possible random Snowdrake escape, only the last live encounter.\nreturn argument0 == 1 && argument1;\n";
+
+    // Original EX Step checks the scheduled turn index, not limb visibility.
+    // 0 original resolution, 1 wait for acknowledgement, 2 take original attack path.
+    public static int RatingResolution(DecisionMode mode,bool refused)=>!refused?0:mode==DecisionMode.Forced?2:1;
+    public static string EmitRatingResolutionGml()=>"// Generated scripted outcome disposition; does not change ratings/HP/history.\nif (argument1 == 0) return 0;\nif (argument0 == 3) return 2;\nreturn 1;\n";
+    public static bool RatingQualifies(int turns,int ratings)=>turns>=19?ratings>=10000:ratings>=12000;
+    public static string EmitRatingsGml()=>"// Source-audited EX turn-boundary threshold.\nif (argument0 >= 19) return argument1 >= 10000;\nreturn argument1 >= 12000;\n";
 
     public static bool ExhaustedKillBudget(int kills, int maximumKills, int reservedBossKills, bool requiredBossKill)
     {

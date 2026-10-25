@@ -257,6 +257,10 @@
     "warn_19": [
       "This path leads away from your Neutral ending.",
       "이 길로 가면 목표한 뉴트럴 엔딩에서 멀어집니다."
+    ],
+    "warn_20": [
+      "The next scripted outcome spares a required opponent.",
+      "다음 자동 결과는 처치해야 할 상대를 살려 줍니다."
     ]
   }
 }

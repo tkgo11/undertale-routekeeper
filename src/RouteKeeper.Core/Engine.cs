@@ -23,6 +23,7 @@ public static class FactDomains
         "doggo_killed", "dogi_killed", "greater_dog_killed", "shyren_killed", "glad_dummy_killed",
         "monster_kid_attacked", "royal_guards_killed", "muffet_killed", "barrier_broken",
         "toriel_alive", "mettaton_alive", "save_exists", "snowman_piece_carried",
+        "snowman_piece_stored", "snowman_piece_available", "inventory_space", "keepsake_recoverable",
         "prior_pacifist_completion", "true_reset_available", "sans_defeated", "snowdrake_lost"
     };
     public static IEnumerable<string> KnownFacts=>Booleans.Concat(new[]{"area","level","experience","kills_total","kills","plot10","genocide_stage","murder_level","equipped_armor","healing_items_used","epilogue_choice","neutral_undyne_friendship","neutral_alphys_friendship"});
@@ -165,8 +166,19 @@ public static class DecisionMonitor
 {
     public static bool BreaksRoute(RouteId route,GameState state,PendingDecision decision)
     {
+        if (!decision.Irreversible) return false;
         var next=new GameState(state.Facts.Concat(decision.Effects).GroupBy(x=>x.Key).ToDictionary(g=>g.Key,g=>g.Last().Value));
-        return decision.Irreversible && RouteCatalog.Get(route).Requirements.Any(r=>r.Irreversible && r.IsMet(state)==true && r.IsMet(next)==false);
+        if (route == RouteId.Neutral)
+        {
+            int target=state["target_neutral"]??0,goal=state["target_greeting"]??0;
+            if (NeutralCatalog.Evaluate(target,state).Status==RouteStatus.BLOCKED) return false;
+            if (target is 2 or 3 && state["neutral_undyne_friendship"]==0 && next["neutral_undyne_friendship"]>0) return true;
+            if (NeutralCatalog.Evaluate(target,next).Status==RouteStatus.BLOCKED) return true;
+            // Last-carried keepsake use/discard is warned even though retrieval
+            // might later repair it. Do not confuse this with permanent invalidity.
+            return goal>0 && NeutralGoals.Get(goal).Requirements.Any(r=>r.Met(state)==true&&r.Met(next)==false);
+        }
+        return RouteCatalog.Get(route).Requirements.Any(r=>r.Irreversible && r.IsMet(state)==true && r.IsMet(next)==false);
     }
 }
 public static class GuidanceController

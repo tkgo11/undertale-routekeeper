@@ -22,7 +22,7 @@ class UiTests(unittest.TestCase):
             if alpha:self.assertEqual((red,green,blue),(255,255,255))
     def test_all_warning_states_fit(self):
         for language,r in enumerate(self.renderers):
-            for code in range(1,20):
+            for code in range(1,21):
                 text='* '+r.text('warn_'+str(code));lines=r.wrap(text,L['warning_width'],L['warning_lines'])
                 self.assertTrue(lines);self.assertFalse(lines[-1].endswith('...'),(language,code,lines))
                 for enforced in [False,True]:

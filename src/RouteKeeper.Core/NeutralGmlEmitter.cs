@@ -63,7 +63,7 @@ return 16;
     {
         var code=new StringBuilder("""
 // Generated from NeutralCatalog target table and evaluation policy.
-var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matched, total;
+var nt, blocked, unknown, action, k, stage, friend, min_kills, max_kills, matched, total, reserved;
 nt = global.rk_target_neutral; blocked = 0; unknown = 0; action = 0;
 k = global.rk_kills; stage = global.rk_murder_level; friend = global.rk_neutral_undyne_friendship;
 min_kills = 0; max_kills = -1; matched = 0; total = 0;
@@ -93,10 +93,16 @@ if (nt < 0 || nt >= 19) return 4;
 if (global.rk_target_greeting == 1) { global.rk_neutral_friendship_min = 4; max_kills = 0; }
 if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2 || global.rk_target_greeting == 3) global.rk_neutral_keep_toriel = 1;
 if (global.rk_target_greeting == 1 || global.rk_target_greeting >= 4) global.rk_neutral_keep_papyrus = 1;
-if (global.rk_target_greeting == 1) global.rk_neutral_keep_undyne = 1;
+if (global.rk_target_greeting >= 1 && global.rk_target_greeting <= 3) global.rk_neutral_keep_undyne = 1;
 if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2) global.rk_neutral_keep_mettaton = 1;
 if (global.rk_target_greeting == 3) global.rk_neutral_keep_mettaton = 0;
 global.rk_neutral_kill_cap = max_kills;
+reserved = 0;
+if (global.rk_neutral_keep_toriel == 0 && global.rk_neutral_toriel_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_papyrus == 0 && global.rk_neutral_papyrus_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_undyne == 0 && global.rk_neutral_undyne_dead == 0) reserved += 1;
+if (global.rk_neutral_keep_mettaton == 0 && global.rk_neutral_mettaton_dead == 0) reserved += 1;
+if (max_kills >= 0 && k >= 0 && k + reserved > max_kills) blocked = 1;
 if (global.rk_hard_mode < 0 || global.rk_world_erased < 0 || global.rk_true_lab_completed < 0) unknown = 1;
 if (global.rk_hard_mode == 1 || global.rk_world_erased == 1) blocked = 1;
 if (stage < 0) unknown = 1;

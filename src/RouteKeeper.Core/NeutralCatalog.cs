@@ -47,18 +47,18 @@ public static class NeutralCatalog
         new(NeutralEnding.MettatonPapyrusDead,"Mettaton: Papyrus dead","메타톤: 파피루스 사망",1,1,1,0,3,Unlimited),
         new(NeutralEnding.Papyrus,"Papyrus","파피루스",1,0,1,1,3,Unlimited),
         new(NeutralEnding.Dog,"Dog: only four bosses killed","개: 보스 네 명만 처치",1,1,1,1,4,4),
-        new(NeutralEnding.LeaderlessLowKills,"Leaderless: fewer than 20 kills","지도자 없음: 20킬 미만",1,1,1,1,5,19),
-        new(NeutralEnding.LeaderlessHighKills,"Leaderless: 20 or more kills","지도자 없음: 20킬 이상",1,1,1,1,20,Unlimited),
+        new(NeutralEnding.LeaderlessLowKills,"Leaderless: total below 20","지도자 없음: 총 20킬 미만",1,1,1,1,5,19),
+        new(NeutralEnding.LeaderlessHighKills,"Leaderless: total 20+","지도자 없음: 총 20킬 이상",1,1,1,1,20,Unlimited),
         new(NeutralEnding.Alphys,"Alphys: aborted late Genocide","알피스: 후반 몰살 중단",1,1,1,1,4,Unlimited)
     }.AsReadOnly();
     private static FactTest Eq(string fact,int value)=>new(fact,Comparison.Equal,value);
     private static FactTest Min(string fact,int value)=>new(fact,Comparison.AtLeast,value);
     private static FactTest Max(string fact,int value)=>new(fact,Comparison.AtMost,value);
-    private static ObjectiveCondition Greeting(params FactTest[] rest)=>new(new[]{Eq("neutral_papyrus_dead",0),Max("murder_level",11)}.Concat(rest).ToArray());
+    private static ObjectiveCondition Greeting(params FactTest[] rest)=>new(new[]{Eq("neutral_papyrus_dead",0)}.Concat(rest).ToArray());
     public static IReadOnlyList<NeutralModifier> ModifierRules { get; }=new NeutralModifier[] {
         new("alphys_call",1,new(Eq("neutral_projection",1),Min("neutral_alphys_friendship",10))),
-        new("mettaton_alive",2,new(Min("neutral_projection",6),Max("neutral_projection",9),Eq("neutral_mettaton_dead",0))),
-        new("mettaton_dead",4,new(Min("neutral_projection",6),Max("neutral_projection",9),Eq("neutral_mettaton_dead",1))),
+        new("mettaton_alive",2,new(Min("neutral_projection",6),Max("neutral_projection",7),Eq("neutral_mettaton_dead",0))),
+        new("mettaton_dead",4,new(Min("neutral_projection",6),Max("neutral_projection",7),Eq("neutral_mettaton_dead",1))),
         new("snowman_piece",8,Greeting(Eq("snowman_piece_carried",1))),
         new("no_save",16,Greeting(Eq("save_exists",0))),
         new("bandage",32,Greeting(Eq("equipped_armor",4))),
@@ -114,6 +114,12 @@ public static class NeutralCatalog
         if(kills is null) unknown=true;
         else if(kills>target.MaximumKills) Mark("kills","The selected kill limit has been exceeded.","선택한 처치 수 제한을 초과했습니다.",true);
         else if(kills<target.MinimumKills) Mark("kills","Follow the selected encounters before the final battle.","최종 전투 전에 선택한 조우 조건을 충족하세요.");
+        if(kills is int observedKills && target.MaximumKills<int.MaxValue)
+        {
+            int reserved=Bosses.Count(b=>b.Item3(target)==1&&state[b.Item1]==0);
+            if((long)observedKills+reserved>target.MaximumKills)
+                Mark("kills","Too few kills remain for the required boss outcomes.","필수 보스 결과를 위한 처치 수가 남아 있지 않습니다.",true);
+        }
         if(targetId is >=1 and <=5)
         {
             var friendship=state["neutral_undyne_friendship"];
@@ -142,6 +148,21 @@ public static class NeutralCatalog
         var basis=new Evaluation(status,objectives,reasons,true);
         var goal=state["target_greeting"]??0;
         return goal>0?NeutralGoals.Merge(basis,NeutralGoals.Evaluate(goal,targetId,state,language)):basis;
+    }
+
+    /// <summary>Source-selected opening slot origins, separate from condition satisfaction.</summary>
+    public static IReadOnlyList<string> OpeningSlotSources(GameState state)
+    {
+        var outcome=Classify(state);int mask=outcome.ModifierMask;
+        var slots=Enumerable.Repeat("base",7).ToArray();
+        void Put(string origin,params int[] indexes) { foreach(int index in indexes)slots[index-2]=origin; }
+        if((mask&8)!=0)Put("keepsake",3,4,5,6);
+        if((mask&16)!=0)Put("save",2,4,5,6);
+        if((mask&32)!=0)Put("armor",3,4,5,6);
+        if((mask&64)!=0)Put("healing",3,4,5,6);
+        if((mask&128)!=0)Put("composite",3,4,5,6,7,8);
+        if(outcome.OriginalBranch==7)Put("late",2,3);
+        return slots;
     }
 
     public static NeutralOutcome Classify(GameState state)
