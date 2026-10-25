@@ -60,9 +60,9 @@ function Restore-Session($s) {
     if (Test-Path -LiteralPath $marker) {
       Stop-RkDisposableInstall $tx
     } elseif (Test-Path -LiteralPath $tx.Backup) {
-      throw 'Install backup exists without a matching marker; manual recovery required.'
+      throw 'Install backup exists without a valid marker. Manual recovery is required.'
     } elseif (!(Test-Path -LiteralPath $tx.Installed)) {
-      throw 'Registered installation missing; manual recovery required.'
+      throw 'Registered Steam installation missing. Manual recovery is required.'
     }
     $s.installed=$false;$s.installPending=$false;Persist $s
   }
@@ -95,14 +95,23 @@ if ($Action -eq 'Preflight') {
   Write-Host 'Steam Cloud MUST be disabled before testing; Steam must be offline AND all adapters disconnected.'
   Write-Host 'Steam account-level persistent history cannot be guaranteed safe, even offline.'
   Write-Host 'LIMIT TO title, UI, controls and early combat; no saving, resetting or endings.'
-  if (Test-Path -LiteralPath $sessionFile) { Write-Warning 'A prior session exists. Recover, then Archive before reuse.' }
+  if (Test-Path -LiteralPath $sessionFile) { Write-Warning 'A prior session exists. Recover it, then Archive before reuse.' }
   return
 }
 if ($Action -eq 'Archive') {
   Assert-Closed;Assert-Offline
   if (!(Test-Path -LiteralPath $sessionFile)) { throw 'No completed session to archive.' }
   $prior=Get-Content -LiteralPath $sessionFile -Raw | ConvertFrom-Json
-  if (!$prior.restored -or $prior.owner -ne $identity.User.Value -or $prior.id -notmatch '^[a-f0-9]{32}
+  if (!$prior.restored -or $prior.owner -ne $identity.User.Value -or $prior.id -notmatch '^[a-f0-9]{32}$') {
+    throw 'Restore the previous session completely before archiving it.'
+  }
+  $completed=Join-Path $local ('RoutekeeperCompletedSession-'+$prior.id)
+  if (Test-Path -LiteralPath $completed) { throw 'Completed session archive already exists.' }
+  Move-Item -LiteralPath $sessionDir -Destination $completed
+  Write-Host 'Previous test metadata archived. Protected saves and private snapshots are preserved.'
+  return
+}
+if ($Action -eq 'Recover') {
   Assert-Closed;Assert-Offline
   if (!(Test-Path -LiteralPath $sessionFile)) { throw 'No session to recover.' }
   Restore-Session (Get-Content -LiteralPath $sessionFile -Raw | ConvertFrom-Json)
@@ -124,7 +133,7 @@ foreach($path in @($Lab,$PatchedData,$SteamExe,$GameInstall)) { Assert-RkNoLinks
 if (!(Test-RkWithin $Lab $profileHome) -or !(Test-RkWithin $PatchedData $profileHome)) { throw 'Lab and candidate must be private within the current user profile.' }
 if (Test-RkWithin $GameInstall $Lab -or Test-RkWithin $Lab $GameInstall -or
     Test-RkWithin $save $GameInstall -or Test-RkWithin $GameInstall $save) {
-  throw 'Game installation, test lab and personal saves must not overlap.'
+  throw 'Game installation must not overlap private lab or personal saves.'
 }
 if ([IO.Path]::GetFileName($SteamExe) -ine 'steam.exe' -or [IO.Path]::GetFileName($GameInstall) -ine 'Undertale') {
   throw 'Expected official Steam.exe and registered Undertale game directory.'
@@ -145,10 +154,10 @@ if ($compatProfile.Count -ne 1) { throw 'No unique exact-build profile.' }
 Assert-RkHash $PatchedData $compatProfile[0].PatchedSha256
 $original=Join-Path $Lab 'original'
 $run=Join-Path $Lab ('runs\'+$Case)
-$archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
-if ((Get-RkInventoryDigest $archiveIdentity.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
+$input=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
+if ((Get-RkInventoryDigest $input.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
 $files=@()
-foreach($f in $archiveIdentity.files) {
+foreach($f in $input.files) {
   if (!$f.path.StartsWith('Undertale/')) { continue }
   $relative=$f.path.Substring(10)
   Assert-RkRelative $relative
