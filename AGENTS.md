@@ -86,3 +86,18 @@ in a public repository or a fork.
   PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
 - Newest candidate6a49b85c has NOT executed. Prior40d67856 Wine failure is not a
   runtime result for later candidates. Read the latest dated progress section.
+
+## Native Windows testing without Sandbox
+
+- Optional operator-run harness: `tools/runtime/run-without-sandbox.ps1`. See
+  `docs/runtime-validation.md` for exact account, Cloud and offline requirements.
+- Requires distinct standard local users RKTestOriginal / RKTestPatched, a dedicated
+  per-user Steam installation, original/patched exact hashes, fresh test saves,
+  manual Steam Offline Mode and **all adapters disconnected**. Never run this
+  harness under the primary Windows account or with personal Steam saves.
+- Run `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` for cross-platform
+  AST and static safeguards. This does not execute any Windows or game APIs.
+- Steam/cloud history remains a residual risk; native test results stay
+  NOT_RUN until operator-observed. Keep InspectedOnly pending actual review.
+- PR #1 is Ready for review, not approved for merge/release; no unverified
+  native compatibility or Forced completeness claims.
