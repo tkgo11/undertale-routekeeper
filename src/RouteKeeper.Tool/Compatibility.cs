@@ -8,7 +8,7 @@ public sealed record ChunkSignature(string Name, long Offset, uint Length, strin
 public sealed record BuildIdentity(string FileName, long Size, string Sha256, string Md5, byte BytecodeVersion, IReadOnlyList<ChunkSignature> Chunks);
 public sealed record CompatibilityProfile(string Id, string Status, string Platform, string Architecture,
     long OriginalSize, string OriginalSha256, string OriginalMd5, byte BytecodeVersion,
-    string StructuralSha256, string? PatchedSha256, string? SteamBuildId = null, string? SteamDepotId = null);
+    string StructuralSha256, string? PatchedSha256, string? SteamBuildId = null, string? SteamDepotId = null, string? GameDataRelativePath = null);
 
 /// <summary>Read-only FORM inspection; recognition alone never authorizes patching.</summary>
 public static class BuildInspector

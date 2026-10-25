@@ -5,6 +5,10 @@ try
 {
     switch (args.FirstOrDefault())
     {
+        case "g3m-package" when args.Length is 7 or 8:
+            await G3MPackage.CreateAsync(args[1], args[2], args[3], args[4], CompatibilityRegistry.Load(Path.Combine(args.Length == 8 ? args[7] : AppContext.BaseDirectory,"profiles","registry.json")), args[5], args[6]);
+            Console.WriteLine("PASS: exact-hash G3M package generated and delta roundtrip verified; no game installed.");
+            break;
         case "build" when args.Length is 4 or 5:
             Console.WriteLine(JsonSerializer.Serialize(await ModBuilder.BuildAsync(args[1], args[2], args[3], args.Length == 5 ? args[4] : AppContext.BaseDirectory), CompatibilityRegistry.JsonOptions));
             break;
@@ -34,7 +38,7 @@ try
             Console.WriteLine("PASS: restored; verified backup retained.");
             break;
         default:
-            Console.Error.WriteLine("Usage: build SOURCE NEW_OUTPUT CLI [ASSET_ROOT] | install-source TARGET CLI PLATFORM ARCH [ASSET_ROOT] | inspect-runner EXECUTABLE | discover | inspect DATA | diff BEFORE AFTER | install TARGET CANDIDATE REGISTRY PLATFORM ARCH | restore TARGET");
+            Console.Error.WriteLine("Usage: g3m-package ORIGINAL CANDIDATE XDELTA3 NEW_ZIP PLATFORM ARCH [ASSETS] | build SOURCE NEW_OUTPUT CLI [ASSET_ROOT] | install-source TARGET CLI PLATFORM ARCH [ASSET_ROOT] | inspect-runner EXECUTABLE | discover | inspect DATA | diff BEFORE AFTER | install TARGET CANDIDATE REGISTRY PLATFORM ARCH | restore TARGET");
             return 2;
     }
     return 0;

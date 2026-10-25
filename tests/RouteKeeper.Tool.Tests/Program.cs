@@ -105,6 +105,28 @@ try
         Reject(()=>SourceInstaller.InstallAsync(original,"missing-compiler","Synthetic","test",buildAssets).GetAwaiter().GetResult());
         Assert(before.SequenceEqual(Directory.GetFiles(root).Order())&&SafeInstaller.Hash(original)==identity.Sha256);
     });
+    Check("G3M config pins both original and patch SHA256",()=>{
+        using var config=JsonDocument.Parse(G3MPackage.Config(identity.Sha256,new string('a',64),"data.win"));
+        var item=config.RootElement.GetProperty("files")[0];
+        Assert(config.RootElement.GetProperty("config_version").GetString()=="2.0.0" && item.GetProperty("target").GetString()=="${game_path}/data.win" && item.GetProperty("target_hash").GetString()=="sha256:"+identity.Sha256 && item.GetProperty("source_hash").GetString()=="sha256:"+new string('a',64));
+    });
+    Check("G3M malformed hashes rejected",()=>{try{G3MPackage.Config("../data.win",new string('a',64),"data.win");throw new Exception("Expected refusal");}catch(ArgumentException){}});
+    Check("G3M rejects traversal paths",()=>{try{G3MPackage.Config(identity.Sha256,new string('a',64),"../data.win");throw new Exception("Expected refusal");}catch(ArgumentException){}});
+    Check("G3M refuses an unverified game before starting external tools",()=>{
+        var output=Path.Combine(root,"not-created","mod.zip");
+        Reject(()=>G3MPackage.CreateAsync(original,candidate,"missing-xdelta",output,[profile with {Status="InspectedOnly"}],"Synthetic","test").GetAwaiter().GetResult());
+        Assert(!Directory.Exists(Path.GetDirectoryName(output)));
+    });
+    Check("G3M requires verified relative data location",()=>{
+        var output=Path.Combine(root,"missing-location","mod.zip");
+        Reject(()=>G3MPackage.CreateAsync(original,candidate,"missing-xdelta",output,[profile],"Synthetic","test").GetAwaiter().GetResult());
+        Assert(!Directory.Exists(Path.GetDirectoryName(output)));
+    });
+    Check("G3M candidate hash mismatch fails before creating workspace",()=>{
+        var output=Path.Combine(root,"wrong-g3m-output","mod.zip");
+        Reject(()=>G3MPackage.CreateAsync(original,candidate,"missing-xdelta",output,[profile with {GameDataRelativePath="data.win",PatchedSha256=new string('0',64)}],"Synthetic","test").GetAwaiter().GetResult());
+        Assert(!Directory.Exists(Path.GetDirectoryName(output)));
+    });
     Console.WriteLine($"PASS {passed} synthetic tests; authentic gameplay NOT_RUN"); return 0;
 }
 finally { Directory.Delete(root, recursive: true); }
