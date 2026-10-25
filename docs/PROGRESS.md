@@ -191,8 +191,56 @@ Baseline implementation commit: 9a82745 (independent original-source ending audi
 Neutral API/budget/greeting corrections, EX automatic outcome protection and
 Snowman acquisition/storage guidance). Previous call-goal implementation:5a8b0f2.
 Earlier implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
-5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Latest tested
-native output is 40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b.
+5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Previous structural
+output was 40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b.
 All four standalone tool packages publish; the Linux package builds that exact
 output and completes the real synthetic G3M roundtrip. Hosted billing is still
 blocked. Official bootstrap evidence exists, but gameplay remains BLOCKED.
+
+
+## Latest: optional encounters, event ordering and native operator harness
+
+Existing branch/Draft PR1 continued; no Wine retry, hosted CI run, merge or release.
+The previous40d67856 patched runner's bootstrap remains BLOCKED; the NEW6a49b85c
+candidate has only offline evidence. Both native and compatibility execution of
+this new candidate are NOT_RUN. Keep InspectedOnly.
+
+Added an Art Club/So Sorry event witness after clean friendship, including the
+calendar gate and original11-hit Step/Alarm death path. Type4/goal8 now has a bounded
+source-model witness; type6/goal8 stays UNKNOWN. Matrix:75 witnesses/95 source
+contradictions/1 unknown out of171 settings. Jerry backtracking/FLEE and its1EXP
+reward are modeled; nine Jerry plus So Sorry reaches LV2. See ending-audit.md for
+zero-EXP exclusions and the remaining scripted-return/inheritance proof obligation.
+
+Fixed unbanked EXP omission, same-room reload acknowledgements, stale decision
+snapshots, and bounded-model wrong-region boss/settlement/water transitions.
+Only the still-unproved type6 LV constraint is advisory; known protections remain.
+Added original-derived Art Club, So Sorry Step/Alarm and repeated-settlement goldens;
+UI style/font family and layout are unchanged. Golden/parity/model scope is distinct
+from actual scheduler/input/save safety.
+
+Sandbox now stages only pinned allowlisted files in a read-only mapping, excludes
+the host lab/account manifest, checks the full inventory identity, preserves the
+registered VM installation, requires a fresh VM per case/history scenario (save stashes cannot isolate Steam
+cached history), preserves same-case settings, requires offline Steam
+attestation and disables adapters before launching. Checkpoints remain VM-only; restore refuses active Steam/nonempty app caches;
+foreground game-client captures avoid desktop/Steam windows. Source/guard/interop
+and private host staging pass on Linux with Sandbox dispatch mocked. Windows APIs,
+offline entitlement and actual Sandbox remain NOT_RUN; no credential is requested.
+
+Next independent work: close type6's zero-EXP actor and scripted-return/reward graph,
+and expand source-derived scheduler projections beyond the audited subsets.
+Operator next action: follow runtime-validation.md steps1..4 inside a fresh Windows
+Sandbox, run original then patched cases, record the scenario matrix. Never disable
+isolation checks if a mapping/cache is refused. Do not reconnect the disposable VM
+before discarding it. Hardware pad and macOS/Linux native tests remain pending.
+
+
+Latest local evidence: build0 warnings/errors;261 base checks +9,282 audit/model
+assertions; UI19 groups +686 emitted UI cases; archive7 groups;118 source pins and
+native event/parent/room-link structural checks; authentic compile/reload and
+packaged-source output6a49b85c. Foreign package/native gameplay remain NOT_RUN.
+All private logs use .research/continuation-*; original220-file inventory verified.
+
+Game/audit continuation commit:5e25ee2. The following native-harness commit keeps
+all Windows execution NOT_RUN; inspect git log for the exact resume head.

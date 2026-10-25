@@ -6,7 +6,10 @@ ZIP_SHA='9c8fa123ede4bad7b39f70ddcd1a8fdfa397df89bb215b18b4635855df2f265d'
 ZIP_SIZE=132054497
 DATA_SHA='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
 RUNNER_SHA='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
+INVENTORY_SHA='d0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a'
 MARKER='.routekeeper-disposable-runtime-lab'
+def inventory_digest(files):
+ return hashlib.sha256(''.join(f"{f['path']}\t{f['size']}\t{f['sha256']}\n" for f in sorted(files,key=lambda f:f['path'])).encode()).hexdigest()
 def digest(path):
  with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 def safe_entries(z):
@@ -72,15 +75,19 @@ def prepare(archive,work):
   shutil.rmtree(work);raise
  return identity
 
-def verify(work):
- work=Path(work)
+def verify(work,expected_inventory=INVENTORY_SHA):
+ work=Path(work).absolute()
+ if work.is_symlink():raise ValueError('Linked lab directory')
  if not (work/MARKER).is_file():raise ValueError('Not a disposable runtime lab')
  identity=json.loads((work/'identity-private.json').read_text())
+ if inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
  for f in identity['files']:
   p=work/'original'/f['path']
   # A linked ancestor can redirect a regular-looking file outside the pristine
   # tree. Reject it before opening/hash-reading any such target.
-  if any(parent.is_symlink() for parent in [p.parent,*p.parent.parents] if parent!=work.parent):raise ValueError('Linked original directory')
+  for parent in p.parents:
+   if parent==work.parent:break
+   if parent.is_symlink():raise ValueError('Linked original directory')
   if p.is_symlink() or not p.is_file() or p.stat().st_size!=f['size'] or digest(p)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
  return identity
 

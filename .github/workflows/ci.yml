@@ -44,6 +44,10 @@ jobs:
       - run: python integration/generate_font.py --verify
       - run: python integration/ui/test_ui.py
       - run: python tools/test_runtime_lab.py
+      - name: Verify Windows harness source and filesystem guards only
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/runtime/test-sandbox.ps1
       - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-ui integration
       - name: Verify real delta packaging on synthetic data
         if: runner.os == 'Linux'

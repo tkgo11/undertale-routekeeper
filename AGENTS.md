@@ -80,3 +80,9 @@ in a public repository or a fork.
   PASS. Do not bypass Steam or promote InspectedOnly from compatibility-layer tests.
 - The reachability command returns source-bounded witnesses; RNG, movement and
   combat victory are assumptions, not executed gameplay or complete path proofs.
+
+- `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` checks ASTs/filesystem
+  guards and compiles capture interop without Windows API calls. Optional Lab and
+  PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
+- Newest candidate6a49b85c has NOT executed. Prior40d67856 Wine failure is not a
+  runtime result for later candidates. Read the latest dated progress section.

@@ -3,7 +3,7 @@
 Updated 2026-10-25. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. The official runner reached Steam bootstrap
 under QEMU/Wine but no game window/room executed successfully.
-Current continuation:8,564 original-golden/ordered-event assertions and259 C#
+Current continuation:9,282 original-golden/ordered-event assertions and261 C#
 checks; see the dated continuation sections below for historical snapshots.
 
 | Scope | Result | Command / evidence |
@@ -11,14 +11,14 @@ checks; see the dated continuation sections below for historical snapshots.
 | Release build | PASS | `dotnet build RouteKeeper.slnx -c Release` (0 warnings/errors) |
 | Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 38 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
 | Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 60 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
-| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 80 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
+| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 84 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
 | History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
-| Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 47 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
+| Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 55 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
 | Saves | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7 synthetic checks; supplied saves previously read without byte changes |
 | Generated source freshness | PASS | Core `--verify-native integration/gml`; Neutral `--verify-gml integration/gml`; Decisions `--verify-adapters integration/gml` |
 | Font metadata | PASS | `python integration/generate_font.py --verify`; embedded glyph coverage/bounds; original font for English |
 | Authentic generation/reload | PASS | `python tools/validate-authentic.py --input private-data/data.win --cli /path/to/UndertaleModCli`; original overwrite/modified input rejected |
-| Authentic original preservation | PASS | 6,246 non-hook code resources identical; original texture payloads, embedded audio, font glyphs and room/sprite/sound counts unchanged |
+| Authentic original preservation | PASS | 6,245 non-hook code resources identical; original texture payloads, embedded audio, font glyphs and room/sprite/sound counts unchanged |
 | Independent builder | PASS | `RouteKeeper.Tool build SOURCE NEW_OUTPUT CLI ASSET_ROOT`; compiler receives a disposable copy; compile/verify succeeds; same output hash at tested snapshot |
 | Executable header parser | PASS | Synthetic PE/ELF/Mach-O cases plus four official compiler executables; not game provenance |
 | Version diff | PASS | `ROUTEKEEPER_COMPARE=ORIGINAL UndertaleModCli load CANDIDATE -s integration/compare.csx`; code/event signature diff only |
@@ -32,7 +32,7 @@ Actions run [40114230381](https://github.com/tkgo11/undertale-routekeeper/action
 40087764774 is not substituted for new commits. No private data/source is uploaded
 as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.
 
-## Current UI/font/guard/package expansion
+## Historical UI/font/guard/package expansion
 
 - PASS: 249 C# checks (Core38/Neutral60/Decisions80/History17/Tool47/Saves7).
 - PASS: 17 offline UI/font groups with Pillow11.3.0; all warning states/languages,
@@ -177,3 +177,43 @@ with nonempty embedded references. Their external/embedded resolution is NOT_RUN
 UTMT permits arbitrary embedded references for stream entries, so presence alone
 is not claimed to resolve them. No additional files were requested or assumed missing.
 See runtime-validation.md for reproducible commands, exact identities and cleanup.
+
+
+## Optional encounters / scheduler / Windows harness continuation
+
+- OFFLINE_PASS: Release build0 warnings/errors; Core38/Neutral60/Decisions84/
+  History17/Tool55/Saves7 =261 checks. Audit9,282 original-derived golden and ordered
+  model assertions. Existing golden sections were unchanged; added Art Club576,
+  repeated settlement108 and So Sorry11 Step/Alarm projections.
+- OFFLINE_PASS: scoped LV1 enforcement for the proven type4 witness; pending EXP
+  threshold1000 cases; same-room reload invalidation/current-state guard linkage;
+  backtracking regional settlement and wrong-region/water deadline regressions.
+- OFFLINE_PASS: UI19 groups,686 emitted navigation/localization cases, generated
+  Core/Neutral/Decisions/UI freshness,381-glyph deterministic font verification.
+  Approved pixel layout/Galmuri14 unchanged.
+- OFFLINE_PASS:118 original source signatures plus actual event dispatch,
+  inheritance and room-instance chain checks; authentic compile/serialize/reload,
+  original overwrite/modified input refusal;6,245 non-hook originals and original
+  media retained. Candidate6a49b85ce707596257e98e7ae6470e32a968ef666e127bb87701498c3a7d0beb,
+  size63,169,126 bytes. InspectedOnly; current-candidate execution NOT_RUN.
+- OFFLINE_PASS: archive7 groups including pinned full-inventory tamper rejection;
+  all220 original files rehashed. PowerShell AST/guard tests, capture interop
+  compilation without Windows API invocation, partial-copy rollback, duplicate cleanup/nested install/lost-marker refusal,
+  pure same-case/cross-case/changed-client session checks,
+  and private host staging/XML mapping with Sandbox dispatch MOCKED. No Steam/game/Sandbox execution occurred.
+- OFFLINE_PASS: four self-contained tool publishes and real synthetic G3M parser/
+  xdelta roundtrip. Foreign package execution NOT_RUN; Linux package builds the
+  same authentic candidate independently from its packaged sources.
+- BLOCKED: previously recorded official original/40d67856 Wine Steam bootstrap;
+  not repeated. This is not a runtime result for the newer candidate. Hosted CI
+  remains billing-blocked, no hosted reruns or billing changes.
+- NOT_RUN: actual Windows Sandbox/Steam offline readiness, game startup/UI/controls,
+  battle/Alarm/Draw/collision/save timing, combat preservation and final playback;
+  native macOS/Linux and hardware controller tests.
+
+Commands: AGENTS.md build/seven suites/generator checks,
+`pwsh -NoProfile -File tools/runtime/test-sandbox.ps1`,
+`python tools/test_runtime_lab.py`, authenticated-input structural validator and
+four RID publish commands. Private logs are .research/continuation-*.log; source
+fixture verification does not require or upload any runtime output. See the new
+operator workflow in runtime-validation.md.

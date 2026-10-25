@@ -1,6 +1,6 @@
 import hashlib,io,json,struct,tempfile,unittest,zipfile
 from pathlib import Path
-from runtime_lab import safe_entries,inspect,verify,MARKER
+from runtime_lab import safe_entries,inspect,verify,MARKER,inventory_digest
 class ArchiveTests(unittest.TestCase):
  def archive(self,names):
   f=io.BytesIO()
@@ -29,16 +29,21 @@ class ArchiveTests(unittest.TestCase):
  def test_original_mutation(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);game=self.fixture(root)
-   self.assertEqual(len(verify(root)['files']),1)
+   self.assertEqual(len(verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))['files']),1)
    (game/'data.win').write_bytes(b'MUTATED SOURCE')
-   with self.assertRaises(ValueError):verify(root)
+   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
  def test_linked_original_parent(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);game=self.fixture(root);outside=root/'moved-game'
    game.rename(outside)
    try:game.symlink_to(outside,target_is_directory=True)
    except OSError as error:self.skipTest('Symlink creation unavailable: '+str(error))
-   with self.assertRaises(ValueError):verify(root)
+   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
+ def test_inventory_cannot_repin_modified_originals(self):
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory);self.fixture(root)
+   # An edited inventory cannot redefine which build is pristine.
+   with self.assertRaisesRegex(ValueError,'inventory identity'):verify(root)
  def test_identity_and_account_redaction(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d)/'input.zip';pe=bytearray(132);pe[:2]=b'MZ';struct.pack_into('<I',pe,0x3c,128);pe.extend(b'\x4c\x01');pe[128:132]=b'PE\0\0'
