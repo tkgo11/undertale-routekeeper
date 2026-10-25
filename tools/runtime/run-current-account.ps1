@@ -2,7 +2,7 @@
 # Lower isolation: Steam cache/account history can change and is NOT reverted.
 # NEVER run SAVE/RESET/TRUE RESET/ERASE/Genocide/Soulless scenarios with this harness.
 param(
-  [ValidateSet('Preflight','Run','Recover')][string]$Action='Preflight',
+  [ValidateSet('Preflight','Run','Recover','Archive')][string]$Action='Preflight',
   [ValidateSet('original','patched')][string]$Case='original',
   [string]$Lab,[string]$PatchedData,[string]$SteamExe,[string]$GameInstall,
   [switch]$AcceptSteamAccountRisk,[switch]$CloudDisabledAndOffline,
@@ -54,12 +54,17 @@ function Restore-Session($s) {
   $expectedBackup=Join-Path $local ('RoutekeeperOriginalSave-'+$s.id)
   $expectedTrial=Join-Path $local ('RoutekeeperTrialSave-'+$s.id)
   if ($s.protectedSave -ne $expectedBackup -or $s.trialSave -ne $expectedTrial) { throw 'Untrusted save restore paths.' }
-  if ($s.gameInstall -and $s.installed) {
+  if ($s.gameInstall -and ($s.installed -or $s.installPending)) {
     $tx=@{Installed=$s.gameInstall;Backup=$s.gameBackup;Id=$s.id}
     $marker=Join-Path $tx.Installed '.routekeeper-disposable-install'
-    if (!(Test-Path -LiteralPath $marker)) { throw 'Missing install marker. Keep recovery directories for review.' }
-    Stop-RkDisposableInstall $tx
-    $s.installed=$false;Persist $s
+    if (Test-Path -LiteralPath $marker) {
+      Stop-RkDisposableInstall $tx
+    } elseif (Test-Path -LiteralPath $tx.Backup) {
+      throw 'Install backup exists without a matching marker; manual recovery required.'
+    } elseif (!(Test-Path -LiteralPath $tx.Installed)) {
+      throw 'Registered installation missing; manual recovery required.'
+    }
+    $s.installed=$false;$s.installPending=$false;Persist $s
   }
   if ($s.originalPresent -and ($s.saveHidden -or $s.saveMovePending)) {
     Assert-RkNoLinks $s.protectedSave
@@ -90,7 +95,152 @@ if ($Action -eq 'Preflight') {
   Write-Host 'Steam Cloud MUST be disabled before testing; Steam must be offline AND all adapters disconnected.'
   Write-Host 'Steam account-level persistent history cannot be guaranteed safe, even offline.'
   Write-Host 'LIMIT TO title, UI, controls and early combat; no saving, resetting or endings.'
-  if (Test-Path -LiteralPath $sessionFile) { Write-Warning 'A prior session exists. Inspect and Recover before reuse.' }
+  if (Test-Path -LiteralPath $sessionFile) { Write-Warning 'A prior session exists. Recover, then Archive before reuse.' }
+  return
+}
+if ($Action -eq 'Archive') {
+  Assert-Closed;Assert-Offline
+  if (!(Test-Path -LiteralPath $sessionFile)) { throw 'No completed session to archive.' }
+  $prior=Get-Content -LiteralPath $sessionFile -Raw | ConvertFrom-Json
+  if (!$prior.restored -or $prior.owner -ne $identity.User.Value -or $prior.id -notmatch '^[a-f0-9]{32}
+  Assert-Closed;Assert-Offline
+  if (!(Test-Path -LiteralPath $sessionFile)) { throw 'No session to recover.' }
+  Restore-Session (Get-Content -LiteralPath $sessionFile -Raw | ConvertFrom-Json)
+  return
+}
+if (!$AcceptSteamAccountRisk -or !$CloudDisabledAndOffline) {
+  throw 'Explicit acknowledgment of same-account risk, disabled Steam Cloud and Steam Offline Mode required.'
+}
+Assert-Closed;Assert-Offline
+if (Test-Path -LiteralPath $sessionDir) { throw 'Prior session exists. Recover and review it before a new run.' }
+foreach($name in @('Lab','PatchedData','SteamExe','GameInstall')) {
+  if ([string]::IsNullOrWhiteSpace((Get-Variable $name).Value)) { throw "Missing parameter: $name" }
+}
+$Lab=(Resolve-Path -LiteralPath $Lab).Path
+$PatchedData=(Resolve-Path -LiteralPath $PatchedData).Path
+$SteamExe=(Resolve-Path -LiteralPath $SteamExe).Path
+$GameInstall=(Resolve-Path -LiteralPath $GameInstall).Path
+foreach($path in @($Lab,$PatchedData,$SteamExe,$GameInstall)) { Assert-RkNoLinks $path }
+if (!(Test-RkWithin $Lab $home) -or !(Test-RkWithin $PatchedData $home)) { throw 'Lab and candidate must be private within the current user profile.' }
+if (Test-RkWithin $GameInstall $Lab -or Test-RkWithin $Lab $GameInstall -or
+    Test-RkWithin $save $GameInstall -or Test-RkWithin $GameInstall $save) {
+  throw 'Game installation, test lab and personal saves must not overlap.'
+}
+if ([IO.Path]::GetFileName($SteamExe) -ine 'steam.exe' -or [IO.Path]::GetFileName($GameInstall) -ine 'Undertale') {
+  throw 'Expected official Steam.exe and registered Undertale game directory.'
+}
+if (!(Test-Path -LiteralPath (Join-Path $Lab '.routekeeper-disposable-runtime-lab'))) { throw 'Fresh private runtime lab not prepared.' }
+$manifest=Join-Path (Split-Path (Split-Path $GameInstall -Parent) -Parent) 'appmanifest_391540.acf'
+Assert-RkNoLinks $manifest
+if (!(Test-Path -LiteralPath $manifest) -or (Get-Content -LiteralPath $manifest -Raw) -notmatch '"appid"\s+"391540"') {
+  throw 'Steam library registration unavailable.'
+}
+$originalSha='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
+$runnerSha='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
+Assert-RkHash (Join-Path $GameInstall 'UNDERTALE.exe') $runnerSha
+Assert-RkHash (Join-Path $GameInstall 'data.win') $originalSha
+$reg=Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw | ConvertFrom-Json
+$profile=@($reg | Where-Object { $_.OriginalSha256 -eq $originalSha -and $_.ExecutableSha256 -eq $runnerSha })
+if ($profile.Count -ne 1) { throw 'No unique exact-build profile.' }
+Assert-RkHash $PatchedData $profile[0].PatchedSha256
+$original=Join-Path $Lab 'original'
+$run=Join-Path $Lab ('runs\'+$Case)
+$archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
+if ((Get-RkInventoryDigest $archiveIdentity.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
+$files=@()
+foreach($f in $archiveIdentity.files) {
+  if (!$f.path.StartsWith('Undertale/')) { continue }
+  $relative=$f.path.Substring(10)
+  Assert-RkRelative $relative
+  Assert-RkHash (Join-Path $original $f.path) $f.sha256
+  $wanted=if ($Case -eq 'patched' -and $relative -eq 'data.win') { $profile[0].PatchedSha256 } else { $f.sha256 }
+  if ($Case -eq 'patched' -and $relative -eq 'data.win') {
+    Copy-Item -LiteralPath $PatchedData -Destination (Join-Path $run $relative) -Force
+  }
+  Assert-RkHash (Join-Path $run $relative) $wanted
+  $files+=@{path=$relative;sha256=$wanted}
+}
+if ($files.Count -lt 210) { throw 'Incomplete game file inventory.' }
+$id=[guid]::NewGuid().ToString('N')
+$protected=Join-Path $local ('RoutekeeperOriginalSave-'+$id)
+$trial=Join-Path $local ('RoutekeeperTrialSave-'+$id)
+$hadOriginal=(Test-Path -LiteralPath $save)
+$snapshot=Join-Path $Lab ('original-save-snapshot-'+$id)
+$saveDigest=''
+if ($hadOriginal) {
+  Assert-RkTreeNoLinks $save
+  Copy-Item -LiteralPath $save -Destination $snapshot -Recurse
+  $saveDigest=TreeDigest $save
+  if ((TreeDigest $snapshot) -ne $saveDigest) { throw 'Personal save snapshot verification failed.' }
+}
+New-Item -ItemType Directory -Path $sessionDir | Out-Null
+$s=[pscustomobject]@{
+  schema=1;owner=$identity.User.Value;id=$id;originalPresent=$hadOriginal;
+  savePath=$save;protectedSave=$protected;trialSave=$trial;originalDigest=$saveDigest;
+  snapshot=$snapshot;saveMovePending=$false;saveHidden=$false;installPending=$false;installed=$false;
+  gameInstall=$GameInstall;gameBackup=($GameInstall+'.routekeeper-vm-backup-'+$id);restored=$false
+}
+Persist $s
+$report=[ordered]@{case=$Case;result='NOT_RUN';kind='CURRENT_ACCOUNT_SMOKE';id=$id;
+  note='Observations only. Steam persistent history is NOT isolated. No gameplay success is inferred.'}
+$gameProcess=$null
+try {
+  if ($hadOriginal) {
+    $s.saveMovePending=$true;Persist $s
+    Move-Item -LiteralPath $save -Destination $protected
+    $s.saveHidden=$true;$s.saveMovePending=$false;Persist $s
+  }
+  $s.installPending=$true;Persist $s
+  $tx=Start-RkDisposableInstall $run $GameInstall $files $id
+  $s.installed=$true;$s.installPending=$false;Persist $s
+  Start-Process -FilePath $SteamExe -ArgumentList '-offline' | Out-Null
+  $until=(Get-Date).AddSeconds(90)
+  while (@(Get-Process steam -ErrorAction SilentlyContinue).Count -eq 0 -and (Get-Date) -lt $until) { Start-Sleep -Milliseconds 500 }
+  if (@(Get-Process steam -ErrorAction SilentlyContinue).Count -eq 0) { throw 'Steam Offline client did not start.' }
+  Start-Process -FilePath $SteamExe -ArgumentList '-applaunch 391540' | Out-Null
+  $until=(Get-Date).AddSeconds(60)
+  do {
+    Start-Sleep -Milliseconds 500
+    $gameProcess=Get-Process UNDERTALE -ErrorAction SilentlyContinue |
+      Where-Object { $_.Path -and $_.Path.Equals((Join-Path $GameInstall 'UNDERTALE.exe'),[StringComparison]::OrdinalIgnoreCase) } |
+      Select-Object -First 1
+  } while (!$gameProcess -and (Get-Date) -lt $until)
+  if (!$gameProcess) { throw 'Exact Steam runner did not launch.' }
+  Write-Host 'SMOKE ONLY: title, UI, controls, early battles. Do NOT SAVE, RESET or complete an ending.'
+  Write-Host 'Close UNDERTALE when finished; then EXIT STEAM while still offline.'
+  $report.started=$true
+  if (!$gameProcess.WaitForExit($Minutes*60000)) {
+    $null=$gameProcess.CloseMainWindow()
+    if (!$gameProcess.WaitForExit(10000)) { $gameProcess.Kill();$gameProcess.WaitForExit() }
+  }
+  $report.exitCode=$gameProcess.ExitCode
+  if ($gameProcess.ExitCode -ne 0) { $report.result='BLOCKED';$report.reason='Game exited nonzero.' }
+} catch {
+  $report.result='BLOCKED';$report.reason=$_.Exception.Message
+  Write-Warning $report.reason
+} finally {
+  if ($gameProcess -and !$gameProcess.HasExited) {
+    $null=$gameProcess.CloseMainWindow()
+    if (!$gameProcess.WaitForExit(10000)) { $gameProcess.Kill();$gameProcess.WaitForExit() }
+  }
+  Write-Host 'Exit Steam completely now, while offline. Restoration waits for Steam to stop.'
+  $until=(Get-Date).AddSeconds(180)
+  while (@(Get-Process steam,UNDERTALE -ErrorAction SilentlyContinue).Count -gt 0 -and (Get-Date) -lt $until) { Start-Sleep -Seconds 2 }
+  try { Restore-Session $s }
+  catch {
+    $report.result='BLOCKED';$report.restore=$_.Exception.Message
+    Write-Warning 'Restore incomplete! Stay offline; close Steam and execute -Action Recover. NEVER delete protected backups.'
+  }
+  $report.restored=[bool]$s.restored
+  $dir=Join-Path $Lab 'evidence\current-account'
+  New-Item -ItemType Directory -Path $dir -Force | Out-Null
+  $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dir ($Case+'-'+$id+'.json'))
+}
+) { throw 'Restore the previous session completely before archiving it.' }
+  $completed=Join-Path $local ('RoutekeeperCompletedSession-'+$prior.id)
+  if (Test-Path -LiteralPath $completed) { throw 'Completed session archive already exists.' }
+  Move-Item -LiteralPath $sessionDir -Destination $completed
+  Write-Host 'Previous test metadata archived. Original saves remain restored; trial saves and private snapshots were retained.'
   return
 }
 if ($Action -eq 'Recover') {
@@ -132,10 +282,10 @@ if ($profile.Count -ne 1) { throw 'No unique exact-build profile.' }
 Assert-RkHash $PatchedData $profile[0].PatchedSha256
 $original=Join-Path $Lab 'original'
 $run=Join-Path $Lab ('runs\'+$Case)
-$input=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
-if ((Get-RkInventoryDigest $input.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
+$archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
+if ((Get-RkInventoryDigest $archiveIdentity.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
 $files=@()
-foreach($f in $input.files) {
+foreach($f in $archiveIdentity.files) {
   if (!$f.path.StartsWith('Undertale/')) { continue }
   $relative=$f.path.Substring(10)
   Assert-RkRelative $relative
