@@ -131,8 +131,8 @@ $SteamExe=(Resolve-Path -LiteralPath $SteamExe).Path
 $GameInstall=(Resolve-Path -LiteralPath $GameInstall).Path
 foreach($path in @($Lab,$PatchedData,$SteamExe,$GameInstall)) { Assert-RkNoLinks $path }
 if (!(Test-RkWithin $Lab $profileHome) -or !(Test-RkWithin $PatchedData $profileHome)) { throw 'Lab and candidate must be private within the current user profile.' }
-if (Test-RkWithin $GameInstall $Lab -or Test-RkWithin $Lab $GameInstall -or
-    Test-RkWithin $save $GameInstall -or Test-RkWithin $GameInstall $save) {
+if ((Test-RkWithin $GameInstall $Lab) -or (Test-RkWithin $Lab $GameInstall) -or
+    (Test-RkWithin $save $GameInstall) -or (Test-RkWithin $GameInstall $save)) {
   throw 'Game installation must not overlap private lab or personal saves.'
 }
 if ([IO.Path]::GetFileName($SteamExe) -ine 'steam.exe' -or [IO.Path]::GetFileName($GameInstall) -ine 'Undertale') {
