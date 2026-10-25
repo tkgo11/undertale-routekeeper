@@ -87,6 +87,19 @@ Check ($direct.Contains('Preexisting UNDERTALE saves') -and $direct.Contains('Pr
 Check ($direct.Contains("result='NOT_RUN'") -and !$direct.Contains("result='NATIVE_RUNTIME_PASS'")) 'direct runner does not synthesize gameplay success'
 Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('Original test installation needs review')) 'direct runner retains recovery copies after restore failures'
 
+# One-account tool is source-audited only: the OS/game are not launched.
+$currentScript=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'run-current-account.ps1') -Raw
+Check ($currentScript.Contains("'Preflight','Run','Recover','Archive'")) 'same-account smoke preflight, run and recovery lifecycle exists'
+Check ($currentScript.Contains('AcceptSteamAccountRisk') -and $currentScript.Contains('CloudDisabledAndOffline')) 'same-account smoke requires explicit user risk acknowledgement'
+Check ($currentScript.Contains('Get-NetAdapter') -and !$currentScript.Contains('Disable-NetAdapter')) 'same-account smoke never disables host networking itself'
+Check ($currentScript.Contains('RoutekeeperOriginalSave-') -and $currentScript.Contains('original-save-snapshot-')) 'same-account original saves have quarantine and independent snapshot'
+Check ($currentScript.Contains('Get-RkInventoryDigest') -and $currentScript.Contains('Assert-RkHash')) 'same-account exact game build pinned'
+Check ($currentScript.Contains('Start-RkDisposableInstall') -and $currentScript.Contains('Stop-RkDisposableInstall')) 'same-account game swap uses marked rollback'
+Check ($currentScript.Contains('Assert-Closed') -and $currentScript.Contains('installPending')) 'same-account recovery refuses running Steam and records interrupted install'
+Check ($currentScript.Contains('TreeDigest $s.protectedSave') -and $currentScript.Contains('trialSave')) 'same-account restore checks original hash and preserves trial saves'
+Check ($currentScript.Contains("result='NOT_RUN'") -and !$currentScript.Contains("result='NATIVE_RUNTIME_PASS'")) 'same-account smoke does not forge verified gameplay'
+Check (!$currentScript.Contains('Restore-SteamCloud') -and !$currentScript.Contains('Clear-SteamCache')) 'Steam account cache/history not claimed reversible'
+
 if ($Lab -or $PatchedData) {
     if (!$Lab -or !$PatchedData) { throw 'Both private staging arguments are required.' }
     $global:RkMockDispatch=$false
