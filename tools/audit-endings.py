@@ -36,6 +36,10 @@ def compile_slice(source):
   elif m:=re.fullmatch(r'(q|con|mrd|murderboy|qualify|d|requested|f56|murder|special_end|skip) = (.*);',line):line=m[1]+' = '+expression(m[2])
   elif m:=re.fullmatch(r'global.msg\[(\d+)\] = scr_gettext\("obj_mainend_(\d+)"\);',line):line=f'slots[{m[1]}] = {m[2]}'
   elif m:=re.fullmatch(r'ini_write_real\("([^"]+)", "([^"]+)", ([^;]+)\);',line):line=f'writes[{m[1]+"."+m[2]!r}] = '+expression(m[3])
+  elif m:=re.fullmatch(r'global.attacktype = (.*);',line):line='attacktype = '+expression(m[1])
+  elif m:=re.fullmatch(r'turns -= (\d+);',line):line='turns -= '+m[1]
+  elif line=='instance_destroy();':line='destroyed = 1'
+  elif m:=re.fullmatch(r'global.lv = (\d+);',line):line='lv = '+m[1]
   elif line=='scr_itemget(16);':line='requested = 1'
   elif m:=re.fullmatch(r'global.flag\[56\] = (\d+);',line):line='f56 = '+m[1]
   else:continue
@@ -117,10 +121,32 @@ finalcode=compile_slice(finalintro[finalintro.index('special_end = 0;'):finalint
 for phase,stage in itertools.product([0,10,11,12,13],[0,11,12,15,16]):finalrows.append([phase,stage,run(finalcode,dict(f493=phase,murder=1 if stage>=16 else 0))['special_end']])
 reset=read('gml_Script_scr_namingscreen');resetcode=compile_slice(body(reset,'if (truereset > 0)'));resetrows=[]
 for sk,won,cp,ch in itertools.product([0,1,2],repeat=4):resetrows.append([[sk,won,cp,ch],run(resetcode,dict(sk=sk,Won=won,CP=cp,CH=ch))['writes']])
+levelsource=read('gml_Script_scr_levelup');levelcode=compile_slice(levelsource[:levelsource.index('if (global.lv != currentlevel)')]);levels=[]
+thresholds=[int(x) for x in re.findall(r'global.xp >= (\d+)',levelsource)]
+for xp in sorted({0,1,*[v+d for v in thresholds for d in [-1,0,1]]}):levels.append([xp,run(levelcode,dict(xp=xp,lv=1))['lv']])
+suppression=[]
+for name,area,flag,deadline in [('gml_Object_obj_encounterer_tundra1_Create_0',1,203,100),('gml_Object_obj_encounterer_water1_Create_0',2,204,121)]:
+ source=read(name);predicate=re.search(r'if \((global.flag\['+str(flag)+r'\] == 0 && global.plot > [0-9]+)\)',source)[1]
+ code=compile_slice('if ('+predicate+')\n{\ninstance_destroy();\n}')
+ for count,plot in itertools.product([0,1,16],[deadline-1,deadline,deadline+0.1,deadline+1]):
+  v={f'f{flag}':count,'plot':plot,'destroyed':0};suppression.append([area,count,round(plot*10),run(code,v)['destroyed']])
+for name in ['gml_Script_scr_monstersetup','gml_Script_scr_battlegroup','gml_Object_obj_loox_Step_0','gml_Object_obj_loox_Create_0','gml_Object_obj_vulkin_Create_0','gml_Object_obj_dummymonster_Destroy_0','gml_Object_obj_napstablook_Step_0','gml_Object_obj_maddummy_Alarm_7','gml_Object_obj_battlebomb_Destroy_0','gml_Object_obj_endflowey_Step_0','gml_Object_obj_dummytrigger_Step_0']:read(name)
+attackbody=body(ratings,'if (turns >= 1)');attackcode=compile_slice('if (turns >= 1)\n{\n'+attackbody[:attackbody.index('if (global.attacktype >= 50)')]+'\n}');attackrows=[]
+for turns in range(28):
+ r=run(attackcode,dict(turns=turns,attacktype=0));attackrows.append([turns,r['turns'],r['attacktype']])
+read('gml_Object_obj_mettatonex_Other_11');read('gml_Object_obj_ratingsmaster_Draw_0')
+encounterRewards={}
+setup=read('gml_Script_scr_monstersetup');groups=read('gml_Script_scr_battlegroup')
+for obj,label in [('obj_loox','Loox'),('obj_vulkin','Vulkin')]:
+ position=re.search(r'global.monsterinstance\[0\] = instance_create\([^;]*, '+obj+r'\);',groups).start()
+ segment=groups[groups.rfind('    case ',0,position):position]
+ monster=int(re.findall(r'global.monstertype\[0\] = (\d+);',segment)[-1])
+ effect=body(setup,'if (global.monstertype[myself] == '+str(monster)+')')
+ encounterRewards[label]=int(re.search(r'global.xpreward\[myself\] = (\d+);',effect)[1])
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)
 a.output.parent.mkdir(parents=True,exist_ok=True)
-result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows}
+result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
 if a.verify:
  if a.output.read_text()!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')

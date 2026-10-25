@@ -11,7 +11,7 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"decision_rating_resolution.gml",DecisionPolicy.EmitRatingResolutionGml()},{"decision_ratings.gml",DecisionPolicy.EmitRatingsGml()},{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
+var adapterSources=new Dictionary<string,string>{{"decision_enforceable.gml",DecisionPolicy.EmitEnforceableGml()},{"decision_rating_resolution.gml",DecisionPolicy.EmitRatingResolutionGml()},{"decision_ratings.gml",DecisionPolicy.EmitRatingsGml()},{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
@@ -235,4 +235,13 @@ foreach(var mode in Enum.GetValues<DecisionMode>())foreach(bool refusal in new[]
     if(int.Parse(new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitRatingResolutionGml(),new Dictionary<string,int?>()).Run())!=DecisionPolicy.RatingResolution(mode,refusal))throw new Exception("Rating disposition source mismatch");
 }
 Check("Scripted outcome dispositions preserve original and nonlethal attack paths",true);
+for(int risk=0;risk<=20;risk++)foreach(int target in new[]{0,4,6,8})foreach(int goal in new[]{0,8})foreach(int action in new[]{1,5,12}){
+    var prefix=$"argument0 = {risk}; argument1 = {action}; argument2 = 2; argument3 = {target}; argument4 = {goal}; ";
+    bool scopedResult=new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitEnforceableGml(),new Dictionary<string,int?>()).Run()=="1";
+    if(scopedResult!=DecisionPolicy.CanEnforce(risk,action,2,target,goal))throw new Exception("Enforcement scope source mismatch");
+}
+Check("Unproven LV1 compound risk is advisory while verified boss protections remain enforceable",!DecisionPolicy.CanEnforce(17,1,2,6,8)&&DecisionPolicy.CanEnforce(5,1,2,6,8)&&DecisionPolicy.CanEnforce(17,1,2,0,8));
+var uncertain=WarningSession.Apply(new(),WarningEvent.Propose,DecisionMode.Forced,17,"compound",false).State;
+uncertain=WarningSession.Apply(uncertain,WarningEvent.Acknowledge).State;
+Check("Forced can acknowledge an unsupported compound constraint without a battle trap",!WarningSession.Apply(uncertain,WarningEvent.Propose,DecisionMode.Forced,17,"compound",false).Refuse);
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

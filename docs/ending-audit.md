@@ -60,3 +60,24 @@ encounters, alarm/Draw/
 collision interactions and scripted outcomes outside the audited EX boundary.
 Runtime-only uncertainty: startup, real controller input, battle timing, saves,
 RESET/cloud effects and actual final playback. Keep InspectedOnly and Draft.
+
+## Ordered witnesses and runtime continuation
+
+The new source-bounded transition executor adds pre-boss encounters, actual Loox7/
+Vulkin70 and boss EXP, level thresholds, post-battle regional settlement, water
+deadline, friendship ordering, inventory storage/retrieval and prior Neutral
+reload. Original-derived XP/encounter-suppression fixtures validate those bounds.
+All18 concrete Neutral types have witnesses in this abstraction; not every room,
+RNG, optional encounter or combat victory has been proven. Source-model results
+are explicitly named ReachableInSourceModel, never NATIVE_RUNTIME_PASS.
+
+NEO at39 Hotland kills sets aborted27 before settlement; its own kill later brings
+the counter to40 and stage15, while aborted27 prevents16. The late Neutral witness
+uses that event order. Repeated EX qualification uses original turn25->20 attack
+wrap with100-cycle models, not an invented monotonically increasing turn count.
+
+Types4/6 with compound LV1 remain UNKNOWN pending optional zero-EXP/path analysis.
+Only their uncertain level protection becomes advisory in Forced; known boss
+constraints remain enforceable. No global impossibility is inferred from assuming
+all kills award positive EXP. Windows runtime bootstrap is now BLOCKED by the
+isolated Steam API/window failures; real interaction/endings remain NOT_RUN.

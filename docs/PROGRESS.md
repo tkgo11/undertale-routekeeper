@@ -10,7 +10,7 @@ no merge, public release, profile promotion or original save/history mutation.
   epilogue variants and pure RESET/TRUE RESET history previews.
 - 18 specific Neutral targets plus Any, the original call selection/subbranches,
   eight optional selectable call-condition goals and earlier-ending/history constraints.
-- Native live state adapter; 74 pinned source signatures and 34 manifest expressions,
+- Native live state adapter; 88 pinned source signatures and 34 manifest expressions,
   plus qualified context/availability/aliases. Only genuinely missing observations
   remain unknown. No guessed native flag binding is used.
 - Complete settings selection for the implemented targets, all four modes,
@@ -26,7 +26,7 @@ no merge, public release, profile promotion or original save/history mutation.
 ## Current evidence
 
 Release build has zero warnings/errors. Local executable suites: Core38,
-Neutral60, Decisions80, History17, Tool47, Saves7 (249 C# checks + 7,915 independent golden assertions plus 17 offline UI groups). Source interpreters
+Neutral60, Decisions82, History17, Tool55, Saves7 (259 C# checks + 8,564 audit assertions plus 18 offline UI groups and 4 archive groups). Source interpreters
 compare route/status/objective/progress/condition/policy cases, including 6,000
 additional call-goal snapshots and 20,000 warning transactions. These are not a
 GameMaker VM. Authentic compile/serialize/reload passes; all 6,246 non-hook original
@@ -42,17 +42,18 @@ working copies. The source/tool package contains no game data or personal saves.
 
 ## Not complete / not verified
 
-- Official runner and matching Steam manifest/media are absent. Xvfb/OpenGL and an
-  inspected OpenGM source build work, but conversion stops at missing abc_123_a.ogg.
-  No mod startup, visual, hardware-input, battle, save/reload or ending scenario has
-  run. A successful alternative interpreter would still not approve Steam support.
+- Windows runner/media/manifest now supplied and hash-verified. Official original
+  and patched runner bootstrap was attempted via QEMU-user/Wine10/Xvfb; both stop
+  at SteamAPI_InitSafe failure, mainwindow failure and an illegal instruction.
+  No authorized Steam client session is available in the isolated container. No
+  bypass was used. Native Windows and all actual gameplay remain NOT_RUN.
 - Forced does not cover every scripted death/decision. A late quota discovered
   inside an active battle is advisory to avoid trapping play. Further friendship
   decisions and alternative interaction paths need adapters/scenario tests.
 - Call conditions are selectable; exclusive dialogue-slot selection is not
   implemented. GUI fullscreen/resize behavior and controller hardware remain untested.
-- Platform/depot provenance is unknown. Only one authentic hash was supplied;
-  no macOS/Linux game data/runner profile is fabricated. Installer refuses it.
+- Windows x86 identity and supplied Steam build/depot metadata are recorded.
+  No macOS/Linux game data/runner profile is fabricated. Installer refuses it.
 - G3M2.0.0 package generation is implemented and tested against its current parser
   and synthetic deltas. Authentic export requires VerifiedPatch and a verified data
   location; neither exists yet. Audited release remains pending.
@@ -132,23 +133,66 @@ The pixel UI/Galmuri14 style is unchanged; only string coverage was regenerated.
 4. Hosted CI is BLOCKED by account billing; no retries or billing changes. The new
    independent suite is included for future authorized runner availability.
 
-## Runtime-only queue (await later authorized inputs)
+## Newly implemented runtime/reachability continuation
 
-Use matching legitimate runner/media/manifest when available for startup, GUI
-scaling, controls, battle/scene timing, saves/RESET and real endings. Do not request
-or obtain additional game files now. No supported-runtime profile is invented.
-Keep InspectedOnly and refuse live installation/G3M export until sufficient evidence.
+Numeric Draft Release API download verified ZIP9c8fa123…f265d and all220 files.
+Paired data matches the audited hash; external assets/runner/manifest are present.
+Stream-flag audio metadata has four absent filenames with nonempty embedded
+references; their actual resolution/playback is NOT_RUN, not an assumed missing
+required file. All212 external files are inventoried privately. See runtime-validation.md.
+
+Runtime tooling commit: fe675b4 (exact-runner gates and isolated validation harnesses).
+Added pinned archive staging, path/case/symlink safeguards, immutable input hash
+verification, separate disposable run copies/profiles, a reproducible Wine/QEMU
+smoke and Windows Sandbox/Steam harness. Native harness is NOT_RUN and refuses
+normal accounts, existing saves/Cloud caches, unsafe mappings and changed binaries.
+Installation now checks the exact runner; native profiles cannot omit that pin.
+
+RunTransitionModel and GenocideTransitionModel execute ordered encounter/boss,
+friendship/water, inventory, prior-Neutral and delayed counter transitions. The
+CLI analyze-reachability evaluates171 settings combinations:74 have bounded source
+witnesses,95 have source-backed contradictions,2 remain UNKNOWN. All18 concrete
+Neutral types have witnesses within this abstraction; neither RNG/movement nor
+combat victory nor actual endings are proven by it. Pacifist/Soulless and ordered
+Genocide/Soulless prerequisites are also modeled; permanent history is an input.
+
+Fixed the model's Loox reward using original battlegroup/setup linkage (7), not
+shared rule assumptions. NEO at39 kills sets abandonment before returning; the
+later counter40 yields stage15, not a repaired Genocide. Original XP thresholds,
+post-boss encounter suppression and turn25->20 EX attack wrap are golden-derived.
+100-cycle EX source-event tests cover repeated qualifications and both Step orders.
+Unproven LV1 plus types4/6 remains UNKNOWN: only that level restriction becomes
+advisory in Forced; independently verified boss protections remain enforceable.
+
+## Runtime-only queue / next source work
+
+Use a legitimately owned, authenticated Steam client inside a fresh isolated
+Windows environment; no credentials or additional files are requested in chat.
+The harness and commands are in runtime-validation.md. Confirm startup, actual
+EN/KR UI, hardware controls, battle/Alarm/Draw/collision timing, saves/RESET and
+actual endings before promotion. Mac/Linux still require their own exact inputs
+and native execution. Keep InspectedOnly; no release, merge or hosted CI retries.
+
+Extend the bounded witness graph over optional/scripted zero-EXP outcomes and
+remaining encounter/backtracking cases before resolving the two compound UNKNOWNs.
+The current transition model is not a full GameMaker scheduler or path explorer.
+Removed a vacuous modeled HP/EXP/inventory assertion: source-event scheduling cannot
+prove those preservation properties; actual battle verification remains NOT_RUN.
+Both Windows scripts pass PowerShell7.6.8 AST parsing; the initial normal-account
+refusal was exercised on Linux. All Windows API calls remain NOT_RUN.
+Task-owned tool images, failed prefixes and duplicate candidate copies were cleaned;
+the verified inputs, prepared lab and useful private evidence were retained.
 
 Private data stays in private-data/; decompilation, native English atlas, candidates
 and experiments in .research/. Follow private-data.md for cleanup; provider backup
 deletion is not promised. No high-risk merge or public release was performed.
 
-Current implementation commit: 9a82745 (independent original-source ending audit,
+Baseline implementation commit: 9a82745 (independent original-source ending audit,
 Neutral API/budget/greeting corrections, EX automatic outcome protection and
 Snowman acquisition/storage guidance). Previous call-goal implementation:5a8b0f2.
 Earlier implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
 5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Latest tested
-native output is d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d.
+native output is 40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b.
 All four standalone tool packages publish; the Linux package builds that exact
 output and completes the real synthetic G3M roundtrip. Hosted billing is still
-blocked; no official runner evidence exists.
+blocked. Official bootstrap evidence exists, but gameplay remains BLOCKED.

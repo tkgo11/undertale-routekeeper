@@ -46,7 +46,7 @@ public static class NeutralGoals
     public static NeutralGreetingGoal Get(int id)=>id>=0&&id<Goals.Count?Goals[id]:throw new ArgumentOutOfRangeException(nameof(id));
     public static Evaluation Evaluate(int id,int target,GameState state,Language language=Language.English)
     {
-        var goal=Get(id);var blocked=new List<Objective>();var actions=new List<Objective>();bool unknown=false;
+        var goal=Get(id);var blocked=new List<Objective>();var actions=new List<Objective>();bool unknown=id==8&&target is 4 or 6;
         if(!goal.CompatibleTargets.Contains(target))blocked.Add(new("greeting_conflict",language==Language.Korean?"이 통화 조건과 맞는 결말 유형을 선택하세요.":"Choose a compatible ending type for this call condition."));
         foreach(var r in goal.Requirements)
         {
@@ -57,6 +57,7 @@ public static class NeutralGoals
             else {actions.Add(objective);if(r.Deadline is string deadline&&state[deadline] is null)unknown=true;}
         }
         if(id==4 && blocked.Count==0 && state["snowman_piece_carried"]==0 && actions.Count>0) actions[0]=new("greeting",KeepsakeGuidance.Plan(state,language));
+        if(id==8 && target is 4 or 6 && blocked.Count==0) { actions.Clear();actions.Add(new("greeting",language==Language.Korean?"이 결말 유형에서는 이 통화 조건에 도달하지 못할 수 있습니다.":"This call condition may not be attainable with this ending type.")); }
         var status=blocked.Count>0?RouteStatus.BLOCKED:unknown?RouteStatus.UNKNOWN:actions.Count>0?RouteStatus.ACTION_REQUIRED:RouteStatus.ON_TRACK;
         if(status==RouteStatus.UNKNOWN && actions.Count==0) actions.Add(new("greeting",language==Language.Korean?"아직 통화 조건을 확인할 수 없습니다.":"The call condition is not clear yet."));
         return new(status,blocked.Count>0?blocked:actions,[],true);
@@ -96,6 +97,7 @@ public static class NeutralGoals
             }
             s.Append("}\n");
         }
+        s.Append("if (global.rk_target_greeting == 8 && (global.rk_target_neutral == 4 || global.rk_target_neutral == 6) && gg_blocked == 0) { gg_unknown = 1; global.rk_greeting_text = \"This call condition may not be attainable with this ending type.\"; if (global.rk_language == 1) global.rk_greeting_text = \"이 결말 유형에서는 이 통화 조건에 도달하지 못할 수 있습니다.\"; }\n");
         s.Append(KeepsakeGuidance.EmitGml());
         s.Append("if (gg_action) global.rk_greeting_status = 1;\nif (gg_unknown) global.rk_greeting_status = 4;\nif (gg_blocked) global.rk_greeting_status = 3;\n");
         if(standalone)s.Append("return global.rk_greeting_status;\n");

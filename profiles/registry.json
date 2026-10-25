@@ -2,15 +2,19 @@
   {
     "Id": "provided-b718f822-experimental",
     "Status": "InspectedOnly",
-    "Platform": "Unknown",
-    "Architecture": "Unknown",
+    "Platform": "Windows",
+    "Architecture": "x86",
     "OriginalSize": 62921978,
     "OriginalSha256": "b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7",
     "OriginalMd5": "5903fc5cb042a728d4ad8ee9e949c6eb",
     "BytecodeVersion": 16,
     "StructuralSha256": "665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa",
-    "PatchedSha256": "d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d",
-    "SteamBuildId": null,
-    "SteamDepotId": null
+    "PatchedSha256": "40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b",
+    "SteamBuildId": "4279148",
+    "SteamDepotId": "391541",
+    "GameDataRelativePath": "data.win",
+    "ExecutableRelativePath": "UNDERTALE.exe",
+    "ExecutableSha256": "c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58",
+    "SteamDepotManifestId": "3413030246586915448"
   }
 ]

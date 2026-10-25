@@ -125,6 +125,15 @@ class UiTests(unittest.TestCase):
         self.assertIn('scr_routekeeper_warning_session(1, risk, context, enforceable)',guard)
         self.assertIn('string(global.rk_mode)',guard)
         self.assertLess(guard.index('!global.rk_state_ready'),guard.index('global.flag[26]'))
+    def test_unproven_compound_forced_combination_fails_safely(self):
+        guard=(ROOT/'gml/decision_guard.gml').read_text()
+        self.assertIn('scr_routekeeper_decision_enforceable(risk, action, family',guard)
+        scope=(ROOT/'gml/decision_enforceable.gml').read_text()
+        self.assertIn('argument0 == 17',scope);self.assertIn('argument4 == 8',scope)
+        self.assertIn('return 0;',scope)
+        create=(ROOT/'gml/controller_create.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
+        self.assertIn('global.rk_warning_pending = 0;',create);self.assertIn('global.rk_warning_ack = 0;',create)
+        self.assertNotIn('ini_write_real("Guidance", "warning',step)
     def test_baseline_cell_bounds(self):
         rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')

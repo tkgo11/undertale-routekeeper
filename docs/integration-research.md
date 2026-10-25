@@ -13,7 +13,8 @@ Inspected on 2026-10-24. No substantial upstream implementation or copyrighted d
 
 Private release `dev-game-data` provides `data.win`, `file0`, `file8`, `file9`, and `undertale.ini`. Local files and all research/decompilation outputs remain ignored. The data file is 62,921,978 bytes, SHA-256 `b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7`, historical MD5 `5903fc5cb042a728d4ad8ee9e949c6eb` (computed observation, not upstream provenance). GameMaker bytecode 16, non-YYC, non-GMS2; 6,272 code resources and 336 rooms.
 
-The uploaded filename does not establish OS or architecture. No runner, Steam appmanifest/depot manifest, or build metadata was supplied. Nominal internal version cannot identify Steam build. This is an analyzed exact hash, **not a runtime-supported Steam profile**.
+The uploaded filename does not establish OS or architecture. At the initial inspection no runner/manifest/build metadata was supplied; the
+2026-10-25 authorized runtime continuation now records them in runtime-validation.md. Nominal internal version cannot identify Steam build. This is an analyzed exact hash, **not a runtime-supported Steam profile**.
 
 Read-only decompilation verified `obj_time` is persistent and its Create event can spawn our persistent controller. `scr_load` binds the saved XP value to **`global.xp`**, not `global.exp`; this was the initial slice; the current adapter also binds the separately signature-verified predicates in profiles/bindings.json. `obj_mainchara` initializes `cutscene` to zero; `global.interact` controls ordinary world interaction. `obj_battlecontroller` and `obj_heart` are present. Existing F10-F12 player key handlers are guarded by debug mode. We disable our UI in debug mode rather than altering vanilla debug events.
 

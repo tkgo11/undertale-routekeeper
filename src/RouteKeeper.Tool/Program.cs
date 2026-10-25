@@ -1,10 +1,21 @@
+using RouteKeeper.Core;
 using System.Text.Json;
 using RouteKeeper.Tool;
+
+static object Describe(ReachabilityResult r)=>new { Verdict=r.Verdict.ToString(),r.Evidence,r.Events,r.FinalState };
 
 try
 {
     switch (args.FirstOrDefault())
     {
+        case "analyze-reachability" when args.Length == 1:
+            var rows=from target in Enumerable.Range(0,19) from goal in Enumerable.Range(0,9)
+                let analysis=EndingReachability.Neutral(target,goal)
+                select new { Target=target,CallGoal=goal,Verdict=analysis.Verdict.ToString(),analysis.Evidence,analysis.Events,analysis.FinalState };
+            Console.WriteLine(JsonSerializer.Serialize(new { Scope="SOURCE_MODEL_ONLY; combat, RNG and movement witnesses are not runtime execution",Neutral=rows,
+                Pacifist=new[]{EndingReachability.Pacifist(false,1),EndingReachability.Pacifist(false,2),EndingReachability.Pacifist(true,1),EndingReachability.Pacifist(true,2)}.Select(Describe),
+                Genocide=new[]{EndingReachability.Genocide(false,false),EndingReachability.Genocide(false,true)}.Select(Describe) },CompatibilityRegistry.JsonOptions));
+            break;
         case "g3m-package" when args.Length is 7 or 8:
             await G3MPackage.CreateAsync(args[1], args[2], args[3], args[4], CompatibilityRegistry.Load(Path.Combine(args.Length == 8 ? args[7] : AppContext.BaseDirectory,"profiles","registry.json")), args[5], args[6]);
             Console.WriteLine("PASS: exact-hash G3M package generated and delta roundtrip verified; no game installed.");

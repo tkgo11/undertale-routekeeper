@@ -93,6 +93,6 @@ if (action == 12) {
 context = string(global.rk_target_route) + ":" + string(global.rk_target_neutral)
     + ":" + string(global.rk_target_epilogue) + ":" + string(global.rk_target_greeting)
     + ":" + string(global.rk_mode) + ":" + string(action) + ":" + string(room) + ":" + string(target) + ":" + string(slot);
-enforceable = !(risk == 3 && action == 1);
+enforceable = scr_routekeeper_decision_enforceable(risk, action, family, global.rk_target_neutral, global.rk_target_greeting);
 global.rk_warning_room = room;
 return scr_routekeeper_warning_session(1, risk, context, enforceable);

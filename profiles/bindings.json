@@ -736,6 +736,76 @@
       "Resource": "gml_Script_scr_storagecheck",
       "DecompilerSha256": "3f6ddbf2165c013f32dc1d034e8680af9cbd4a66b3b4ae44faa7acbf05ac952e",
       "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_tundra1_Create_0",
+      "DecompilerSha256": "56adcfdb58f8dcc92ecc36ca7ef8fc8edefda4991b97a5f3a1fa867e4a66493b",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_water1_Create_0",
+      "DecompilerSha256": "b3145372d0e86d4e8fa1be82e06e017610a148a483f89a52059662955ee32d38",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_monstersetup",
+      "DecompilerSha256": "21f35d41c6c1caf217f141353e3c539ea5b60461195989b8ffb50ce02e0bf15e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_loox_Step_0",
+      "DecompilerSha256": "fdaea2fb2368bad2ccf695cbdca013334ef601cf30d3408697e4236b0d72aeaa",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_loox_Create_0",
+      "DecompilerSha256": "b602698e15ab938fdcba986e3ad760c9e498310639c917678d88234a3e8f9cc9",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_vulkin_Create_0",
+      "DecompilerSha256": "117d243ab75495e0770a6c2d41d7785f2c117eadfddc2ca08abbcbd320a9ab0d",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummymonster_Destroy_0",
+      "DecompilerSha256": "000f5f050484ac7b145a1d1c9a04c2ae4c96bda31ec2a1bcb6906cbcc72693cf",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_napstablook_Step_0",
+      "DecompilerSha256": "14a638d6a2d96e1ff55d14c3e7f00047622acbadeb8979119528086a5c99ae18",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Alarm_7",
+      "DecompilerSha256": "a82de855b0bb4afbec9d91632304b1b0a5bfc814053054bea1400446df81dd3e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlebomb_Destroy_0",
+      "DecompilerSha256": "949f8a1a9604ff66efffde2beeb866a0da49290c5afef7ada3bcd3a9989f9d44",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_endflowey_Step_0",
+      "DecompilerSha256": "241cb3574ce46801ba40393e904b128fcdf8c60ad6df1a63f4de3c5079965fdf",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummytrigger_Step_0",
+      "DecompilerSha256": "1fba7793dfbf9d06b92e3d4f6ff89d61a92cba8d64bdb89ff1c73e5d5d350e76",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Other_11",
+      "DecompilerSha256": "417961a835a9e534179a2f1382e8def3cc0088bb7ae531662c1b404193b974d7",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_ratingsmaster_Draw_0",
+      "DecompilerSha256": "ae6b591ab6fbb47e8be8452f834032cab756419546833ab3cfc901909cc6dd4e",
+      "Markers": []
     }
   ],
   "RequiredRooms": [

@@ -111,4 +111,64 @@ foreach(bool sold in new[]{false,true})foreach(bool erased in new[]{false,true})
         Check(result.PriorNeutralAvailable==(kind==ResetKind.Reset),"RESET prior completion handling");
     }
 }
-Console.WriteLine($"PASS {checks} independent original-source golden assertions; gameplay NOT_RUN");
+// Original-derived murder fixtures also verify the new transition executor's
+// prefix function, independently of the shared route/evaluator tables.
+var order=Numbers(root.GetProperty("murderFlagOrder"));
+foreach(var row in root.GetProperty("murder").EnumerateArray()) {
+    var values=Numbers(row[0]);var flags=order.Select((key,i)=>(key,values[i])).ToDictionary(x=>x.key,x=>x.Item2);
+    Check(GenocideTransitionModel.MurderStage(flags)==row[1].GetInt32(),"Transition prefix differs from original GML");
+}
+for(int target=1;target<=18;target++) {
+    var result=EndingReachability.Neutral(target);
+    Check(result.Verdict==ReachabilityVerdict.ReachableInSourceModel&&result.Events.Count>5,"Missing ordered Neutral witness: "+target);
+    Check((int)NeutralCatalog.Classify(result.FinalState!).Ending==target,"Transition witness ends in wrong original branch");
+}
+for(int target=0;target<=18;target++)for(int goal=1;goal<=8;goal++) {
+    var r=EndingReachability.Neutral(target,goal);
+    if(r.Verdict==ReachabilityVerdict.ReachableInSourceModel)Check(NeutralGoals.Evaluate(goal,target,r.FinalState!).Status==RouteStatus.ON_TRACK,"Invalid source-model goal witness");
+}
+foreach(bool sold in new[]{false,true})foreach(int choice in new[]{1,2}) {
+    var p=EndingReachability.Pacifist(sold,choice);
+    Check(RouteEvaluator.Evaluate(sold?RouteId.SoullessPacifist:RouteId.TruePacifist,p.FinalState!).Status==RouteStatus.ON_TRACK,"Ordered Pacifist witness missing prerequisites");
+    var g=EndingReachability.Genocide(false,sold);
+    Check(RouteEvaluator.Evaluate(sold?RouteId.SoullessGenocide:RouteId.Genocide,g.FinalState!).Status==RouteStatus.ON_TRACK,"Ordered Genocide witness missing prerequisites");
+}
+var late=GenocideTransitionModel.Witness(true);
+Check(late.Flags[205]==40&&late.Flags[27]==1&&late.Stage==15,"NEO settlement must not undo its earlier abandonment decision");
+Check(EndingReachability.Neutral(6,8).Verdict==ReachabilityVerdict.Unknown,"Unproven LV1/high-kill combination falsely proved");
+Check(EndingReachability.Neutral(4,8).Verdict==ReachabilityVerdict.Unknown,"Post-friendship encounter availability ignored");
+Check(EndingReachability.Neutral(3,8).Verdict==ReachabilityVerdict.Impossible,"Required boss EXP contradicts LV1");
+var clean=new RunTransitionModel();clean.ResolveBoss(false);clean.Advance();clean.ResolveBoss(false);clean.Advance();clean.ResolveBoss(false);clean.GiveWater();clean.BefriendUndyne();clean.Advance();clean.BacktrackTo(1);
+try{clean.KillOrdinary();throw new Exception("Jerry farming after clean friendship was invented");}catch(InvalidOperationException){checks++;}
+try{var lost=new RunTransitionModel();lost.ResolveBoss(false);lost.Advance();lost.ResolveBoss(false);lost.Advance();lost.ResolveBoss(false);lost.MissWater();lost.BefriendUndyne();throw new Exception("Friendship after water deadline was invented");}catch(InvalidOperationException){checks++;}
+foreach(var row in root.GetProperty("levels").EnumerateArray()){var n=Numbers(row);Check(RunTransitionModel.LevelForExperience(n[0])==n[1],"Original level thresholds differ from transition rewards");}
+foreach(var row in root.GetProperty("suppression").EnumerateArray()){var n=Numbers(row);Check(RunTransitionModel.EncountersSuppressed(n[0],n[1],n[2])==(n[3]==1),"Original post-boss encounter availability differs");}
+// Repeated qualification through Alarm6 -> writer completion -> User11 ->
+// attack Step, using original-derived wrap outputs (turn25 wraps to20).
+var attackMap=root.GetProperty("attackWrap").EnumerateArray().Select(Numbers).ToDictionary(x=>x[0]);
+foreach(bool qualified in new[]{false,true})foreach(bool controllerFirst in new[]{false,true}) {
+    int turns=18,alarms=0,opportunities=0;var warning=new WarningState();
+    int ratings=qualified?12000:9000;
+    for(int tick=0;tick<100;tick++) {
+        if(controllerFirst)warning=WarningSession.Apply(warning,WarningEvent.Clear).State;
+        bool qualifies=DecisionPolicy.RatingQualifies(turns,ratings);
+        var proposal=WarningSession.Apply(warning,WarningEvent.Propose,DecisionMode.Forced,qualifies?20:0,"ex:"+tick);warning=proposal.State;
+        int disposition=DecisionPolicy.RatingResolution(DecisionMode.Forced,proposal.Refuse);
+        Check(!qualifies||disposition==2,"Forced qualification entered a finale or a permanent pause");
+        alarms++;turns++; // Original Alarm6.
+        // Original writer completion invokes User11, clearing talked before mnfight2.
+        turns=attackMap[turns][1];opportunities++;
+        if(!controllerFirst)warning=WarningSession.Apply(warning,WarningEvent.Clear).State;
+    }
+    Check(alarms==100&&opportunities==100&&turns is >=20 and <=24,"Attack scheduler did not return control");
+    // This scheduler subset cannot establish HP/EXP/inventory preservation.
+    // Those effects require the original VM and actual battle-event execution.
+}
+Check(!DecisionPolicy.BeforeAction(DecisionMode.Forced,new(RouteFamily.Neutral,DecisionAction.Fight,DecisionEnemy.Mettaton,ExperienceRisk:true,NeutralOutcome:-1)).Refuse,"Protected scripted spare must not prevent required FIGHT");
+var reload=WarningSession.Apply(new WarningState(true,true,20,"battle",true,DecisionMode.Forced),WarningEvent.Clear).State;
+Check(!reload.Pending&&!reload.Acknowledged,"Save/reload epoch retained stale warning acknowledgement");
+var looxWitness=new RunTransitionModel();looxWitness.KillOrdinary();
+Check(looxWitness.Snapshot()["experience"]==root.GetProperty("encounterRewards").GetProperty("Loox").GetInt32(),"Original Loox reward mismatch");
+var vulkinWitness=new RunTransitionModel();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.KillOrdinary();
+Check(vulkinWitness.Snapshot()["experience"]==root.GetProperty("encounterRewards").GetProperty("Vulkin").GetInt32(),"Original Vulkin reward mismatch");
+Console.WriteLine($"PASS {checks} audit assertions (original-derived golden + ordered-event models); gameplay NOT_RUN");

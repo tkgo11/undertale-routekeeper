@@ -68,3 +68,15 @@ in a public repository or a fork.
 - Font generation is stdlib-only, pinned OFL BDF, binary alpha and fixed baseline.
 - Never commit/export the original English atlas outside ignored .research.
 - G3M export requires VerifiedPatch and verified GameDataRelativePath; no override.
+
+## Private runtime lab
+
+- `python tools/test_runtime_lab.py`
+- `python tools/runtime_lab.py prepare --zip PRIVATE_ZIP --work NEW_IGNORED_LAB`
+- `python tools/runtime_lab.py verify --work IGNORED_LAB`
+- `dotnet run --project src/RouteKeeper.Tool -c Release -- analyze-reachability`
+- Read docs/runtime-validation.md before Wine/Sandbox execution. Never mount host
+  Steam userdata or personal saves. Steam auth failures are BLOCKED, not runtime
+  PASS. Do not bypass Steam or promote InspectedOnly from compatibility-layer tests.
+- The reachability command returns source-bounded witnesses; RNG, movement and
+  combat victory are assumptions, not executed gameplay or complete path proofs.

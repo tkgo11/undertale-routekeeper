@@ -7,21 +7,24 @@ hook/source evidence is in docs/integration-research.md.
 | Exact inspected input | Evidence | Verification | Installer policy |
 |---|---|---|---|
 | provided-b718f822 | 62,921,978 bytes, SHA-256 b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7, MD5 5903fc5cb042a728d4ad8ee9e949c6eb | FORM, bytecode 16, GMS1 non-YYC, 6,272 code resources, 336 rooms; real patch compile/save/reload verified | InspectedOnly: REFUSED |
-| Current Steam Windows | Depot 391541 exists; no matching runner/manifest supplied | NOT_RUN | REFUSED |
+| Supplied Windows Steam runtime | PE32/x86 runner c8c41910…8e58; manifest build4279148/depot391541/manifest3413030246586915448; paired data matches b718f822 | Wine/QEMU bootstrap BLOCKED at Steam init; native Windows NOT_RUN | REFUSED |
 | Current Steam macOS | Depot 391542 exists; no game.ios/runner supplied | NOT_RUN | REFUSED |
 | Current Steam Linux | Depot 391544 exists; no game.unx/runner supplied | NOT_RUN | REFUSED |
 
-The expanded source validates 74 original resource signatures, 26 intended code
+The expanded source validates 88 original resource signatures, 26 intended code
 changes and all 6,246 non-hook original code resources. Original textures/audio/font
 glyphs are retained. This is structural evidence only.
 
-The uploaded file's OS, architecture, Steam build/depot and nominal release
-provenance remain unknown. SteamDB's public branch lists build 4279148; this does
-not link that build to the supplied hash. Current registry status is diagnostic,
-even though the development GML patch can be compiled for that exact input.
+The newly authorized ZIP binds the audited data hash to a Windows x86 runner and
+supplied Steam manifest. PE version1.0.8.0/original menu1.08 is descriptive only.
+The manifest is user-supplied evidence, not independently authenticated Valve
+content. The profile remains InspectedOnly. Installation requires VerifiedPatch,
+exact data identity and the pinned runner hash/architecture/location; header or
+compatibility-layer execution never promotes it. See runtime-validation.md for
+all archive hashes, isolation and the Steam initialization blocker.
 
 Expected experimental output SHA-256:
-`d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d`.
+`40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b`.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.

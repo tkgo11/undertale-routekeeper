@@ -1,9 +1,10 @@
 # Verification evidence
 
 Updated 2026-10-25. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
-PASS applies only to the stated scope. No official game runner has executed.
-Latest independent audit:7,915 original-derived assertions plus249 existing C#
-checks; see ending-audit.md and the latest audit section below.
+PASS applies only to the stated scope. The official runner reached Steam bootstrap
+under QEMU/Wine but no game window/room executed successfully.
+Current continuation:8,564 original-golden/ordered-event assertions and259 C#
+checks; see the dated continuation sections below for historical snapshots.
 
 | Scope | Result | Command / evidence |
 |---|---|---|
@@ -22,7 +23,7 @@ checks; see ending-audit.md and the latest audit section below.
 | Executable header parser | PASS | Synthetic PE/ELF/Mach-O cases plus four official compiler executables; not game provenance |
 | Version diff | PASS | `ROUTEKEEPER_COMPARE=ORIGINAL UndertaleModCli load CANDIDATE -s integration/compare.csx`; code/event signature diff only |
 | Virtual display / alternative VM | PASS / BLOCKED | Xvfb and Mesa OpenGL4.6 context created; OpenGM built; authentic conversion stops at missing abc_123_a.ogg before mod gameplay |
-| Official startup / UI / controls | BLOCKED | No matching legitimate game runner/full media/Steam manifest |
+| Official startup / UI / controls | BLOCKED | Official runner supplied; isolated SteamAPI_InitSafe/mainwindow bootstrap failure |
 | Battles, transitions, warnings, Forced outcomes | NOT_RUN | Source policies/compilation tested; actual gameplay scenarios not executed |
 | Actual saves/RESET/endings/history invariance | NOT_RUN | Static/pure/read-only tests do not establish runtime safety |
 | Authentic installation / power loss | NOT_RUN | VerifiedPatch approval absent; synthetic transactions only |
@@ -57,9 +58,9 @@ delta roundtrip; it still requires an eligible hosted runner.
 
 Offline previews use real layout/current font assets; native English outlines are
 privately exported from the supplied exact input. evidence.json marks them
-OFFLINE_PREVIEW/gameplay NOT_RUN. No runner, startup, hardware input, battle,
-save/reload or actual ending has been executed. Additional game inputs were neither
-requested nor obtained in this continuation.
+OFFLINE_PREVIEW/gameplay NOT_RUN. At that historical snapshot no runner/startup/hardware input/battle/save/reload
+or actual ending had executed. The later authorized Windows continuation below
+supersedes the input/runtime availability statement.
 
 Previous continuation candidate SHA-256 (superseded below):
 901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2
@@ -137,3 +138,42 @@ Private logs/candidates/native English previews stay ignored in .research/artifa
 Run `dotnet run --project tests/RouteKeeper.Audit.Tests -c Release` and the private
 `tools/audit-endings.py ... --verify` command in AGENTS.md. Source hash evidence is
 checked against authentic data by bindings.csx. Original source remains ignored.
+
+## Authorized Windows runtime continuation
+
+- OFFLINE_PASS: release422659795/asset674332045 ZIP size132054497 and pinned SHA256;
+  safe inventory/extraction,220 per-file hashes, paired data unchanged; PE32/x86,
+  runner version1.0.8.0, original menu1.08, supplied build4279148/depot391541.
+- BLOCKED: original and final-patched official runner under QEMU-i38610.0.13,
+  Wine10.0/Xvfb, network-off isolated containers. Both log SteamAPI_InitSafe failure,
+  mainwindow creation failure and illegal instruction004D1820. No Steam API/DRM
+  alteration or license bypass. Private screenshots/logs retained, no public upload.
+- NOT_RUN: native Windows, mod initialization/UI/fonts/input/battles/modes,
+  actual save/reload/resets/endings, hardware gamepad and audio playback.
+- OFFLINE_PASS: Release build zero warnings/errors; Core38/Neutral60/Decisions82/
+  History17/Tool55/Saves7 =259 checks; Audit8,564 original-golden/event-model
+  assertions, including 100-cycle rating/Alarm/User11/attack-wrap scenarios.
+- OFFLINE_PASS: archive6 groups; UI18 groups; generated Core/Neutral/Decisions/UI
+  freshness, deterministic font coverage and source golden regeneration.
+- OFFLINE_PASS:88 source signatures, authentic compile/serialize/reload,
+  all6,246 untouched original code and media preserved; overwrite/modified input
+  rejection. Current candidate `40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b`,63,168,998 bytes.
+- OFFLINE_PASS: four self-contained publishes; synthetic G3M/xdelta/parser roundtrip.
+  No foreign executable was run. Known Windows profile stays InspectedOnly.
+- OFFLINE_PASS: both Sandbox scripts parse under official PowerShell7.6.8; initial
+  normal-account refusal tested on Linux. Windows calls/isolation are NOT_RUN.
+- NOT_RUN: Windows Sandbox harness execution. Input lab read-only, evidence
+  mapping writable, licensed Steam setup required, no automatic runtime PASS.
+- BLOCKED: hosted Actions billing; no hosted reruns/settings changes.
+
+Source-model CLI matrix:74 bounded witnesses/95 contradictions/2 UNKNOWN settings
+(out of171 including Any). These are conditional source paths, not native victory,
+RNG or complete movement proofs. Eighteen concrete Neutral variants have bounded
+witnesses; compound LV1/Betrayed and LV1/high-kill Exile remain unproved. The unknown
+level constraint is advisory in Forced, avoiding a potential trap.
+
+Audio inventory finds212 external files and four additional stream-flag resources
+with nonempty embedded references. Their external/embedded resolution is NOT_RUN;
+UTMT permits arbitrary embedded references for stream entries, so presence alone
+is not claimed to resolve them. No additional files were requested or assumed missing.
+See runtime-validation.md for reproducible commands, exact identities and cleanup.

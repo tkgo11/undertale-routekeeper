@@ -22,6 +22,7 @@ dotnet run --project tests/RouteKeeper.Core.Tests -c Release
 dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release
 dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release
 dotnet run --project tests/RouteKeeper.History.Tests -c Release
+dotnet run --project tests/RouteKeeper.Audit.Tests -c Release
 dotnet run --project tests/RouteKeeper.Tool.Tests -c Release
 dotnet run --project tests/RouteKeeper.Saves.Tests -c Release
 python integration/generate_font.py --verify
@@ -57,3 +58,10 @@ See [progress](docs/PROGRESS.md), [test evidence](docs/test-results.md),
 and [private input cleanup](docs/private-data.md). Repository privacy and data
 exposure must be audited before any public release. No game binaries, substantial
 original resources or personal saves belong in commits or ordinary CI artifacts.
+
+The supplied Windows runtime/manifest is now hash-identified. Original and patched
+official-runner attempts under Wine/QEMU are BLOCKED at Steam initialization;
+no gameplay PASS is claimed. See [runtime validation](docs/runtime-validation.md)
+for isolated commands, evidence and the Windows-native harness.
+`RouteKeeper.Tool analyze-reachability` reports bounded source witnesses and explicit
+unknowns; it is not a runtime compatibility or full reachability proof.
