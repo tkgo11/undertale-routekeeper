@@ -11,7 +11,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'safety.ps1')
-if (-not $IsWindows) { throw 'This harness requires native Windows.' }
+if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'This harness requires native Windows.' }
 if (!$AttestSeparateWindowsAccount -or !$AttestSteamOfflineAndCloudDisabled) {
     throw 'Explicit separate-account and Steam offline/Cloud-disabled attestations are required.'
 }
@@ -112,6 +112,7 @@ $evidence=Join-Path $Lab 'evidence\direct-windows'
 $files=@()
 $transaction=$null
 $process=$null
+$cleanupOk=$true
 $report=[ordered]@{case=$Case;mode='NATIVE_WINDOWS_SEPARATE_ACCOUNT';result='NOT_RUN';runId=$id;
     claim='Observations only; gameplay and save/ending scenarios need explicit operator verification.'}
 try {
@@ -179,12 +180,14 @@ try {
             Stop-RkDisposableInstall $transaction
         }
     } catch {
+        $cleanupOk=$false
         $report.result='BLOCKED';$report.cleanup=$_.Exception.Message
         Write-Warning 'Original test installation needs review; never delete the backup manually.'
     }
     $report | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidence ($Case+'-'+$id+'.json'))
-    # Remove only our own marked staging tree, never personal saves or Steam files.
-    if ((Test-Path -LiteralPath (Join-Path $stage '.routekeeper-direct-stage')) -and
+    # On restoration failure retain the staged files and VM-owned backup for recovery.
+    # Otherwise remove only our own marked staging tree; never personal saves or Steam files.
+    if ($cleanupOk -and (Test-Path -LiteralPath (Join-Path $stage '.routekeeper-direct-stage')) -and
         (Get-Content -LiteralPath (Join-Path $stage '.routekeeper-direct-stage') -Raw).Trim() -eq $id) {
         Assert-RkTreeNoLinks $stage
         Remove-Item -LiteralPath $stage -Recurse -Force
