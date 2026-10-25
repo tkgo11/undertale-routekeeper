@@ -6,7 +6,7 @@ PASS applies only to the stated scope. No official game runner has executed.
 | Scope | Result | Command / evidence |
 |---|---|---|
 | Release build | PASS | `dotnet build RouteKeeper.slnx -c Release` (0 warnings/errors) |
-| Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 36 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
+| Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 37 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
 | Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 54 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
 | Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 56 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
 | History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
@@ -31,7 +31,7 @@ as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.
 
 ## Current UI/font/guard/package expansion
 
-- PASS: 217 C# checks (Core36/Neutral54/Decisions56/History17/Tool47/Saves7).
+- PASS: 218 C# checks (Core37/Neutral54/Decisions56/History17/Tool47/Saves7).
 - PASS: 13 offline UI/font groups with Pillow11.3.0; all warning states/languages,
   root/paged navigation, objective fit, counter clipping, binary alpha, baseline,
   source hash, overhang metadata and deterministic font generation.
@@ -59,3 +59,9 @@ privately exported from the supplied exact input. evidence.json marks them
 OFFLINE_PREVIEW/gameplay NOT_RUN. No runner, startup, hardware input, battle,
 save/reload or actual ending has been executed. Additional game inputs were neither
 requested nor obtained in this continuation.
+
+Final native candidate SHA-256: 901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2. The local standalone
+package builder produced the same byte hash before the wording refinement, and
+the refined sources again passed authentic builder/serialize/reload validation.
+The latest hosted runs40151265027 (PR) /40151261704 (push) at5e6f8c6 also have
+zero executed steps and the same billing/spending-limit annotation.

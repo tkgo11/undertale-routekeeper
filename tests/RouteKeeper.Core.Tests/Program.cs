@@ -31,6 +31,11 @@ void Assert(bool condition, string message = "Assertion failed") { if (!conditio
 GameState Candidate() => new(RouteCatalog.Get(RouteId.TruePacifist).Requirements.ToDictionary(r => r.Fact, r => (int?)r.Expected).Concat(new Dictionary<string, int?> { ["papyrus_hangout_available"] = 1, ["undyne_hangout_available"] = 1, ["alphys_date_available"] = 1, ["true_lab_available"] = 1, ["mettaton_defeated"] = 1 }).ToDictionary(x => x.Key, x => x.Value));
 GameState With(GameState state, string key, int? value) => new(new Dictionary<string, int?>(state.Facts) { [key] = value });
 
+Check("Gameplay guidance omits developer implementation text",()=>{
+    var text=Enum.GetValues<RouteId>().SelectMany(route=>RouteCatalog.Get(route).Requirements.SelectMany(r=>new[]{r.Minimal,r.Detailed,r.KoreanMinimal,r.KoreanDetailed})
+        .Concat(ObjectiveRules.For(route).SelectMany(r=>new[]{r.Minimal,r.Detailed,r.KoreanMinimal,r.KoreanDetailed})));
+    foreach(var line in text)Assert(!new[]{"ROUTEKEEPER","by the mod","모드는 영구 기록을","system_information","flag was set"}.Any(line.Contains),line);
+});
 Check("Unknown facts never imply success", () => Assert(RouteEvaluator.Evaluate(RouteId.TruePacifist, GameState.From()).Status == RouteStatus.UNKNOWN));
 Check("Invalid observations remain unknown", () => {
     Assert(RouteEvaluator.Evaluate(RouteId.TruePacifist, With(Candidate(), "experience", -1)).Status == RouteStatus.UNKNOWN);
@@ -113,7 +118,7 @@ Check("Unavailable or unobserved hangouts are not actionable", () => {
 Check("Active explains unavailable objectives without directing a premature action", () => {
     var state = With(With(Candidate(), "papyrus_friendship", 0), "papyrus_hangout_available", null);
     var guidance = GuidanceController.Update(GuidanceMode.Active, RouteId.TruePacifist, state);
-    Assert(guidance.Show && guidance.Message == "No next action can be verified yet.");
+    Assert(guidance.Show && guidance.Message == "Your next step is not clear yet.");
 });
 Check("Undyne objective waits for Papyrus even if available", () => {
     var state = With(With(Candidate(), "papyrus_friendship", 0), "undyne_friendship", 0);
@@ -188,7 +193,7 @@ Check("Generated objectives and progress match C# in both languages and spoiler 
         var expected=RouteEvaluator.Evaluate(route,state,spoilers,language);
         var interpreter=new GmlObjectiveInterpreter(source,facts);
         var actual=interpreter.Run();
-        var expectedText=expected.Objectives.FirstOrDefault()?.Text ?? (language==Language.Korean?"아직 다음 행동을 확인할 수 없습니다.":"No next action can be verified yet.");
+        var expectedText=expected.Objectives.FirstOrDefault()?.Text ?? (language==Language.Korean?"다음 목표를 아직 알 수 없습니다.":"Your next step is not clear yet.");
         Assert(actual==expectedText,$"Objective mismatch {route}/{language}/{spoilers}/{sample}: {actual} != {expectedText}");
         Assert(interpreter.Integer("progress_met")==expected.MetRequirements && interpreter.Integer("progress_total")==expected.TotalRequirements,"Progress mismatch");
     }

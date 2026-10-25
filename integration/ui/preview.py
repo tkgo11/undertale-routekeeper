@@ -3,7 +3,6 @@
 from pathlib import Path
 import argparse,json,sys,hashlib
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from generate_font import glyph_source
 from PIL import Image,ImageDraw,__version__ as pillow_version
 from generate import CAT,ROOT
 L=CAT['layout'];WHITE=(255,255,255,255);BLACK=(0,0,0,255);YELLOW=(255,255,0,255);RED=(255,0,0,255)
@@ -11,12 +10,10 @@ class Renderer:
     def __init__(self,language,native=None):
         self.lang=language; self.line_height=18 if language else 16; self.image=Image.new('RGBA',(320,240),BLACK);self.draw=ImageDraw.Draw(self.image);self.runs=[]
         self.glyphs={}
-        for code,(advance,pixels,offset) in glyph_source().items():
-            if code<32:continue
-            im=Image.new('RGBA',(24,18))
-            for x,y in pixels:
-                if 0<=x<24 and 0<=y<18:im.putpixel((x,y),WHITE)
-            self.glyphs[code]=(advance,im,offset)
+        atlas=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')
+        for line in (ROOT/'assets/ui-font.tsv').read_text().splitlines():
+            code,x,y,advance,offset=map(int,line.split())
+            self.glyphs[code]=(advance,atlas.crop((x,y,x+24,y+18)),offset)
         self.metrics=json.loads((ROOT/'ui/english-metrics.json').read_text())['metrics']
         if language==0 and native:
             metadata=json.loads((native/'glyphs.json').read_text())

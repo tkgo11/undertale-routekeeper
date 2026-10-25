@@ -77,9 +77,9 @@ public static class RouteCatalog
         new(fact, expected, irreversible, minimal, detailed, koreanMinimal, koreanDetailed, comparison, guard, guardMinimum);
     private static readonly Requirement WorldAvailable = R("world_erased",0,true,
         "The world is erased. Permanent-history decisions remain yours.",
-        "The game world must already be restored. ROUTEKEEPER never sells your SOUL or rewrites system_information files.",
+        "The world must be restored before continuing. Some choices outlast a RESET.",
         "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.",
-        "세계가 복원되어 있어야 합니다. ROUTEKEEPER는 영혼을 팔거나 영구 기록 파일을 고치지 않습니다.");
+        "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.");
     private static readonly Requirement[] Pacifist = [
         R("hard_mode",0,true,"This challenge cannot reach the selected ending.","Hard Mode ends in the Ruins and cannot reach a normal ending.","이 도전에서는 선택한 엔딩에 도달할 수 없습니다.","하드 모드는 폐허에서 끝나므로 일반 엔딩에 도달할 수 없습니다."),
         R("experience",0,true,"Avoid gaining EXP.","Do not kill enemies or gain EXP.","EXP 획득을 피하세요.","적을 죽이거나 EXP를 얻지 마세요."),
@@ -97,18 +97,18 @@ public static class RouteCatalog
     ];
     private static Requirement History(int expected) => R("soul_sold",expected,true,
         "Existing permanent history does not match this ending.",
-        "This outcome requires the selected existing sold-soul history. ROUTEKEEPER never creates or deletes permanent history.",
+        "An earlier SOUL sale determines this ending. RESET does not erase that choice.",
         "기존 영구 기록이 이 엔딩과 맞지 않습니다.",
-        "이 결과에는 선택한 영혼 판매 기록이 필요합니다. ROUTEKEEPER는 영구 기록을 만들거나 지우지 않습니다.");
+        "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.");
     private static readonly Requirement[] Genocide = [
         R("hard_mode",0,true,"This challenge cannot reach the selected ending.","Hard Mode cannot reach a Genocide ending.","이 도전에서는 선택한 엔딩에 도달할 수 없습니다.","하드 모드에서는 몰살 엔딩에 도달할 수 없습니다."),
-        R("genocide_aborted",0,true,"A required encounter was missed.","A required enemy was spared or another Genocide abandonment flag was set.","필수 조우를 놓쳤습니다.","필수 적을 살렸거나 몰살 중단 플래그가 설정되었습니다."),
+        R("genocide_aborted",0,true,"A required encounter was missed.","A required enemy was spared or a required encounter was lost.","필수 조우를 놓쳤습니다.","필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다."),
         R("snowdrake_lost",0,true,"A required enemy can no longer be found.","Snowdrake must be killed before no further encounters or live Snowdrake remain.","필수 적을 더는 찾을 수 없습니다.","새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다."),
         R("genocide_stage",2,true,"The first region's requirements were missed.","Complete the Ruins kill quota and kill Toriel before leaving the Ruins.","첫 지역의 조건을 놓쳤습니다.","폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요.",Comparison.AtLeast,"toriel_resolved"),
         R("genocide_stage",8,true,"The forest's requirements were missed.","Complete Snowdin's quota and unique encounters before killing Papyrus.","숲 지역의 조건을 놓쳤습니다.","파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요.",Comparison.AtLeast,"papyrus_resolved"),
         R("genocide_stage",12,true,"The cavern's requirements were missed.","Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.","동굴 지역의 조건을 놓쳤습니다.","워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요.",Comparison.AtLeast,"undyne_resolved"),
         R("genocide_stage",16,true,"The final region's requirements were missed.","Complete Hotland/CORE's quota and required encounters before defeating Mettaton NEO.","마지막 지역의 조건을 놓쳤습니다.","메타톤 NEO를 처치하기 전에 핫랜드와 코어의 처치 수와 필수 조우를 완료하세요.",Comparison.AtLeast,"mettaton_defeated"),
-        R("genocide_stage",16,false,"Complete the area's remaining encounters.","Complete the verified ordered Genocide encounter chain.","현재 지역에 남은 조우를 완료하세요.","확인된 몰살 필수 조우를 순서에 맞게 완료하세요.",Comparison.AtLeast),
+        R("genocide_stage",16,false,"Complete the area's remaining encounters.","Complete the required Genocide encounters in order.","현재 지역에 남은 조우를 완료하세요.","몰살의 필수 조우를 순서에 맞게 완료하세요.",Comparison.AtLeast),
         R("sans_defeated",1,false,"Complete the final encounter.","Defeat Sans, then continue to the throne room.","마지막 조우를 완료하세요.","샌즈를 물리친 뒤 왕좌의 방으로 계속 가세요.")
     ];
     public static RouteDefinition Get(RouteId id) => id switch
@@ -178,7 +178,7 @@ public static class GuidanceController
         var status=evaluation.Status==RouteStatus.BLOCKED ? RouteStatus.BLOCKED : risk ? RouteStatus.AT_RISK : evaluation.Status;
         var show=mode!=GuidanceMode.Off && safeToDisplay && (mode!=GuidanceMode.Passive || risk || status==RouteStatus.BLOCKED);
         var message=risk ? (language==Language.Korean ? "이 선택은 선택한 경로를 막을 수 있습니다." : "This choice may block your selected route.") : evaluation.Objectives.FirstOrDefault()?.Text;
-        if(show && message is null) message=language==Language.Korean ? "아직 다음 행동을 확인할 수 없습니다." : "No next action can be verified yet.";
+        if(show && message is null) message=language==Language.Korean ? "다음 목표를 아직 알 수 없습니다." : "Your next step is not clear yet.";
         return new(status,show,mode!=GuidanceMode.Forced,false,show?message:null,mode==GuidanceMode.Forced?"UNVERIFIED_NO_INTERVENTION":"OBSERVE_ONLY");
     }
 }

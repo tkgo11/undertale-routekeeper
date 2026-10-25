@@ -1,7 +1,7 @@
 // Generated from the same ObjectiveRules used by C#.
 var rk_text, rk_unknown, rk_action, rk_blocked;
-rk_text = "No next action can be verified yet.";
-if (global.rk_language == 1) rk_text = "아직 다음 행동을 확인할 수 없습니다.";
+rk_text = "Your next step is not clear yet.";
+if (global.rk_language == 1) rk_text = "다음 목표를 아직 알 수 없습니다.";
 global.rk_objective_id = "unknown";
 global.rk_progress_met = 0; global.rk_progress_total = 0;
 rk_unknown = 0; rk_action = 0; rk_blocked = 0;
@@ -72,10 +72,10 @@ else { rk_action = 1; rk_blocked = 1; }
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
 rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The game world must already be restored. ROUTEKEEPER never sells your SOUL or rewrites system_information files.";
+if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
  rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "세계가 복원되어 있어야 합니다. ROUTEKEEPER는 영혼을 팔거나 영구 기록 파일을 고치지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }
@@ -152,10 +152,10 @@ return rk_text;
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 0)) {
 global.rk_objective_id = "soul_sold";
 rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "This outcome requires the selected existing sold-soul history. ROUTEKEEPER never creates or deletes permanent history.";
+if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
 if (global.rk_language == 1) {
  rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 결과에는 선택한 영혼 판매 기록이 필요합니다. ROUTEKEEPER는 영구 기록을 만들거나 지우지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
 }
 return rk_text;
 }
@@ -221,11 +221,11 @@ return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1 && global.rk_epilogue_resolved == 1) && (global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1 && global.rk_epilogue_matches == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "ending_complete";
-rk_text = "Your selected path is complete. Permanent history remains unchanged by the mod.";
-if (global.rk_spoilers == 1) rk_text = "The observed barrier and epilogue outcomes match your selected route.";
+rk_text = "Your selected path is complete.";
+if (global.rk_spoilers == 1) rk_text = "The barrier is open, and your final choice matches your goal.";
 if (global.rk_language == 1) {
- rk_text = "선택한 경로를 마쳤습니다. 모드는 영구 기록을 바꾸지 않았습니다.";
- if (global.rk_spoilers == 1) rk_text = "확인된 결계와 마지막 선택이 목표 경로와 맞습니다.";
+ rk_text = "선택한 경로를 마쳤습니다.";
+ if (global.rk_spoilers == 1) rk_text = "결계가 열렸고 마지막 선택도 목표와 맞습니다.";
 }
 return rk_text;
 }
@@ -357,10 +357,10 @@ else { rk_action = 1; rk_blocked = 1; }
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
 rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The game world must already be restored. ROUTEKEEPER never sells your SOUL or rewrites system_information files.";
+if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
  rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "세계가 복원되어 있어야 합니다. ROUTEKEEPER는 영혼을 팔거나 영구 기록 파일을 고치지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }
@@ -437,10 +437,10 @@ return rk_text;
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 1)) {
 global.rk_objective_id = "soul_sold";
 rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "This outcome requires the selected existing sold-soul history. ROUTEKEEPER never creates or deletes permanent history.";
+if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
 if (global.rk_language == 1) {
  rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 결과에는 선택한 영혼 판매 기록이 필요합니다. ROUTEKEEPER는 영구 기록을 만들거나 지우지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
 }
 return rk_text;
 }
@@ -506,11 +506,11 @@ return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1 && global.rk_epilogue_resolved == 1) && (global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1 && global.rk_epilogue_matches == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "ending_complete";
-rk_text = "Your selected path is complete. Permanent history remains unchanged by the mod.";
-if (global.rk_spoilers == 1) rk_text = "The observed barrier and epilogue outcomes match your selected route.";
+rk_text = "Your selected path is complete.";
+if (global.rk_spoilers == 1) rk_text = "The barrier is open, and your final choice matches your goal.";
 if (global.rk_language == 1) {
- rk_text = "선택한 경로를 마쳤습니다. 모드는 영구 기록을 바꾸지 않았습니다.";
- if (global.rk_spoilers == 1) rk_text = "확인된 결계와 마지막 선택이 목표 경로와 맞습니다.";
+ rk_text = "선택한 경로를 마쳤습니다.";
+ if (global.rk_spoilers == 1) rk_text = "결계가 열렸고 마지막 선택도 목표와 맞습니다.";
 }
 return rk_text;
 }
@@ -633,10 +633,10 @@ global.rk_progress_met = 0; if (global.rk_genocide_stage >= 0 && global.rk_genoc
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
 rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The game world must already be restored. ROUTEKEEPER never sells your SOUL or rewrites system_information files.";
+if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
  rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "세계가 복원되어 있어야 합니다. ROUTEKEEPER는 영혼을 팔거나 영구 기록 파일을 고치지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }
@@ -653,10 +653,10 @@ return rk_text;
 if ((global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1) && !(global.rk_genocide_aborted == 0)) {
 global.rk_objective_id = "genocide_aborted";
 rk_text = "A required encounter was missed.";
-if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or another Genocide abandonment flag was set.";
+if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or a required encounter was lost.";
 if (global.rk_language == 1) {
  rk_text = "필수 조우를 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 몰살 중단 플래그가 설정되었습니다.";
+ if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다.";
 }
 return rk_text;
 }
@@ -713,10 +713,10 @@ return rk_text;
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 0)) {
 global.rk_objective_id = "soul_sold";
 rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "This outcome requires the selected existing sold-soul history. ROUTEKEEPER never creates or deletes permanent history.";
+if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
 if (global.rk_language == 1) {
  rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 결과에는 선택한 영혼 판매 기록이 필요합니다. ROUTEKEEPER는 영구 기록을 만들거나 지우지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
 }
 return rk_text;
 }
@@ -882,21 +882,21 @@ return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 0)) {
 global.rk_objective_id = "genocide_final";
-rk_text = "Continue to the final encounter. Permanent history will not be changed by the mod.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Sans and continue. Any permanent-history decision remains yours.";
+rk_text = "Continue to the final encounter.";
+if (global.rk_spoilers == 1) rk_text = "Defeat Sans, then continue toward the throne room.";
 if (global.rk_language == 1) {
- rk_text = "마지막 조우로 가세요. 모드는 영구 기록을 바꾸지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리치고 계속하세요. 영구 기록에 관한 결정은 직접 해야 합니다.";
+ rk_text = "마지막 조우로 가세요.";
+ if (global.rk_spoilers == 1) rk_text = "샌즈를 물리친 뒤 왕좌의 방으로 가세요.";
 }
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 1)) {
 global.rk_objective_id = "genocide_throne";
-rk_text = "Continue to the throne room. The final permanent-history decision remains yours.";
-if (global.rk_spoilers == 1) rk_text = "Sans is defeated. Continue through the throne room and make the final choice yourself.";
+rk_text = "Continue to the throne room and choose your future.";
+if (global.rk_spoilers == 1) rk_text = "Continue through the throne room. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
- rk_text = "왕좌의 방으로 계속 가세요. 영구 기록에 관한 마지막 결정은 직접 하세요.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리쳤습니다. 왕좌의 방을 지나 마지막 선택을 직접 하세요.";
+ rk_text = "왕좌의 방으로 가서 앞날을 선택하세요.";
+ if (global.rk_spoilers == 1) rk_text = "왕좌의 방을 지나세요. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }
@@ -959,10 +959,10 @@ global.rk_progress_met = 0; if (global.rk_genocide_stage >= 0 && global.rk_genoc
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
 rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The game world must already be restored. ROUTEKEEPER never sells your SOUL or rewrites system_information files.";
+if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
  rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "세계가 복원되어 있어야 합니다. ROUTEKEEPER는 영혼을 팔거나 영구 기록 파일을 고치지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }
@@ -979,10 +979,10 @@ return rk_text;
 if ((global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1) && !(global.rk_genocide_aborted == 0)) {
 global.rk_objective_id = "genocide_aborted";
 rk_text = "A required encounter was missed.";
-if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or another Genocide abandonment flag was set.";
+if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or a required encounter was lost.";
 if (global.rk_language == 1) {
  rk_text = "필수 조우를 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 몰살 중단 플래그가 설정되었습니다.";
+ if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다.";
 }
 return rk_text;
 }
@@ -1039,10 +1039,10 @@ return rk_text;
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 1)) {
 global.rk_objective_id = "soul_sold";
 rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "This outcome requires the selected existing sold-soul history. ROUTEKEEPER never creates or deletes permanent history.";
+if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
 if (global.rk_language == 1) {
  rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 결과에는 선택한 영혼 판매 기록이 필요합니다. ROUTEKEEPER는 영구 기록을 만들거나 지우지 않습니다.";
+ if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
 }
 return rk_text;
 }
@@ -1208,21 +1208,21 @@ return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 0)) {
 global.rk_objective_id = "genocide_final";
-rk_text = "Continue to the final encounter. Permanent history will not be changed by the mod.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Sans and continue. Any permanent-history decision remains yours.";
+rk_text = "Continue to the final encounter.";
+if (global.rk_spoilers == 1) rk_text = "Defeat Sans, then continue toward the throne room.";
 if (global.rk_language == 1) {
- rk_text = "마지막 조우로 가세요. 모드는 영구 기록을 바꾸지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리치고 계속하세요. 영구 기록에 관한 결정은 직접 해야 합니다.";
+ rk_text = "마지막 조우로 가세요.";
+ if (global.rk_spoilers == 1) rk_text = "샌즈를 물리친 뒤 왕좌의 방으로 가세요.";
 }
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 1)) {
 global.rk_objective_id = "genocide_throne";
-rk_text = "Continue to the throne room. The final permanent-history decision remains yours.";
-if (global.rk_spoilers == 1) rk_text = "Sans is defeated. Continue through the throne room and make the final choice yourself.";
+rk_text = "Continue to the throne room and choose your future.";
+if (global.rk_spoilers == 1) rk_text = "Continue through the throne room. Some choices outlast a RESET.";
 if (global.rk_language == 1) {
- rk_text = "왕좌의 방으로 계속 가세요. 영구 기록에 관한 마지막 결정은 직접 하세요.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리쳤습니다. 왕좌의 방을 지나 마지막 선택을 직접 하세요.";
+ rk_text = "왕좌의 방으로 가서 앞날을 선택하세요.";
+ if (global.rk_spoilers == 1) rk_text = "왕좌의 방을 지나세요. 어떤 선택은 RESET 뒤에도 남습니다.";
 }
 return rk_text;
 }

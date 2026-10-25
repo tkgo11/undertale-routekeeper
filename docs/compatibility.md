@@ -21,7 +21,7 @@ not link that build to the supplied hash. Current registry status is diagnostic,
 even though the development GML patch can be compiled for that exact input.
 
 Expected experimental output SHA-256:
-`0506d5eb255d847448ed3eb876014586295f13b7abd81ee33eec0ec3cdf36261`.
+`901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2`.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.

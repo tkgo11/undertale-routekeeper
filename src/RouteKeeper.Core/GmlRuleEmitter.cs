@@ -53,7 +53,7 @@ public static class GmlRuleEmitter
     }
     public static string EmitObjectives()
     {
-        var text=new StringBuilder("// Generated from the same ObjectiveRules used by C#.\nvar rk_text, rk_unknown, rk_action, rk_blocked;\nrk_text = \"No next action can be verified yet.\";\nif (global.rk_language == 1) rk_text = \"아직 다음 행동을 확인할 수 없습니다.\";\nglobal.rk_objective_id = \"unknown\";\nglobal.rk_progress_met = 0; global.rk_progress_total = 0;\nrk_unknown = 0; rk_action = 0; rk_blocked = 0;\n");
+        var text=new StringBuilder("// Generated from the same ObjectiveRules used by C#.\nvar rk_text, rk_unknown, rk_action, rk_blocked;\nrk_text = \"Your next step is not clear yet.\";\nif (global.rk_language == 1) rk_text = \"다음 목표를 아직 알 수 없습니다.\";\nglobal.rk_objective_id = \"unknown\";\nglobal.rk_progress_met = 0; global.rk_progress_total = 0;\nrk_unknown = 0; rk_action = 0; rk_blocked = 0;\n");
         foreach(var route in Enum.GetValues<RouteId>().Where(r=>r!=RouteId.Neutral))
         {
             var definition=RouteCatalog.Get(route);

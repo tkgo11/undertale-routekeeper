@@ -25,8 +25,8 @@ no merge, public release, profile promotion or original save/history mutation.
 
 ## Current evidence
 
-Release build has zero warnings/errors. Local executable suites: Core36,
-Neutral54, Decisions56, History17, Tool47, Saves7 (217 C# checks plus 13 offline UI groups). Source interpreters
+Release build has zero warnings/errors. Local executable suites: Core37,
+Neutral54, Decisions56, History17, Tool47, Saves7 (218 C# checks plus 13 offline UI groups). Source interpreters
 compare 53,616 status/objective/progress/condition/policy cases. These are not a
 GameMaker VM. Authentic compile/serialize/reload passes; all 6,248 non-hook original
 code resources, original textures/audio/fonts and resource counts are preserved.
