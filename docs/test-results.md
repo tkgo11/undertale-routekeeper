@@ -217,3 +217,16 @@ Commands: AGENTS.md build/seven suites/generator checks,
 four RID publish commands. Private logs are .research/continuation-*.log; source
 fixture verification does not require or upload any runtime output. See the new
 operator workflow in runtime-validation.md.
+
+## Direct Windows (no Sandbox) harness — source-only addition
+
+- `tools/runtime/run-without-sandbox.ps1`: added for separate Windows local test
+  users, with exact original/patch/Steam identity checks and marked restoration.
+- `tools/runtime/test-sandbox.ps1`: AST loop includes the direct runner; static
+  regression assertions now cover dedicated account names, two attestations,
+  no automated host adapter shutdown, hash/inventory gates, original restore,
+  fresh saves/Steam Cloud cache checks, recovery preservation and no automatic
+  NATIVE_RUNTIME_PASS. These assertions are **committed but NOT_RUN in this
+  response** (GitHub connector changes only; no local PowerShell execution).
+- Windows native Steam/game APIs and the new runner: **NOT_RUN**.
+- PR review state: **Ready for review**; no merge or release.
