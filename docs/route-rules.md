@@ -64,8 +64,15 @@ Mettaton's two Exiled survival variants, carried Snowman Piece, no file0 SAVE,
 Bandage, no healing items, and the composite LV1/no-healing/Bandage greeting.
 Several conditions overwrite shared dialogue slots; a condition mask is not a
 claim that all matching lines play. C# and native generated classifiers agree.
-These optional conditions are observed/classified; individual greeting modifiers
-are not yet selectable guidance targets.
+These eight conditions are selectable additional goals (or No extra goal), separate
+from the 19 Neutral types. They are positive conditions, not exclusive dialogue
+line guarantees: another matched condition can overwrite a shared call slot.
+NeutralGoals owns compatible parent types, OR prerequisites, irreversible
+requirements and the Mettaton resolution deadline; generated GML uses the same
+table. LV1 goals reject types requiring a dead major boss. Late Genocide overrides
+the robot-defeated Exile condition. Missing a carried keepsake is recoverable; an
+existing file0 SAVE, prior healing-item use and loss of starting armor are not.
+No promise is made that every condition remains attainable in arbitrary saves.
 
 Reachability checks expected boss outcomes with encounter-resolution guards,
 kill minima/maxima, friendship dependencies and the late-Genocide override.
@@ -94,3 +101,31 @@ Sources: authentic scripts named in profiles/bindings.json; upstream implementat
 inspection in integration-research.md; https://undertale.wiki/w/True_Pacifist_Route
 and https://undertale.wiki/w/Genocide_Route. No complete original source/dialogue
 is committed. No release-readiness or universal Forced guarantee is claimed.
+
+## Optional call-goal choice policies
+
+- No SAVE: intercept the normal filechoice0 confirmation before sound/writer;
+  never stop scr_saveprocess/file8/file9 midway or delete an existing SAVE.
+- No healing: scr_recoitem marks flag260 even at full HP. All 32 main-switch
+  healing item cases (including delayed Instant Noodles) are classified. Scripted
+  recovery that does not set this flag is not falsely treated as item use.
+- Starting armor: SCR_GAMESTART starts with armor4. scr_armoreq accepts nine
+  other item IDs; using item4 heals, it does not re-equip the starting Bandage.
+  Refuse those armor switches while the optional armor goal is viable.
+- Keepsake: warn before using/discarding the last carried item16; multiple copies
+  and non-destructive storage remain available. Acquisition/retrieval is an objective.
+- LV1: scr_levelup enters LV2 at XP10. Shared prediction also accounts for bosses
+  awarding EXP directly, even when the battle reward array is zero.
+- Friend's call: preserve all four bosses and zero kills; complete Undyne4 and
+  Alphys10, then avoid hidden-lab commitment. The earlier Lab1 elevator door is
+  guarded once flag493>=11, before the final one-way descent; do not trap the
+  player at the later power-switch scene.
+
+The exact item classifiers are independently extracted from the authentic
+scr_itemuseb switch during structural verification. Existing source signatures
+and unique insertion anchors reject drift. Snowdrake's potentially escaping ACT
+is protected only in its last live quota encounter; repeatable ACT remains usable.
+The Stick's last-Dogi resolution also passes through the required-encounter guard.
+Shared WarningSession binds one non-forced acknowledgement to code/context/mode;
+room/reset/target changes invalidate it. Forced refusals remain experimental and
+never mutate original battle flags, EXP, friendship, saves or permanent history.

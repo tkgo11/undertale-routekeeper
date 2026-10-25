@@ -9,8 +9,8 @@ no merge, public release, profile promotion or original save/history mutation.
   resolved-event deadlines, Snowdrake exhaustion, Sans/barrier/farewell progress,
   epilogue variants and pure RESET/TRUE RESET history previews.
 - 18 specific Neutral targets plus Any, the original call selection/subbranches,
-  eight optional call-condition modifiers and earlier-ending/history constraints.
-- Native live state adapter; 52 pinned source signatures and 34 manifest expressions,
+  eight optional selectable call-condition goals and earlier-ending/history constraints.
+- Native live state adapter; 62 pinned source signatures and 34 manifest expressions,
   plus qualified context/availability/aliases. Only genuinely missing observations
   remain unknown. No guessed native flag binding is used.
 - Complete settings selection for the implemented targets, all four modes,
@@ -25,17 +25,18 @@ no merge, public release, profile promotion or original save/history mutation.
 
 ## Current evidence
 
-Release build has zero warnings/errors. Local executable suites: Core37,
-Neutral54, Decisions56, History17, Tool47, Saves7 (218 C# checks plus 14 offline UI groups). Source interpreters
-compare 53,616 status/objective/progress/condition/policy cases. These are not a
-GameMaker VM. Authentic compile/serialize/reload passes; all 6,248 non-hook original
+Release build has zero warnings/errors. Local executable suites: Core38,
+Neutral60, Decisions79, History17, Tool47, Saves7 (248 C# checks plus 17 offline UI groups). Source interpreters
+compare route/status/objective/progress/condition/policy cases, including 6,000
+additional call-goal snapshots and 20,000 warning transactions. These are not a
+GameMaker VM. Authentic compile/serialize/reload passes; all 6,247 non-hook original
 code resources, original textures/audio/fonts and resource counts are preserved.
 The standalone .NET builder generated the same candidate as direct compilation
 at its tested snapshot. See test-results.md for commands and precise limitations.
 
 Commit 113d922 passed all four synthetic/package and all four private authentic
 structural jobs in Actions run 40114230381. Later boundary/item-guard changes have
-local verification; inspect PR #1 for their separately triggered CI results.
+local verification. Hosted CI is blocked by billing; do not retry it.
 Private structural jobs fetch only data.win, upload no private artifacts and clean
 working copies. The source/tool package contains no game data or personal saves.
 
@@ -48,8 +49,8 @@ working copies. The source/tool package contains no game data or personal saves.
 - Forced does not cover every scripted death/decision. A late quota discovered
   inside an active battle is advisory to avoid trapping play. Further friendship
   decisions and alternative interaction paths need adapters/scenario tests.
-- Optional greeting conditions are classified, not individual selectable goals.
-  The GUI's fullscreen/resize behavior and all controller hardware remain untested.
+- Call conditions are selectable; exclusive dialogue-slot selection is not
+  implemented. GUI fullscreen/resize behavior and controller hardware remain untested.
 - Platform/depot provenance is unknown. Only one authentic hash was supplied;
   no macOS/Linux game data/runner profile is fabricated. Installer refuses it.
 - G3M2.0.0 package generation is implemented and tested against its current parser
@@ -76,16 +77,40 @@ verified profile/location/candidate, disposable xdelta encode/decode and a new
 reproducible ZIP. Its current parser accepted the generated config; full synthetic
 roundtrip passes. Nothing was installed or released. See installer.md/ui-fonts.md.
 
+## Latest call-goal / regression continuation
+
+Added all eight positive call-condition goals, compatibility/dependency checks,
+EN/KR objectives and persisted selection. Neutral settings split ending type from
+call condition; Any means any Neutral type, and epilogue0 means No preference.
+The approved 320x240 pixel layout, native English and Galmuri14 style are preserved.
+Font output regenerates coverage only. New private deterministic previews include
+both Neutral submenus and pre-SAVE warning; previews never execute game events.
+
+Added pre-SAVE/use/discard guards, starting-armor and healing-item classification,
+shared EXP threshold, last-Dogi Stick and last-live Snowdrake ACT protection, and
+pre-descent hidden-lab protection for Neutral targets. Existing friendship/water/
+boss/kill-budget hooks now consume optional goal requirements too. Conditions are
+not exclusive dialogue selectors: original call slots can overwrite each other.
+
+Fixed optional observation reads placed inside the unready branch, complete
+unknown initialization, unsafe settings availability before game-state readiness,
+mode/context acknowledgement reuse, spare-command alternating warnings, menu-close
+Step-order leakage and held-direction replay across warnings. WarningSession is
+shared executable C#/generated GML, not a second UI-only implementation.
+
 ## Next independently actionable work
 
-1. Add selectable optional Neutral greeting-condition goals and their pre-save,
-   equipment/item/healing choice policies. They are currently classified only.
-2. Inspect remaining auto-resolution ACT/scripted outcomes and friendship branches;
-   extend only source-proven adapters, keeping shared policy/source parity.
-3. Add richer offline event-order fixtures for controller/menu/hook scheduling.
-   Offline previews do not execute those game events.
-4. Hosted CI cannot start: check annotations confirm account payment/spending-limit
-   blockage. Source workflow checks are ready; no account billing changes authorized.
+1. Inspect and model remaining automatic scripted resolutions, especially Mettaton
+   EX rating-triggered completion and other routes into outcome scenes. Predict
+   effects before inputs; do not freeze an irreversible active scene or rewrite
+   flags to claim protection. Existing selective guards do not cover every path.
+2. Add a fuller offline event scheduler around real controller/adapter code.
+   Current tests execute generated policies/FSM and test modal event-order models
+   and source contracts; they are not a general GameMaker VM or hardware test.
+3. Extend optional call-goal guidance with source-proven keepsake acquisition/
+   storage availability and finer stage-specific instructions. A missing item is
+   currently a recoverable objective; no unsupported impossibility is fabricated.
+4. Hosted CI is BLOCKED by account billing; do not rerun or change account settings.
 
 ## Runtime-only queue (await later authorized inputs)
 
@@ -98,9 +123,11 @@ Private data stays in private-data/; decompilation, native English atlas, candid
 and experiments in .research/. Follow private-data.md for cleanup; provider backup
 deletion is not promised. No high-risk merge or public release was performed.
 
-Implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
+Current implementation commit: 5a8b0f2 (selectable call goals, pre-choice guards,
+shared warning transactions, readiness/input fixes and regression coverage).
+Earlier implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
 5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Latest tested
-native output is901795bfaba57ca8c7a2c411c62c8baecf24d39d5bd9867e3ca12270fb4501c2.
+native output is d3f841da5ec70a027def6071dedaba29a17b4a1db719bea0f17b643d94a45676.
 All four standalone tool packages publish; the Linux package builds that exact
 output and completes the real synthetic G3M roundtrip. Hosted billing is still
 blocked; no official runner evidence exists.

@@ -23,6 +23,20 @@ The expanded binding manifest now records the inspected friendship, event-order,
 
 ## Limits and immediate next evidence
 
-Acquire the legitimate matching runner and Steam metadata. Test startup and controller lifetime, text rendering, draw-state restoration, hotkeys, settings persistence, safe UI gating, room transitions, battle timing and save/reload. Bind the next normalized prerequisite only after inspecting its exact game implementation and writing a scenario test. Keep `StructuralPatchTested` profiles rejected by the installer until these tests establish supported behavior.
+When later authorized matching inputs are available, test startup and controller lifetime, text rendering, draw-state restoration, hotkeys, settings persistence, safe UI gating, room transitions, battle timing and save/reload. Bind the next normalized prerequisite only after inspecting its exact game implementation and writing a scenario test. Keep `StructuralPatchTested` profiles rejected by the installer until these tests establish supported behavior.
 
 The pre-consumption battle-item adapter classifies Spider Donut (7) and Spider Cider (10) as a potential Muffet resolution. Pinned scr_itemuseb and spider user/step events establish the path to the abandonment flag. It reuses the generated Spare policy before writer, item, HP or turn changes; ordinary items and non-Muffet encounters remain available. Last-live Snowdrake remains recoverable after population exhaustion and is protected from Spare/Flee; the final random kill is refused only while fleeing remains available. Runtime behavior remains NOT_RUN.
+
+## Call-goal continuation evidence (2026-10-25)
+
+Existing authentic scripts inspected: scr_itemuseb, scr_armoreq, scr_recoitem,
+scr_levelup, scr_save/scr_saveprocess, SCR_GAMESTART, obj_overworldcontroller Draw,
+Snowdrake Step, instant-noodle Step, Lab1 door Alarm2, finalelevatorpanel Draw,
+labelevator_a Step and lab power switch. Source SHA/markers are pinned in bindings.
+No original implementation is copied into distributed source. Lab room metadata
+confirms fire_labelevator242 -> truelab_elevatorinside243 -> truelab_elevator244;
+interception happens at the recoverable Lab1 door. The final power switch sets
+flag49312, so intercepting only there would be too late. Generated predicates,
+transaction tests and authentic item-case extraction verify the independent parts.
+Mettaton EX rating completion was inspected but is not yet a protected adapter:
+its automatic turn boundary needs coherent pre-input prediction, not scene freezing.
