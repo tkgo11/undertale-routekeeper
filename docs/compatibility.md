@@ -11,8 +11,8 @@ hook/source evidence is in docs/integration-research.md.
 | Current Steam macOS | Depot 391542 exists; no game.ios/runner supplied | NOT_RUN | REFUSED |
 | Current Steam Linux | Depot 391544 exists; no game.unx/runner supplied | NOT_RUN | REFUSED |
 
-The expanded source validates 62 original resource signatures, 25 intended code
-changes and all 6,247 non-hook original code resources. Original textures/audio/font
+The expanded source validates 74 original resource signatures, 26 intended code
+changes and all 6,246 non-hook original code resources. Original textures/audio/font
 glyphs are retained. This is structural evidence only.
 
 The uploaded file's OS, architecture, Steam build/depot and nominal release
@@ -21,7 +21,7 @@ not link that build to the supplied hash. Current registry status is diagnostic,
 even though the development GML patch can be compiled for that exact input.
 
 Expected experimental output SHA-256:
-`d3f841da5ec70a027def6071dedaba29a17b4a1db719bea0f17b643d94a45676`.
+`d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d`.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.

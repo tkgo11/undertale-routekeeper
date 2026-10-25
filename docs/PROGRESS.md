@@ -10,7 +10,7 @@ no merge, public release, profile promotion or original save/history mutation.
   epilogue variants and pure RESET/TRUE RESET history previews.
 - 18 specific Neutral targets plus Any, the original call selection/subbranches,
   eight optional selectable call-condition goals and earlier-ending/history constraints.
-- Native live state adapter; 62 pinned source signatures and 34 manifest expressions,
+- Native live state adapter; 74 pinned source signatures and 34 manifest expressions,
   plus qualified context/availability/aliases. Only genuinely missing observations
   remain unknown. No guessed native flag binding is used.
 - Complete settings selection for the implemented targets, all four modes,
@@ -26,10 +26,10 @@ no merge, public release, profile promotion or original save/history mutation.
 ## Current evidence
 
 Release build has zero warnings/errors. Local executable suites: Core38,
-Neutral60, Decisions79, History17, Tool47, Saves7 (248 C# checks plus 17 offline UI groups). Source interpreters
+Neutral60, Decisions80, History17, Tool47, Saves7 (249 C# checks + 7,915 independent golden assertions plus 17 offline UI groups). Source interpreters
 compare route/status/objective/progress/condition/policy cases, including 6,000
 additional call-goal snapshots and 20,000 warning transactions. These are not a
-GameMaker VM. Authentic compile/serialize/reload passes; all 6,247 non-hook original
+GameMaker VM. Authentic compile/serialize/reload passes; all 6,246 non-hook original
 code resources, original textures/audio/fonts and resource counts are preserved.
 The standalone .NET builder generated the same candidate as direct compilation
 at its tested snapshot. See test-results.md for commands and precise limitations.
@@ -98,19 +98,38 @@ mode/context acknowledgement reuse, spare-command alternating warnings, menu-clo
 Step-order leakage and held-direction replay across warnings. WarningSession is
 shared executable C#/generated GML, not a second UI-only implementation.
 
+## Independent original-condition audit
+
+See ending-audit.md for the source/evidence matrix. Original conditional slices
+produce independent golden expected results; shared C#/GML parity remains a
+separate test. Corrected Exile robot greetings (Undyne must survive), Neutral
+DecisionMonitor's empty-requirement bypass, reserved boss-kill capacity, the optional
+friend-call water deadline and a greeting condition absent from original source.
+Added explicit original opening-slot overwrite projection. The total20 Leaderless
+boundary is correct: four major boss kills count, so it means16 other kills in
+that branch. Regional counters settle from kill deltas after battle return.
+
+Mettaton EX thresholds are unchanged:12000 before turn19,10000 from turn19.
+Interception is before con90/dialogue and talked/attack scheduling. Passive/Active
+wait for one acknowledgement; scoped Forced suppresses that local qualification
+and takes the original attack branch. Ratings, HP, EXP and history are not rewritten.
+This is compiled/source-tested, not a runtime timing guarantee.
+
+Snowman guidance now distinguishes carried/stored/obtainable/exhausted, both boxes,
+full inventory, normal replacement allowance and the three-piece Genocide path.
+The pixel UI/Galmuri14 style is unchanged; only string coverage was regenerated.
+
 ## Next independently actionable work
 
-1. Inspect and model remaining automatic scripted resolutions, especially Mettaton
-   EX rating-triggered completion and other routes into outcome scenes. Predict
-   effects before inputs; do not freeze an irreversible active scene or rewrite
-   flags to claim protection. Existing selective guards do not cover every path.
-2. Add a fuller offline event scheduler around real controller/adapter code.
-   Current tests execute generated policies/FSM and test modal event-order models
-   and source contracts; they are not a general GameMaker VM or hardware test.
-3. Extend optional call-goal guidance with source-proven keepsake acquisition/
-   storage availability and finer stage-specific instructions. A missing item is
-   currently a recoverable objective; no unsupported impossibility is fabricated.
-4. Hosted CI is BLOCKED by account billing; do not rerun or change account settings.
+1. Extend golden audits beyond the extracted conditional slices into more original
+   event interactions, including encounter suppression and optional calendar/event
+   battles after friendship. Current fixtures do not enumerate all gameplay traces.
+2. Expand the offline scheduler beyond warning/modal/rating boundary models to
+   actual alarm, Draw, collision and save/reload event interactions. It is not a VM.
+3. Audit remaining scripted automatic resolutions before adding Forced guarantees.
+   Permanent Erase/Do Not choices remain with the player.
+4. Hosted CI is BLOCKED by account billing; no retries or billing changes. The new
+   independent suite is included for future authorized runner availability.
 
 ## Runtime-only queue (await later authorized inputs)
 
@@ -123,11 +142,12 @@ Private data stays in private-data/; decompilation, native English atlas, candid
 and experiments in .research/. Follow private-data.md for cleanup; provider backup
 deletion is not promised. No high-risk merge or public release was performed.
 
-Current implementation commit: 5a8b0f2 (selectable call goals, pre-choice guards,
-shared warning transactions, readiness/input fixes and regression coverage).
+Current implementation commit: 9a82745 (independent original-source ending audit,
+Neutral API/budget/greeting corrections, EX automatic outcome protection and
+Snowman acquisition/storage guidance). Previous call-goal implementation:5a8b0f2.
 Earlier implementation commits: da5af7b (native pixel UI/font/guards),58a1ebe (G3M),
 5e6f8c6 (CI),cf030fa (gameplay-focused copy and baked-font previews). Latest tested
-native output is d3f841da5ec70a027def6071dedaba29a17b4a1db719bea0f17b643d94a45676.
+native output is d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d.
 All four standalone tool packages publish; the Linux package builds that exact
 output and completes the real synthetic G3M roundtrip. Hosted billing is still
 blocked; no official runner evidence exists.

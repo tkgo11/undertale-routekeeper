@@ -50,6 +50,15 @@ Private structural CI downloads only data.win, captures diagnostics privately,
 removes working copies and never uploads proprietary artifacts. Do not enable it
 in a public repository or a fork.
 
+## Independent ending audit
+
+- `dotnet run --project tests/RouteKeeper.Audit.Tests -c Release`
+- `python tools/audit-endings.py --source .research/all-code --output tests/golden/original-endings.json --verify`
+- Golden expected results come from original conditional slices, not Core tables
+  or generated GML. Keep original GML private; only numeric facts/source hashes and
+  slot-origin categories are distributable. A conditional-slice oracle is not a VM.
+- Never change a golden value merely to make shared C#/GML parity pass.
+
 ## Pixel UI and optional packaging
 
 - `python integration/ui/generate.py --verify` / omit `--verify` to regenerate.

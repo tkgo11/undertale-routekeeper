@@ -2,20 +2,22 @@
 
 Updated 2026-10-25. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. No official game runner has executed.
+Latest independent audit:7,915 original-derived assertions plus249 existing C#
+checks; see ending-audit.md and the latest audit section below.
 
 | Scope | Result | Command / evidence |
 |---|---|---|
 | Release build | PASS | `dotnet build RouteKeeper.slnx -c Release` (0 warnings/errors) |
 | Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 38 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
 | Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 60 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
-| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 79 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
+| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 80 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
 | History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
 | Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 47 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
 | Saves | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7 synthetic checks; supplied saves previously read without byte changes |
 | Generated source freshness | PASS | Core `--verify-native integration/gml`; Neutral `--verify-gml integration/gml`; Decisions `--verify-adapters integration/gml` |
 | Font metadata | PASS | `python integration/generate_font.py --verify`; embedded glyph coverage/bounds; original font for English |
 | Authentic generation/reload | PASS | `python tools/validate-authentic.py --input private-data/data.win --cli /path/to/UndertaleModCli`; original overwrite/modified input rejected |
-| Authentic original preservation | PASS | 6,247 non-hook code resources identical; original texture payloads, embedded audio, font glyphs and room/sprite/sound counts unchanged |
+| Authentic original preservation | PASS | 6,246 non-hook code resources identical; original texture payloads, embedded audio, font glyphs and room/sprite/sound counts unchanged |
 | Independent builder | PASS | `RouteKeeper.Tool build SOURCE NEW_OUTPUT CLI ASSET_ROOT`; compiler receives a disposable copy; compile/verify succeeds; same output hash at tested snapshot |
 | Executable header parser | PASS | Synthetic PE/ELF/Mach-O cases plus four official compiler executables; not game provenance |
 | Version diff | PASS | `ROUTEKEEPER_COMPARE=ORIGINAL UndertaleModCli load CANDIDATE -s integration/compare.csx`; code/event signature diff only |
@@ -31,17 +33,17 @@ as an ordinary Actions artifact. Outputs and compiler diagnostics stay ignored.
 
 ## Current UI/font/guard/package expansion
 
-- PASS: 248 C# checks (Core38/Neutral60/Decisions79/History17/Tool47/Saves7).
+- PASS: 249 C# checks (Core38/Neutral60/Decisions80/History17/Tool47/Saves7).
 - PASS: 17 offline UI/font groups with Pillow11.3.0; all warning states/languages,
   root/paged navigation, objective fit, counter clipping, binary alpha, baseline,
   source hash, overhang metadata and deterministic font generation.
-- PASS: 684 additional emitted-GML navigation/localization cases. These are source-subset interpreters, not the game VM.
+- PASS: 686 additional emitted-GML navigation/localization cases. These are source-subset interpreters, not the game VM.
 - PASS: actual G3M3.4.3 parser at pinned upstream commit accepts the generated config;
   real xdelta3.0.11 synthetic encode/decode, hash pins, deterministic ZIP, unverified
   profile/location/hash refusals and cleanup. No authentic G3M install/export.
 - PASS: authentic GML compile/serialize/reload through the independent builder;
-  62 binding/UI source signatures, observed native English advance/height metrics,
-  all 6,247 non-hook originals and original resource payloads preserved.
+  74 binding/UI source signatures, observed native English advance/height metrics,
+  all 6,246 non-hook originals and original resource payloads preserved.
 - PASS: source/tool self-contained publish for linux-x64, win-x64, osx-arm64,
   osx-x64 on the local Linux host. Non-Linux executables were not executed.
 
@@ -76,7 +78,7 @@ remain explained in player-facing terms. A Core regression covers this copy.
 
 ## Selectable call-goals and event-order continuation
 
-- PASS: Release build, 248 C# checks, 17 Python UI groups; 684 emitted UI cases.
+- PASS: Release build, 249 C# checks, 17 Python UI groups; 684 emitted UI cases.
 - PASS: 6,000 call-goal snapshots compare standalone status/EN/KR objectives plus
   integrated Neutral status; the prior 19,000 target / 5,000 modifier cases remain.
 - PASS: 12,000 call-action decisions, 20,000 sequential warning FSM events,
@@ -87,7 +89,7 @@ remain explained in player-facing terms. A Core regression covers this copy.
   371 glyphs, binary alpha, unchanged approved baseline/cell style. All 19 warning
   messages and nine call-goal labels fit EN/KR offline screens.
 - PASS: independent builder compiles/serializes/reloads the authentic original;
-  source-pinned hooks, all 6,247 non-hook original code and original resource
+  source-pinned hooks, all 6,246 non-hook original code and original resource
   payloads remain preserved. Actual item-effect switch extraction matches every
   healing/armor classifier ID. Modified input/original overwrite are rejected.
   Candidate SHA256 `d3f841da5ec70a027def6071dedaba29a17b4a1db719bea0f17b643d94a45676`;
@@ -105,3 +107,33 @@ Commands: AGENTS.md build/six suites, each generator freshness check,
 `dotnet publish src/RouteKeeper.Tool -c Release -r RID --self-contained true -p:PublishSingleFile=true`,
 and `tools/test-g3m.py --tool TOOL --xdelta XDELTA --upstream PINNED_CHECKOUT`.
 Private logs/candidates/native English previews stay ignored in .research/artifacts.
+
+## Independent ending audit continuation
+
+- PASS: build (0 warnings/errors), existing six suites249 checks plus Audit suite
+  7,915 original-derived assertions. These expectations are not emitted by Core.
+- PASS: original source slices generate1,728 Neutral selection/slot cases,
+  53 sequential murder-stage boundary cases,24 EX rating cases,216 letter-gate
+  cases,480 Snowman acquisition cases,25 final-intro cases and81 TRUE RESET
+  INI write-set cases. Neutral inputs include counterfactual snapshots; this is
+  selector coverage, not proof of reaching those snapshots through gameplay.
+- PASS: explicit total/non-boss19/20/21 boundaries, Neutral decision effects,
+  reserved boss-kill budgets, water/friendship deadlines and both controller/enemy
+  event orders at the rating boundary. Existing randomized parity tests remain.
+- PASS: all generated source freshness checks;17 offline UI groups, all20 warning
+  states EN/KR;686 emitted UI cases. Pixel geometry/font family unchanged.
+- PASS: authentic independent build/compile/serialize/reload,74 pinned source
+  signatures,6,246 untouched original code resources and original media preserved;
+  modified input and original overwrite rejected. Candidate SHA256
+  `d0b470d6c2b3cc8e7748405f320d455e9847bd438b0fba172d23251f7b37d64d` (63,168,102 bytes).
+- PASS: synthetic G3M parser/xdelta roundtrip; all four local publishes. The final
+  Linux package independently builds the same candidate hash from packaged sources.
+  Foreign OS execution remains NOT_RUN.
+- BLOCKED: hosted billing; no hosted retries or billing modifications.
+- NOT_RUN: official game execution, alarm/Draw/input ordering, battle balance,
+  actual endings and file/history invariance under real saves/RESET. The new EX
+  Forced adapter is experimental and requires gameplay regression before support.
+
+Run `dotnet run --project tests/RouteKeeper.Audit.Tests -c Release` and the private
+`tools/audit-endings.py ... --verify` command in AGENTS.md. Source hash evidence is
+checked against authentic data by bindings.csx. Original source remains ignored.

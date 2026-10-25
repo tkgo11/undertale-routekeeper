@@ -60,7 +60,7 @@ produce these selectable targets. ID 0 means any ordinary Neutral outcome.
 | 18 | Alphys: late Genocide abandonment |
 
 The classifier also implements eight optional call conditions: Alphys cameo,
-Mettaton's two Exiled survival variants, carried Snowman Piece, no file0 SAVE,
+Mettaton's two Exiled survival variants while Undyne is alive, carried Snowman Piece, no file0 SAVE,
 Bandage, no healing items, and the composite LV1/no-healing/Bandage greeting.
 Several conditions overwrite shared dialogue slots; a condition mask is not a
 claim that all matching lines play. C# and native generated classifiers agree.
@@ -129,3 +129,24 @@ The Stick's last-Dogi resolution also passes through the required-encounter guar
 Shared WarningSession binds one non-forced acknowledgement to code/context/mode;
 room/reset/target changes invalidate it. Forced refusals remain experimental and
 never mutate original battle flags, EXP, friendship, saves or permanent history.
+
+## Independent source audit corrections
+
+See ending-audit.md. Exile robot remarks require Undyne alive (con21); variants8/9
+cannot select those remarks. Greeting conditions test Papyrus survival directly,
+without the invented murder-stage guard. Condition masks and final opening-slot
+origins are separate APIs. The original con61 uses total kills>=20 with no boss
+subtraction; four boss kills are included, so the high branch begins at16 other
+kills. Regional flags are updated from the post-battle total delta, not a separate
+non-boss counter. Required future boss kills consume Neutral's remaining budget.
+
+DecisionMonitor now evaluates the selected Neutral type/goal and normalized
+post-event effects, resolution deadlines, lost carried keepsake and pre-hangout
+policy. It no longer checks an empty requirement list. Callers must supply the
+complete normalized effects; this API does not invent raw-game transitions.
+
+EX's original turn boundary checks talked0/mnfight1 and rating12000 before turn19,
+10000 afterward, before qualification schedules a finale/attack. Scoped Forced
+chooses the existing attack branch; non-forced modes pause that boundary for one
+acknowledgement. No rating, HP, EXP, death or permanent-history rewrite is used.
+Original kill/death dialogue remains responsible for a later lethal resolution.
