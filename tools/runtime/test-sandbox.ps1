@@ -75,6 +75,18 @@ try {
         Check $refused 'normal account cannot enter harness'
     } finally { $env:USERNAME=$originalUser }
 } finally { Remove-Item -LiteralPath $temporary -Recurse -Force }
+# Non-Sandbox native host runner is deliberately never invoked in offline checks.
+# Parse its complete PowerShell AST above and assert critical static safety gates.
+$direct=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'run-without-sandbox.ps1') -Raw
+Check ($direct.Contains("RKTestOriginal") -and $direct.Contains("RKTestPatched")) 'direct runner requires per-case dedicated Windows accounts'
+Check ($direct.Contains('AttestSeparateWindowsAccount') -and $direct.Contains('AttestSteamOfflineAndCloudDisabled')) 'direct runner requires explicit isolation attestations'
+Check ($direct.Contains('Get-NetAdapter') -and !$direct.Contains('Disable-NetAdapter')) 'direct runner never disables host adapters'
+Check ($direct.Contains('Get-RkInventoryDigest') -and $direct.Contains('Assert-RkHash')) 'direct runner pins original/candidate inventory'
+Check ($direct.Contains('Start-RkDisposableInstall') -and $direct.Contains('Stop-RkDisposableInstall')) 'direct runner uses marked reversible installation'
+Check ($direct.Contains('Preexisting UNDERTALE saves') -and $direct.Contains('Preexisting app391540 Steam cache')) 'direct runner refuses prior save and Cloud history'
+Check ($direct.Contains("result='NOT_RUN'") -and !$direct.Contains("result='NATIVE_RUNTIME_PASS'")) 'direct runner does not synthesize gameplay success'
+Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('original test installation needs review')) 'direct runner retains recovery copies after restore failures'
+
 if ($Lab -or $PatchedData) {
     if (!$Lab -or !$PatchedData) { throw 'Both private staging arguments are required.' }
     $global:RkMockDispatch=$false
