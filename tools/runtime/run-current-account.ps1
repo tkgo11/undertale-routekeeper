@@ -154,10 +154,10 @@ if ($compatProfile.Count -ne 1) { throw 'No unique exact-build profile.' }
 Assert-RkHash $PatchedData $compatProfile[0].PatchedSha256
 $original=Join-Path $Lab 'original'
 $run=Join-Path $Lab ('runs\'+$Case)
-$input=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
-if ((Get-RkInventoryDigest $input.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
+$archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
+if ((Get-RkInventoryDigest $archiveIdentity.files) -ne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a') { throw 'ZIP inventory changed.' }
 $files=@()
-foreach($f in $input.files) {
+foreach($f in $archiveIdentity.files) {
   if (!$f.path.StartsWith('Undertale/')) { continue }
   $relative=$f.path.Substring(10)
   Assert-RkRelative $relative
