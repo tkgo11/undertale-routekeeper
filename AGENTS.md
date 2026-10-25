@@ -101,3 +101,28 @@ in a public repository or a fork.
   NOT_RUN until operator-observed. Keep InspectedOnly pending actual review.
 - PR #1 is Ready for review, not approved for merge/release; no unverified
   native compatibility or Forced completeness claims.
+
+## Current Windows account smoke without Sandbox or new users
+
+The **opt-in** native Windows smoke command is
+`tools/runtime/run-current-account.ps1` (`Preflight` / `Run` / `Recover` /
+`Archive`). It uses the existing non-elevated Windows user only, and does
+**not** require Windows Sandbox or additional Windows users. Follow the first
+Windows instructions in `docs/runtime-validation.md`.
+
+The tool verifies the exact Steam runner, pristine game data, candidate
+and ZIP inventory; requires explicit risk acknowledgment, Cloud disabled,
+Steam Offline Mode and manually disconnected network adapters. It snapshots
+and hashes existing local UNDERTALE saves, quarantines them for each smoke,
+uses uniquely marked temporary game installs, restores after Steam has fully
+exited and retains recovery metadata. Steam account-level history/cache
+is **not** isolated or rolled back by this approach. Never test SAVE,
+RESET/TRUE RESET, Genocide ERASE, Soulless or ending completion with it.
+For those, require a genuinely isolated environment or explicit separate
+review of the irreversible risks. Never imply Steam Cloud/server state
+is guaranteed safe solely from local-file restoration.
+
+Only source/static checks are available for the new harness as of this commit.
+Its native Windows/Steam/game behavior remains NOT_RUN; InspectedOnly is
+unchanged. The former two-local-user harness remains available for users
+seeking stronger isolation.
