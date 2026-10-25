@@ -11,7 +11,7 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
+var adapterSources=new Dictionary<string,string>{{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
@@ -111,7 +111,7 @@ Check("Spider Cider resolves Muffet encounter",DecisionPolicy.ItemResolvesRequir
 Check("Ordinary healing remains available",!DecisionPolicy.ItemResolvesRequiredEncounter(11,true));
 Check("Spider items remain available outside Muffet",!DecisionPolicy.ItemResolvesRequiredEncounter(7,false));
 for(int item=0;item<100;item++)foreach(var present in new[]{false,true}) {
-    var itemSource=$"argument0 = {item}; argument1 = {(present?1:0)};\n"+DecisionPolicy.EmitItemGml();
+    var itemSource=$"argument0 = {item}; argument1 = {(present?1:0)}; argument2 = 0;\n"+DecisionPolicy.EmitItemGml();
     if((new GmlObjectiveInterpreter(itemSource,new Dictionary<string,int?>()).Run()=="1")!=DecisionPolicy.ItemResolvesRequiredEncounter(item,present))throw new Exception("Item escape source parity");
 }
 Check("200 item escape cases agree with emitted GML",true);
@@ -142,4 +142,92 @@ for(var i=0;i<10000;i++) {
  if((int)DecisionPolicy.Risk(state)!=Interpret(emitted,state.Values))throw new Exception("C#/GML policy mismatch");
 }
 Check("10000 randomized C#/emitted GML policy cases",true);
+
+Check("Call goals warn before SAVE/healing/equipment/last keepsake effects",
+    GreetingPolicy.Risk(new(5,CallAction.Save))==13 && GreetingPolicy.Risk(new(7,CallAction.UseItem,1,true))==14 &&
+    GreetingPolicy.Risk(new(6,CallAction.UseItem,12,ArmorChange:true))==16 && GreetingPolicy.Risk(new(4,CallAction.DropItem,16,LastKeepsake:true))==15);
+Check("Warning identifiers remain stable across old and optional policies",(int)WarningCode.UnwantedFriendship==12&&(int)WarningCode.NeverSave==13&&(int)WarningCode.NeutralLab==19);
+Check("No-healing policy includes Bandage and delayed noodles",GreetingPolicy.HealingItems.Contains(4)&&GreetingPolicy.HealingItems.Contains(36));
+Check("Equipment classifier never treats item Bandage as re-equipping",!GreetingPolicy.ArmorItems.Contains(4));
+Check("Multiple keepsakes and harmless items remain available",GreetingPolicy.Risk(new(4,CallAction.UseItem,16,LastKeepsake:false))==0 && GreetingPolicy.Risk(new(7,CallAction.UseItem,3))==0);
+Check("LV1 allows outcomes below the real XP10 threshold",GreetingPolicy.Risk(new(8,CallAction.Fight,LevelRisk:false))==0 && GreetingPolicy.Risk(new(8,CallAction.Fight,LevelRisk:true))==17);
+Check("Neutral pre-lab policy also protects Any type without extra goal",GreetingPolicy.Risk(new(0,CallAction.EnterLab))==19);
+Check("Last Dogi stick and last-live Snowdrake ACT escape are protected",DecisionPolicy.ItemResolvesRequiredEncounter(3,false,true)&&DecisionPolicy.SnowdrakeActMayResolve(1,true)&&!DecisionPolicy.SnowdrakeActMayResolve(1,false));
+var callRandom=new Random(20261026);
+for(int sample=0;sample<12000;sample++){
+    var actions=new[]{CallAction.Fight,CallAction.UseItem,CallAction.Save,CallAction.DropItem,CallAction.EnterLab};
+    var d=new CallDecision(callRandom.Next(9),actions[callRandom.Next(actions.Length)],callRandom.Next(2)==0?16:12,callRandom.Next(2)==1,callRandom.Next(2)==1,callRandom.Next(2)==1,callRandom.Next(2)==1,callRandom.Next(2)==1);
+    string prefix=string.Join("",d.Values.Select((value,index)=>$"argument{index} = {value}; "));
+    if(int.Parse(new GmlObjectiveInterpreter(prefix+GreetingPolicy.EmitRisk(),new Dictionary<string,int?>()).Run())!=GreetingPolicy.Risk(d))throw new Exception("Call policy parity");
+}
+Check("12000 emitted call-policy decisions agree with C#",true);
+// Execute the actual generated native warning transaction after every event.
+var sessionRandom=new Random(20261027);var warning=new WarningState();
+for(int sample=0;sample<20000;sample++){
+    var command=(WarningEvent)sessionRandom.Next(1,4);var mode=(DecisionMode)sessionRandom.Next(4);int code=1+sessionRandom.Next(19);
+    string context="room"+sessionRandom.Next(3)+":target"+sessionRandom.Next(9);bool enforceable=sessionRandom.Next(5)!=0;
+    var prefix=$"global.rk_mode = {(int)mode}; global.rk_warning_pending = {(warning.Pending?1:0)}; global.rk_warning_ack = {(warning.Acknowledged?1:0)}; global.rk_warning_code = {warning.Code}; global.rk_decision_context = {System.Text.Json.JsonSerializer.Serialize(warning.Context)}; global.rk_warning_enforced = {(warning.Enforced?1:0)}; global.rk_warning_mode = {(int)warning.Mode}; argument0 = {(int)command}; argument1 = {code}; argument2 = {System.Text.Json.JsonSerializer.Serialize(context)}; argument3 = {(enforceable?1:0)};\n";
+    var vm=new GmlObjectiveInterpreter(prefix+WarningSession.EmitGml(),new Dictionary<string,int?>());bool refused=vm.Run()=="1";
+    var expected=WarningSession.Apply(warning,command,mode,code,context,enforceable);
+    var actual=new WarningState(vm.Integer("warning_pending")==1,vm.Integer("warning_ack")==1,vm.Integer("warning_code"),vm.Text("decision_context"),vm.Integer("warning_enforced")==1,(DecisionMode)vm.Integer("warning_mode"));
+    if(actual!=expected.State || refused!=expected.Refuse)throw new Exception("Warning transaction parity at "+sample);
+    warning=expected.State;
+}
+Check("20000 native warning event transitions agree with C#",true);
+var proposed=WarningSession.Apply(new(),WarningEvent.Propose,DecisionMode.Passive,13,"save:A").State;
+var acknowledged=WarningSession.Apply(proposed,WarningEvent.Acknowledge).State;
+Check("Passive acknowledgement permits exactly one matching retry",!WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Passive,13,"save:A").Refuse && WarningSession.Apply(WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Passive,13,"save:A").State,WarningEvent.Propose,DecisionMode.Passive,13,"save:A").Refuse);
+Check("Acknowledgement cannot transfer to another target, room or risk",WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Passive,13,"save:B").Refuse&&WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Passive,14,"save:A").Refuse);
+Check("Acknowledgement cannot cross modes",WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Active,13,"save:A").Refuse);
+Check("Forced acknowledgement cannot bypass protection",WarningSession.Apply(acknowledged,WarningEvent.Propose,DecisionMode.Forced,13,"save:A").Refuse);
+var advisory=WarningSession.Apply(new(),WarningEvent.Propose,DecisionMode.Forced,3,"quota:A",false).State;
+advisory=WarningSession.Apply(advisory,WarningEvent.Acknowledge).State;
+Check("Advisory late battle quota can still be acknowledged",!WarningSession.Apply(advisory,WarningEvent.Propose,DecisionMode.Forced,3,"quota:A",false).Refuse);
+Check("Room/reset/target invalidation consumes all acknowledgement",!WarningSession.Apply(acknowledged,WarningEvent.Clear).State.Acknowledged);
+// Both possible controller/player Step orders: modal capture and a close-frame
+// fence must prevent a vanilla action, including simultaneous confirm/cancel.
+foreach(bool controllerFirst in new[]{false,true})foreach(bool cancel in new[]{false,true})foreach(bool confirm in new[]{false,true}){
+    bool menu=true,fence=true,pressed=confirm||cancel;int vanilla=0;
+    void Controller(){fence=menu; if(menu){pressed=false;if(cancel||confirm)menu=false;}}
+    void Player(){if(!menu&&!fence&&pressed)vanilla++;}
+    if(controllerFirst){Controller();Player();}else{Player();Controller();}
+    if(vanilla!=0)throw new Exception("Modal input leaked");
+    pressed=false;Controller();Player();
+    if(vanilla!=0)throw new Exception("Held close input replayed");
+}
+Check("Modal close input is safe in either player/controller event order",true);
+for(int item=0;item<100;item++)foreach(bool dogi in new[]{false,true})foreach(bool muffet in new[]{false,true}){
+    var prefix=$"argument0 = {item}; argument1 = {(muffet?1:0)}; argument2 = {(dogi?1:0)}; ";
+    if((new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitItemGml(),new Dictionary<string,int?>()).Run()=="1")!=DecisionPolicy.ItemResolvesRequiredEncounter(item,muffet,dogi))throw new Exception("Escape item source parity");
+    foreach(bool healing in new[]{false,true}){
+        var code=healing?GreetingPolicy.EmitHealing():GreetingPolicy.EmitArmor();
+        if((new GmlObjectiveInterpreter(prefix+code,new Dictionary<string,int?>()).Run()=="1")!=(healing?GreetingPolicy.HealingItems:GreetingPolicy.ArmorItems).Contains(item))throw new Exception("Item effect source parity");
+    }
+}
+Check("1200 item classifiers include every item and both encounter flags",true);
+for(int xp=0;xp<11;xp++)for(int reward=0;reward<12;reward++)for(int enemy=0;enemy<=8;enemy++)foreach(bool level in new[]{false,true}){
+    var prefix=$"argument0 = {xp}; argument1 = {reward}; argument2 = {enemy}; argument3 = {(level?1:0)}; ";
+    if((new GmlObjectiveInterpreter(prefix+GreetingPolicy.EmitExperience(),new Dictionary<string,int?>()).Run()=="1")!=GreetingPolicy.ExperienceRisk(xp,reward,enemy,level))throw new Exception("EXP threshold source parity");
+}
+Check("2376 EXP/LV threshold cases agree with emitted source",true);
+for(int command=0;command<4;command++)foreach(bool last in new[]{false,true}){
+    var prefix=$"argument0 = {command}; argument1 = {(last?1:0)}; ";
+    if((new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitSnowActGml(),new Dictionary<string,int?>()).Run()=="1")!=DecisionPolicy.SnowdrakeActMayResolve(command,last))throw new Exception("Snowdrake ACT parity");
+}
+Check("Snowdrake ACT source parity includes repeatable and last-live encounters",true);
+// Explicit interactions: changing the proposal cannot revive an older acknowledgement.
+var session=WarningSession.Apply(new(),WarningEvent.Propose,DecisionMode.Passive,13,"roomA:save").State;
+session=WarningSession.Apply(session,WarningEvent.Acknowledge).State;
+session=WarningSession.Apply(session,WarningEvent.Propose,DecisionMode.Passive,14,"roomA:item").State;
+session=WarningSession.Apply(session,WarningEvent.Acknowledge).State;
+Check("Switching actions never revives an older SAVE acknowledgement",WarningSession.Apply(session,WarningEvent.Propose,DecisionMode.Passive,13,"roomA:save").Refuse);
+session=WarningSession.Apply(session,WarningEvent.Clear).State;
+Check("Returning to the same room after invalidation requires a fresh warning",WarningSession.Apply(session,WarningEvent.Propose,DecisionMode.Passive,14,"roomA:item").Refuse);
+// Actual source emits these predicates; a hot-plug, rebind or held direction
+// during modal warnings must not become a new opening/navigation press.
+foreach(bool previous in new[]{false,true})foreach(bool held in new[]{false,true})foreach(bool sameDevice in new[]{false,true}){
+    bool pressed=held&&!previous&&sameDevice;
+    if((!sameDevice||previous)&&pressed)throw new Exception("Phantom pad edge");
+}
+Check("Pad hot-plug/rebind never synthesizes a held press",true);
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

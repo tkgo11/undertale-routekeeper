@@ -22,7 +22,7 @@ class UiTests(unittest.TestCase):
             if alpha:self.assertEqual((red,green,blue),(255,255,255))
     def test_all_warning_states_fit(self):
         for language,r in enumerate(self.renderers):
-            for code in range(1,13):
+            for code in range(1,20):
                 text='* '+r.text('warn_'+str(code));lines=r.wrap(text,L['warning_width'],L['warning_lines'])
                 self.assertTrue(lines);self.assertFalse(lines[-1].endswith('...'),(language,code,lines))
                 for enforced in [False,True]:
@@ -55,7 +55,7 @@ class UiTests(unittest.TestCase):
             text=json.loads(literal);language=int(any(ord(c)>126 for c in text));r=self.renderers[language]
             self.assertLessEqual(r.width(text),252,text)
     def test_full_objectives_fit_progress_page(self):
-        for path in [ROOT/'gml/route_objective.gml',ROOT/'gml/neutral_evaluate.gml']:
+        for path in [ROOT/'gml/route_objective.gml',ROOT/'gml/neutral_evaluate.gml',ROOT/'gml/greeting_evaluate.gml']:
             for literal in re.findall(r'"(?:[^"\\]|\\.)*"',path.read_text()):
                 text=json.loads(literal)
                 if len(text)<30:continue
@@ -93,6 +93,38 @@ class UiTests(unittest.TestCase):
                 r.save(a);r.save(b);self.assertEqual(a.read_bytes(),b.read_bytes())
                 expected=r.image.resize((640,480),Image.Resampling.NEAREST).tobytes()
                 self.assertEqual(Image.open(a).convert('RGBA').tobytes(),expected)
+    def test_neutral_settings_and_call_goal_pages(self):
+        for r in self.renderers:
+            goals=r.call_goals();self.assertEqual(len(goals),9)
+            self.assertEqual(len(set(goals)),9)
+            for goal in range(9):
+                self.assertLessEqual(r.width(goals[goal]),252)
+                r.runs=[];r.menu(goal,goals)
+                self.assertIn(goals[goal],[run[4] for run in r.runs])
+                for x,y,w,h,text in r.runs:
+                    self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,L['menu_bottom']-3)
+                for selected in range(3):
+                    r.runs=[];r.menu(selected,neutral=True,neutral_settings=True,goal=goal)
+                    for x,y,w,h,text in r.runs:
+                        self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,L['menu_bottom']-3)
+            r.runs=[];r.menu(1,neutral=True)
+            self.assertNotIn('All',[run[4] for run in r.runs])
+            self.assertNotIn('Variant',[run[4] for run in r.runs])
+    def test_readiness_and_input_event_order_contract(self):
+        state=(ROOT/'gml/state_read.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
+        self.assertLess(state.index('return 0;'),state.index('global.flag['))
+        self.assertIn('if (global.rk_state_ready && instance_exists(obj_mainchara)',step)
+        self.assertLess(step.index('rk_menu_fence = rk_menu;'),step.index('scr_routekeeper_read_state();'))
+        self.assertLess(step.index('rk_direction_up = held_up;'),step.index('if (global.rk_warning_pending) {',step.index('rk_direction_up = held_up;')))
+        self.assertIn('obj_routekeeper.rk_menu_fence',(ROOT/'hooks.csx').read_text())
+        self.assertIn('!global.rk_state_ready || global.rk_warning_room != room',step)
+    def test_pre_effect_save_item_and_lab_hooks(self):
+        hooks=(ROOT/'hooks.csx').read_text();guard=(ROOT/'gml/decision_guard.gml').read_text()
+        for action in [8,9,10]:self.assertIn('scr_routekeeper_decision_guard('+str(action)+',',hooks)
+        self.assertIn('room == room_fire_lab1',guard)
+        self.assertIn('scr_routekeeper_warning_session(1, risk, context, enforceable)',guard)
+        self.assertIn('string(global.rk_mode)',guard)
+        self.assertLess(guard.index('!global.rk_state_ready'),guard.index('global.flag[26]'))
     def test_baseline_cell_bounds(self):
         rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')

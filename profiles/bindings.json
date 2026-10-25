@@ -605,6 +605,77 @@
       "Markers": [
         "global.control_pressed[control] = 0;"
       ]
+    },
+    {
+      "Resource": "gml_Script_scr_armoreq",
+      "DecompilerSha256": "ee0991e748f6042c865c29f73b3d9c87592731f5ff01e4b2e5a3e42f2eac2485",
+      "Markers": [
+        "global.armor = argument1;"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_recoitem",
+      "DecompilerSha256": "e125d905093083f55f1d5c50ee2646910d6f824a3114079c58e5392769c23293",
+      "Markers": [
+        "global.flag[260] = 1;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_instantnoodleitem_Step_0",
+      "DecompilerSha256": "f357fd8b1a78096ee6cf02625d2f04ab5a3a2b6731acaeac1681c1f908ff64c0",
+      "Markers": [
+        "scr_recoitem"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_levelup",
+      "DecompilerSha256": "b875fb5f7e84dd2b8306816b9d9350c7249dc8c22d49943f5bedc97790a8445e",
+      "Markers": [
+        "global.xp >= 10"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_save",
+      "DecompilerSha256": "3112bb1f70d76df7c38e9498766310ba826eabd244ea180b88b15a20f8f2736e",
+      "Markers": [
+        "scr_saveprocess"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_saveprocess",
+      "DecompilerSha256": "ee143c6ef7113b6c481ea9380204d6a1c771901140cfcc3bcad1c59f4225993f",
+      "Markers": [
+        "ossafe_file_text_open_write(file)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_snowdrake_Step_0",
+      "DecompilerSha256": "4ef7268e341d575576b911f62d975a474a5ea8a672a31d55a2e8cd1e6eb4fcc3",
+      "Markers": [
+        "mercymod = 222;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_door_s_musfade_Alarm_2",
+      "DecompilerSha256": "ed37a6d8c0eef29ac901ca9addb52bfec1d3328af5bd5a9a41039fc89f1aa7ea",
+      "Markers": [
+        "room == room_fire_lab1",
+        "room_goto(room_fire_labelevator)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_finalelevatorpanel_Draw_0",
+      "DecompilerSha256": "3f03ba7afa3c48b6d5c073589f933dbbc16a14bd354b1dd9e6c3b12b955def86",
+      "Markers": [
+        "room == room_fire_labelevator"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_labelevator_a_Step_0",
+      "DecompilerSha256": "bb3ca47da550b9ca6d7a4567c1a72795d54e08dfb3ac94066231ff42a5a72afc",
+      "Markers": [
+        "room_goto(room_truelab_elevatorinside)"
+      ]
     }
   ],
   "RequiredRooms": [

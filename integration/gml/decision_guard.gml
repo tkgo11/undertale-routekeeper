@@ -1,28 +1,29 @@
 // Source-validated pre-action adapter. No vanilla state or save writes.
 // action: 1 fight,2 spare-all,3 flee,4 door departure,5 enter boss encounter.
 if (!variable_global_exists("rk_mode") || !variable_global_exists("rk_target_route")) return 0;
-if (global.rk_mode == 0) return 0;
+if (!variable_global_exists("rk_state_ready") || !global.rk_state_ready) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (global.rk_mode == 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 // An impossible target must not trap a mandatory battle. Re-evaluation exposes
 // BLOCKED; unsupported outcomes are never repaired with game/history writes.
 if (instance_exists(obj_routekeeper)) {
     if (obj_routekeeper.rk_status == 3) {
-        global.rk_warning_pending = 0; global.rk_warning_ack = 0;
+        scr_routekeeper_warning_session(3, 0, "", 0);
         return 0;
     }
 }
-if (!variable_global_exists("flag")) return 0;
-if (global.flag[26] > 0) return 0;
-if (variable_global_exists("debug") && global.debug != 0) return 0;
+if (!variable_global_exists("flag")) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (global.flag[26] > 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (variable_global_exists("debug") && global.debug != 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 var family, action, slot, enemy, target, xp_risk, required, water_pending;
 var neutral_outcome, kill_cap, risk, context, first_slot, last_slot, candidate, enforceable, reserved_kills, epilogue_mismatch, regional_missing, friendship_pending, snowdrake_opportunity;
 family = -1;
 if (global.rk_target_route == 0 || global.rk_target_route == 1) family = 0;
 if (global.rk_target_route == 2 || global.rk_target_route == 4) family = 1;
 if (global.rk_target_route == 3) family = 2;
-if (family < 0) return 0;
+if (family < 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 // An already abandoned route cannot be repaired by refusing unrelated actions.
-if (family == 1 && global.flag[27] != 0) return 0;
-if (family == 1 && global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake)) return 0;
+if (family == 1 && global.flag[27] != 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (family == 1 && global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake)) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 action = argument0; slot = argument1;
 enemy = 0; target = -1; xp_risk = 0; required = 0;
 water_pending = 0; neutral_outcome = 0; kill_cap = 0; risk = 0; epilogue_mismatch = 0; regional_missing = 0; friendship_pending = 0; snowdrake_opportunity = 0;
@@ -31,7 +32,9 @@ if (family == 2 && variable_global_exists("rk_neutral_friendship_min")) {
         friendship_pending = 1;
 }
 if (action == 7 && family == 2) friendship_pending = ((global.rk_target_neutral == 2 || global.rk_target_neutral == 3) && global.flag[389] == 0);
-if (action >= 1 && action <= 3) {
+if (action >= 8) {
+    risk = scr_routekeeper_greeting_pending_risk(action, slot, 0, 0);
+} else if (action >= 1 && action <= 3) {
     first_slot = slot; last_slot = slot;
     if ((action == 2 || action == 3) && slot == -1) { first_slot = 0; last_slot = 2; }
     // Aggregate the entire Spare command before acknowledging it once. Otherwise
@@ -57,14 +60,18 @@ if (action >= 1 && action <= 3) {
                 // same encounter can still satisfy the requirement after quota.
                 if (family == 1 && action == 1 && enemy == 0 && global.mercy > 0
                     && global.flag[203] == 15 && global.flag[57] != 2 && !instance_exists(obj_snowdrake)) snowdrake_opportunity = 1;
-                risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
+                if (risk == 0) risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
                     global.flag[202], global.flag[203], global.flag[204], global.flag[205],
                     0, neutral_outcome, kill_cap, required, 0, 0, friendship_pending, snowdrake_opportunity);
+                if (risk == 0 && action == 1) risk = scr_routekeeper_greeting_pending_risk(1, 0, global.xpreward[candidate], enemy);
                 if (risk != 0) break;
             }
         }
     }
 } else {
+    if (action == 4 && family == 2 && room == room_fire_lab1 && global.flag[493] >= 11) {
+        if (instance_exists(slot)) { if (slot.object_index == obj_door_s_musfade) risk = scr_routekeeper_greeting_pending_risk(11, 0, 0, 0); }
+    }
     if (action == 4 && room == room_fire1 && instance_exists(obj_undynefall)) {
         water_pending = (obj_undynefall.waterthing == 0);
     }
@@ -75,25 +82,13 @@ if (action >= 1 && action <= 3) {
         if (enemy == 7) regional_missing = (scr_murderlv() < 15);
     }
     if (action == 6 && family == 0 && global.rk_target_epilogue > 0) epilogue_mismatch = (global.rk_target_epilogue - 1 != slot);
-    risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
+    if (risk == 0) risk = scr_routekeeper_decision_risk(family, action, enemy, xp_risk,
         global.flag[202], global.flag[203], global.flag[204], global.flag[205],
         water_pending, neutral_outcome, kill_cap, required, epilogue_mismatch, regional_missing, friendship_pending, 0);
 }
-if (risk == 0) { global.rk_warning_pending = 0; global.rk_warning_ack = 0; return 0; }
 context = string(global.rk_target_route) + ":" + string(global.rk_target_neutral)
-    + ":" + string(global.rk_target_epilogue) + ":" + string(action) + ":" + string(room) + ":" + string(target) + ":" + string(slot);
-if (!variable_global_exists("rk_decision_context")) global.rk_decision_context = "";
+    + ":" + string(global.rk_target_epilogue) + ":" + string(global.rk_target_greeting)
+    + ":" + string(global.rk_mode) + ":" + string(action) + ":" + string(room) + ":" + string(target) + ":" + string(slot);
 enforceable = !(risk == 3 && action == 1);
-if ((global.rk_mode != 3 || !enforceable) && global.rk_warning_ack == 1
-    && global.rk_warning_code == risk && global.rk_decision_context == context) {
-    global.rk_warning_ack = 0;
-    global.rk_warning_pending = 0;
-    return 0;
-}
-global.rk_decision_context = context;
-global.rk_warning_code = risk;
 global.rk_warning_room = room;
-global.rk_warning_enforced = (global.rk_mode == 3 && enforceable);
-global.rk_warning_ack = 0;
-global.rk_warning_pending = 1;
-return 1;
+return scr_routekeeper_warning_session(1, risk, context, enforceable);

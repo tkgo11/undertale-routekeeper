@@ -7,6 +7,11 @@ if (page == 1) {
     if (index == 3) return scr_routekeeper_ui_catalog("neutral",lang);
     return scr_routekeeper_ui_catalog("soulless_genocide",lang);
 }
+if (page == 8) return scr_routekeeper_greeting_label(index,lang);
+if (page == 7) {
+    if (global.rk_spoilers == 0 && index > 0) { if (lang == 1) return "유형 " + string(index); return "Type " + string(index); }
+    return scr_routekeeper_neutral_label(index,lang);
+}
 if (page == 2) {
     if (global.rk_target_route == 3) {
         if (global.rk_spoilers == 0 && index > 0) { if (lang == 1) return "변형 " + string(index); return "Variant " + string(index); }

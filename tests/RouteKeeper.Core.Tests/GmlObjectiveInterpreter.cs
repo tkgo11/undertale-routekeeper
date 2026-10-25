@@ -6,14 +6,25 @@ using System.Text.RegularExpressions;
 // rule tables. This is intentionally a small test interpreter, not GameMaker.
 internal sealed class GmlObjectiveInterpreter
 {
+    private static readonly Dictionary<string, string[]> TokenCache = new();
     private readonly string[] tokens;
     private readonly Dictionary<string, object> values;
     private int cursor;
     private object? returned;
     public GmlObjectiveInterpreter(string source, IReadOnlyDictionary<string, int?> facts)
     {
-        source = Regex.Replace(source, @"//[^\r\n]*", "");
-        tokens = Regex.Matches(source, "\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z_][A-Za-z_0-9.]*|-?\\d+|\\|\\||&&|!=|==|<=|>=|\\+=|[!+<>=;{},()\\-]").Select(m => m.Value).ToArray();
+        lock (TokenCache)
+        {
+            if (!TokenCache.TryGetValue(source, out var cached))
+            {
+                var original = source;
+                source = Regex.Replace(source, @"//[^\r\n]*", "");
+                cached = Regex.Matches(source, "\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z_][A-Za-z_0-9.]*|-?\\d+|\\|\\||&&|!=|==|<=|>=|\\+=|[!+<>=;{},()\\-]").Select(m => m.Value).ToArray();
+                if (TokenCache.Count >= 32) TokenCache.Clear();
+                TokenCache[original] = cached;
+            }
+            tokens = cached;
+        }
         values = facts.ToDictionary(x => "global.rk_" + x.Key, x => (object)(x.Value ?? -1));
     }
     public string Run()

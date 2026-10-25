@@ -15,6 +15,7 @@ public static class NeutralGmlEmitter
     public static string EmitProtection()
     {
         var code=new StringBuilder("// EnemyKind: Toriel1 Papyrus2 Undyne3 Mettaton4. 1 preserve, -1 kill, 0 unrestricted.\n");
+        code.Append(NeutralGoals.EmitProtection().Replace("return 0;\n",""));
         foreach(var target in NeutralCatalog.Targets)
         {
             code.Append($"if (global.rk_target_neutral == {(int)target.Id}) {{\n");
@@ -87,7 +88,14 @@ if (nt < 0 || nt >= 19) return 4;
             }
             code.Append("}\n");
         }
+        code.Append(NeutralGoals.EmitEvaluation(false));
         code.Append("""
+if (global.rk_target_greeting == 1) { global.rk_neutral_friendship_min = 4; max_kills = 0; }
+if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2 || global.rk_target_greeting == 3) global.rk_neutral_keep_toriel = 1;
+if (global.rk_target_greeting == 1 || global.rk_target_greeting >= 4) global.rk_neutral_keep_papyrus = 1;
+if (global.rk_target_greeting == 1) global.rk_neutral_keep_undyne = 1;
+if (global.rk_target_greeting == 1 || global.rk_target_greeting == 2) global.rk_neutral_keep_mettaton = 1;
+if (global.rk_target_greeting == 3) global.rk_neutral_keep_mettaton = 0;
 global.rk_neutral_kill_cap = max_kills;
 if (global.rk_hard_mode < 0 || global.rk_world_erased < 0 || global.rk_true_lab_completed < 0) unknown = 1;
 if (global.rk_hard_mode == 1 || global.rk_world_erased == 1) blocked = 1;
@@ -117,16 +125,25 @@ if (nt == 18) {
     }
 }
 else if (global.rk_neutral_keep_mettaton == 0 && stage >= 12) blocked = 1;
+if (global.rk_target_greeting > 0) {
+    total += 1;
+    if (global.rk_greeting_status == 0) matched += 1;
+    if (global.rk_greeting_status == 1) action = 1;
+    if (global.rk_greeting_status == 4) unknown = 1;
+    if (global.rk_greeting_status == 3) blocked = 1;
+}
 global.rk_progress_met = matched;
 global.rk_progress_total = total;
 if (blocked) {
     global.rk_objective_text = "This Neutral outcome is blocked in this run.";
     if (global.rk_language == 1) global.rk_objective_text = "이번 회차에서 선택한 뉴트럴 결과가 막혔습니다.";
+    if (global.rk_greeting_status == 3) global.rk_objective_text = global.rk_greeting_text;
     return 3;
 }
 if (unknown) {
     global.rk_objective_text = "Observe the remaining encounters before selecting an outcome.";
     if (global.rk_language == 1) global.rk_objective_text = "남은 조우 상태를 확인하세요.";
+    if (global.rk_greeting_status > 0) global.rk_objective_text = global.rk_greeting_text;
     return 4;
 }
 global.rk_objective_text = "Continue while preserving the selected encounter outcomes.";
@@ -143,6 +160,7 @@ if (nt == 18 && stage < 12) {
     global.rk_objective_text = "Maintain the regional route through Waterfall.";
     if (global.rk_language == 1) global.rk_objective_text = "워터폴까지 지역 경로 조건을 지키세요.";
 }
+if (global.rk_target_greeting > 0 && global.rk_greeting_status == 1) global.rk_objective_text = global.rk_greeting_text;
 if (action) return 1;
 return 0;
 """);

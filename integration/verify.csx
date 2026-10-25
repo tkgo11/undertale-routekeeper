@@ -43,7 +43,7 @@ var step=Get("gml_Object_obj_routekeeper_Step_0");
 Check(step.Contains("scr_routekeeper_read_state()") && step.Contains("scr_routekeeper_evaluate()"),"live shared evaluator");
 Check(step.Contains("obj_battlecontroller") && step.Contains("obj_mainchara.cutscene"),"ordinary UI battle/cutscene gates");
 Check(step.Contains("joystick_check_button") && step.Contains("gamepad_button_check"),"both authentic input backends");
-Check(step.Contains("global.rk_warning_ack = 1"),"deferred warning acknowledgement");
+Check(step.Contains("scr_routekeeper_warning_session(2"),"shared deferred warning acknowledgement");
 var state=Get("gml_Script_scr_routekeeper_read_state");
 foreach(var fact in new[]{"global.rk_experience = global.xp","global.rk_plot10","global.rk_papyrus_friendship","global.rk_kills_ruins","global.rk_prior_neutral_completion","global.rk_soul_sold"})
     Check(state.Contains(fact),"observed normalized fact "+fact.Split(' ')[0]);
@@ -54,7 +54,21 @@ var battle=Get("gml_Object_obj_battlecontroller_Step_0");
 Check(battle.Contains("scr_routekeeper_decision_act"),"final-Hum guard linked before ACT effects");
 Check(battle.Contains("scr_routekeeper_decision_item") && battle.IndexOf("scr_routekeeper_decision_item",StringComparison.Ordinal)<battle.IndexOf("scr_itemuseb",StringComparison.Ordinal),"item escape guard precedes consumption");
 Check(guard.Contains("obj_routekeeper.rk_status == 3"),"blocked targets cannot trap mandatory battles");
-Check(guard.Contains("global.rk_warning_enforced") && guard.Contains("global.rk_warning_pending"),"limited Forced and dismissible warning policies");
+Check(guard.Contains("scr_routekeeper_warning_session") && Get("gml_Script_scr_routekeeper_warning_session").Contains("global.rk_warning_enforced"),"shared Forced and dismissible warning policies");
+var session=Get("gml_Script_scr_routekeeper_warning_session");
+Check(session.Contains("global.rk_warning_mode") && session.Contains("global.rk_decision_context"),"acknowledgements bound to exact proposal and mode");
+Check(state.IndexOf("return 0;",StringComparison.Ordinal)<state.IndexOf("global.flag[",StringComparison.Ordinal),"unready branch exits before game-state reads");
+var overworld=Get("gml_Object_obj_overworldcontroller_Draw_0");
+Check(overworld.Contains("scr_routekeeper_decision_guard(9") && overworld.Contains("scr_routekeeper_decision_guard(10"),"pre-SAVE and pre-discard hooks");
+Check(step.Contains("target_greeting") && Get("gml_Object_obj_routekeeper_Create_0").Contains("target_greeting"),"persistent call-condition selection");
+// Compare emitted classifiers to the actual unchanged item-effect switch, not a
+// second manually maintained ID list. Pinning is enforced by bindings.csx.
+var itemUse=Get("gml_Script_scr_itemuseb");
+var cases=System.Text.RegularExpressions.Regex.Matches(itemUse,@"(?m)^    case (\d+):").Cast<System.Text.RegularExpressions.Match>().ToArray();
+int[] EffectIds(string marker) => cases.Select((m,i)=>new{Id=int.Parse(m.Groups[1].Value),Body=itemUse.Substring(m.Index,(i+1<cases.Length?cases[i+1].Index:itemUse.Length)-m.Index)}).Where(c=>c.Body.Contains(marker)).Select(c=>c.Id).OrderBy(i=>i).ToArray();
+int[] EmittedIds(string name) => System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(Path.Combine(folder,"gml",name+".gml")),@"argument0 == (\d+)").Cast<System.Text.RegularExpressions.Match>().Select(m=>int.Parse(m.Groups[1].Value)).OrderBy(i=>i).ToArray();
+Check(EffectIds("scr_recoitem").SequenceEqual(EmittedIds("greeting_healing")),"all healing-item cases match authentic effects");
+Check(EffectIds("scr_armoreq").SequenceEqual(EmittedIds("greeting_armor")),"all armor-item cases match authentic effects");
 var draw=Get("gml_Object_obj_routekeeper_Draw_64");
 Check(draw.Contains("scr_routekeeper_ui_option") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
 foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})

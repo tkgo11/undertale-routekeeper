@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Offline UI geometry/font renderer. This does not execute the GameMaker VM."""
 from pathlib import Path
-import argparse,json,sys,hashlib,struct
+import argparse,json,sys,hashlib,struct,re
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from generate_font import chunk,stored_deflate
 from PIL import Image,ImageDraw,__version__ as pillow_version
@@ -69,10 +69,20 @@ class Renderer:
         self.box(L['warning_left'],L['warning_top'],L['warning_right'],L['warning_bottom'])
         self.paragraph(L['warning_x'],L['warning_y'],'* '+self.text('warn_'+str(code)),L['warning_width'],L['warning_lines'])
         self.line(L['warning_x'],L['warning_footer'],self.text('close_warning' if enforced else 'retry_warning'),264)
-    def menu(self,selection=0,options=None):
+    def call_goals(self):
+        source=(ROOT/'gml/greeting_label.gml').read_text()
+        rows=re.findall(r'if \(argument0 == \d+\) \{ if \(argument1 == 1\) return ("[^"\n]*"); return ("[^"\n]*"); \}',source)
+        return [json.loads(row[0 if self.lang else 1]) for row in rows]
+    def menu(self,selection=0,options=None,neutral=False,neutral_settings=False,goal=0):
         self.box(L['menu_left'],L['menu_top'],L['menu_right'],L['menu_bottom']);self.line(28,24,'ROUTEKEEPER',264)
-        labels=['goal','variant','guidance','spoilers','language','journal','back']
+        labels=['goal','ending_type' if neutral else 'epilogue','guidance','spoilers','language','journal','back']
         values=[self.text('pacifist'),self.text('either'),self.text('active'),self.text('minimal'),'한국어' if self.lang else 'English','','']
+        if neutral:
+            source=(ROOT/'gml/neutral_label.gml').read_text()
+            literals=re.findall(r'return ("[^"\n]*");',source)
+            values[0]=self.text('neutral');values[1]=json.loads(literals[0 if self.lang else 1])
+        if neutral_settings:
+            labels=['ending_type','call_goal','back'];values=[values[1],self.call_goals()[goal],'']
         if options is not None:
             first=selection//7*7;rows=options[first:first+7]
         else:first=0;rows=[self.text(k) for k in labels]
@@ -103,10 +113,14 @@ class Renderer:
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--native-font',type=Path);args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)
     for lang in range(2):
-        for kind in ['menu','warning','protected','hud','targets']:
+        for kind in ['menu','warning','protected','hud','targets','neutral','call-settings','call-goals','save-warning']:
             r=Renderer(lang,args.native_font)
             if kind=='menu':r.menu(2)
             elif kind in ['warning','protected']:r.warning(11,kind=='protected')
+            elif kind=='neutral':r.menu(1,neutral=True)
+            elif kind=='call-settings':r.menu(1,neutral=True,neutral_settings=True,goal=5)
+            elif kind=='call-goals':r.menu(8,r.call_goals())
+            elif kind=='save-warning':r.warning(13,True)
             elif kind=='targets':r.menu(3,[r.text(k) for k in ['pacifist','soulless_pacifist','genocide','neutral','soulless_genocide']])
             else:r.hud('Explore the next area.' if not lang else '다음 지역을 탐험하세요.')
             r.save(args.output/f'{kind}-{lang}.png')

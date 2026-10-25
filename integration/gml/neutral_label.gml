@@ -1,5 +1,5 @@
 // Generated Neutral target labels; selectable IDs 0..18.
-if (argument0 == 0) { if (argument1 == 1) return "뉴트럴 전체"; return "Any Neutral"; }
+if (argument0 == 0) { if (argument1 == 1) return "유형 무관"; return "Any Neutral type"; }
 if (argument0 == 1) { if (argument1 == 1) return "가족"; return "Family"; }
 if (argument0 == 2) { if (argument1 == 1) return "배신: 우정 없음, 로봇 생존"; return "Betrayed: no friendship, robot spared"; }
 if (argument0 == 3) { if (argument1 == 1) return "배신: 우정 없음, 로봇 사망"; return "Betrayed: no friendship, robot killed"; }

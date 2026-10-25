@@ -25,6 +25,7 @@ public static class FactDomains
         "toriel_alive", "mettaton_alive", "save_exists", "snowman_piece_carried",
         "prior_pacifist_completion", "true_reset_available", "sans_defeated", "snowdrake_lost"
     };
+    public static IEnumerable<string> KnownFacts=>Booleans.Concat(new[]{"area","level","experience","kills_total","kills","plot10","genocide_stage","murder_level","equipped_armor","healing_items_used","epilogue_choice","neutral_undyne_friendship","neutral_alphys_friendship"});
     public static int Maximum(string fact) => Booleans.Contains(fact) ? 1 : fact is "genocide_stage" or "murder_level" ? 16 :
         fact == "area" ? 4 : int.MaxValue;
 }
@@ -123,7 +124,7 @@ public static class RouteCatalog
     public static IReadOnlyDictionary<string,int> RegionalQuotas { get; } = new Dictionary<string,int>
     { ["ruins"]=20,["snowdin"]=16,["waterfall"]=18,["hotland_core"]=40 }.AsReadOnly();
     public static IEnumerable<string> Facts => Enum.GetValues<RouteId>().SelectMany(id=>Get(id).Requirements)
-        .SelectMany(r=>r.GuardFact is null ? new[]{r.Fact} : new[]{r.Fact,r.GuardFact}).Concat(ObjectiveRules.Facts).Distinct(StringComparer.Ordinal);
+        .SelectMany(r=>r.GuardFact is null ? new[]{r.Fact} : new[]{r.Fact,r.GuardFact}).Concat(ObjectiveRules.Facts).Concat(NeutralCatalog.Facts).Concat(NeutralGoals.Facts).Concat(FactDomains.KnownFacts).Distinct(StringComparer.Ordinal);
 }
 
 public static class RouteEvaluator

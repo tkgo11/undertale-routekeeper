@@ -6,7 +6,7 @@ public enum RouteFamily { Pacifist, Genocide, Neutral }
 public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue, StartFriendship }
 public enum DecisionEnemy { Ordinary, Toriel, Papyrus, Undyne, Mettaton, UndyneUndying, RequiredUnique, MettatonNeo, MonsterKid, Snowdrake }
 public enum DecisionMode { Off, Passive, Active, Forced }
-public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity, UnwantedFriendship }
+public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity, UnwantedFriendship, NeverSave, HealingItem, LastKeepsake, StartingArmor, LevelIncrease, CallExperience, NeutralLab }
 public sealed record DecisionState(RouteFamily Family, DecisionAction Action, DecisionEnemy Enemy,
     bool ExperienceRisk = false, int RuinsKills = 0, int SnowdinKills = 0, int WaterfallKills = 0,
     int HotlandKills = 0, bool WaterUnresolved = false, int NeutralOutcome = 0, bool NeutralKillCapReached = false,
@@ -98,11 +98,14 @@ public static class DecisionPolicy
 
     // Authentic scr_itemuseb dispatches Spider Donut/Cider to Muffet's user event 6.
     // Treat that route-ending item action like Spare, before consumption or healing.
-    public static bool ItemResolvesRequiredEncounter(int itemId, bool muffetPresent) => muffetPresent && itemId is 7 or 10;
-    public static string EmitItemGml() => "// Generated item escape classification; source-validated Muffet path only.\nreturn argument1 && (argument0 == 7 || argument0 == 10);\n";
+    public static bool ItemResolvesRequiredEncounter(int itemId, bool muffetPresent, bool lastDogi = false) => (muffetPresent && itemId is 7 or 10) || (lastDogi && itemId == 3);
+    public static string EmitItemGml() => "// Generated item escape classification; source-validated Muffet and last-Dogi paths.\nreturn (argument1 && (argument0 == 7 || argument0 == 10)) || (argument2 && argument0 == 3);\n";
 
     public static bool ActResolvesRequiredEncounter(bool shyrenPresent, int command, int encouragement) => shyrenPresent && command == 1 && encouragement == 4;
     public static string EmitActGml() => "// Generated final Shyren Hum classification; ordinary ACT remains available.\nreturn argument0 && argument1 == 1 && argument2 == 4;\n";
+
+    public static bool SnowdrakeActMayResolve(int command,bool lastLive)=>command==1&&lastLive;
+    public static string EmitSnowActGml()=>"// Generated possible random Snowdrake escape, only the last live encounter.\nreturn argument0 == 1 && argument1;\n";
 
     public static bool ExhaustedKillBudget(int kills, int maximumKills, int reservedBossKills, bool requiredBossKill)
     {

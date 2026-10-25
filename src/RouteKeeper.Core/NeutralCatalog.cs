@@ -31,7 +31,7 @@ public static class NeutralCatalog
     private const int Unlimited = int.MaxValue;
     public static IReadOnlyList<NeutralTarget> Targets { get; } = new NeutralTarget[]
     {
-        new(NeutralEnding.Any,"Any Neutral","뉴트럴 전체",null,null,null,null,0,Unlimited),
+        new(NeutralEnding.Any,"Any Neutral type","유형 무관",null,null,null,null,0,Unlimited),
         new(NeutralEnding.Family,"Family","가족",0,0,0,0,0,0),
         new(NeutralEnding.BetrayedUnbefriendedMettatonAlive,"Betrayed: no friendship, robot spared","배신: 우정 없음, 로봇 생존",0,0,0,0,0,9),
         new(NeutralEnding.BetrayedUnbefriendedMettatonDead,"Betrayed: no friendship, robot killed","배신: 우정 없음, 로봇 사망",0,0,0,1,1,9),
@@ -73,6 +73,7 @@ public static class NeutralCatalog
         ("neutral_mettaton_dead","mettaton_resolved",t=>t.MettatonDead)
     ];
 
+    public static IEnumerable<string> Facts=>new[]{"neutral_toriel_dead","neutral_papyrus_dead","neutral_undyne_dead","neutral_mettaton_dead","neutral_undyne_friendship","neutral_alphys_friendship","kills","murder_level","mettaton_resolved"}.Concat(ModifierRules.SelectMany(r=>r.Condition.Tests.Select(t=>t.Fact)));
     public static int FriendshipMinimum(int id)=>id==1?4:id is 4 or 5?1:0;
 
     public static NeutralTarget Get(int id) => id >= 0 && id < SelectableCount ? Targets[id] :
@@ -138,7 +139,9 @@ public static class NeutralCatalog
         if(!blocked && objectives.Count==0)
             objectives.Add(new("continue",language==Language.Korean?"선택한 결과를 유지하며 여정을 계속하세요.":"Continue while preserving the selected outcomes."));
         var status=blocked?RouteStatus.BLOCKED:unknown?RouteStatus.UNKNOWN:action?RouteStatus.ACTION_REQUIRED:RouteStatus.ON_TRACK;
-        return new(status,objectives,reasons,true);
+        var basis=new Evaluation(status,objectives,reasons,true);
+        var goal=state["target_greeting"]??0;
+        return goal>0?NeutralGoals.Merge(basis,NeutralGoals.Evaluate(goal,targetId,state,language)):basis;
     }
 
     public static NeutralOutcome Classify(GameState state)

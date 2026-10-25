@@ -71,8 +71,8 @@
       "상세"
     ],
     "either": [
-      "Either",
-      "모두"
+      "No preference",
+      "선택 무관"
     ],
     "stay": [
       "Stay",
@@ -217,6 +217,46 @@
     "pad_retry_warning": [
       "Continue, then try again",
       "확인 후 다시 선택"
+    ],
+    "ending_type": [
+      "Ending type",
+      "결말 유형"
+    ],
+    "epilogue": [
+      "Epilogue",
+      "마지막 선택"
+    ],
+    "call_goal": [
+      "Call goal",
+      "통화 조건"
+    ],
+    "warn_13": [
+      "Writing this SAVE would break your call condition.",
+      "SAVE를 하면 선택한 통화 조건이 깨집니다."
+    ],
+    "warn_14": [
+      "This item counts as healing, even at full HP.",
+      "HP가 가득 차 있어도 이 아이템은 회복으로 기록됩니다."
+    ],
+    "warn_15": [
+      "Keep a piece of your keepsake for the call.",
+      "통화를 위해 기념품을 하나 남겨 두세요."
+    ],
+    "warn_16": [
+      "Your starting armor cannot be equipped again.",
+      "처음 방어구는 벗으면 다시 착용할 수 없습니다."
+    ],
+    "warn_17": [
+      "This battle outcome may raise LV above 1.",
+      "이 전투 결과로 LV가 1을 넘을 수 있습니다."
+    ],
+    "warn_18": [
+      "This call requires defeating no monsters.",
+      "이 통화 조건에서는 몬스터를 죽이면 안 됩니다."
+    ],
+    "warn_19": [
+      "This path leads away from your Neutral ending.",
+      "이 길로 가면 목표한 뉴트럴 엔딩에서 멀어집니다."
     ]
   }
 }

@@ -5,14 +5,23 @@ using System.Text.RegularExpressions;
 // String output is tokenized but not rendered. This is not a GameMaker runtime.
 internal sealed class GmlProgram
 {
+    static readonly Dictionary<string,string[]> TokenCache=new();
     readonly string[] tokens;
     readonly Dictionary<string,int> values;
     int cursor;
     int? returned;
     public GmlProgram(string source,IReadOnlyDictionary<string,int?> facts)
     {
-        source=Regex.Replace(source,@"//[^\r\n]*","");
-        tokens=Regex.Matches(source,"\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z_][A-Za-z_0-9.]*|-?\\d+|\\|\\||&&|!=|==|<=|>=|\\+=|[+<>=;{},()]").Select(x=>x.Value).ToArray();
+        lock(TokenCache) {
+            if(!TokenCache.TryGetValue(source,out var cached)) {
+                var original=source;
+                source=Regex.Replace(source,@"//[^\r\n]*","");
+                cached=Regex.Matches(source,"\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z_][A-Za-z_0-9.]*|-?\\d+|\\|\\||&&|!=|==|<=|>=|\\+=|[+<>=;{},()]").Select(x=>x.Value).ToArray();
+                if(TokenCache.Count>=8)TokenCache.Clear();
+                TokenCache[original]=cached;
+            }
+            tokens=cached;
+        }
         values=facts.ToDictionary(x=>"global.rk_"+x.Key,x=>x.Value??-1);
     }
     public int Run() { while(cursor<tokens.Length) Statement(true);return returned??throw new Exception("No return"); }

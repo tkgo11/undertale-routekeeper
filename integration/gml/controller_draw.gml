@@ -32,12 +32,28 @@ if (pending) {
         scr_routekeeper_ui_line(28,70,scr_routekeeper_ui_catalog("journal",lang) + "   " + value,264);
         message = global.rk_objective_text;
         if (message == "") message = scr_routekeeper_ui_catalog("no_objective",lang);
-        scr_routekeeper_ui_paragraph(28,100,"* " + message,264,4);
+        pixel_y = 100;
+        if (global.rk_target_route == 3 && global.rk_target_greeting > 0) {
+            scr_routekeeper_ui_line(28,88,scr_routekeeper_ui_catalog("call_goal",lang) + ": " + scr_routekeeper_greeting_label(global.rk_target_greeting,lang),264);
+            pixel_y = 112;
+        }
+        scr_routekeeper_ui_paragraph(28,pixel_y,"* " + message,264,4);
+    } else if (rk_menu_page == 2 && global.rk_target_route == 3) {
+        for (row = 0; row < 3; row += 1) {
+            key = "back"; value = "";
+            if (row == 0) { key = "ending_type"; value = scr_routekeeper_ui_option(7,global.rk_target_neutral); }
+            if (row == 1) { key = "call_goal"; value = scr_routekeeper_ui_option(8,global.rk_target_greeting); }
+            pixel_y = global.rk_ui_row_y + row*global.rk_ui_row_height;
+            draw_set_color(c_white);
+            if (row == rk_choice) { scr_routekeeper_ui_heart(27,pixel_y+4); draw_set_color(c_yellow); }
+            scr_routekeeper_ui_line(global.rk_ui_row_x,pixel_y,scr_routekeeper_ui_catalog(key,lang),94);
+            scr_routekeeper_ui_line(global.rk_ui_value_x,pixel_y,value,152);
+        }
     } else if (rk_menu_page == 0) {
         for (row = 0; row < 7; row += 1) {
             key = "back"; value = "";
             if (row == 0) { key = "goal"; value = scr_routekeeper_ui_option(1,global.rk_target_route); }
-            if (row == 1) { key = "variant"; index = global.rk_target_epilogue; if (global.rk_target_route == 3) index = global.rk_target_neutral; value = scr_routekeeper_ui_option(2,index); }
+            if (row == 1) { key = "epilogue"; if (global.rk_target_route == 3) key = "ending_type"; index = global.rk_target_epilogue; if (global.rk_target_route == 3) index = global.rk_target_neutral; value = scr_routekeeper_ui_option(2,index); if (global.rk_target_route == 3) value = scr_routekeeper_ui_option(7,index); }
             if (row == 2) { key = "guidance"; value = scr_routekeeper_ui_option(3,global.rk_mode); }
             if (row == 3) { key = "spoilers"; value = scr_routekeeper_ui_option(4,global.rk_spoilers); }
             if (row == 4) { key = "language"; value = scr_routekeeper_ui_option(5,global.rk_language); }
@@ -52,7 +68,9 @@ if (pending) {
     } else {
         count = 2;
         if (rk_menu_page == 1) count = 5;
-        if (rk_menu_page == 2) { count = 3; if (global.rk_target_route == 3) count = 19; }
+        if (rk_menu_page == 2) count = 3;
+        if (rk_menu_page == 7) count = 19;
+        if (rk_menu_page == 8) count = 9;
         if (rk_menu_page == 3) count = 4;
         first = (rk_choice div global.rk_ui_visible_rows)*global.rk_ui_visible_rows;
         for (row = 0; row < global.rk_ui_visible_rows; row += 1) {

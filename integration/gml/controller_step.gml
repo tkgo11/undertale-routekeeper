@@ -1,29 +1,30 @@
 // Only mod-owned globals/settings are written. Actual gameplay state remains with verified hooks.
+rk_menu_fence = rk_menu;
 scr_routekeeper_read_state();
 global.rk_neutral_projection = scr_routekeeper_neutral_classify();
 global.rk_neutral_modifiers = scr_routekeeper_neutral_modifiers();
 rk_status = scr_routekeeper_evaluate();
-if (global.rk_warning_pending && (!global.rk_state_ready || global.rk_warning_room != room)) {
-    global.rk_warning_pending = 0; global.rk_warning_ack = 0;
+if ((global.rk_warning_pending || global.rk_warning_ack) && (!global.rk_state_ready || global.rk_warning_room != room)) {
+    scr_routekeeper_warning_session(3, 0, "", 0);
 }
 // An advisory panel must disappear once another action starts a timed battle turn.
-if (global.rk_warning_pending && instance_exists(obj_battlecontroller)
+if ((global.rk_warning_pending || global.rk_warning_ack) && instance_exists(obj_battlecontroller)
     && variable_global_exists("mnfight") && variable_global_exists("myfight")) {
-    if (global.mnfight != 0 || global.myfight != 0) { global.rk_warning_pending = 0; global.rk_warning_ack = 0; }
+    if (global.mnfight != 0 || global.myfight != 0) { scr_routekeeper_warning_session(3, 0, "", 0); }
 }
 if (global.rk_warning_pending && global.rk_warning_code == 2 && global.rk_water_opportunity_active == 0) {
-    global.rk_warning_pending = 0; global.rk_warning_ack = 0;
+    scr_routekeeper_warning_session(3, 0, "", 0);
 }
 if (global.rk_warning_pending && rk_status != 3) rk_status = 2;
 var signature;
-signature = string(global.rk_target_route) + ":" + string(global.rk_target_neutral) + ":" + string(rk_status) + ":" + global.rk_objective_id;
+signature = string(global.rk_target_route) + ":" + string(global.rk_target_neutral) + ":" + string(global.rk_target_greeting) + ":" + string(rk_status) + ":" + global.rk_objective_id;
 if (signature != rk_previous_signature) {
     rk_dismissed = 0;
     rk_previous_signature = signature;
 }
 // Ordinary HUD/settings are restricted to free overworld control.
 rk_safe = 0;
-if (instance_exists(obj_mainchara) && !instance_exists(obj_battlecontroller)
+if (global.rk_state_ready && instance_exists(obj_mainchara) && !instance_exists(obj_battlecontroller)
     && !instance_exists(obj_heart) && variable_global_exists("interact")
     && variable_global_exists("debug")) {
     if (global.interact == 0 && obj_mainchara.cutscene == 0 && global.debug == 0) {
@@ -98,15 +99,6 @@ rk_pad_signature = pad_signature;
 rk_pad_device = device;
 rk_pad_backend = backend;
 
-// Deferred hooks own the event and its replay. UI only acknowledges a warning.
-// No confirm/cancel key is stolen from an active battle or dialogue.
-if (global.rk_warning_pending) {
-    if (keyboard_check_pressed(119) || rk_pad_pressed[0]) {
-        global.rk_warning_ack = 1;
-        global.rk_warning_pending = 0;
-    }
-    exit;
-}
 // Direction edges follow obj_time's verified keyboard/pad backend.
 var up, down, left, right, accept, cancel, held_up, held_down, held_left, held_right;
 held_up = 0; held_down = 0; held_left = 0; held_right = 0;
@@ -120,6 +112,14 @@ left = (held_left && !rk_direction_left) || keyboard_check_pressed(118) || rk_pa
 right = (held_right && !rk_direction_right) || keyboard_check_pressed(120) || rk_pad_pressed[3];
 rk_direction_up = held_up; rk_direction_down = held_down;
 rk_direction_left = held_left; rk_direction_right = held_right;
+// Deferred hooks own the event and its replay. UI only acknowledges a warning.
+// No confirm/cancel key is stolen from an active battle or dialogue.
+if (global.rk_warning_pending) {
+    if (keyboard_check_pressed(119) || rk_pad_pressed[0]) {
+        scr_routekeeper_warning_session(2, 0, "", 0);
+    }
+    exit;
+}
 if (!rk_safe) exit;
 if (keyboard_check_pressed(121) || rk_pad_pressed[0]) {
     rk_menu = 1 - rk_menu; rk_menu_page = 0;
@@ -140,7 +140,8 @@ if (up) delta = -1;
 if (down) delta = 1;
 if (cancel) {
     if (rk_menu_page == 0) rk_menu = 0;
-    rk_menu_page = 0;
+    if (rk_menu_page == 7 || rk_menu_page == 8) { rk_choice = rk_menu_page - 7; rk_menu_page = 2; }
+    else rk_menu_page = 0;
     exit;
 }
 // Retain the original optional mode/language shortcuts inside settings only.
@@ -154,7 +155,7 @@ if (rk_menu_page == 0) {
         else if (!(rk_menu_row == 1 && (global.rk_target_route == 2 || global.rk_target_route == 4))) {
             rk_menu_page = rk_menu_row + 1;
             if (rk_menu_page == 1) rk_choice = global.rk_target_route;
-            if (rk_menu_page == 2) { rk_choice = global.rk_target_epilogue; if (global.rk_target_route == 3) rk_choice = global.rk_target_neutral; }
+            if (rk_menu_page == 2) { rk_choice = global.rk_target_epilogue; if (global.rk_target_route == 3) rk_choice = 0; }
             if (rk_menu_page == 3) rk_choice = global.rk_mode;
             if (rk_menu_page == 4) rk_choice = global.rk_spoilers;
             if (rk_menu_page == 5) rk_choice = global.rk_language;
@@ -165,25 +166,36 @@ if (rk_menu_page == 0) {
 } else {
     options = 2;
     if (rk_menu_page == 1) options = 5;
-    if (rk_menu_page == 2) { options = 3; if (global.rk_target_route == 3) options = 19; }
+    if (rk_menu_page == 2) options = 3;
+    if (rk_menu_page == 7) options = 19;
+    if (rk_menu_page == 8) options = 9;
     if (rk_menu_page == 3) options = 4;
     rk_choice = scr_routekeeper_ui_nav(rk_choice,delta,options);
-    if (left) rk_menu_page = 0;
-    if (accept || right) {
+    if (left) { if (old_page == 7 || old_page == 8) { rk_choice = old_page - 7; rk_menu_page = 2; } else rk_menu_page = 0; }
+    if ((accept || right) && !left) {
+        if (old_page == 2 && global.rk_target_route == 3) {
+            if (rk_choice == 0) { rk_menu_page = 7; rk_choice = global.rk_target_neutral; }
+            else if (rk_choice == 1) { rk_menu_page = 8; rk_choice = global.rk_target_greeting; }
+            else rk_menu_page = 0;
+        } else {
         if (old_page == 1) global.rk_target_route = rk_choice;
-        if (old_page == 2 && global.rk_target_route == 3) global.rk_target_neutral = rk_choice;
+        if (old_page == 7) global.rk_target_neutral = rk_choice;
+        if (old_page == 8) global.rk_target_greeting = rk_choice;
         if (old_page == 2 && global.rk_target_route != 3) global.rk_target_epilogue = rk_choice;
         if (old_page == 3) global.rk_mode = rk_choice;
         if (old_page == 4) global.rk_spoilers = rk_choice;
         if (old_page == 5) global.rk_language = rk_choice;
         changed = 1; rk_menu_page = 0;
+        if (old_page == 7 || old_page == 8) { rk_menu_page = 2; rk_choice = old_page - 7; }
+        }
     }
 }
 if (changed) {
     rk_dismissed = 0;
-    global.rk_warning_ack = 0;
+    scr_routekeeper_warning_session(3, 0, "", 0);
     ini_open("routekeeper.ini");
-    ini_write_real("Guidance", "schema", 2);
+    ini_write_real("Guidance", "schema", 3);
+    ini_write_real("Guidance", "target_greeting", global.rk_target_greeting);
     ini_write_real("Guidance", "target_route", global.rk_target_route);
     ini_write_real("Guidance", "target_epilogue", global.rk_target_epilogue);
     ini_write_real("Guidance", "target_neutral", global.rk_target_neutral);

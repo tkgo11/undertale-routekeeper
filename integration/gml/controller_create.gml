@@ -1,5 +1,6 @@
 // Persistent native UI. All save/history observations are read-only.
 rk_menu = 0;
+rk_menu_fence = 0;
 rk_menu_row = 0;
 rk_menu_page = 0;
 rk_choice = 0;
@@ -35,6 +36,8 @@ global.rk_target_route = ini_read_real("Guidance", "target_route", 0);
 if (global.rk_target_route != floor(global.rk_target_route) || global.rk_target_route < 0 || global.rk_target_route > 4) global.rk_target_route = 0;
 global.rk_target_epilogue = ini_read_real("Guidance", "target_epilogue", 0);
 if (global.rk_target_epilogue != floor(global.rk_target_epilogue) || global.rk_target_epilogue < 0 || global.rk_target_epilogue > 2) global.rk_target_epilogue = 0;
+global.rk_target_greeting = ini_read_real("Guidance", "target_greeting", 0);
+if (global.rk_target_greeting != floor(global.rk_target_greeting) || global.rk_target_greeting < 0 || global.rk_target_greeting > 8) global.rk_target_greeting = 0;
 global.rk_target_neutral = ini_read_real("Guidance", "target_neutral", 0);
 if (global.rk_target_neutral != floor(global.rk_target_neutral) || global.rk_target_neutral < 0 || global.rk_target_neutral > 18) global.rk_target_neutral = 0;
 global.rk_language = ini_read_real("Guidance", "language", 0);
@@ -42,6 +45,10 @@ if (global.rk_language != 0 && global.rk_language != 1) global.rk_language = 0;
 global.rk_spoilers = ini_read_real("Guidance", "spoilers", 0);
 if (global.rk_spoilers != 0 && global.rk_spoilers != 1) global.rk_spoilers = 0;
 ini_close();
+global.rk_decision_context = "";
+global.rk_greeting_status = 0;
+global.rk_greeting_text = "";
+global.rk_warning_mode = 1;
 global.rk_warning_code = 0;
 global.rk_warning_room = -1;
 global.rk_warning_enforced = 0;

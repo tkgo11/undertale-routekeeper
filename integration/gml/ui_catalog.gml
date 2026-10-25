@@ -9,7 +9,7 @@ if (argument0 == "journal") { if (argument1 == 1) return "진행 상황"; return
 if (argument0 == "back") { if (argument1 == 1) return "돌아가기"; return "Back"; }
 if (argument0 == "minimal") { if (argument1 == 1) return "최소"; return "Minimal"; }
 if (argument0 == "detailed") { if (argument1 == 1) return "상세"; return "Detailed"; }
-if (argument0 == "either") { if (argument1 == 1) return "모두"; return "Either"; }
+if (argument0 == "either") { if (argument1 == 1) return "선택 무관"; return "No preference"; }
 if (argument0 == "stay") { if (argument1 == 1) return "함께 살기"; return "Stay"; }
 if (argument0 == "leave") { if (argument1 == 1) return "떠나기"; return "Leave"; }
 if (argument0 == "off") { if (argument1 == 1) return "끄기"; return "Off"; }
@@ -46,4 +46,14 @@ if (argument0 == "warn_11") { if (argument1 == 1) return "도망친 뒤 지역�
 if (argument0 == "warn_12") { if (argument1 == 1) return "이 우정을 쌓으면 목표한 엔딩이 달라집니다."; return "This friendship would change your chosen ending."; }
 if (argument0 == "pad_close_warning") { if (argument1 == 1) return "닫기"; return "Close"; }
 if (argument0 == "pad_retry_warning") { if (argument1 == 1) return "확인 후 다시 선택"; return "Continue, then try again"; }
+if (argument0 == "ending_type") { if (argument1 == 1) return "결말 유형"; return "Ending type"; }
+if (argument0 == "epilogue") { if (argument1 == 1) return "마지막 선택"; return "Epilogue"; }
+if (argument0 == "call_goal") { if (argument1 == 1) return "통화 조건"; return "Call goal"; }
+if (argument0 == "warn_13") { if (argument1 == 1) return "SAVE를 하면 선택한 통화 조건이 깨집니다."; return "Writing this SAVE would break your call condition."; }
+if (argument0 == "warn_14") { if (argument1 == 1) return "HP가 가득 차 있어도 이 아이템은 회복으로 기록됩니다."; return "This item counts as healing, even at full HP."; }
+if (argument0 == "warn_15") { if (argument1 == 1) return "통화를 위해 기념품을 하나 남겨 두세요."; return "Keep a piece of your keepsake for the call."; }
+if (argument0 == "warn_16") { if (argument1 == 1) return "처음 방어구는 벗으면 다시 착용할 수 없습니다."; return "Your starting armor cannot be equipped again."; }
+if (argument0 == "warn_17") { if (argument1 == 1) return "이 전투 결과로 LV가 1을 넘을 수 있습니다."; return "This battle outcome may raise LV above 1."; }
+if (argument0 == "warn_18") { if (argument1 == 1) return "이 통화 조건에서는 몬스터를 죽이면 안 됩니다."; return "This call requires defeating no monsters."; }
+if (argument0 == "warn_19") { if (argument1 == 1) return "이 길로 가면 목표한 뉴트럴 엔딩에서 멀어집니다."; return "This path leads away from your Neutral ending."; }
 return "";

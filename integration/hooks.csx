@@ -11,6 +11,7 @@ using UndertaleModLib.Decompiler;
 public static class RoutekeeperHooks
 {
     private static readonly Dictionary<string,string> SourceHashes = new() {
+        ["gml_Object_obj_overworldcontroller_Draw_0"] = "1dbd8a96e08f3358cc186fd5afda9efb27c2e1dbd1fb96902b36789cf7f488d0",
         ["gml_Object_obj_undynedate_outside_Step_0"] = "dc5dddc4aad73e467846ef84f1d32404ea9a30352d86c5a40b6652ded8a0bccc",
         ["gml_Object_obj_mainchara_Step_0"] = "f1acba1402db35f806153bf8d0ecf94908d209258a891291fed55daf648740e5",
         ["gml_Object_obj_battlecontroller_Step_0"] = "684692982516de492c8712401e6940e30a359f8e4ef6c0e62986a03f0d4fd8a2",
@@ -64,19 +65,28 @@ public static class RoutekeeperHooks
             "if (global.bmenuno == 4)\n                {\n                    if (global.bmenucoord[4] == 0 && scr_routekeeper_decision_guard(2, -1)) { control_clear(0); exit; }\n                    if (global.bmenucoord[4] == 1 && scr_routekeeper_decision_guard(3, -1)) { control_clear(0); exit; }\n                    OBJ_WRITER.halt = 3;");
         string act="if (global.bmenuno == 10)\n                {\n                    global.talked = global.bmenucoord[2];";
         modified=ReplaceOne(modified,act,
-            "if (global.bmenuno == 10)\n                {\n                    if (instance_exists(obj_shyren)) { if (scr_routekeeper_decision_act(1, global.bmenucoord[2], obj_shyren.encourage) && scr_routekeeper_decision_guard(2, global.mytarget)) { control_clear(0); exit; } }\n                    global.talked = global.bmenucoord[2];");
+            "if (global.bmenuno == 10)\n                {\n                    if (instance_exists(obj_shyren)) { if (scr_routekeeper_decision_act(1, global.bmenucoord[2], obj_shyren.encourage) && scr_routekeeper_decision_guard(2, global.mytarget)) { control_clear(0); exit; } }\n                    if (instance_exists(obj_snowdrake)) { if (scr_routekeeper_decision_snow_act(global.bmenucoord[2], global.flag[203] >= 16 && global.flag[57] != 2) && scr_routekeeper_decision_guard(2, global.mytarget)) { control_clear(0); exit; } }\n                    global.talked = global.bmenucoord[2];");
         string item="if (obj_time.right == 0 && obj_time.left == 0)\n                    {\n                        OBJ_WRITER.halt = 3;";
         modified=ReplaceOne(modified,item,
-            "if (obj_time.right == 0 && obj_time.left == 0)\n                    {\n                        if (scr_routekeeper_decision_item(global.item[global.bmenucoord[3] + ((global.bmenuno - 3) * 8)], instance_exists(obj_spiderb))) { if (scr_routekeeper_decision_guard(2, obj_spiderb.myself)) { control_clear(0); exit; } }\n                        OBJ_WRITER.halt = 3;");
+            "if (obj_time.right == 0 && obj_time.left == 0)\n                    {\n                        if ((global.rk_target_route == 2 || global.rk_target_route == 4) && scr_routekeeper_decision_item(global.item[global.bmenucoord[3] + ((global.bmenuno - 3) * 8)], instance_exists(obj_spiderb), (instance_exists(obj_mandog) || instance_exists(obj_womandog)) && scr_monstersum() == 1)) { if (scr_routekeeper_decision_guard(2, -1)) { control_clear(0); exit; } }\n                        if (scr_routekeeper_decision_guard(8, global.item[global.bmenucoord[3] + ((global.bmenuno - 3) * 8)])) { control_clear(0); exit; }\n                        OBJ_WRITER.halt = 3;");
         import.QueueReplace(battle,modified);
         changed.Add(battle);
+        const string world = "gml_Object_obj_overworldcontroller_Draw_0";
+        var worldSource=Source(world);
+        worldSource=ReplaceOne(worldSource,"            snd_play(snd_save);\n            script_execute(scr_save);",
+            "            if (global.filechoice == 0 && scr_routekeeper_decision_guard(9, 0)) { control_clear(0); exit; }\n            snd_play(snd_save);\n            script_execute(scr_save);");
+        worldSource=ReplaceOne(worldSource,"                global.menuno = 9;\n                script_execute(scr_itemuseb, global.menucoord[1], global.item[global.menucoord[1]]);",
+            "                if (scr_routekeeper_decision_guard(8, global.item[global.menucoord[1]])) { control_clear(0); exit; }\n                global.menuno = 9;\n                script_execute(scr_itemuseb, global.menucoord[1], global.item[global.menucoord[1]]);");
+        worldSource=ReplaceOne(worldSource,"                global.menuno = 9;\n                dontthrow = 0;",
+            "                if (scr_routekeeper_decision_guard(10, global.item[global.menucoord[1]])) { control_clear(0); exit; }\n                global.menuno = 9;\n                dontthrow = 0;");
+        import.QueueReplace(world,worldSource); changed.Add(world);
         const string friendship = "gml_Object_obj_undynedate_outside_Step_0";
         string friendSource = Source(friendship);
         friendSource = ReplaceOne(friendSource,"        global.facing = 2;\n        global.interact = 1;\n        con = 6;",
             "        if (scr_routekeeper_decision_guard(7, id)) { obj_mainchara.x = obj_mainchara.xprevious; obj_mainchara.y = obj_mainchara.yprevious; exit; }\n        global.facing = 2;\n        global.interact = 1;\n        con = 6;");
         import.QueueReplace(friendship, friendSource); changed.Add(friendship);
         var encounterPrefixes = new Dictionary<string,string> {
-            ["gml_Object_obj_mainchara_Step_0"] = "if (instance_exists(obj_routekeeper)) { if (obj_routekeeper.rk_menu) exit; }",
+            ["gml_Object_obj_mainchara_Step_0"] = "if (instance_exists(obj_routekeeper)) { if (obj_routekeeper.rk_menu || obj_routekeeper.rk_menu_fence) exit; }",
             ["gml_Object_obj_torieltrigger12_Collision_1576"] = "if (global.flag[45] < 4 && conversation == 0 && scr_routekeeper_decision_guard(5, 1)) { other.x = other.xprevious; other.y = other.yprevious; exit; }",
             ["gml_Object_obj_choicer_Other_10"] = "if (canchoose == 1 && choiced == 0 && global.msc == 820 && instance_exists(obj_outsideworld_event) && scr_routekeeper_decision_guard(6, mychoice)) { control_clear(0); exit; }",
             ["gml_Object_obj_papyrus8_Collision_1576"] = "if (conversation == 0 && scr_routekeeper_decision_guard(5, 2)) { other.x = other.xprevious; other.y = other.yprevious; exit; }",
@@ -87,10 +97,10 @@ public static class RoutekeeperHooks
             import.QueueReplace(pair.Key,pair.Value+"\n"+Source(pair.Key));
             changed.Add(pair.Key);
         }
-        foreach(string name in SourceHashes.Keys.Where(n=>n!=battle && n!=friendship && !encounterPrefixes.ContainsKey(n))) {
+        foreach(string name in SourceHashes.Keys.Where(n=>n!=battle && n!=friendship && n!=world && !encounterPrefixes.ContainsKey(n))) {
             string source=Source(name);
             // Door collision dispatch is before interaction lock, fader and alarm mutation.
-            import.QueueReplace(name,"if (scr_routekeeper_decision_guard(4, id)) exit;\n"+source);
+            import.QueueReplace(name,"if (scr_routekeeper_decision_guard(4, id)) { with (obj_mainchara) { x = xprevious; y = yprevious; } exit; }\n"+source);
             changed.Add(name);
         }
         return changed;

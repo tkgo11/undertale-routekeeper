@@ -1,58 +1,15 @@
-// Exact-build adapter. Source evidence and hook signatures: profiles/bindings.json.
-// Observation only: never assign vanilla flags, saves or permanent history.
+// Exact-build read-only adapter. Never touch original state before readiness.
 var rk_ready, rk_name;
 rk_ready = variable_global_exists("flag") && variable_global_exists("plot")
-    && variable_global_exists("xp") && variable_global_exists("kills");
+    && variable_global_exists("xp") && variable_global_exists("kills")
+    && variable_global_exists("lv") && variable_global_exists("armor") && variable_global_exists("item");
 global.rk_state_ready = rk_ready;
 if (!rk_ready) {
-    global.rk_area = -1;
-    global.rk_sans_defeated = -1;
-    global.rk_epilogue_choice = -1;
-    global.rk_epilogue_resolved = -1;
-    global.rk_epilogue_matches = -1;
-    global.rk_snowman_piece_carried = -1;
-    global.rk_save_exists = -1;
-    global.rk_equipped_armor = -1;
-    global.rk_healing_items_used = -1;
-    global.rk_area = -1;
-    global.rk_sans_defeated = -1;
-    global.rk_epilogue_choice = -1;
-    global.rk_epilogue_resolved = -1;
-    global.rk_epilogue_matches = -1;
-    global.rk_snowman_piece_carried = -1;
-    global.rk_save_exists = -1;
-    global.rk_equipped_armor = -1;
-    global.rk_healing_items_used = -1;
-    global.rk_alphys_date_available = -1;
-    global.rk_alphys_friendship = -1;
-    global.rk_barrier_broken = -1;
-    global.rk_doggo_killed = -1;
-    global.rk_dogi_killed = -1;
-    global.rk_experience = -1;
-    global.rk_genocide_aborted = -1;
-    global.rk_genocide_requirements_completed = -1;
-    global.rk_genocide_stage = -1;
-    global.rk_glad_dummy_killed = -1;
-    global.rk_greater_dog_killed = -1;
-    global.rk_hard_mode = -1;
-    global.rk_kills = -1;
-    global.rk_kills_hotland_core = -1;
-    global.rk_kills_ruins = -1;
-    global.rk_kills_snowdin = -1;
-    global.rk_kills_total = -1;
-    global.rk_kills_waterfall = -1;
-    global.rk_lesser_dog_state = -1;
-    global.rk_level = -1;
-    global.rk_mettaton_alive = -1;
-    global.rk_mettaton_defeated = -1;
-    global.rk_mettaton_resolved = -1;
-    global.rk_monster_kid_attacked = -1;
-    global.rk_muffet_killed = -1;
-    global.rk_murder_level = -1;
-    global.rk_neutral_alphys_friendship = -1;
-    global.rk_neutral_mettaton_dead = -1;
-    global.rk_neutral_papyrus_dead = -1;
-    // flag[512] is not an observed choice until the final dialogue commits it.
+    scr_routekeeper_init_facts();
+    global.rk_history_refresh = 0; global.rk_history_room = -1;
+    return 0;
+}
+// flag[512] is not an observed choice until the final dialogue commits it.
 // While the scene is active, con=100/200 identifies the selected branch earlier.
 global.rk_epilogue_choice = -1;
 global.rk_epilogue_resolved = 0;
@@ -75,35 +32,6 @@ for (var rk_item_slot = 0; rk_item_slot < 8; rk_item_slot += 1) {
 global.rk_save_exists = ossafe_file_exists("file0");
 global.rk_equipped_armor = global.armor;
 global.rk_healing_items_used = global.flag[260];
-global.rk_neutral_toriel_dead = -1;
-    global.rk_neutral_undyne_dead = -1;
-    global.rk_neutral_undyne_friendship = -1;
-    global.rk_papyrus_alive = -1;
-    global.rk_papyrus_friendship = -1;
-    global.rk_papyrus_hangout_available = -1;
-    global.rk_papyrus_resolved = -1;
-    global.rk_plot10 = -1;
-    global.rk_prior_neutral_completion = -1;
-    global.rk_prior_pacifist_completion = -1;
-    global.rk_royal_guards_killed = -1;
-    global.rk_shyren_killed = -1;
-    global.rk_snowdrake_killed = -1;
-    global.rk_snowdrake_lost = -1;
-    global.rk_soul_sold = -1;
-    global.rk_toriel_alive = -1;
-    global.rk_toriel_resolved = -1;
-    global.rk_true_lab_available = -1;
-    global.rk_true_lab_completed = -1;
-    global.rk_true_reset_available = -1;
-    global.rk_undyne_alive = -1;
-    global.rk_undyne_friendship = -1;
-    global.rk_undyne_hangout_available = -1;
-    global.rk_undyne_resolved = -1;
-    global.rk_water_opportunity_missed = -1;
-    global.rk_water_opportunity_active = -1;
-    global.rk_world_erased = -1;
-    exit;
-}
 global.rk_experience = global.xp;
 global.rk_level = global.lv;
 global.rk_kills_total = global.kills;

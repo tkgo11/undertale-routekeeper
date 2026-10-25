@@ -31,6 +31,13 @@ void Assert(bool condition, string message = "Assertion failed") { if (!conditio
 GameState Candidate() => new(RouteCatalog.Get(RouteId.TruePacifist).Requirements.ToDictionary(r => r.Fact, r => (int?)r.Expected).Concat(new Dictionary<string, int?> { ["papyrus_hangout_available"] = 1, ["undyne_hangout_available"] = 1, ["alphys_date_available"] = 1, ["true_lab_available"] = 1, ["mettaton_defeated"] = 1 }).ToDictionary(x => x.Key, x => x.Value));
 GameState With(GameState state, string key, int? value) => new(new Dictionary<string, int?>(state.Facts) { [key] = value });
 
+Check("Unknown initialization covers optional observations and all domain facts",()=>{
+    var source=GmlRuleEmitter.EmitNativeFiles()["fact_init.gml"];
+    foreach(var fact in FactDomains.KnownFacts.Concat(NeutralCatalog.Facts).Concat(NeutralGoals.Facts).Distinct())
+        Assert(source.Contains($"global.rk_{fact} = -1;"),"Uninitialized observation: "+fact);
+    Assert(!source.Contains("global.rk_target_greeting ="),"Settings must survive state refresh");
+});
+
 Check("Gameplay guidance omits developer implementation text",()=>{
     var text=Enum.GetValues<RouteId>().SelectMany(route=>RouteCatalog.Get(route).Requirements.SelectMany(r=>new[]{r.Minimal,r.Detailed,r.KoreanMinimal,r.KoreanDetailed})
         .Concat(ObjectiveRules.For(route).SelectMany(r=>new[]{r.Minimal,r.Detailed,r.KoreanMinimal,r.KoreanDetailed})));
