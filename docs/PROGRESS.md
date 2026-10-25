@@ -271,3 +271,29 @@ execution remains NOT_RUN; exact profile stays InspectedOnly.
 PR #1 was changed from Draft to Ready for review at user request; it
 remains open, unmerged and unreleased. Source-only review is appropriate,
 but native tests and compatibility sign-off must still block merge/release.
+
+## Same existing Windows account smoke workflow (source-only, NOT_RUN)
+
+Responding to the requirement of **no extra Windows user accounts** and no
+Windows Sandbox, added `tools/runtime/run-current-account.ps1`. It operates
+on the user's existing unelevated Windows profile, subject to explicit
+same-account risk acceptance and Steam Cloud-off / Offline Mode attestation.
+It checks that all network adapters were manually disconnected but does
+not alter host networking. It verifies exact pinned original/runner/patch
+hashes and the private ZIP inventory.
+
+Before starting Steam, it snapshots and independently hashes personal
+UNDERTALE saves, then temporarily quarantines the originals on the same
+profile volume. It uses a uniquely marked disposable install swap
+with finally-based rollback. After game exit the operator must exit Steam;
+only then are local saves restored and test saves retained separately.
+Interruptions retain session markers/backups and support explicit `Recover`;
+a successfully restored session can be `Archive`d before another variant.
+Personal Steam cache/account-side permanent history are not isolated or
+automatically reset, so this is **smoke-only**, not ending/RESET verification.
+
+The earlier no-Sandbox two-user workflow and Windows Sandbox workflow remain
+optional alternatives. The PR stays Ready for review, open and unmerged.
+These are source modifications with static audit assertions, **not**
+Windows-native test results: native startup, save safety and gameplay
+remain NOT_RUN; compatibility remains InspectedOnly.
