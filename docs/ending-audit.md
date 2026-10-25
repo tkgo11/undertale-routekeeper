@@ -81,3 +81,60 @@ Only their uncertain level protection becomes advisory in Forced; known boss
 constraints remain enforceable. No global impossibility is inferred from assuming
 all kills award positive EXP. Windows runtime bootstrap is now BLOCKED by the
 isolated Steam API/window failures; real interaction/endings remain NOT_RUN.
+
+## Optional-encounter and scheduler continuation
+
+**OFFLINE_PASS only; no new runtime execution.** The entry script for Art Club
+is Step, not the legacy Alarm0 weekday predicate. Step accepts October10 at hour8
+or20, rejects murder>=12, outcome281=1/2 and flags7/8. The authentic room list places
+walkandbranch159 before sorry160, containing the sign; the music-fade doors inherit
+A/B next/previous-room behavior. Native event links, A/B inheritance and the two rooms' doorway/sign instances are
+checked against the original data during patch validation. mainchara Other10 calls
+scr_interact, which sets myinteract; this path does not dispatch the bound but
+unscheduled Alarm0. Movement and dodging are not executed here.
+
+| Compound goal | Source/event evidence | Current verdict |
+|---|---|---|
+| Befriended betrayal + LV1/no healing/Bandage (type4/goal8) | Complete water/Papyrus/Undyne friendship at0 kills, visit Art Club before the letter/lab transition, defeat So Sorry for1EXP/1kill, spare the other bosses | ReachableInSourceModel, conditional on calendar/access/victory; native gameplay NOT_RUN |
+| High-kill Exile + the same goal (type6/goal8) | Jerry gives1EXP; seed Snowdin before plot100, kill Jerry and FLEE with Bandage, backtrack while regional count>0. Nine Jerry plus So Sorry gives10 kills/10EXP and LV2 | UNKNOWN globally; the known cheap-kill subset fails. Do not extrapolate to every zero-EXP/scripted-return path |
+
+The So Sorry witness includes battle timing: original hurt Step changes HP,
+Alarm6 advances hitplot only on HP change and peaceful myplot only without one.
+LV1 AT10/Stick0 against DEF-6 has a perfect-hit range35..40. Eleven35-damage hits
+never naturally exhaust1100HP: hitplot10 forces HP0 on the next hit, then Alarm6
+sets death phase1 at hitplot11. Writer/Step/Alarm10 completion reaches killed1
+before Destroy invokes the ordinary reward collector. Repeated damage keeps
+myplot0, so a guessed fixed peaceful-turn deadline is not used. Eleven numeric
+Step/Alarm projections are original-derived goldens, not a GameMaker execution.
+
+No zero-EXP shortcut is assumed: Dummy and Doodlebug do not increment kills;
+Napstablook's -1 setup reward is not collected by a killed1 branch. Glad Dummy's
+custom Destroy increments kills without collecting its setup reward200, but its
+trigger requires murder>=9 (including Toriel's death), contradicting type6.
+Asgore's extra kill in endflowey occurs AFTER mainend's phone selector. Royal Guard
+confession makes MERCY available rather than automatically ending the battle;
+Muffet's timed telegram also leaves a mercy/attack choice, so no blanket ACT or
+turn-progression refusal was added. Existing verified MERCY/item guards remain.
+
+Remaining type6 proof obligation: close all kill/reward paths, especially zero-EXP
+Mettaton forms/inherited effects and mixed-battle scripted room returns (such as
+Woshbody's locked story battle). Literal setup rewards alone cannot prove a kill
+contributes EXP or that its death branch is reachable. No global impossibility is
+claimed. Personal saves, debug-only transitions and manual save edits are excluded.
+
+Corrected defects:
+- LV1 protection now includes xpreward[3], already earned but not banked until
+  battle win/FLEE. A second kill can cross XP10 even while global.xp is still0.
+- scr_load clears warnings/acknowledgements and mod menu/history cache before
+  restoring game state, including reload into the identical room/context.
+- Each decision refreshes observations/evaluation rather than trusting the prior
+  controller Step, preventing stale BLOCKED state from bypassing a new protection.
+- The bounded model now settles backtracking kills into the visited region,
+  rejects resolving a boss/advancing from another region, and expires water on
+  departure. A one-time Jerry unlock cannot replay during backtracking.
+
+108 repeated settlement golden inputs execute original won/inbattle guards;
+repeated battle Step and overworld return cannot bank the same rewards/counters
+twice in this numeric projection. Cross-phase warning/reload cases, current-state
+source contracts and100-cycle EX regressions supplement it. Actual Step/Alarm/
+Draw/Collision ordering, HP/inventory preservation and input timing remain NOT_RUN.

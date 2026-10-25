@@ -134,6 +134,14 @@ class UiTests(unittest.TestCase):
         create=(ROOT/'gml/controller_create.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
         self.assertIn('global.rk_warning_pending = 0;',create);self.assertIn('global.rk_warning_ack = 0;',create)
         self.assertNotIn('ini_write_real("Guidance", "warning',step)
+    def test_reload_and_pre_effect_refresh(self):
+        hooks=(ROOT/'hooks.csx').read_text();guard=(ROOT/'gml/decision_guard.gml').read_text()
+        self.assertIn('["gml_Script_scr_load"]',hooks)
+        self.assertIn('global.rk_history_refresh = 0;',hooks)
+        self.assertIn('obj_routekeeper.rk_menu_fence = 0;',hooks)
+        self.assertLess(guard.index('scr_routekeeper_read_state();'),guard.index('obj_routekeeper.rk_status == 3'))
+        pending=(ROOT/'gml/greeting_pending_risk.gml').read_text()
+        self.assertEqual(pending.count('global.xpreward[3]'),2)
     def test_baseline_cell_bounds(self):
         rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')

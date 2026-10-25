@@ -206,7 +206,7 @@ for(int item=0;item<100;item++)foreach(bool dogi in new[]{false,true})foreach(bo
 }
 Check("1200 item classifiers include every item and both encounter flags",true);
 for(int xp=0;xp<11;xp++)for(int reward=0;reward<12;reward++)for(int enemy=0;enemy<=8;enemy++)foreach(bool level in new[]{false,true}){
-    var prefix=$"argument0 = {xp}; argument1 = {reward}; argument2 = {enemy}; argument3 = {(level?1:0)}; ";
+    var prefix=$"argument0 = {xp}; argument1 = {reward}; argument2 = {enemy}; argument3 = {(level?1:0)}; argument4 = 0; ";
     if((new GmlObjectiveInterpreter(prefix+GreetingPolicy.EmitExperience(),new Dictionary<string,int?>()).Run()=="1")!=GreetingPolicy.ExperienceRisk(xp,reward,enemy,level))throw new Exception("EXP threshold source parity");
 }
 Check("2376 EXP/LV threshold cases agree with emitted source",true);
@@ -240,8 +240,21 @@ for(int risk=0;risk<=20;risk++)foreach(int target in new[]{0,4,6,8})foreach(int 
     bool scopedResult=new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitEnforceableGml(),new Dictionary<string,int?>()).Run()=="1";
     if(scopedResult!=DecisionPolicy.CanEnforce(risk,action,2,target,goal))throw new Exception("Enforcement scope source mismatch");
 }
-Check("Unproven LV1 compound risk is advisory while verified boss protections remain enforceable",!DecisionPolicy.CanEnforce(17,1,2,6,8)&&DecisionPolicy.CanEnforce(5,1,2,6,8)&&DecisionPolicy.CanEnforce(17,1,2,0,8));
+Check("Unproven LV1 compound risk is advisory while verified boss protections remain enforceable",!DecisionPolicy.CanEnforce(17,1,2,6,8)&&DecisionPolicy.CanEnforce(5,1,2,6,8)&&DecisionPolicy.CanEnforce(17,1,2,0,8)&&DecisionPolicy.CanEnforce(17,1,2,4,8));
 var uncertain=WarningSession.Apply(new(),WarningEvent.Propose,DecisionMode.Forced,17,"compound",false).State;
 uncertain=WarningSession.Apply(uncertain,WarningEvent.Acknowledge).State;
 Check("Forced can acknowledge an unsupported compound constraint without a battle trap",!WarningSession.Apply(uncertain,WarningEvent.Propose,DecisionMode.Forced,17,"compound",false).Refuse);
+
+
+// Multiple defeated slots have not yet been banked in global.xp. Original
+// scr_monsterdefeat accumulates them in xpreward[3] until win/FLEE settlement.
+Check("Pending rewards prevent a second LV1-breaking kill",!GreetingPolicy.ExperienceRisk(0,7,0,true)&&GreetingPolicy.ExperienceRisk(0,7,0,true,7));
+for(int xp=0;xp<10;xp++)for(int pending=0;pending<10;pending++)for(int reward=0;reward<10;reward++) {
+    var prefix=$"argument0={xp}; argument1={reward}; argument2=0; argument3=1; argument4={pending}; ";
+    if((new GmlObjectiveInterpreter(prefix+GreetingPolicy.EmitExperience(),new Dictionary<string,int?>()).Run()=="1")!=(xp+pending+reward>=10))throw new Exception("Pending reward boundary mismatch");
+}
+Check("1000 pending reward boundaries match emitted EXP projection",true);
+
+
+
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

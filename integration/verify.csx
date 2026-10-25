@@ -48,8 +48,12 @@ var state=Get("gml_Script_scr_routekeeper_read_state");
 foreach(var fact in new[]{"global.rk_experience = global.xp","global.rk_plot10","global.rk_papyrus_friendship","global.rk_kills_ruins","global.rk_prior_neutral_completion","global.rk_soul_sold"})
     Check(state.Contains(fact),"observed normalized fact "+fact.Split(' ')[0]);
 foreach(var hook in RoutekeeperHooks.Names)
-    Check(Get(hook).Contains(hook == "gml_Object_obj_mainchara_Step_0" ? "obj_routekeeper.rk_menu" : "scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
+    Check(Get(hook).Contains(hook == "gml_Object_obj_mainchara_Step_0" ? "obj_routekeeper.rk_menu" : hook == "gml_Script_scr_load" ? "scr_routekeeper_warning_session" : "scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
 var guard=Get("gml_Script_scr_routekeeper_decision_guard");
+var load=Get("gml_Script_scr_load");
+Check(load.IndexOf("scr_routekeeper_warning_session",StringComparison.Ordinal)<load.IndexOf("global.xp =",StringComparison.Ordinal),"reload invalidates warnings before restoring game state");
+Check(guard.IndexOf("scr_routekeeper_read_state()",StringComparison.Ordinal)<guard.IndexOf("obj_routekeeper.rk_status == 3",StringComparison.Ordinal),"decision observes current state before blocked-route gate");
+Check(Get("gml_Script_scr_routekeeper_greeting_pending_risk").Contains("global.xpreward[3]"),"unbanked battle EXP included in optional LV protection");
 var battle=Get("gml_Object_obj_battlecontroller_Step_0");
 Check(battle.Contains("scr_routekeeper_decision_act"),"final-Hum guard linked before ACT effects");
 Check(battle.Contains("scr_routekeeper_decision_item") && battle.IndexOf("scr_routekeeper_decision_item",StringComparison.Ordinal)<battle.IndexOf("scr_itemuseb",StringComparison.Ordinal),"item escape guard precedes consumption");

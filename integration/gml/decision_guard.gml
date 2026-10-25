@@ -1,8 +1,15 @@
 // Source-validated pre-action adapter. No vanilla state or save writes.
 // action: 1 fight,2 spare-all,3 flee,4 door departure,5 enter boss encounter.
 if (!variable_global_exists("rk_mode") || !variable_global_exists("rk_target_route")) return 0;
-if (!variable_global_exists("rk_state_ready") || !global.rk_state_ready) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 if (global.rk_mode == 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+scr_routekeeper_read_state();
+if (!global.rk_state_ready) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (!variable_global_exists("flag")) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (global.flag[26] > 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+if (variable_global_exists("debug") && global.debug != 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
+// Events can run before the controller Step, or immediately after a reload.
+// Observe now instead of trusting the previous frame's BLOCKED/status snapshot.
+if (instance_exists(obj_routekeeper)) obj_routekeeper.rk_status = scr_routekeeper_evaluate();
 // An impossible target must not trap a mandatory battle. Re-evaluation exposes
 // BLOCKED; unsupported outcomes are never repaired with game/history writes.
 if (instance_exists(obj_routekeeper)) {
@@ -11,9 +18,6 @@ if (instance_exists(obj_routekeeper)) {
         return 0;
     }
 }
-if (!variable_global_exists("flag")) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
-if (global.flag[26] > 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
-if (variable_global_exists("debug") && global.debug != 0) { scr_routekeeper_warning_session(3, 0, "", 0); return 0; }
 var family, action, slot, enemy, target, xp_risk, required, water_pending;
 var neutral_outcome, kill_cap, risk, context, first_slot, last_slot, candidate, enforceable, reserved_kills, epilogue_mismatch, regional_missing, friendship_pending, snowdrake_opportunity;
 family = -1;

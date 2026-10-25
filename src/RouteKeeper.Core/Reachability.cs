@@ -1,6 +1,7 @@
 namespace RouteKeeper.Core;
 
 public enum ReachabilityVerdict { ReachableInSourceModel, Impossible, Unknown }
+public sealed record SoSorryHit(int Turn,int Hitpoints,int Hits,int PeaceTurns,int DeathPhase);
 public sealed record ReachabilityResult(ReachabilityVerdict Verdict,string Evidence,IReadOnlyList<string> Events,GameState? FinalState=null);
 
 /// <summary>Ordered, source-bounded witness model. Not a VM, RNG proof or runtime approval.
@@ -13,7 +14,7 @@ public sealed class RunTransitionModel
     readonly bool[] resolved=new bool[4];
     readonly List<string> events=[];
     int region,location,experience,kills,pending,friendship;
-    bool water,waterGiven,hangoutAllowed=true;
+    bool water,waterGiven,jerryUnlocked,hangoutAllowed=true;
     public static int LevelForExperience(int xp)=>xp<0?throw new ArgumentOutOfRangeException(nameof(xp)):1+new[]{10,30,70,120,200,300,500,800,1200,1700,2500,3500,5000,7000,10000,15000,25000,50000,99999}.Count(x=>xp>=x);
     public static bool? EncountersSuppressed(int area,int count,int plot10)=>area switch {1=>count==0&&plot10>1000,2=>count==0&&plot10>1210,_=>null};
     public IReadOnlyList<string> Events=>events.AsReadOnly();
@@ -38,13 +39,27 @@ public sealed class RunTransitionModel
         int reward=region==0?7:70;
         for(int i=0;i<count;i++){experience+=reward;kills++;pending++;events.Add($"kill-ordinary:enemy={(region==0?"Loox":"Vulkin")}:region={region}:reward={reward}");ReturnFromBattle();}
     }
+    public void KillJerry(int count=1)
+    {
+        // Original Jerry encounterer can remain on backtracking only if this
+        // region was seeded before plot100; Bandage makes ordinary FLEE succeed.
+        if(location!=1||region<1||pending!=0||count<1||regional[1]+count>16||
+            (region>1&&regional[1]==0)||facts["barrier_broken"]==1||facts["neutral_alphys_friendship"]>=10)
+            throw new InvalidOperationException("No source-bounded Jerry encounter path.");
+        if(!jerryUnlocked){events.Add("spare-initial-Snowdrake;Jerry-group-available");jerryUnlocked=true;}
+        for(int i=0;i<count;i++) {
+            experience++;kills++;pending++;
+            events.Add("Jerry-defeat:EXP+1;kills+1;Bandage-FLEE-banks-rewards");
+            ReturnFromBattle();
+        }
+    }
     public void ReturnFromBattle()
     {
-        regional[region]+=pending;pending=0;events.Add("settle-regional-kill-delta");
+        regional[location]+=pending;pending=0;events.Add("settle-regional-kill-delta:region="+location);
     }
     public void ResolveBoss(bool defeat)
     {
-        if(region>3||resolved[region]||pending!=0)throw new InvalidOperationException("Boss event order invalid.");
+        if(region>3||location!=region||resolved[region]||pending!=0)throw new InvalidOperationException("Boss event order invalid.");
         string boss=new[]{"toriel","papyrus","undyne","mettaton"}[region];
         if(defeat){kills++;pending++;experience+=new[]{150,200,500,800}[region];facts["neutral_"+boss+"_dead"]=1;}
         facts[boss+"_resolved"]=1;resolved[region]=true;
@@ -53,19 +68,20 @@ public sealed class RunTransitionModel
     }
     public void Advance()
     {
-        if(region>=3||!resolved[region]||pending!=0)throw new InvalidOperationException("Cannot leave before boss and counter settlement.");
+        if(region>=3||location!=region||!resolved[region]||pending!=0)throw new InvalidOperationException("Cannot leave before boss and counter settlement.");
         if(region==2&&water)MissWater();
         region++;location=region;events.Add("advance-region:"+region);
     }
     public void BacktrackTo(int area)
     {
         if(area<1||area>=region)throw new InvalidOperationException("Ruins backtracking is not available.");
+        if(water)MissWater();
         location=area;events.Add("backtrack-to:"+area);
     }
     public void ReturnToFrontier(){location=region;events.Add("return-to-frontier:"+region);}
     public void GiveWater()
     {
-        if(!resolved[2]||!water)throw new InvalidOperationException("Water deadline unavailable.");
+        if(location!=2||!resolved[2]||!water)throw new InvalidOperationException("Water deadline unavailable.");
         water=false;waterGiven=true;events.Add("give-Undyne-water");
     }
     public void BefriendUndyne()
@@ -78,6 +94,39 @@ public sealed class RunTransitionModel
     {
         if(!resolved[2]||!water)throw new InvalidOperationException("No water opportunity.");
         water=false;hangoutAllowed=false;facts["water_opportunity_missed"]=1;events.Add("leave-without-water");
+    }
+    public static IReadOnlyList<SoSorryHit> SoSorryHitWitness()
+    {
+        // Original LV1 AT10 + Stick0 against DEF-6: a perfect hit has
+        // damage35..40. Choose35; all eleven remain below totalHP1100.
+        // Alarm6 advances peaceful myplot only if HP did not change.
+        int hp=1100,previous=1100,hits=0,peace=0;
+        var result=new List<SoSorryHit>();
+        for(int turn=1;turn<=11;turn++) {
+            hp-=35;if(hits>=10)hp=0; // Original hurt Step.
+            if(previous==hp)peace++;else hits++; // Original Alarm6.
+            previous=hp;
+            result.Add(new(turn,hp,hits,peace,hits==11?1:0));
+        }
+        return result.AsReadOnly();
+    }
+    public static bool ArtClubAvailable(int stage,int resolved,bool barrier,bool letter,int month,int day,int hour)=>
+        stage<12 && resolved is not (1 or 2) && !barrier && !letter && month==10 && day==10 && hour is 8 or 20;
+    public void ResolveSoSorry(int month,int day,int hour)
+    {
+        // Original artclass_sign Step: no weekday predicate (Alarm0 has a
+        // separate legacy check). Flags7/8 and281, not regional population,
+        // disable this one-time encounter. Victory/movement remain assumptions.
+        if(region!=3||location!=3||facts.GetValueOrDefault("so_sorry_resolved")==1||
+            facts["barrier_broken"]==1||facts["neutral_alphys_friendship"]>=10||
+            month!=10||day!=10||hour is not (8 or 20))
+            throw new InvalidOperationException("Art Club encounter is unavailable.");
+        events.Add("art-club:October-10:hour="+hour+":enter-So-Sorry");
+        foreach(var hit in SoSorryHitWitness())events.Add($"So-Sorry:Step->Alarm6:turn={hit.Turn}:HP={hit.Hitpoints}:hitplot={hit.Hits}:myplot={hit.PeaceTurns}");
+        events.Add("writer-complete;death-Step;Alarm10;death-Step;Alarm10;death-Step:killed1;Destroy;bank-reward");
+        kills++;pending++;experience++;facts["so_sorry_resolved"]=1;
+        events.Add("So-Sorry-defeat:EXP+1:kills+1");
+        ReturnFromBattle();
     }
     public void Save(){facts["save_exists"]=1;events.Add("save-file0");}
     public void AcquireKeepsake(){if(region!=1)throw new InvalidOperationException("Snowman not accessible in this witness.");facts["snowman_piece_carried"]=1;events.Add("ask-snowman-first-piece");}
@@ -101,7 +150,7 @@ public sealed class RunTransitionModel
     }
     public GameState Snapshot()
     {
-        var copy=new Dictionary<string,int?>(facts){["experience"]=experience,["kills"]=kills,["kills_total"]=kills,["level"]=LevelForExperience(experience),["murder_level"]=0,["neutral_undyne_friendship"]=friendship,["papyrus_alive"]=facts["neutral_papyrus_dead"]==0?1:0,["undyne_alive"]=facts["neutral_undyne_dead"]==0?1:0};
+        var copy=new Dictionary<string,int?>(facts){["kills_ruins"]=regional[0],["kills_snowdin"]=regional[1],["kills_waterfall"]=regional[2],["kills_hotland_core"]=regional[3],["experience"]=experience,["kills"]=kills,["kills_total"]=kills,["level"]=LevelForExperience(experience),["murder_level"]=0,["neutral_undyne_friendship"]=friendship,["papyrus_alive"]=facts["neutral_papyrus_dead"]==0?1:0,["undyne_alive"]=facts["neutral_undyne_dead"]==0?1:0};
         return new(copy);
     }
 }
@@ -114,7 +163,7 @@ public static class EndingReachability
         if(!extra.CompatibleTargets.Contains(target))return new(ReachabilityVerdict.Impossible,"Source-backed boss/friendship/goal contradiction.",[]);
         // Do not treat minimum ordinary EXP as a proof about every scripted
         // 0-EXP outcome or every optional encounter available after friendship.
-        if(goal==8 && target is 4 or 6)return new(ReachabilityVerdict.Unknown,"LV1 plus betrayal/high-kill Exile requires a full zero-EXP and encounter-availability graph; selector matches are insufficient.",[]);
+        if(goal==8 && target==6)return new(ReachabilityVerdict.Unknown,"LV1/high-kill Exile remains unproved: zero-EXP actor death and mixed-battle scripted-return/reward paths need a closed event graph. Jerry/So Sorry each give1EXP; no global impossibility is inferred.",[]);
         if(target==18) { var g=Genocide(true,false); return g with {Evidence="Ordered late quota abandonment and NEO resolution; not a normal EX battle."}; }
         if(goal is 2 or 3 && target==0)return Neutral(6,goal);
         if(target==0)return Neutral(1,goal);
@@ -126,7 +175,7 @@ public static class EndingReachability
         if(goal==4){model.AcquireKeepsake();model.StoreKeepsake();model.RetrieveKeepsake();}
         model.ResolveBoss(choice.PapyrusDead==1);model.Advance();model.ResolveBoss(choice.UndyneDead==1);
         if(friend){model.GiveWater();model.BefriendUndyne();}model.Advance();
-        if(target==4)model.KillOrdinary();
+        if(target==4) { if(goal==8)model.ResolveSoSorry(10,10,20);else model.KillOrdinary(); }
         bool mettaton=choice.MettatonDead==1||goal==3;
         model.ResolveBoss(mettaton);
         if(goal==1)model.LetterAndDate();

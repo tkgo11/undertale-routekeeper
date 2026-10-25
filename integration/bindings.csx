@@ -23,6 +23,21 @@ public static class RoutekeeperBindings
             if (index < 0 || index >= data.Rooms.Count || data.Rooms[index].Name.Content != room.GetProperty("Resource").GetString())
                 throw new Exception("Observed region room signature changed.");
         }
+        // A resource's name alone does not prove the original engine dispatches
+        // it. Validate the native event links, inheritance and room entry chain.
+        foreach(var entry in root.GetProperty("RequiredObjectParents").EnumerateArray()) {
+            var obj=data.GameObjects.ByName(entry.GetProperty("Object").GetString());
+            if(obj?.ParentId?.Name?.Content!=entry.GetProperty("Parent").GetString()) throw new Exception("Observed object inheritance changed.");
+        }
+        foreach(var entry in root.GetProperty("RequiredObjectEvents").EnumerateArray()) {
+            var obj=data.GameObjects.ByName(entry.GetProperty("Object").GetString());
+            string code=entry.GetProperty("Code").GetString();
+            if(obj==null||!obj.Events.SelectMany(e=>e).SelectMany(e=>e.Actions).Any(a=>a.CodeId?.Name.Content==code)) throw new Exception("Observed event dispatch changed.");
+        }
+        foreach(var entry in root.GetProperty("RequiredRoomObjects").EnumerateArray()) {
+            var room=data.Rooms.ByName(entry.GetProperty("Room").GetString());
+            if(room==null||!room.GameObjects.Any(o=>o.ObjectDefinition?.Name.Content==entry.GetProperty("Object").GetString())) throw new Exception("Observed room entry chain changed.");
+        }
         var context = new GlobalDecompileContext(data);
         int checkedEvidence = 0;
         foreach (var evidence in root.GetProperty("Evidence").EnumerateArray()) {

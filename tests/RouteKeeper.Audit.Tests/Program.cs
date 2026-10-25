@@ -136,7 +136,7 @@ foreach(bool sold in new[]{false,true})foreach(int choice in new[]{1,2}) {
 var late=GenocideTransitionModel.Witness(true);
 Check(late.Flags[205]==40&&late.Flags[27]==1&&late.Stage==15,"NEO settlement must not undo its earlier abandonment decision");
 Check(EndingReachability.Neutral(6,8).Verdict==ReachabilityVerdict.Unknown,"Unproven LV1/high-kill combination falsely proved");
-Check(EndingReachability.Neutral(4,8).Verdict==ReachabilityVerdict.Unknown,"Post-friendship encounter availability ignored");
+Check(EndingReachability.Neutral(4,8).Verdict==ReachabilityVerdict.ReachableInSourceModel,"Source-backed post-friendship So Sorry witness missing");
 Check(EndingReachability.Neutral(3,8).Verdict==ReachabilityVerdict.Impossible,"Required boss EXP contradicts LV1");
 var clean=new RunTransitionModel();clean.ResolveBoss(false);clean.Advance();clean.ResolveBoss(false);clean.Advance();clean.ResolveBoss(false);clean.GiveWater();clean.BefriendUndyne();clean.Advance();clean.BacktrackTo(1);
 try{clean.KillOrdinary();throw new Exception("Jerry farming after clean friendship was invented");}catch(InvalidOperationException){checks++;}
@@ -171,4 +171,46 @@ var looxWitness=new RunTransitionModel();looxWitness.KillOrdinary();
 Check(looxWitness.Snapshot()["experience"]==root.GetProperty("encounterRewards").GetProperty("Loox").GetInt32(),"Original Loox reward mismatch");
 var vulkinWitness=new RunTransitionModel();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.ResolveBoss(false);vulkinWitness.Advance();vulkinWitness.KillOrdinary();
 Check(vulkinWitness.Snapshot()["experience"]==root.GetProperty("encounterRewards").GetProperty("Vulkin").GetInt32(),"Original Vulkin reward mismatch");
+// Expectations below execute original numeric event slices in the golden tool.
+foreach(var row in root.GetProperty("artClubGate").EnumerateArray()) {
+    var n=Numbers(row);
+    Check(RunTransitionModel.ArtClubAvailable(n[0],n[1],n[2]==1,n[3]==1,n[4],n[5],n[6])==(n[7]==1),"Original Art Club Step entry differs");
+}
+var artWitness=EndingReachability.Neutral(4,8);
+Check(artWitness.FinalState!["experience"]==root.GetProperty("encounterRewards").GetProperty("SoSorry").GetInt32()&&artWitness.FinalState["kills"]==1,"Optional one-EXP kill did not preserve LV1");
+Check(artWitness.Events.Any(e=>e.StartsWith("undyne-hangout"))&&artWitness.Events.ToList().FindIndex(e=>e.StartsWith("undyne-hangout"))<artWitness.Events.ToList().FindIndex(e=>e.StartsWith("art-club:")),"Kill before friendship was invented");
+foreach(var row in root.GetProperty("settlement").EnumerateArray()) {
+    var input=Numbers(row[0]);var expected=Numbers(row[1]);
+    int xp=input[0],pending=input[1],won=input[2],regional=input[3],delta=input[4],gold=10,inbattle=1;
+    foreach(char eventKind in "BBBOOOBB") {
+        if(eventKind=='B'&&won==0){won=1;xp+=pending;gold+=5;}
+        if(eventKind=='O'&&inbattle==1){inbattle=0;regional+=delta;}
+    }
+    Check(new[]{xp,gold,won,inbattle,regional}.SequenceEqual(expected),"Repeated Step/return applied duplicate settlement");
+}
+// At the EXP boundary the non-forced transaction may be acknowledged once;
+// a reload must revoke it before a Draw/Collision/Step proposal with the same key.
+foreach(var mode in new[]{DecisionMode.Passive,DecisionMode.Active,DecisionMode.Forced})
+foreach(var phase in new[]{"Step","Alarm","Draw","Collision"}) {
+    var warning=WarningSession.Apply(new(),WarningEvent.Propose,mode,17,phase+":same-room").State;
+    warning=WarningSession.Apply(warning,WarningEvent.Acknowledge).State;
+    warning=WarningSession.Apply(warning,WarningEvent.Clear).State;
+    Check(WarningSession.Apply(warning,WarningEvent.Propose,mode,17,phase+":same-room").Refuse,"Same-room reload leaked stale permission");
+}
+var originalHits=root.GetProperty("soSorryHits").EnumerateArray().Select(Numbers).ToArray();
+foreach(var hit in RunTransitionModel.SoSorryHitWitness()) {
+    Check(new[]{hit.Turn,hit.Hitpoints,hit.Hits,hit.PeaceTurns,hit.DeathPhase}.SequenceEqual(originalHits[hit.Turn-1]),"Original So Sorry Step/Alarm hit progression differs");
+}
+Check(originalHits.Last()[1]==0&&originalHits.All(h=>h[3]==0),"Invented an automatic spare deadline during repeated positive hits");
+// The known cheap-kill subset alone reaches XP10 at10 kills; it does not
+// close every zero-EXP/scripted-return edge, so the global verdict stays UNKNOWN.
+var cheap=new RunTransitionModel();cheap.ResolveBoss(false);cheap.Advance();cheap.KillJerry(8);cheap.ResolveBoss(false);cheap.Advance();cheap.ResolveBoss(false);cheap.GiveWater();cheap.Advance();
+cheap.BacktrackTo(1);cheap.KillJerry();cheap.ReturnToFrontier();cheap.ResolveSoSorry(10,10,20);cheap.ResolveBoss(false);
+Check(cheap.Snapshot()["kills"]==10&&cheap.Snapshot()["experience"]==10&&cheap.Snapshot()["level"]==2,"Jerry/So Sorry bounded LV1 limit differs");
+Check(cheap.Snapshot()["kills_snowdin"]==9&&cheap.Snapshot()["kills_hotland_core"]==1,"Backtracking settled kills into the wrong region");
+Check((int)NeutralCatalog.Classify(cheap.Snapshot()).Ending==6,"Cheap-kill path did not select Exile");
+Check(cheap.Events.Count(e=>e.StartsWith("spare-initial-Snowdrake"))==1,"Repeated backtracking replayed the one-time encounter unlock");
+Check(root.GetProperty("encounterRewards").GetProperty("Jerry").GetInt32()==1,"Source Jerry reward changed");
+try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.BacktrackTo(1);orderModel.GiveWater();throw new Exception("Water remained available after departing");}catch(InvalidOperationException){checks++;}
+try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.BacktrackTo(1);orderModel.ResolveBoss(false);throw new Exception("Boss resolved from wrong region");}catch(InvalidOperationException){checks++;}
 Console.WriteLine($"PASS {checks} audit assertions (original-derived golden + ordered-event models); gameplay NOT_RUN");

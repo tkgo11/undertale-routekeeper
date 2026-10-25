@@ -11,6 +11,7 @@ using UndertaleModLib.Decompiler;
 public static class RoutekeeperHooks
 {
     private static readonly Dictionary<string,string> SourceHashes = new() {
+        ["gml_Script_scr_load"] = "869541a6a50f630969ff9c01ea4a88b38e9c7dbab7e50f4a81b86c7d8cb7fe56",
         ["gml_Object_obj_mettatonex_Step_0"] = "843f6dd4a31890def173acbde96217a42e230cfec089a0530664097f960df754",
         ["gml_Object_obj_overworldcontroller_Draw_0"] = "1dbd8a96e08f3358cc186fd5afda9efb27c2e1dbd1fb96902b36789cf7f488d0",
         ["gml_Object_obj_undynedate_outside_Step_0"] = "dc5dddc4aad73e467846ef84f1d32404ea9a30352d86c5a40b6652ded8a0bccc",
@@ -92,6 +93,7 @@ public static class RoutekeeperHooks
             "        if (scr_routekeeper_decision_guard(7, id)) { obj_mainchara.x = obj_mainchara.xprevious; obj_mainchara.y = obj_mainchara.yprevious; exit; }\n        global.facing = 2;\n        global.interact = 1;\n        con = 6;");
         import.QueueReplace(friendship, friendSource); changed.Add(friendship);
         var encounterPrefixes = new Dictionary<string,string> {
+            ["gml_Script_scr_load"] = "if (variable_global_exists(\"rk_warning_pending\")) { scr_routekeeper_warning_session(3, 0, \"\", 0); global.rk_history_refresh = 0; global.rk_history_room = -1; if (instance_exists(obj_routekeeper)) { obj_routekeeper.rk_menu = 0; obj_routekeeper.rk_menu_fence = 0; obj_routekeeper.rk_status = 4; } }",
             ["gml_Object_obj_mainchara_Step_0"] = "if (instance_exists(obj_routekeeper)) { if (obj_routekeeper.rk_menu || obj_routekeeper.rk_menu_fence) exit; }",
             ["gml_Object_obj_torieltrigger12_Collision_1576"] = "if (global.flag[45] < 4 && conversation == 0 && scr_routekeeper_decision_guard(5, 1)) { other.x = other.xprevious; other.y = other.yprevious; exit; }",
             ["gml_Object_obj_choicer_Other_10"] = "if (canchoose == 1 && choiced == 0 && global.msc == 820 && instance_exists(obj_outsideworld_event) && scr_routekeeper_decision_guard(6, mychoice)) { control_clear(0); exit; }",

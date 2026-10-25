@@ -11,8 +11,8 @@ hook/source evidence is in docs/integration-research.md.
 | Current Steam macOS | Depot 391542 exists; no game.ios/runner supplied | NOT_RUN | REFUSED |
 | Current Steam Linux | Depot 391544 exists; no game.unx/runner supplied | NOT_RUN | REFUSED |
 
-The expanded source validates 88 original resource signatures, 26 intended code
-changes and all 6,246 non-hook original code resources. Original textures/audio/font
+The expanded source validates 118 original resource signatures, 27 intended code
+changes and all 6,245 non-hook original code resources. Original textures/audio/font
 glyphs are retained. This is structural evidence only.
 
 The newly authorized ZIP binds the audited data hash to a Windows x86 runner and
@@ -24,7 +24,7 @@ compatibility-layer execution never promotes it. See runtime-validation.md for
 all archive hashes, isolation and the Steam initialization blocker.
 
 Expected experimental output SHA-256:
-`40d6785666582fff49ba3e481076a174f1722bb6bad365b8bdf13ccfafbf787b`.
+`6a49b85ce707596257e98e7ae6470e32a968ef666e127bb87701498c3a7d0beb`.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.

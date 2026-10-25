@@ -806,6 +806,156 @@
       "Resource": "gml_Object_obj_ratingsmaster_Draw_0",
       "DecompilerSha256": "ae6b591ab6fbb47e8be8452f834032cab756419546833ab3cfc901909cc6dd4e",
       "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Step_0",
+      "DecompilerSha256": "e592b8e6f12fd3ac6c4cec4501a41cf1e4186a11b623fe2a09b0f87fea8240aa",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlecontroller_Step_0",
+      "DecompilerSha256": "684692982516de492c8712401e6940e30a359f8e4ef6c0e62986a03f0d4fd8a2",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doodlebug_Destroy_0",
+      "DecompilerSha256": "e596482f4e1e6a132135a9e4722ffc6a19812493b421161cda4464128464b0af",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Create_0",
+      "DecompilerSha256": "4e847089eb4245c90e44bd81d78400cbb45d94decde6fd6beea46758a05d06c3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Alarm_0",
+      "DecompilerSha256": "e1ba725afce76c877249fc47ab65573c34715200a4c6f7769b232d773369e799",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Destroy_0",
+      "DecompilerSha256": "1b28ba59688342d9f429abbceadae0173dce6e30f02a5cbaa8e09ffd679850a1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Step_0",
+      "DecompilerSha256": "a07b2fa6939bd8382bbce66d93b906e9d2b536e5e2a1389ac0800629d73938b4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_jerry_Create_0",
+      "DecompilerSha256": "3ec01f5675379a0c8075afe90467addfc43f10f53694a853d864dafaa70b2dbd",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_jerry_Step_0",
+      "DecompilerSha256": "b3aa50e6531e314a7423ba282f9ccbb301f64d04ccfe62faabd5809baa8d8ac3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_glyde_Create_0",
+      "DecompilerSha256": "e039897865bb91e2bb22090e8b8839e2e42c9b5acd9951052c573cf8e9ee2541",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Create_0",
+      "DecompilerSha256": "cbd9bc78e346f3288bfb1a9076f84dafc627f4fb6f5e3e5b690e121a3485a46f",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Other_13",
+      "DecompilerSha256": "5baa8fe253967ba77fbe111b5d0e7518c21d29deb04fd20798f439a721c6f6bb",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Alarm_3",
+      "DecompilerSha256": "8f3d3eb349e9c0461fd22f187d5298032a1a60e3a80f6fae1661bf7832f53cf1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_napstablook_Destroy_0",
+      "DecompilerSha256": "b676ee11587c7e42c36acb11f92b534c6b24588a9d153747af725d5066199be2",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_bara01_Step_0",
+      "DecompilerSha256": "53c8494b331bde3d712158a3b2586516bfe1143b4b204110bf8b5c7854093cfb",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_bara02_Step_0",
+      "DecompilerSha256": "55f60f87fb5c2ebcf98dda2715f11c6edd6cd11ec3d206db30ce03b0ae17c152",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Alarm_6",
+      "DecompilerSha256": "553fbe20be81c3b945dbb1e9960ee67604f47fa082f3f2fb6be7a1811b34dfda",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doorA_Alarm_2",
+      "DecompilerSha256": "6629b39151eab083009a24bf6a73cd3d41ba20d52f9a7c8fe55f7d9e12b8d128",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doorB_Alarm_2",
+      "DecompilerSha256": "cedf9b82368da681074a9968c8de856deb8420f3710e210bb58774764aef5fc1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_runaway",
+      "DecompilerSha256": "86ae4689b882138afacff25285d41a30723d640c1c8acf83663d7278208beb24",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Alarm_6",
+      "DecompilerSha256": "7f1b6787725f7359e0de78a71629db69a3e4fa8115a286cc813f4854430cc457",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Create_0",
+      "DecompilerSha256": "f428a80f6a4fd39cc26b32853e5abba8be3955c37dd43f54d666d8843ef6b4c6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Alarm_10",
+      "DecompilerSha256": "9027d79655130d17a8773937af623059920817495e17719c5a700faae43eb476",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Other_12",
+      "DecompilerSha256": "90289cd759acee8c59db7cd51cd399f53be3f78f6067492160dd37606006b9e4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_attackcalc",
+      "DecompilerSha256": "0035c16390933e9167d7a5a98c15acf114ec39be2cab1ad0cafe331b480015f3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_targetchoice_Step_0",
+      "DecompilerSha256": "0c42cfa37d1ca0d60a31e3499f02aafc7276600124137e1bb83a976facf7b1a3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummytrigger_Create_0",
+      "DecompilerSha256": "2e4d4ccfcfc7a7476661f0ddce43b7ccc048f79d4aa52fd9961112664a310a2c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_woshbody_Step_0",
+      "DecompilerSha256": "9a496edce701dcfaa6d37824b33ebf72ae902f1205f523e431d82d7085a9923e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mainchara_Other_10",
+      "DecompilerSha256": "8278b23b49366231d5d6d6cfed50cbcd622390ef026011775759103dc9e1d252",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_interact",
+      "DecompilerSha256": "b2f806df8020fcfec67f3dda71b812606410c740ee15602cf284beba4228d3ca",
+      "Markers": []
     }
   ],
   "RequiredRooms": [
@@ -828,6 +978,64 @@
     {
       "Resource": "room_castle_trueexit",
       "Index": 240
+    },
+    {
+      "Resource": "room_fire_walkandbranch",
+      "Index": 159
+    },
+    {
+      "Resource": "room_fire_sorry",
+      "Index": 160
+    }
+  ],
+  "RequiredObjectParents": [
+    {
+      "Object": "obj_artclass_sign",
+      "Parent": "obj_interactable"
+    },
+    {
+      "Object": "obj_doorAmusicfade",
+      "Parent": "obj_doorA"
+    },
+    {
+      "Object": "obj_doorBmusicfade",
+      "Parent": "obj_doorB"
+    }
+  ],
+  "RequiredObjectEvents": [
+    {
+      "Object": "obj_artclass_sign",
+      "Code": "gml_Object_obj_artclass_sign_Step_0"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Step_0"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Alarm_6"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Destroy_0"
+    },
+    {
+      "Object": "obj_mainchara",
+      "Code": "gml_Object_obj_mainchara_Other_10"
+    }
+  ],
+  "RequiredRoomObjects": [
+    {
+      "Room": "room_fire_walkandbranch",
+      "Object": "obj_doorAmusicfade"
+    },
+    {
+      "Room": "room_fire_sorry",
+      "Object": "obj_doorBmusicfade"
+    },
+    {
+      "Room": "room_fire_sorry",
+      "Object": "obj_artclass_sign"
     }
   ]
 }

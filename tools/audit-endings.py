@@ -18,10 +18,11 @@ def body(source,anchor):
  return source[start+1:end-1]
 
 def expression(s):
+ s=s.replace('global.flag[global.flag[200]]','regional').replace('global.monsterhp[myself]','hp')
  s=re.sub(r'global.flag\[(\d+)\]',r'f\1',s).replace('scr_murderlv()','stage').replace('ossafe_file_exists("file0")','save').replace('ossafe_file_exists("undertale.ini")','1')
  s=s.replace('global.','').replace('&&',' and ').replace('||',' or ')
  tree=ast.parse(s,mode='eval')
- if any(not isinstance(n,(ast.Expression,ast.BoolOp,ast.And,ast.Or,ast.Compare,ast.Name,ast.Load,ast.Constant,ast.Eq,ast.NotEq,ast.Lt,ast.LtE,ast.Gt,ast.GtE,ast.UnaryOp,ast.USub,ast.BinOp,ast.Add,ast.Sub)) for n in ast.walk(tree)):raise ValueError('Unsupported original predicate')
+ if any(not isinstance(n,(ast.Expression,ast.BoolOp,ast.And,ast.Or,ast.Compare,ast.Name,ast.Load,ast.Constant,ast.Eq,ast.NotEq,ast.Lt,ast.LtE,ast.Gt,ast.GtE,ast.UnaryOp,ast.USub,ast.BinOp,ast.Add,ast.Sub,ast.Subscript)) for n in ast.walk(tree)):raise ValueError('Unsupported original predicate')
  return s
 
 def compile_slice(source):
@@ -29,6 +30,7 @@ def compile_slice(source):
  for line in source.splitlines():
   line=line.strip()
   if not line:continue
+  line=line.replace('global.monsterhp[myself]','hp')
   if line=='{':indent+=1;lines.append(' '*indent+'pass');continue
   if line=='}':indent-=1;continue
   if line.startswith('if ('):line='if '+expression(line[4:-1])+':'
@@ -38,6 +40,7 @@ def compile_slice(source):
   elif m:=re.fullmatch(r'ini_write_real\("([^"]+)", "([^"]+)", ([^;]+)\);',line):line=f'writes[{m[1]+"."+m[2]!r}] = '+expression(m[3])
   elif m:=re.fullmatch(r'global.attacktype = (.*);',line):line='attacktype = '+expression(m[1])
   elif m:=re.fullmatch(r'turns -= (\d+);',line):line='turns -= '+m[1]
+  elif m:=re.fullmatch(r'(?:global\.)?(xp|gold|inbattle|interact|regional|won|hp|prevhp|goodot|myplot|hitplot|d_con) ([-+]=|=) ([^();]+);',line.replace('global.flag[global.flag[200]]','regional')):line=m[1]+' '+m[2]+' '+expression(m[3])
   elif line=='instance_destroy();':line='destroyed = 1'
   elif m:=re.fullmatch(r'global.lv = (\d+);',line):line='lv = '+m[1]
   elif line=='scr_itemget(16);':line='requested = 1'
@@ -143,10 +146,62 @@ for obj,label in [('obj_loox','Loox'),('obj_vulkin','Vulkin')]:
  monster=int(re.findall(r'global.monstertype\[0\] = (\d+);',segment)[-1])
  effect=body(setup,'if (global.monstertype[myself] == '+str(monster)+')')
  encounterRewards[label]=int(re.search(r'global.xpreward\[myself\] = (\d+);',effect)[1])
+# Execute the original interaction entry predicate, not the legacy Alarm0
+# weekday condition, for the optional post-friendship encounter.
+art=read('gml_Object_obj_artclass_sign_Step_0')
+artcode=compile_slice(body(art,'if (con == 0)'))
+artrows=[]
+for stage,resolved,end,letter,month,day,hour in itertools.product([0,11,12],[0,1,2],range(2),range(2),[9,10],[9,10],[7,8,20,21]):
+ v=dict(murd=int(stage>=12),f281=resolved,f7=end,f8=letter,current_month=month,current_day=day,current_hour=hour,skip=0,con=0)
+ artrows.append([stage,resolved,end,letter,month,day,hour,int(run(artcode,v)['con']==1)])
+for obj,label in [('obj_jerry','Jerry'),('obj_sosorry','SoSorry'),('obj_napstablook','Napstablook')]:
+ position=re.search(r'global.monsterinstance\[0\] = instance_create\([^;]*, '+obj+r'\);',groups).start()
+ segment=groups[groups.rfind('    case ',0,position):position]
+ monster=int(re.findall(r'global.monstertype\[0\] = (\d+);',segment)[-1])
+ effect=body(setup,'if (global.monstertype[myself] == '+str(monster)+')')
+ encounterRewards[label]=int(re.search(r'global.xpreward\[myself\] = (-?\d+);',effect)[1])
+# So Sorry does not require a guessed damage/turn victory: repeated positive
+# hits keep myplot from progressing to automatic spare, and hitplot10 makes
+# the next hit force HP0. Execute original Step and Alarm6 numeric projections.
+sorryStep=read('gml_Object_obj_sosorry_Step_0');sorryAlarm=read('gml_Object_obj_sosorry_Alarm_6')
+hurt=body(sorryStep,'if (global.hurtanim[myself] == 2)')
+hurtcode=compile_slice(hurt[:hurt.index('with (dmgwriter)')])
+advancecode=compile_slice(sorryAlarm[:sorryAlarm.index('gg =')])
+finish=body(sorryAlarm,'if (hitplot == 11)')
+finish=re.sub(r'with \(obj_dmgwriter\)\s*\{.*?\}', '',finish,flags=re.S)
+finishcode=compile_slice('if (hitplot == 11)\n{\n'+finish+'\n}')
+state=dict(hp=1100,prevhp=1100,hitplot=0,myplot=0,p_mode=0,takedamage=35,d_con=0)
+sorryHits=[]
+for turn in range(1,12):
+ state=run(hurtcode,state);state=run(advancecode,state);state=run(finishcode,state)
+ sorryHits.append([turn,*[state[k] for k in ['hp','hitplot','myplot','d_con']]])
+assert state['hp']==0 and state['hitplot']==11 and state['myplot']==0 and state['d_con']==1
+for name in ['gml_Object_obj_sosorry_Create_0','gml_Object_obj_sosorry_Alarm_10','gml_Object_obj_sosorry_Other_12','gml_Script_SCR_GAMESTART','gml_Script_scr_attackcalc','gml_Object_obj_targetchoice_Step_0','gml_Object_obj_gladdummy_Destroy_0','gml_Object_obj_dummytrigger_Create_0','gml_Object_obj_woshbody_Step_0']:read(name)
+# These numeric projections keep source event order; they are not a whole VM.
+# Battle settlement sets won BEFORE adding banked rewards, while the overworld
+# sets inbattle=0 BEFORE applying the regional kill difference.
+battle=read('gml_Object_obj_battlecontroller_Step_0')
+assert battle.index('won = 1;')<battle.index('global.xp += global.xpreward[3];')
+assert battle.index('if (won == 0)')<battle.index('won = 1;')
+world=read('gml_Object_obj_mainchara_Step_0')
+assert world.index('global.inbattle = 0;')<world.index('global.flag[global.flag[200]] += global.kills - global.flag[201];')
+prefix=battle[:battle.index('                tlvl =')]
+bankcode=compile_slice(prefix+'\n'+'}\n'*(prefix.count('{')-prefix.count('}')))
+regioncode=compile_slice('if (global.inbattle == 1)\n{\n'+body(world,'if (global.inbattle == 1)')+'\n}')
+settlement=[]
+for xp,pending,won,regional,delta in itertools.product([0,1,9],[0,7,14],range(2),[0,16],[0,1,2]):
+ v=dict(xp=xp,gold=10,xpreward=[0,0,0,pending],goldreward=[0,0,0,5],monster=[0,0,0],won=won,inbattle=1,regional=regional,kills=2+delta,f201=2,f200=203,f15=1,specialbattle=0)
+ for event in 'BBBOOOBB':v=run(bankcode if event=='B' else regioncode,v)
+ settlement.append([[xp,pending,won,regional,delta],[v[k] for k in ['xp','gold','won','inbattle','regional']]])
+assert 'global.kills' not in read('gml_Object_obj_dummymonster_Destroy_0')
+assert 'global.kills' not in read('gml_Object_obj_doodlebug_Destroy_0')
+assert 'killed = 1' not in read('gml_Object_obj_napstablook_Step_0')
+assert 'obj_endflowey' in body(step,'if (con == 11)')
+for name in ['gml_Object_obj_artclass_sign_Create_0','gml_Object_obj_artclass_sign_Alarm_0','gml_Object_obj_sosorry_Destroy_0','gml_Object_obj_sosorry_Step_0','gml_Object_obj_encounterer_jerry_Create_0','gml_Object_obj_encounterer_jerry_Step_0','gml_Object_obj_encounterer_glyde_Create_0','gml_Object_obj_maddummy_Create_0','gml_Object_obj_maddummy_Other_13','gml_Object_obj_maddummy_Alarm_3','gml_Object_obj_napstablook_Destroy_0','gml_Object_obj_bara01_Step_0','gml_Object_obj_bara02_Step_0','gml_Object_obj_spiderb_Step_0','gml_Object_obj_spiderb_Alarm_6','gml_Object_obj_doorA_Alarm_2','gml_Object_obj_doorB_Alarm_2','gml_Script_scr_runaway','gml_Script_scr_load']:read(name)
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)
 a.output.parent.mkdir(parents=True,exist_ok=True)
-result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards}
+result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
 if a.verify:
  if a.output.read_text()!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')

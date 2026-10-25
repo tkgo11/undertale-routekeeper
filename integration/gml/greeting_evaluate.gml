@@ -147,7 +147,7 @@ if ((1) && gg_blocked == 0 || (1) == 0 && gg_blocked == 0 && gg_action == 0) { g
 if (1) gg_blocked = 1; else gg_action = 1;
 } else gg_unknown = 1;
 }
-if (global.rk_target_greeting == 8 && (global.rk_target_neutral == 4 || global.rk_target_neutral == 6) && gg_blocked == 0) { gg_unknown = 1; global.rk_greeting_text = "This call condition may not be attainable with this ending type."; if (global.rk_language == 1) global.rk_greeting_text = "이 결말 유형에서는 이 통화 조건에 도달하지 못할 수 있습니다."; }
+if (global.rk_target_greeting == 8 && global.rk_target_neutral == 6 && gg_blocked == 0) { gg_unknown = 1; global.rk_greeting_text = "This call condition may not be attainable with this ending type."; if (global.rk_language == 1) global.rk_greeting_text = "이 결말 유형에서는 이 통화 조건에 도달하지 못할 수 있습니다."; }
 // Generated source-backed keepsake acquisition/retrieval objectives.
 if (global.rk_target_greeting == 4 && global.rk_snowman_piece_carried == 0 && gg_blocked == 0) {
 if (global.rk_snowman_piece_available == 1) { global.rk_greeting_text = "Return to the snow figure in the forest and ask for a piece."; if (global.rk_language == 1) global.rk_greeting_text = "숲의 눈으로 된 친구에게 돌아가 조각을 부탁하세요."; }

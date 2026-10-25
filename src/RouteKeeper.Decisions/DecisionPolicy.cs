@@ -112,8 +112,8 @@ public static class DecisionPolicy
     // 0 original resolution, 1 wait for acknowledgement, 2 take original attack path.
     public static int RatingResolution(DecisionMode mode,bool refused)=>!refused?0:mode==DecisionMode.Forced?2:1;
     public static string EmitRatingResolutionGml()=>"// Generated scripted outcome disposition; does not change ratings/HP/history.\nif (argument1 == 0) return 0;\nif (argument0 == 3) return 2;\nreturn 1;\n";
-    public static bool CanEnforce(int risk,int action,int family,int neutral,int goal)=>!(risk==3&&action==1)&&!(risk==17&&family==2&&goal==8&&neutral is 4 or 6);
-    public static string EmitEnforceableGml()=>"// Generated scoped enforcement; uncertain compound LV1 remains advisory.\nif (argument0 == 3 && argument1 == 1) return 0;\nif (argument0 == 17 && argument2 == 2 && argument4 == 8 && (argument3 == 4 || argument3 == 6)) return 0;\nreturn 1;\n";
+    public static bool CanEnforce(int risk,int action,int family,int neutral,int goal)=>!(risk==3&&action==1)&&!(risk==17&&family==2&&goal==8&&neutral==6);
+    public static string EmitEnforceableGml()=>"// Generated scoped enforcement; uncertain compound LV1 remains advisory.\nif (argument0 == 3 && argument1 == 1) return 0;\nif (argument0 == 17 && argument2 == 2 && argument4 == 8 && argument3 == 6) return 0;\nreturn 1;\n";
     public static bool RatingQualifies(int turns,int ratings)=>turns>=19?ratings>=10000:ratings>=12000;
     public static string EmitRatingsGml()=>"// Source-audited EX turn-boundary threshold.\nif (argument0 >= 19) return argument1 >= 10000;\nreturn argument1 >= 12000;\n";
 
