@@ -77,7 +77,47 @@ Keep inherited proxy/CA settings during image construction. Game execution has
 network disabled. The smoke script never turns a live process into a gameplay
 PASS; results require scenario assertions and screenshot/log review.
 
-## Windows-native operator workflow (execution NOT_RUN)
+## Native Windows without Sandbox (opt-in; execution NOT_RUN)
+
+Windows Sandbox is **not required**. The script `tools/runtime/run-without-sandbox.ps1` runs on native Windows 11, including Home editions. To protect personal UNDERTALE saves, do not run it in a personal Windows user account. This is an operator-run workflow and **has not yet been executed on native Windows**; it must not be described as a passing runtime test.
+
+### Preparation and isolation
+
+Create two NEW, standard, non-administrator local Windows users, exactly named **RKTestOriginal** and **RKTestPatched**, respectively. Keep the main Windows account and its Steam/save folders untouched. Each test user needs a separate licensed Steam installation at `%LOCALAPPDATA%\RKTestSteam`, with UNDERTALE installed in that Steam library, and a private copy of the authorized ZIP and repository. The test script rejects the wrong username, administrator execution, the default machine-wide Steam directory, existing UNDERTALE saves and any preexisting app391540 Steam cache.
+
+A separate Windows user is not a separate Steam entitlement. Use an independently licensed test Steam account if possible. If the same licensed account is used, Steam account-level/cloud history is a residual risk: disable Cloud globally and for UNDERTALE **before any game launch** in each fresh test account. Authenticate via the official Steam interface, prepare the exact build, select Steam **Go Offline**, restart Steam, and **manually disconnect every network adapter**. The harness checks that all adapters are down; it **never changes Windows networking**. Do not copy host `userdata`, personal saves, Steam login information, or cloud cache.
+
+### Commands (run separately while signed into each new test account)
+
+From the repository root, prepare a new private lab and compile the pinned patch inside the current test user's profile:
+
+```powershell
+python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work "$env:USERPROFILE\private\rk-lab"
+RouteKeeper.Tool.exe build "$env:USERPROFILE\private\rk-lab\original\Undertale\data.win" "$env:USERPROFILE\private\candidate.win" "C:\tools\UndertaleModCli.exe" "C:\src\undertale-routekeeper"
+python tools/runtime_lab.py verify --work "$env:USERPROFILE\private\rk-lab"
+```
+
+Replace tool/source paths with their actual locations. The candidate must match the SHA-256 pinned in `profiles/registry.json`. Never use patched data as the input.
+
+In **RKTestOriginal**, after Steam setup, Cloud disablement, Offline Mode, and manual network disconnection:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/runtime/run-without-sandbox.ps1 -Lab "$env:USERPROFILE\private\rk-lab" -PatchedData "$env:USERPROFILE\private\candidate.win" -Case original -AttestSeparateWindowsAccount -AttestSteamOfflineAndCloudDisabled -Minutes 60
+```
+
+After the original exits, keep that account offline and close Steam. Switch to the **separate** RKTestPatched Windows account, repeat fresh Steam/lab preparation, and run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/runtime/run-without-sandbox.ps1 -Lab "$env:USERPROFILE\private\rk-lab" -PatchedData "$env:USERPROFILE\private\candidate.win" -Case patched -AttestSeparateWindowsAccount -AttestSteamOfflineAndCloudDisabled -Minutes 120
+```
+
+The script stages only pinned game files, verifies their hashes, temporarily swaps the **test user's own** Steam-installed UNDERTALE directory with a uniquely marked copy, and restores the original registered test installation in a finally block. If restoration fails, it retains marked backups for manual recovery; never delete them blindly. It does not read or modify primary-account files, Steam caches or permanent saves. It records a private JSON report under `rk-lab\evidence\direct-windows`; status remains `NOT_RUN` for unreviewed observations or `BLOCKED` upon failure, not automatic `NATIVE_RUNTIME_PASS`.
+
+Run the actual UI, input, battles, Forced warnings, saving/reloading and ending scenarios from the checklist below. Repeat only the **same** variant under the same test Windows account for settings/save persistence. Do not move an original-run save into the patched-run account or vice versa.
+
+The direct harness does not use Sandbox or virtualization, does not bypass Steam licensing, does not accept credentials, and does not disable isolation checks. Native APIs/Steam launch and the exact source-modified game remain NOT_RUN until physically executed by the operator. Reconnect networking only after closing Steam/the game and retiring these test profiles. Steam/account-level history remains a risk even with different Windows users; a disposable VM/Sandbox offers stronger isolation.
+
+## Windows-native Sandbox operator workflow (execution NOT_RUN)
 
 Requires Windows11 Pro/Enterprise Sandbox, Python, the source tool build and the
 pinned official UndertaleModCli. Use only the already authorized private ZIP. This
