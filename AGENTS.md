@@ -49,3 +49,13 @@ source-validated refusals; original runner evidence is still required for releas
 Private structural CI downloads only data.win, captures diagnostics privately,
 removes working copies and never uploads proprietary artifacts. Do not enable it
 in a public repository or a fork.
+
+## Pixel UI and optional packaging
+
+- `python integration/ui/generate.py --verify` / omit `--verify` to regenerate.
+- `python integration/ui/test_ui.py` (Pillow11.3.0).
+- `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release -- --verify-ui integration`.
+- `python integration/ui/preview.py --output artifacts/ui-preview`.
+- Font generation is stdlib-only, pinned OFL BDF, binary alpha and fixed baseline.
+- Never commit/export the original English atlas outside ignored .research.
+- G3M export requires VerifiedPatch and verified GameDataRelativePath; no override.

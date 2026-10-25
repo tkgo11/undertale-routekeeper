@@ -3,7 +3,8 @@
 Private development of native UNDERTALE route guidance. The implementation now
 includes five ending families, 18 specific Neutral targets plus Any, Pacifist
 Stay/Leave variants, live state bindings, objectives/progress, bilingual settings
-and scoped pre-decision protections. **Runtime-unverified; not release-ready.**
+and scoped pre-decision protections. The pixel UI now uses native-style submenus,
+a compact HUD and a licensed Korean bitmap font. **Runtime-unverified; not release-ready.**
 
 Game data compiles with a persistent GML controller, original-style EN/KR UI and
 Off/Passive/Active/Forced modes. It uses the original runner without a runtime
@@ -46,6 +47,9 @@ restore and the separately installed official compiler. Candidate generation use
 a disposable original copy. Actual installation requires a runtime-verified exact
 profile and retains a pristine backup/journal. No current authentic profile has
 that approval. Existing unknown modifications are not patched automatically.
+
+Optional exact-hash G3M2.0.0 packaging is implemented; authentic export remains
+gated on runtime-verified profiles. [UI/font evidence and offline previews](docs/ui-fonts.md).
 
 See [progress](docs/PROGRESS.md), [test evidence](docs/test-results.md),
 [route rules](docs/route-rules.md), [state/hook evidence](docs/state-bindings.md),

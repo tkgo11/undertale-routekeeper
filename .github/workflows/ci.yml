@@ -35,7 +35,20 @@ jobs:
       - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-adapters integration/gml
       - run: dotnet run --project tests/RouteKeeper.History.Tests -c Release --no-build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python integration/ui/generate.py --verify
       - run: python integration/generate_font.py --verify
+      - run: python integration/ui/test_ui.py
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-ui integration
+      - name: Verify real delta packaging on synthetic data
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xdelta3
+          python tools/test-g3m.py --tool src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll --xdelta /usr/bin/xdelta3
       - name: Package standalone tool for this host
         run: dotnet publish src/RouteKeeper.Tool -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o artifacts/tool
       - uses: actions/upload-artifact@v4
