@@ -14,9 +14,9 @@ if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'Window
 $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
 $principal=[Security.Principal.WindowsPrincipal]::new($identity)
 if ($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Use your existing standard user session without elevation.' }
-$home=[Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+$profileHome=[Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
 $local=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
-if (!$env:USERPROFILE.Equals($home,[StringComparison]::OrdinalIgnoreCase) -or
+if (!$env:USERPROFILE.Equals($profileHome,[StringComparison]::OrdinalIgnoreCase) -or
     !$env:LOCALAPPDATA.Equals($local,[StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected Windows profile environment.' }
 $save=Join-Path $local 'UNDERTALE'
 $sessionDir=Join-Path $local 'RoutekeeperCurrentSession'
@@ -121,7 +121,7 @@ $PatchedData=(Resolve-Path -LiteralPath $PatchedData).Path
 $SteamExe=(Resolve-Path -LiteralPath $SteamExe).Path
 $GameInstall=(Resolve-Path -LiteralPath $GameInstall).Path
 foreach($path in @($Lab,$PatchedData,$SteamExe,$GameInstall)) { Assert-RkNoLinks $path }
-if (!(Test-RkWithin $Lab $home) -or !(Test-RkWithin $PatchedData $home)) { throw 'Lab and candidate must be private within the current user profile.' }
+if (!(Test-RkWithin $Lab $profileHome) -or !(Test-RkWithin $PatchedData $profileHome)) { throw 'Lab and candidate must be private within the current user profile.' }
 if (Test-RkWithin $GameInstall $Lab -or Test-RkWithin $Lab $GameInstall -or
     Test-RkWithin $save $GameInstall -or Test-RkWithin $GameInstall $save) {
   throw 'Game installation, test lab and personal saves must not overlap.'
@@ -140,9 +140,9 @@ $runnerSha='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
 Assert-RkHash (Join-Path $GameInstall 'UNDERTALE.exe') $runnerSha
 Assert-RkHash (Join-Path $GameInstall 'data.win') $originalSha
 $reg=Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw | ConvertFrom-Json
-$profile=@($reg | Where-Object { $_.OriginalSha256 -eq $originalSha -and $_.ExecutableSha256 -eq $runnerSha })
-if ($profile.Count -ne 1) { throw 'No unique exact-build profile.' }
-Assert-RkHash $PatchedData $profile[0].PatchedSha256
+$compatProfile=@($reg | Where-Object { $_.OriginalSha256 -eq $originalSha -and $_.ExecutableSha256 -eq $runnerSha })
+if ($compatProfile.Count -ne 1) { throw 'No unique exact-build profile.' }
+Assert-RkHash $PatchedData $compatProfile[0].PatchedSha256
 $original=Join-Path $Lab 'original'
 $run=Join-Path $Lab ('runs\'+$Case)
 $archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
@@ -153,7 +153,7 @@ foreach($f in $archiveIdentity.files) {
   $relative=$f.path.Substring(10)
   Assert-RkRelative $relative
   Assert-RkHash (Join-Path $original $f.path) $f.sha256
-  $wanted=if ($Case -eq 'patched' -and $relative -eq 'data.win') { $profile[0].PatchedSha256 } else { $f.sha256 }
+  $wanted=if ($Case -eq 'patched' -and $relative -eq 'data.win') { $compatProfile[0].PatchedSha256 } else { $f.sha256 }
   if ($Case -eq 'patched' -and $relative -eq 'data.win') {
     Copy-Item -LiteralPath $PatchedData -Destination (Join-Path $run $relative) -Force
   }
@@ -262,7 +262,7 @@ $PatchedData=(Resolve-Path -LiteralPath $PatchedData).Path
 $SteamExe=(Resolve-Path -LiteralPath $SteamExe).Path
 $GameInstall=(Resolve-Path -LiteralPath $GameInstall).Path
 foreach($path in @($Lab,$PatchedData,$SteamExe,$GameInstall)) { Assert-RkNoLinks $path }
-if (!(Test-RkWithin $Lab $home) -or !(Test-RkWithin $PatchedData $home)) { throw 'Lab and candidate must be private within the current user profile.' }
+if (!(Test-RkWithin $Lab $profileHome) -or !(Test-RkWithin $PatchedData $profileHome)) { throw 'Lab and candidate must be private within the current user profile.' }
 if ([IO.Path]::GetFileName($SteamExe) -ine 'steam.exe' -or [IO.Path]::GetFileName($GameInstall) -ine 'Undertale') {
   throw 'Expected official Steam.exe and registered Undertale game directory.'
 }
@@ -277,9 +277,9 @@ $runnerSha='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
 Assert-RkHash (Join-Path $GameInstall 'UNDERTALE.exe') $runnerSha
 Assert-RkHash (Join-Path $GameInstall 'data.win') $originalSha
 $reg=Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw | ConvertFrom-Json
-$profile=@($reg | Where-Object { $_.OriginalSha256 -eq $originalSha -and $_.ExecutableSha256 -eq $runnerSha })
-if ($profile.Count -ne 1) { throw 'No unique exact-build profile.' }
-Assert-RkHash $PatchedData $profile[0].PatchedSha256
+$compatProfile=@($reg | Where-Object { $_.OriginalSha256 -eq $originalSha -and $_.ExecutableSha256 -eq $runnerSha })
+if ($compatProfile.Count -ne 1) { throw 'No unique exact-build profile.' }
+Assert-RkHash $PatchedData $compatProfile[0].PatchedSha256
 $original=Join-Path $Lab 'original'
 $run=Join-Path $Lab ('runs\'+$Case)
 $archiveIdentity=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw | ConvertFrom-Json
@@ -290,7 +290,7 @@ foreach($f in $archiveIdentity.files) {
   $relative=$f.path.Substring(10)
   Assert-RkRelative $relative
   Assert-RkHash (Join-Path $original $f.path) $f.sha256
-  $wanted=if ($Case -eq 'patched' -and $relative -eq 'data.win') { $profile[0].PatchedSha256 } else { $f.sha256 }
+  $wanted=if ($Case -eq 'patched' -and $relative -eq 'data.win') { $compatProfile[0].PatchedSha256 } else { $f.sha256 }
   if ($Case -eq 'patched' -and $relative -eq 'data.win') {
     Copy-Item -LiteralPath $PatchedData -Destination (Join-Path $run $relative) -Force
   }
