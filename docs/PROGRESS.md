@@ -244,3 +244,30 @@ All private logs use .research/continuation-*; original220-file inventory verifi
 
 Game/audit continuation commit:5e25ee2. The following native-harness commit keeps
 all Windows execution NOT_RUN; inspect git log for the exact resume head.
+
+## Optional native Windows test without Sandbox (source-only)
+
+The user requested Windows Sandbox not be required. Added
+`tools/runtime/run-without-sandbox.ps1`, a native Windows operator harness
+for two dedicated standard local users (RKTestOriginal and RKTestPatched).
+This is **not** a direct test on the personal Windows account. Each user must
+have its own Steam installation inside LocalAppData, no preexisting game
+saves/Cloud cache, Steam Cloud disabled, Steam Offline Mode, and all
+network adapters manually disconnected. The script never disables host
+networking, never reads personal saves and never requests Steam credentials.
+
+The runner validates the exact 220-file inventory, candidate and executable;
+only allowlisted game files are temporarily installed into that dedicated
+user's Steam library. Unique install markers, try/finally rollback, explicit
+session identity, and preserved staged recovery evidence protect against
+partial failures. JSON results cannot auto-claim gameplay PASS.
+
+`docs/runtime-validation.md` documents the full per-user workflow. Added
+cross-platform static guard assertions to `tools/runtime/test-sandbox.ps1`
+(its AST loop now includes the new runner). **No real Windows API, Steam,
+game startup, input, save, or ending validation has occurred**. Native
+execution remains NOT_RUN; exact profile stays InspectedOnly.
+
+PR #1 was changed from Draft to Ready for review at user request; it
+remains open, unmerged and unreleased. Source-only review is appropriate,
+but native tests and compatibility sign-off must still block merge/release.
