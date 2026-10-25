@@ -85,7 +85,7 @@ Check ($direct.Contains('Get-RkInventoryDigest') -and $direct.Contains('Assert-R
 Check ($direct.Contains('Start-RkDisposableInstall') -and $direct.Contains('Stop-RkDisposableInstall')) 'direct runner uses marked reversible installation'
 Check ($direct.Contains('Preexisting UNDERTALE saves') -and $direct.Contains('Preexisting app391540 Steam cache')) 'direct runner refuses prior save and Cloud history'
 Check ($direct.Contains("result='NOT_RUN'") -and !$direct.Contains("result='NATIVE_RUNTIME_PASS'")) 'direct runner does not synthesize gameplay success'
-Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('original test installation needs review')) 'direct runner retains recovery copies after restore failures'
+Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('Original test installation needs review')) 'direct runner retains recovery copies after restore failures'
 
 if ($Lab -or $PatchedData) {
     if (!$Lab -or !$PatchedData) { throw 'Both private staging arguments are required.' }
