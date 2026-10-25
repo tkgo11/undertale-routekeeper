@@ -230,3 +230,20 @@ operator workflow in runtime-validation.md.
   response** (GitHub connector changes only; no local PowerShell execution).
 - Windows native Steam/game APIs and the new runner: **NOT_RUN**.
 - PR review state: **Ready for review**; no merge or release.
+
+## Current-account Windows smoke harness — new, NOT_RUN
+
+- New `tools/runtime/run-current-account.ps1` supports opt-in native Windows
+  early-game smoke using the **same existing Windows account**, without
+  Windows Sandbox or secondary Windows accounts.
+- Preflight; explicit same-account/Cloud-off consent; manual network-disconnect
+  check; exact runner/data/candidate/ZIP inventory identity; independent local
+  save backup/hash; unique quarantine; marked original-game restoration;
+  interrupted-session recovery and completed-session archival are implemented.
+- The existing `tools/runtime/test-sandbox.ps1` contains additional static
+  checks and its AST loop includes all `*.ps1`, including the new script.
+  These tests are **committed but NOT_RUN** in this response. They are
+  source assertions, not evidence of actual Windows APIs or game startup.
+- Real Windows/Steam launch, original/patch comparison and any gameplay:
+  **NOT_RUN**. Steam Cloud/cache and persistent account history cannot be
+  certified safe from this smoke workflow. Do not promote InspectedOnly.
