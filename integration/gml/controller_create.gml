@@ -1,6 +1,11 @@
 // Persistent native UI. All save/history observations are read-only.
 rk_menu = 0;
 rk_menu_row = 0;
+rk_menu_page = 0;
+rk_choice = 0;
+rk_direction_up = 0; rk_direction_down = 0;
+rk_direction_left = 0; rk_direction_right = 0;
+scr_routekeeper_ui_layout();
 rk_dismissed = 0;
 rk_previous_signature = "";
 rk_safe = 0;

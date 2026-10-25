@@ -11,13 +11,29 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()}};
+var adapterSources=new Dictionary<string,string>{{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
 if (args is ["--verify-adapters",var checkedAdapterDirectory]) {
     foreach(var (name,text) in adapterSources)if(File.ReadAllText(Path.Combine(checkedAdapterDirectory,name)).Replace("\r\n","\n")!=text)throw new Exception("Stale adapter "+name);
     Console.WriteLine("PASS: generated decision adapters current");return;
+}
+if (args is ["--verify-ui",var uiDirectory]) {
+    var nav=File.ReadAllText(Path.Combine(uiDirectory,"gml","ui_nav.gml"));int cases=0;
+    for(int size=1;size<=19;size++)for(int cursor=0;cursor<size;cursor++)for(int delta=-1;delta<=1;delta++) {
+        var code=$"argument0 = {cursor}; argument1 = {delta}; argument2 = {size};\n"+nav;
+        if(new GmlObjectiveInterpreter(code,new Dictionary<string,int?>()).Run()!=((cursor+delta+size)%size).ToString())throw new Exception("UI navigation parity");
+        cases++;
+    }
+    using var ui=System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(uiDirectory,"ui","catalog.json")));
+    var catalog=File.ReadAllText(Path.Combine(uiDirectory,"gml","ui_catalog.gml"));
+    foreach(var entry in ui.RootElement.GetProperty("text").EnumerateObject())for(int language=0;language<2;language++) {
+        var code=$"argument0 = \"{entry.Name}\"; argument1 = {language};\n"+catalog;
+        if(new GmlObjectiveInterpreter(code,new Dictionary<string,int?>()).Run()!=entry.Value[language].GetString())throw new Exception("UI localization parity");
+        cases++;
+    }
+    Console.WriteLine($"PASS {cases} UI navigation/localization emitted-GML comparisons; gameplay NOT_RUN");return;
 }
 var count = 0;
 void Check(string name, bool value) { if (!value) throw new Exception(name); count++; Console.WriteLine("PASS " + name); }
@@ -26,6 +42,7 @@ Check("Passive stops before risky attack", DecisionPolicy.BeforeAction(DecisionM
 Check("Active stops before risky attack", DecisionPolicy.BeforeAction(DecisionMode.Active,attack).Refuse);
 Check("Non-forced acknowledgement allows one retry", !DecisionPolicy.BeforeAction(DecisionMode.Passive,attack,true).Refuse && DecisionPolicy.BeforeAction(DecisionMode.Passive,attack,true).AcknowledgementConsumed);
 Check("Forced refuses even acknowledged risk", DecisionPolicy.BeforeAction(DecisionMode.Forced,attack,true).Refuse);
+Check("Blocked targets cannot trap mandatory battles",!DecisionPolicy.BeforeAction(DecisionMode.Forced,attack with {RouteBlocked=true}).Refuse);
 Check("Off preserves original action", !DecisionPolicy.BeforeAction(DecisionMode.Off,attack).Refuse);
 Check("Unvalidated adapter cannot force", !DecisionPolicy.BeforeAction(DecisionMode.Forced,attack,sourceValidatedAdapter:false).Refuse);
 Check("Zero EXP mandatory battle remains available", DecisionPolicy.Risk(attack with {ExperienceRisk=false}) == WarningCode.None);
@@ -73,7 +90,7 @@ foreach(var enemy in Enum.GetValues<DecisionEnemy>())foreach(var action in Enum.
     var actual=new GmlObjectiveInterpreter(requiredSource,new Dictionary<string,int?>()).Run();
     if((actual=="1")!=DecisionPolicy.RequiresDefeat(enemy,action))throw new Exception("Required encounter source parity");
 }
-Check("All 60 encounter/action categories match generated source",true);
+Check("All 70 encounter/action categories match generated source",true);
 
 Check("Neutral friendship is protected before the first kill",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,NeutralFriendshipPending=true})==WarningCode.Friendship);
 Check("Neutral friendship targets protect the water event",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,Action=DecisionAction.LeaveWaterRoom,WaterUnresolved=true,NeutralFriendshipPending=true})==WarningCode.WaterDeparture);
@@ -99,6 +116,15 @@ for(int item=0;item<100;item++)foreach(var present in new[]{false,true}) {
 }
 Check("200 item escape cases agree with emitted GML",true);
 
+Check("Last Shyren Hum predicts automatic resolution",DecisionPolicy.ActResolvesRequiredEncounter(true,1,4));
+Check("Earlier Hums remain available",!DecisionPolicy.ActResolvesRequiredEncounter(true,1,3));
+Check("Unrelated ACT remains available",!DecisionPolicy.ActResolvesRequiredEncounter(true,0,4));
+foreach(var present in new[]{false,true})for(int command=0;command<5;command++)for(int progress=0;progress<8;progress++) {
+    var actSource=$"argument0 = {(present?1:0)}; argument1 = {command}; argument2 = {progress};\n"+DecisionPolicy.EmitActGml();
+    if((new GmlObjectiveInterpreter(actSource,new Dictionary<string,int?>()).Run()=="1")!=DecisionPolicy.ActResolvesRequiredEncounter(present,command,progress))throw new Exception("ACT policy parity");
+}
+Check("80 generated ACT cases match C#",true);
+
 // Independently interpret emitted conjunction predicates and first-match returns.
 int Interpret(string gml,int[] values) {
  foreach (Match line in Regex.Matches(gml,@"if \(([^\n]+)\) return (\d+);")) {
@@ -106,9 +132,13 @@ int Interpret(string gml,int[] values) {
    if(predicates.All(p=>{ var m=Regex.Match(p,@"argument(\d+) (==|<) (-?\d+)"); if(!m.Success)throw new Exception("Unparsed predicate"); var v=values[int.Parse(m.Groups[1].Value)];var expected=int.Parse(m.Groups[3].Value);return m.Groups[2].Value=="=="?v==expected:v<expected;})) return int.Parse(line.Groups[2].Value);
  }return 0;
 }
+Check("Unbefriended variant warns before friendship starts",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,Action=DecisionAction.StartFriendship,ForbiddenFriendship=true})==WarningCode.UnwantedFriendship);
+Check("Forced preserves the unbefriended variant",DecisionPolicy.BeforeAction(DecisionMode.Forced,attack with {Family=RouteFamily.Neutral,Action=DecisionAction.StartFriendship,ForbiddenFriendship=true}).Intervention);
+Check("Non-forced friendship warning is dismissible",!DecisionPolicy.BeforeAction(DecisionMode.Passive,attack with {Family=RouteFamily.Neutral,Action=DecisionAction.StartFriendship,ForbiddenFriendship=true},true).Refuse);
+Check("Other variants may start friendship",DecisionPolicy.Risk(attack with {Family=RouteFamily.Neutral,Action=DecisionAction.StartFriendship})==WarningCode.None);
 var rng=new Random(9147);var emitted=DecisionPolicy.EmitGml();
 for(var i=0;i<10000;i++) {
- var state=new DecisionState((RouteFamily)rng.Next(3),(DecisionAction)rng.Next(1,7),(DecisionEnemy)rng.Next(10),rng.Next(2)==1,rng.Next(22),rng.Next(18),rng.Next(20),rng.Next(42),rng.Next(2)==1,rng.Next(-1,2),rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1);
+ var state=new DecisionState((RouteFamily)rng.Next(3),(DecisionAction)rng.Next(1,8),(DecisionEnemy)rng.Next(10),rng.Next(2)==1,rng.Next(22),rng.Next(18),rng.Next(20),rng.Next(42),rng.Next(2)==1,rng.Next(-1,2),rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1,rng.Next(2)==1);
  if((int)DecisionPolicy.Risk(state)!=Interpret(emitted,state.Values))throw new Exception("C#/GML policy mismatch");
 }
 Check("10000 randomized C#/emitted GML policy cases",true);

@@ -3,18 +3,18 @@ using System.Text;
 namespace RouteKeeper.Decisions;
 
 public enum RouteFamily { Pacifist, Genocide, Neutral }
-public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue }
+public enum DecisionAction { Fight = 1, Spare, Flee, LeaveWaterRoom, EnterBoss, ChooseEpilogue, StartFriendship }
 public enum DecisionEnemy { Ordinary, Toriel, Papyrus, Undyne, Mettaton, UndyneUndying, RequiredUnique, MettatonNeo, MonsterKid, Snowdrake }
 public enum DecisionMode { Off, Passive, Active, Forced }
-public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity }
+public enum WarningCode { None, ExperienceRisk, WaterDeparture, RegionalQuota, RequiredEncounter, NeutralSurvival, NeutralDefeat, NeutralKillCap, RegionalPrerequisites, Epilogue, Friendship, SnowdrakeOpportunity, UnwantedFriendship }
 public sealed record DecisionState(RouteFamily Family, DecisionAction Action, DecisionEnemy Enemy,
     bool ExperienceRisk = false, int RuinsKills = 0, int SnowdinKills = 0, int WaterfallKills = 0,
     int HotlandKills = 0, bool WaterUnresolved = false, int NeutralOutcome = 0, bool NeutralKillCapReached = false,
-    bool RequiredEncounter = false, bool EpilogueMismatch = false, bool RegionalPrerequisitesMissing = false, bool NeutralFriendshipPending = false, bool LastSnowdrakeOpportunity = false)
+    bool RequiredEncounter = false, bool EpilogueMismatch = false, bool RegionalPrerequisitesMissing = false, bool NeutralFriendshipPending = false, bool LastSnowdrakeOpportunity = false, bool ForbiddenFriendship = false, bool RouteBlocked = false)
 {
     public int[] Values => [(int)Family, (int)Action, (int)Enemy, ExperienceRisk ? 1 : 0,
         RuinsKills, SnowdinKills, WaterfallKills, HotlandKills, WaterUnresolved ? 1 : 0,
-        NeutralOutcome, NeutralKillCapReached ? 1 : 0, RequiredEncounter ? 1 : 0, EpilogueMismatch ? 1 : 0, RegionalPrerequisitesMissing ? 1 : 0, NeutralFriendshipPending ? 1 : 0, LastSnowdrakeOpportunity ? 1 : 0];
+        NeutralOutcome, NeutralKillCapReached ? 1 : 0, RequiredEncounter ? 1 : 0, EpilogueMismatch ? 1 : 0, RegionalPrerequisitesMissing ? 1 : 0, (Action == DecisionAction.StartFriendship ? ForbiddenFriendship : NeutralFriendshipPending) ? 1 : 0, LastSnowdrakeOpportunity ? 1 : 0];
 }
 public sealed record DecisionResponse(bool Refuse, WarningCode Warning, bool AcknowledgementConsumed, bool Intervention);
 
@@ -39,6 +39,7 @@ public static class DecisionPolicy
     private static Test Lt(int argument, int value) => new(argument, "<", value);
     private static Rule R(WarningCode warning, params Test[] tests) => new(warning, tests);
     private static readonly Rule[] Rules = [
+        R(WarningCode.UnwantedFriendship, Eq(0,2), Eq(1,7), Eq(14,1)),
         R(WarningCode.SnowdrakeOpportunity, Eq(0,1), Eq(1,1), Eq(3,1), Eq(15,1)),
         R(WarningCode.Friendship, Eq(0,2), Eq(1,1), Eq(3,1), Eq(14,1)),
         R(WarningCode.WaterDeparture, Eq(0,2), Eq(1,4), Eq(8,1), Eq(14,1)),
@@ -75,7 +76,7 @@ public static class DecisionPolicy
         bool acknowledged = false, bool sourceValidatedAdapter = true)
     {
         if (!Enum.IsDefined(mode)) throw new ArgumentOutOfRangeException(nameof(mode));
-        if (mode == DecisionMode.Off || !sourceValidatedAdapter) return new(false, WarningCode.None, false, false);
+        if (mode == DecisionMode.Off || !sourceValidatedAdapter || state.RouteBlocked) return new(false, WarningCode.None, false, false);
         var warning = Risk(state);
         if (warning == WarningCode.None) return new(false, warning, false, false);
         // A quota cannot be repaired from an already active boss battle. Only the
@@ -99,6 +100,9 @@ public static class DecisionPolicy
     // Treat that route-ending item action like Spare, before consumption or healing.
     public static bool ItemResolvesRequiredEncounter(int itemId, bool muffetPresent) => muffetPresent && itemId is 7 or 10;
     public static string EmitItemGml() => "// Generated item escape classification; source-validated Muffet path only.\nreturn argument1 && (argument0 == 7 || argument0 == 10);\n";
+
+    public static bool ActResolvesRequiredEncounter(bool shyrenPresent, int command, int encouragement) => shyrenPresent && command == 1 && encouragement == 4;
+    public static string EmitActGml() => "// Generated final Shyren Hum classification; ordinary ACT remains available.\nreturn argument0 && argument1 == 1 && argument2 == 4;\n";
 
     public static bool ExhaustedKillBudget(int kills, int maximumKills, int reservedBossKills, bool requiredBossKill)
     {

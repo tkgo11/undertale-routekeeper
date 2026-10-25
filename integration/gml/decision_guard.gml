@@ -2,6 +2,14 @@
 // action: 1 fight,2 spare-all,3 flee,4 door departure,5 enter boss encounter.
 if (!variable_global_exists("rk_mode") || !variable_global_exists("rk_target_route")) return 0;
 if (global.rk_mode == 0) return 0;
+// An impossible target must not trap a mandatory battle. Re-evaluation exposes
+// BLOCKED; unsupported outcomes are never repaired with game/history writes.
+if (instance_exists(obj_routekeeper)) {
+    if (obj_routekeeper.rk_status == 3) {
+        global.rk_warning_pending = 0; global.rk_warning_ack = 0;
+        return 0;
+    }
+}
 if (!variable_global_exists("flag")) return 0;
 if (global.flag[26] > 0) return 0;
 if (variable_global_exists("debug") && global.debug != 0) return 0;
@@ -22,6 +30,7 @@ if (family == 2 && variable_global_exists("rk_neutral_friendship_min")) {
     if (global.rk_neutral_friendship_min > 0 && global.flag[389] < global.rk_neutral_friendship_min && global.kills == 0)
         friendship_pending = 1;
 }
+if (action == 7 && family == 2) friendship_pending = ((global.rk_target_neutral == 2 || global.rk_target_neutral == 3) && global.flag[389] == 0);
 if (action >= 1 && action <= 3) {
     first_slot = slot; last_slot = slot;
     if ((action == 2 || action == 3) && slot == -1) { first_slot = 0; last_slot = 2; }

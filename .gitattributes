@@ -1,0 +1,4 @@
+integration/assets/ui-font.tsv text eol=lf
+integration/assets/ui-font-size.txt text eol=lf
+integration/assets/ui-font.png binary
+integration/assets/font-source/*.gz binary

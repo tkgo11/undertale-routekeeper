@@ -2,7 +2,7 @@
 
 Input SHA-256: b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7.
 The adapter is specific to this input and pinned UndertaleModCli 0.9.2.0.
-`bindings.csx` checks 46 original code-resource signatures and 34 manifest
+`bindings.csx` checks 52 original code-resource signatures and 34 manifest
 expressions. `state_read.gml` also supplies aliases, availability/context and
 optional Neutral call observations. It rejects vanilla-global assignments and
 save-writing APIs. Actual runner behavior is not yet verified.
@@ -31,7 +31,8 @@ file is written by an observation adapter.
 Pre-action hooks verify complete source hashes and unique anchors. They guard
 battle FIGHT/SPARE/FLEE before action-state effects, relevant doors before transition
 locks, four regional boss entrances before cutscenes, and the final epilogue
-chooser before choice/alarm effects. Muffet's Spider Donut/Cider escape reuses
+chooser before choice/alarm effects. Recoverable overworld friendship entry and
+the final Shyren Hum are also intercepted before their scene/ACT mutations. Muffet's Spider Donut/Cider escape reuses
 the Spare policy before any item consumption, healing or turn mutation. Forced refuses only supported risks. Active
 and Passive require acknowledgement then permit one retry. Off bypasses hooks.
 Multi-enemy Spare is aggregated once; kill budgets reserve future required bosses.
@@ -47,3 +48,9 @@ permanent-history transformation is implemented. Uncovered scripted deaths, some
 friendship-specific Neutral decisions and every alternative interaction path still
 need further adapters and actual scenario tests. The current installer refuses
 this runtime-unverified profile.
+
+The settings player-Step gate owns only modal movement/interaction. Original
+control_update/control_clear and UI-resource hashes are pinned; confirm/cancel is
+captured then cleared while modal to prevent replay on close. BLOCKED targets
+never enforce a mandatory-battle refusal. These properties still need runtime
+event-order scenarios.

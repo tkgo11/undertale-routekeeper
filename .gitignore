@@ -5,3 +5,4 @@ artifacts/
 **/obj/
 *.user
 *.tmp
+**/__pycache__/

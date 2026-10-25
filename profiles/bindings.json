@@ -557,6 +557,54 @@
       "Markers": [
         "global.flag[27] = 1;"
       ]
+    },
+    {
+      "Resource": "gml_Object_obj_shyren_Step_0",
+      "DecompilerSha256": "1e1e206b3340d0058174ffd77ee2c18c8d44620276cf7c59dccf9f9ff22e0617",
+      "Markers": [
+        "encourage += 1;",
+        "encourage = 6;",
+        "global.flag[81] = 2;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_dialoguer_Draw_0",
+      "DecompilerSha256": "9873d20a59615e239cb33347853c7584627d2d41e8a278375d9e6131e694f86d",
+      "Markers": [
+        "+ 16",
+        "+ 19",
+        "+ 304"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_settingsmenu_Draw_0",
+      "DecompilerSha256": "962af64dd2f20c661c2499dcbce5d111ba2f8221f0ceca77acc9b4f4a1f1994b",
+      "Markers": [
+        "fnt_maintext",
+        "c_yellow"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_update",
+      "DecompilerSha256": "417f8194b7f3b831c57cc56ad7f40b3c493c3f656968c655f377e14755d3145b",
+      "Markers": [
+        "global.button0",
+        "global.control_pressed[i]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_check_pressed",
+      "DecompilerSha256": "691db8fe052e44c155a5c59998d65185f86aff78096dedd6879149f0875df9fb",
+      "Markers": [
+        "global.control_pressed[control]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_clear",
+      "DecompilerSha256": "5eec0e9f9d7d227b9a199575fe70088789e51da6499bce43e886e0a4fc241321",
+      "Markers": [
+        "global.control_pressed[control] = 0;"
+      ]
     }
   ],
   "RequiredRooms": [

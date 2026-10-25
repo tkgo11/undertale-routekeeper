@@ -47,6 +47,15 @@ public static class RoutekeeperBindings
             if (!Normalize(native).Contains(Normalize(assignment))) throw new Exception("Native binding differs from manifest: " + binding.GetProperty("Fact").GetString());
             checkedBindings++;
         }
+        using var metrics = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder,"ui","english-metrics.json")));
+        if (metrics.RootElement.GetProperty("sourceHash").GetString() != root.GetProperty("ExpectedInputSha256").GetString()) throw new Exception("UI metric source differs.");
+        var english = data.Fonts.ByName("fnt_maintext") ?? throw new Exception("Native English font missing.");
+        foreach(var metric in metrics.RootElement.GetProperty("metrics").EnumerateObject()) {
+            int code = int.Parse(metric.Name);
+            var glyph = english.Glyphs.Single(g=>(int)g.Character==code);
+            if (glyph.Shift != metric.Value.GetProperty("advance").GetInt32() || glyph.SourceHeight != metric.Value.GetProperty("height").GetInt32())
+                throw new Exception("Observed English font metric changed.");
+        }
         Console.WriteLine($"PASS: {checkedBindings} native bindings, {checkedEvidence} authentic source signatures; no game/save mutation; gameplay NOT_RUN.");
     }
 }

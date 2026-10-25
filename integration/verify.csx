@@ -48,13 +48,15 @@ var state=Get("gml_Script_scr_routekeeper_read_state");
 foreach(var fact in new[]{"global.rk_experience = global.xp","global.rk_plot10","global.rk_papyrus_friendship","global.rk_kills_ruins","global.rk_prior_neutral_completion","global.rk_soul_sold"})
     Check(state.Contains(fact),"observed normalized fact "+fact.Split(' ')[0]);
 foreach(var hook in RoutekeeperHooks.Names)
-    Check(Get(hook).Contains("scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
+    Check(Get(hook).Contains(hook == "gml_Object_obj_mainchara_Step_0" ? "obj_routekeeper.rk_menu" : "scr_routekeeper_decision_guard"),"pre-effect hook "+hook);
 var guard=Get("gml_Script_scr_routekeeper_decision_guard");
 var battle=Get("gml_Object_obj_battlecontroller_Step_0");
+Check(battle.Contains("scr_routekeeper_decision_act"),"final-Hum guard linked before ACT effects");
 Check(battle.Contains("scr_routekeeper_decision_item") && battle.IndexOf("scr_routekeeper_decision_item",StringComparison.Ordinal)<battle.IndexOf("scr_itemuseb",StringComparison.Ordinal),"item escape guard precedes consumption");
+Check(guard.Contains("obj_routekeeper.rk_status == 3"),"blocked targets cannot trap mandatory battles");
 Check(guard.Contains("global.rk_warning_enforced") && guard.Contains("global.rk_warning_pending"),"limited Forced and dismissible warning policies");
 var draw=Get("gml_Object_obj_routekeeper_Draw_64");
-Check(draw.Contains("한국어") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
+Check(draw.Contains("scr_routekeeper_ui_option") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
 foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})
     Check(draw.Contains(restored),"draw state restored "+restored.Split('(')[0]);
 var font=Data.Fonts.ByName("fnt_routekeeper");

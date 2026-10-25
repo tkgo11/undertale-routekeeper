@@ -35,27 +35,27 @@ ROUTEKEEPER_COMPARE=private-data/data.win UndertaleModCli load CANDIDATE -s inte
 - Battle warnings clear when a timed action starts. Ordinary HUD/settings remain
   hidden in battles/cutscenes/dialogue and during pending save-data operations.
 
-F10 opens settings. F5/F6 choose a row; F7/F9 change it. Row 2 chooses a Neutral
-variant or a Pacifist epilogue. F11/F12 change mode/language; F8 acknowledges or
-dismisses a warning. Gamepad input follows the authentic joystick/gamepad backend
-and selects four buttons unused by the game's configurable confirm/cancel/menu
-bindings. A controller with fewer than four unused buttons needs keyboard settings.
-No movement, confirm, cancel or inventory binding is consumed by the settings UI.
-Existing F-key handlers were inspected and are debug-only; debug mode is bypassed.
-GUI coordinates target the ordinary 640x480 presentation; fullscreen/resize needs
-runtime validation.
+F10 or an unused pad button opens settings. Native directions and confirm/cancel
+navigate the root menu and paged choice lists. F5/F6 and F7/F9 remain optional
+keyboard navigation; F11/F12 retain mode/language shortcuts; F8 acknowledges warnings. Existing joystick/gamepad backends
+and configured confirm/cancel buttons are respected. Player movement/interaction
+is gated before its Step effects while settings are open. The compact objective
+HUD uses 28 logical pixels; full text is in Progress. Warnings use solid original
+borders and bounded paragraphs. See docs/ui-fonts.md for source dimensions,
+OFL bitmap typography and reproducible offline previews. Fullscreen/resize and
+actual input ordering still require runtime validation.
 
 ## Generation and verification
 
 Core emits route_evaluate*, route_objective and fact_init. Neutral emits its
 labels/classifier/condition mask/evaluator/protection. Decisions emits risk,
-reserved-kill-budget and one-time encounter predicates. Do not hand-edit generated
+reserved-kill-budget one-time encounter and item/ACT predicates. Do not hand-edit generated
 files; AGENTS.md lists regeneration/freshness commands. Regenerate the font after
 changing strings; `python integration/generate_font.py --verify` needs only stdlib.
 
 UndertaleModCli 0.9.2.0 is a separate build-time compiler. `patch.csx` imports source
 scripts and source-validated hooks; `verify.csx` reloads them, checks links and
-localization, validates intended modifications, and compares all 6,250 non-hook
+localization, validates intended modifications, and compares all 6,248 non-hook
 original code resources. Original texture payloads, embedded audio, font glyphs and
 room/sprite/sound counts are also checked. None of this proves gameplay behavior.
 

@@ -81,14 +81,14 @@ var item = new UndertaleTexturePageItem {
 Data.TexturePageItems.Add(item);
 var font = new UndertaleFont {
     Name = Data.Strings.MakeString("fnt_routekeeper"),
-    DisplayName = Data.Strings.MakeString("Routekeeper Noto Sans CJK subset"),
-    EmSize = 16, AntiAliasing = 1, RangeStart = 32, Texture = item
+    DisplayName = Data.Strings.MakeString("Routekeeper Korean Pixel (Galmuri-derived)"),
+    EmSize = 18, AntiAliasing = 0, RangeStart = 32, Texture = item
 };
 foreach (var line in File.ReadAllLines(Path.Combine(folder, "assets", "ui-font.tsv"))) {
     var v = line.Split('\t').Select(int.Parse).ToArray();
     font.Glyphs.Add(new UndertaleFont.Glyph {
         Character = (ushort)v[0], SourceX = (ushort)v[1], SourceY = (ushort)v[2],
-        SourceWidth = 24, SourceHeight = 24, Shift = (short)v[3], Offset = 0
+        SourceWidth = 24, SourceHeight = 18, Shift = (short)v[3], Offset = (short)v[4]
     });
 }
 font.RangeEnd = font.Glyphs.Last().Character;

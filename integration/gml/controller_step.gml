@@ -33,9 +33,11 @@ if (instance_exists(obj_mainchara) && !instance_exists(obj_battlecontroller)
 if (!rk_safe || global.rk_warning_pending) rk_menu = 0;
 
 // Match the authentic runner's input backend. Use four buttons excluded from
-// the player's configurable confirm/cancel/menu bindings; never consume directions.
+// the player's configurable confirm/cancel/menu bindings. One unused button is
+// enough to open/acknowledge; native directions and confirm/cancel navigate.
 var count, backend, device, j, code, pad_signature, held;
 count = 0; backend = 0; device = -1;
+for (j = 0; j < 4; j += 1) { rk_pad_button[j] = -1; rk_pad_label[j] = ""; }
 if (instance_exists(obj_time) && variable_global_exists("osflavor")
     && variable_global_exists("button0") && variable_global_exists("button1")
     && variable_global_exists("button2")) {
@@ -80,12 +82,12 @@ if (instance_exists(obj_time) && variable_global_exists("osflavor")
     }
 }
 if (backend == 2 && !gamepad_is_connected(device)) count = 0;
-rk_pad_ready = count == 4;
+rk_pad_ready = count > 0;
 pad_signature = string(backend) + ":" + string(device);
 for (j = 0; j < 4; j += 1) pad_signature += ":" + string(rk_pad_button[j]);
 for (j = 0; j < 4; j += 1) {
     held = 0;
-    if (rk_pad_ready) {
+    if (rk_pad_ready && j < count) {
         if (backend == 1) held = joystick_check_button(device, rk_pad_button[j]);
         if (backend == 2 && gamepad_is_connected(device)) held = gamepad_button_check(device, rk_pad_button[j]);
     }
@@ -105,28 +107,77 @@ if (global.rk_warning_pending) {
     }
     exit;
 }
+// Direction edges follow obj_time's verified keyboard/pad backend.
+var up, down, left, right, accept, cancel, held_up, held_down, held_left, held_right;
+held_up = 0; held_down = 0; held_left = 0; held_right = 0;
+if (instance_exists(obj_time)) {
+    held_up = obj_time.up; held_down = obj_time.down;
+    held_left = obj_time.left; held_right = obj_time.right;
+}
+up = (held_up && !rk_direction_up) || keyboard_check_pressed(116);
+down = (held_down && !rk_direction_down) || keyboard_check_pressed(117) || rk_pad_pressed[1];
+left = (held_left && !rk_direction_left) || keyboard_check_pressed(118) || rk_pad_pressed[2];
+right = (held_right && !rk_direction_right) || keyboard_check_pressed(120) || rk_pad_pressed[3];
+rk_direction_up = held_up; rk_direction_down = held_down;
+rk_direction_left = held_left; rk_direction_right = held_right;
 if (!rk_safe) exit;
-if (keyboard_check_pressed(121) || rk_pad_pressed[0]) rk_menu = 1 - rk_menu;
+if (keyboard_check_pressed(121) || rk_pad_pressed[0]) {
+    rk_menu = 1 - rk_menu; rk_menu_page = 0;
+    control_clear(0); control_clear(1); control_clear(2);
+    // Finish this frame before accepting a button that opened the menu.
+    exit;
+}
 if (keyboard_check_pressed(119)) rk_dismissed = 1;
 if (!rk_menu) exit;
-
-var changed, delta;
+accept = control_check_pressed(0);
+cancel = control_check_pressed(1) || control_check_pressed(2);
+// Own confirm/cancel only while this menu is open. Closing/choosing Back must
+// not leak the same press to a later player Step or open the original inventory.
+control_clear(0); control_clear(1); control_clear(2);
+var changed, delta, options, old_page;
 changed = 0; delta = 0;
-if (keyboard_check_pressed(116)) rk_menu_row = (rk_menu_row + 4) mod 5;
-if (keyboard_check_pressed(117) || rk_pad_pressed[1]) rk_menu_row = (rk_menu_row + 1) mod 5;
-if (keyboard_check_pressed(118) || rk_pad_pressed[2]) delta = -1;
-if (keyboard_check_pressed(120) || rk_pad_pressed[3]) delta = 1;
-// Retain direct mode/language hotkeys for keyboard users.
+if (up) delta = -1;
+if (down) delta = 1;
+if (cancel) {
+    if (rk_menu_page == 0) rk_menu = 0;
+    rk_menu_page = 0;
+    exit;
+}
+// Retain the original optional mode/language shortcuts inside settings only.
 if (keyboard_check_pressed(122)) { global.rk_mode = (global.rk_mode + 1) mod 4; changed = 1; }
 if (keyboard_check_pressed(123)) { global.rk_language = 1 - global.rk_language; changed = 1; }
-if (delta != 0) {
-    if (rk_menu_row == 0) global.rk_target_route = (global.rk_target_route + delta + 5) mod 5;
-    if (rk_menu_row == 1 && global.rk_target_route == 3) global.rk_target_neutral = (global.rk_target_neutral + delta + 19) mod 19;
-    if (rk_menu_row == 1 && (global.rk_target_route == 0 || global.rk_target_route == 1)) global.rk_target_epilogue = (global.rk_target_epilogue + delta + 3) mod 3;
-    if (rk_menu_row == 2) global.rk_mode = (global.rk_mode + delta + 4) mod 4;
-    if (rk_menu_row == 3) global.rk_spoilers = 1 - global.rk_spoilers;
-    if (rk_menu_row == 4) global.rk_language = 1 - global.rk_language;
-    changed = 1;
+old_page = rk_menu_page;
+if (rk_menu_page == 0) {
+    rk_menu_row = scr_routekeeper_ui_nav(rk_menu_row,delta,7);
+    if (accept || left || right) {
+        if (rk_menu_row == 6) rk_menu = 0;
+        else if (!(rk_menu_row == 1 && (global.rk_target_route == 2 || global.rk_target_route == 4))) {
+            rk_menu_page = rk_menu_row + 1;
+            if (rk_menu_page == 1) rk_choice = global.rk_target_route;
+            if (rk_menu_page == 2) { rk_choice = global.rk_target_epilogue; if (global.rk_target_route == 3) rk_choice = global.rk_target_neutral; }
+            if (rk_menu_page == 3) rk_choice = global.rk_mode;
+            if (rk_menu_page == 4) rk_choice = global.rk_spoilers;
+            if (rk_menu_page == 5) rk_choice = global.rk_language;
+        }
+    }
+} else if (rk_menu_page == 6) {
+    if (accept || left) rk_menu_page = 0;
+} else {
+    options = 2;
+    if (rk_menu_page == 1) options = 5;
+    if (rk_menu_page == 2) { options = 3; if (global.rk_target_route == 3) options = 19; }
+    if (rk_menu_page == 3) options = 4;
+    rk_choice = scr_routekeeper_ui_nav(rk_choice,delta,options);
+    if (left) rk_menu_page = 0;
+    if (accept || right) {
+        if (old_page == 1) global.rk_target_route = rk_choice;
+        if (old_page == 2 && global.rk_target_route == 3) global.rk_target_neutral = rk_choice;
+        if (old_page == 2 && global.rk_target_route != 3) global.rk_target_epilogue = rk_choice;
+        if (old_page == 3) global.rk_mode = rk_choice;
+        if (old_page == 4) global.rk_spoilers = rk_choice;
+        if (old_page == 5) global.rk_language = rk_choice;
+        changed = 1; rk_menu_page = 0;
+    }
 }
 if (changed) {
     rk_dismissed = 0;

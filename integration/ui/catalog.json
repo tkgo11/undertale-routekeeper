@@ -1,0 +1,222 @@
+{
+  "layout": {
+    "scale": 2,
+    "menu_left": 16,
+    "menu_top": 16,
+    "menu_right": 304,
+    "menu_bottom": 220,
+    "border": 3,
+    "row_x": 40,
+    "row_y": 46,
+    "row_height": 20,
+    "visible_rows": 7,
+    "value_x": 140,
+    "footer_y": 198,
+    "hud_top": 207,
+    "hud_bottom": 235,
+    "warning_left": 16,
+    "warning_top": 5,
+    "warning_right": 304,
+    "warning_bottom": 100,
+    "warning_x": 26,
+    "warning_y": 14,
+    "warning_width": 264,
+    "warning_lines": 3,
+    "warning_footer": 78,
+    "hud_x": 26,
+    "hud_y": 213,
+    "hud_width": 208,
+    "hud_progress_x": 244,
+    "hud_progress_width": 52
+  },
+  "text": {
+    "title": [
+      "ROUTEKEEPER",
+      "ROUTEKEEPER"
+    ],
+    "goal": [
+      "Ending",
+      "엔딩"
+    ],
+    "variant": [
+      "Variant",
+      "변형"
+    ],
+    "guidance": [
+      "Guidance",
+      "안내"
+    ],
+    "spoilers": [
+      "Spoilers",
+      "스포일러"
+    ],
+    "language": [
+      "Language",
+      "언어"
+    ],
+    "journal": [
+      "Progress",
+      "진행 상황"
+    ],
+    "back": [
+      "Back",
+      "돌아가기"
+    ],
+    "minimal": [
+      "Minimal",
+      "최소"
+    ],
+    "detailed": [
+      "Detailed",
+      "상세"
+    ],
+    "either": [
+      "Either",
+      "모두"
+    ],
+    "stay": [
+      "Stay",
+      "함께 살기"
+    ],
+    "leave": [
+      "Leave",
+      "떠나기"
+    ],
+    "off": [
+      "Off",
+      "끄기"
+    ],
+    "passive": [
+      "Passive",
+      "조용한 안내"
+    ],
+    "active": [
+      "Active",
+      "목표 안내"
+    ],
+    "forced": [
+      "Forced",
+      "경로 보호"
+    ],
+    "pacifist": [
+      "True Pacifist",
+      "진정한 불살"
+    ],
+    "soulless_pacifist": [
+      "Soulless Pacifist",
+      "영혼 없는 불살"
+    ],
+    "genocide": [
+      "Genocide",
+      "몰살"
+    ],
+    "neutral": [
+      "Neutral",
+      "뉴트럴"
+    ],
+    "soulless_genocide": [
+      "Soulless Genocide",
+      "영혼 없는 몰살"
+    ],
+    "on_track": [
+      "On track",
+      "진행 가능"
+    ],
+    "action_required": [
+      "Next step",
+      "다음 목표"
+    ],
+    "at_risk": [
+      "Be careful",
+      "조심하세요"
+    ],
+    "blocked": [
+      "Ending unavailable",
+      "엔딩에 도달할 수 없습니다"
+    ],
+    "unknown": [
+      "Keep exploring",
+      "계속 탐험하세요"
+    ],
+    "navigation": [
+      "Arrows: move   Z: choose   X: back",
+      "방향키 이동  Z 선택  X 뒤로"
+    ],
+    "pad_navigation": [
+      "Directions: move   Confirm / Cancel",
+      "방향키: 이동   확인 / 취소"
+    ],
+    "close_warning": [
+      "F8: close",
+      "F8: 닫기"
+    ],
+    "retry_warning": [
+      "F8: continue, then try again",
+      "F8: 확인 후 다시 선택"
+    ],
+    "guard_hint": [
+      "Choose another action.",
+      "다른 행동을 선택하세요."
+    ],
+    "no_objective": [
+      "Keep exploring.",
+      "계속 탐험하세요."
+    ],
+    "warn_1": [
+      "This attack may defeat an enemy and change your ending.",
+      "이 공격으로 적을 쓰러뜨리면 엔딩이 달라질 수 있습니다."
+    ],
+    "warn_2": [
+      "Give water before leaving this room.",
+      "방을 떠나기 전에 물을 건네세요."
+    ],
+    "warn_3": [
+      "Finish the area's encounters before this boss.",
+      "이 보스와 싸우기 전에 지역의 조우를 마치세요."
+    ],
+    "warn_4": [
+      "This encounter must be defeated for your ending.",
+      "목표한 엔딩을 위해 이 상대를 쓰러뜨려야 합니다."
+    ],
+    "warn_5": [
+      "Your ending requires this character to survive.",
+      "목표한 엔딩을 위해 이 인물을 살려야 합니다."
+    ],
+    "warn_6": [
+      "Your ending requires defeating this character.",
+      "목표한 엔딩을 위해 이 인물을 쓰러뜨려야 합니다."
+    ],
+    "warn_7": [
+      "More kills can change your ending.",
+      "더 죽이면 목표한 엔딩이 달라질 수 있습니다."
+    ],
+    "warn_8": [
+      "Finish the required encounters before proceeding.",
+      "진행하기 전에 필수 조우를 마치세요."
+    ],
+    "warn_9": [
+      "This choice differs from your chosen epilogue.",
+      "이 선택은 목표한 마지막 선택과 다릅니다."
+    ],
+    "warn_10": [
+      "Make the required friends before gaining EXP.",
+      "EXP를 얻기 전에 필요한 우정을 쌓으세요."
+    ],
+    "warn_11": [
+      "Flee and find the missing enemy before the area's last kill.",
+      "도망친 뒤 지역의 마지막 처치 전에 남은 필수 적을 찾으세요."
+    ],
+    "warn_12": [
+      "This friendship would change your chosen ending.",
+      "이 우정을 쌓으면 목표한 엔딩이 달라집니다."
+    ],
+    "pad_close_warning": [
+      "Close",
+      "닫기"
+    ],
+    "pad_retry_warning": [
+      "Continue, then try again",
+      "확인 후 다시 선택"
+    ]
+  }
+}
