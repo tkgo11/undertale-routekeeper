@@ -41,11 +41,53 @@ try {
   Check ($s.phase -eq 'Restored') ('idempotent recovery: '+$case)
   Refuses {Restore-RkSaveTransaction $s $root $save 'different-owner'} ('different owner refused: '+$case)
  }
+ # A completed session must never rewind later legitimate personal progress.
+ foreach($variant in @('restored-present','restored-absent','pending-present','pending-absent')){
+  $base=Join-Path $temp $variant;$save=Join-Path $base 'save';$root=Join-Path $base 'session'
+  New-Item -ItemType Directory -Path $base | Out-Null
+  if($variant.EndsWith('present')){New-Item -ItemType Directory -Path $save | Out-Null;Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'BASELINE'}
+  $s=New-RkSaveTransaction $root $save 'owner' 'original'
+  if($variant.StartsWith('restored')){Start-RkSaveTransaction $s;Restore-RkSaveTransaction $s $root $save 'owner'}
+  New-Item -ItemType Directory -Path $save -Force | Out-Null
+  Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'LATER PERSONAL PROGRESS'
+  $changedDigest=Get-RkTreeDigest $save
+  if($variant.StartsWith('pending')){Refuses {Start-RkSaveTransaction $s} ('changed-before-quarantine refused: '+$variant)}
+  Refuses {Restore-RkSaveTransaction $s $root $save 'owner'} ('later personal state cannot be classified as trial: '+$variant)
+  Check ((Get-RkTreeDigest $save) -ceq $changedDigest) ('later personal content untouched: '+$variant)
+ }
+ foreach($hadOriginal in @($true,$false)){
+  $base=Join-Path $temp ('terminal-fallback-'+$hadOriginal);$save=Join-Path $base 'save';$root=Join-Path $base 'session'
+  New-Item -ItemType Directory -Path $base | Out-Null
+  if($hadOriginal){New-Item -ItemType Directory -Path $save | Out-Null;Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'ORIGINAL'}
+  $s=New-RkSaveTransaction $root $save 'owner' 'original';Start-RkSaveTransaction $s
+  Restore-RkSaveTransaction $s $root $save 'owner'
+  New-Item -ItemType Directory -Path $save -Force | Out-Null;Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'LATER PERSONAL'
+  $later=Get-RkTreeDigest $save
+  Set-Content -LiteralPath (Join-Path $root 'session.json') -Value '{TRUNCATED AFTER COMPLETION'
+  $s=Read-RkJournal $root
+  Refuses {Restore-RkSaveTransaction $s $root $save 'owner'} 'old active revision cannot rewind completed-session personal progress'
+  Check ((Get-RkTreeDigest $save) -ceq $later) 'later personal state survives terminal journal fallback'
+ }
+ $base=Join-Path $temp 'completion-fence';$save=Join-Path $base 'save';$root=Join-Path $base 'session'
+ New-Item -ItemType Directory -Path $save -Force | Out-Null;Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'ORIGINAL'
+ $s=New-RkSaveTransaction $root $save 'owner' 'original';Start-RkSaveTransaction $s;Restore-RkSaveTransaction $s $root $save 'owner'
+ Set-Content -LiteralPath (Join-Path $root 'session.json') -Value '{TRUNCATED'
+ $s=Read-RkJournal $root;Restore-RkSaveTransaction $s $root $save 'owner'
+ Check ($s.phase -eq 'Restored') 'completion fence recovers unchanged terminal state from previous revision'
+ Set-Content -LiteralPath (Join-Path $root 'restored.json') -Value '{CORRUPT FENCE'
+ Refuses {Restore-RkSaveTransaction $s $root $save 'owner'} 'corrupt completion fence never falls back to an active phase'
+ Check ((Get-RkTreeDigest $save) -ceq $s.originalDigest) 'completion fence refusal preserves original content'
  $base=Join-Path $temp 'corruption';$save=Join-Path $base 'save';$root=Join-Path $base 'session'
  New-Item -ItemType Directory -Path $save -Force | Out-Null;Set-Content -LiteralPath (Join-Path $save 'file0') -Value 'SYNTHETIC ORIGINAL'
  $s=New-RkSaveTransaction $root $save 'owner' 'patched';Start-RkSaveTransaction $s
  Set-Content -LiteralPath (Join-Path $root 'protected-save/file0') -Value 'CORRUPT'
  Refuses {Restore-RkSaveTransaction $s $root $save 'owner'} 'corrupt protected copy never overwrites a save'
+ $validJournal=Read-RkJournal $root
+ $validJournal.originalPresent='false'
+ Refuses {Assert-RkJournal $validJournal $root $save 'owner'} 'string boolean cannot redefine original presence'
+ $validJournal.originalPresent=$false;$validJournal.originalDigest=''
+ $validJournal.PSObject.Properties.Remove('originalPresent')
+ Refuses {Assert-RkJournal $validJournal $root $save 'owner'} 'missing presence cannot redefine original as absent'
  $json=Join-Path $temp 'atomic.json';Write-RkAtomicJson $json @{text=([string][char]0xD55C+[char]0xAE00);sequence=1};Write-RkAtomicJson $json @{text=([string][char]0xD55C+[char]0xAE00);sequence=2}
  Check ((Get-Content -LiteralPath $json -Raw -Encoding UTF8 | ConvertFrom-Json).text -ceq ([string][char]0xD55C+[char]0xAE00)) 'UTF8 journal roundtrip'
  Check ((Get-Content -LiteralPath ($json+'.previous') -Raw -Encoding UTF8 | ConvertFrom-Json).sequence -eq 1) 'previous atomic journal retained'
@@ -99,6 +141,15 @@ try {
  Remove-Item -LiteralPath $noSave
  $observations[3].status='NOT_RUN';Write-RkAtomicJson (Join-Path $archive 'observations.json') $observations
  Refuses {Assert-RkOriginalSmoke $history $meta $noSave} 'missing original battle observation blocks comparison'
+ foreach($unsafe in @('CON.txt','foo./data.win','foo /data.win','a/COM1','a/b?.dll','a/b:data',('a/'+[char]1+'x'),('a/COM'+[char]0xB9+'.txt'))){
+  Refuses {Assert-RkRelative $unsafe} 'Windows-invalid relative component refused'
+ }
+ $started=[DateTime]::UtcNow;$process=[pscustomobject]@{Id=123;Path='game.exe';StartTime=$started}
+ Assert-RkProcessIdentity @($process) 123 'GAME.EXE' $started.Ticks;Check $true 'exact process identity accepted'
+ Refuses {Assert-RkProcessIdentity @($process,$process) 123 'game.exe' $started.Ticks} 'concurrent process blocked'
+ Refuses {Assert-RkProcessIdentity @() 123 'game.exe' $started.Ticks} 'exited client blocked'
+ Refuses {Assert-RkProcessIdentity @($process) 123 'registered.exe' $started.Ticks} 'registered game redirect blocked'
+ Refuses {Assert-RkProcessIdentity @($process) 123 'game.exe' ($started.Ticks-1)} 'recycled PID blocked by start time'
  $scriptText=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'run-current-account.ps1') -Raw
  $scriptText=[regex]::Replace($scriptText,'(?m)^\s*#.*$','')
  Check (!$scriptText.Contains('Start-RkDisposableInstall') -and !$scriptText.Contains('-applaunch')) 'registered game swap and Steam redirect fallback removed'

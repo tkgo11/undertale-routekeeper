@@ -1,6 +1,6 @@
-import hashlib,io,json,struct,tempfile,unittest,zipfile
+import hashlib,io,json,stat,struct,tempfile,unittest,zipfile
 from pathlib import Path
-from runtime_lab import safe_entries,inspect,verify,MARKER,inventory_digest
+from runtime_lab import safe_entries,inspect,verify,MARKER,inventory_digest,assert_no_links
 class ArchiveTests(unittest.TestCase):
  def archive(self,names):
   f=io.BytesIO()
@@ -8,7 +8,7 @@ class ArchiveTests(unittest.TestCase):
    for name in names:z.writestr(name,b'x')
   f.seek(0);return zipfile.ZipFile(f)
  def test_traversal_and_windows_names(self):
-  for name in ['../outside','/outside','C:/outside','foo\\..\\outside','NUL.txt','foo./bar','a/COM1','bad?.dll','bad\nfile']:
+  for name in ['../outside','/outside','C:/outside','foo\\..\\outside','NUL.txt','foo./bar','a/COM1','bad?.dll','bad\nfile','COM\u00b9.txt','LPT\u00b2']:
    with self.subTest(name=name),self.assertRaises(ValueError):list(safe_entries(self.archive([name])))
  def test_case_collision(self):
   for names in [['Game/DATA.win','game/data.win'],['game/a','game//a']]:
@@ -28,25 +28,38 @@ class ArchiveTests(unittest.TestCase):
   return game
  def test_original_mutation(self):
   with tempfile.TemporaryDirectory() as directory:
-   root=Path(directory);game=self.fixture(root)
+   root=Path(directory).resolve();game=self.fixture(root)
    self.assertEqual(len(verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))['files']),1)
    (game/'data.win').write_bytes(b'MUTATED SOURCE')
    with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
  def test_linked_original_parent(self):
   with tempfile.TemporaryDirectory() as directory:
-   root=Path(directory);game=self.fixture(root);outside=root/'moved-game'
+   root=Path(directory).resolve();game=self.fixture(root);outside=root/'moved-game'
    game.rename(outside)
    try:game.symlink_to(outside,target_is_directory=True)
    except OSError as error:self.skipTest('Symlink creation unavailable: '+str(error))
    with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
+ def test_linked_lab_ancestor(self):
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();real=root/'real';real.mkdir();lab=real/'lab';lab.mkdir();self.fixture(lab)
+   alias=root/'alias'
+   try:alias.symlink_to(real,target_is_directory=True)
+   except OSError as error:self.skipTest('Symlink creation unavailable: '+str(error))
+   with self.assertRaisesRegex(ValueError,'Linked/reparse'):verify(alias/'lab')
+ def test_windows_reparse_attribute(self):
+  from unittest.mock import patch
+  from types import SimpleNamespace
+  # Actual NTFS junction execution remains NOT_RUN on Linux.
+  with patch.object(Path,'lstat',return_value=SimpleNamespace(st_mode=stat.S_IFDIR,st_file_attributes=1024)):
+   with self.assertRaisesRegex(ValueError,'Linked/reparse'):assert_no_links('synthetic-junction')
  def test_inventory_cannot_repin_modified_originals(self):
   with tempfile.TemporaryDirectory() as directory:
-   root=Path(directory);self.fixture(root)
+   root=Path(directory).resolve();self.fixture(root)
    # An edited inventory cannot redefine which build is pristine.
    with self.assertRaisesRegex(ValueError,'inventory identity'):verify(root)
  def test_identity_and_account_redaction(self):
   with tempfile.TemporaryDirectory() as d:
-   p=Path(d)/'input.zip';pe=bytearray(132);pe[:2]=b'MZ';struct.pack_into('<I',pe,0x3c,128);pe.extend(b'\x4c\x01');pe[128:132]=b'PE\0\0'
+   p=Path(d).resolve()/'input.zip';pe=bytearray(132);pe[:2]=b'MZ';struct.pack_into('<I',pe,0x3c,128);pe.extend(b'\x4c\x01');pe[128:132]=b'PE\0\0'
    data=b'SYNTHETIC ONLY'
    with zipfile.ZipFile(p,'w') as z:
     z.writestr('Undertale/UNDERTALE.exe',pe);z.writestr('Undertale/data.win',data)

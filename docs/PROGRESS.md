@@ -3,6 +3,44 @@
 Updated 2026-10-26. Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
 no merge, public release, profile promotion or original save/history mutation.
 
+## Current follow-up: stale-recovery refusal (2026-10-26)
+
+Continue existing PR1 OPEN/READY; preceding milestone below remains historical.
+Fresh authenticated review/comment/thread/check pagination on7b8cb3e found no new
+technical finding: prior inline4371176621/4371176628 remain fixed in current source,
+while their GraphQL threads are unresolved/outdated. Automated summary is not
+formal approval. Private per-run review ledger records IDs, edits, HEAD and tests.
+
+A new executable regression FAILED on7b8cb3e: recovery of a Restored session could
+archive later legitimate personal saves as trial and restore an older snapshot.
+Changed originals before the pending quarantine rename had the same risk. Fixed
+both: completed/uncommitted sessions now refuse changed presence/content without
+mutation. A separate flushed restoration-completion fence prevents an older active
+journal revision from rewinding later personal progress after current-journal
+corruption. Ill-typed/missing original-presence metadata also fails closed. Independent
+snapshot fallback remains available only after committed Running/Restoring states.
+
+Process guards now validate Steam/game start time and path as well as PID, refuse
+concurrent/redirected runners, and check after game exit; no foreign process is
+killed. Windows relative-name guards reject device/trailing-dot aliases. Python lab
+checks all ancestors and reparse attributes, including linked metadata paths; no
+automatic path resolution hides a junction. Native APIs remain NOT_RUN.
+
+Original encounter->actor->setup fixtures now bind three armored Mettaton forms
+(groups48/57/80; enemies33/40/50;HP9999/DEF999/EXP0) and seven bomb encounters.
+The bomb's9 own events only initialize killed0; its actual parent is the empty
+monster parent. This narrows own-event and unbuffed LV1 attack paths, not all
+cross-instance script dispatch. Type6/goal8 remains UNKNOWN/advisory; no universal
+Forced promise or speculative automatic interception was added.
+
+Local results for this follow-up are in test-results.md:264 C# checks,9,314 audit
+assertions,99 PowerShell filesystem/process-record checks,9 archive/path groups,
+20 UI groups,381 glyphs and686 emitted UI comparisons. Authentic rebuild/reload,
+original preservation and4-RID packaging are rerun; native game/PS5.1/Steam smoke
+remain NOT_RUN. Candidate9abd0729 and InspectedOnly remain unchanged. Do not retry
+budget-blocked CI. Qlty success/95-blocking-issue detail still redirects to login.
+Operator commands and fail-closed recovery limits are in runtime-validation.md.
+
 ## Current review/same-account milestone (2026-10-26)
 
 Resume on feat/routekeeper-foundation, PR1 OPEN/READY. Existing a76b08b source was

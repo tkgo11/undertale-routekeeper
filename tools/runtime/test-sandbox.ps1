@@ -93,6 +93,9 @@ Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('Original t
 
 if ($Lab -or $PatchedData) {
     if (!$Lab -or !$PatchedData) { throw 'Both private staging arguments are required.' }
+    # The launcher canonicalizes paths; compare physical absolute paths as well.
+    $Lab=(Resolve-Path -LiteralPath $Lab).Path
+    $PatchedData=(Resolve-Path -LiteralPath $PatchedData).Path
     $global:RkMockDispatch=$false
     function Start-Process { param([string]$FilePath,[object]$ArgumentList) Check ($FilePath -eq 'WindowsSandbox.exe') 'mocked Sandbox dispatch'; $global:RkMockDispatch=$true }
     try { & (Join-Path $PSScriptRoot 'launch-windows-sandbox.ps1') -Lab $Lab -PatchedData $PatchedData }

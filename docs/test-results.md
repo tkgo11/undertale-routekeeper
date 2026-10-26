@@ -3,7 +3,7 @@
 Updated 2026-10-26. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. The official runner reached Steam bootstrap
 under QEMU/Wine but no game window/room executed successfully.
-Current continuation:9,291 original-golden/ordered-event assertions and264 C#
+Current continuation:9,314 original-golden/ordered-event assertions and264 C#
 checks; see the dated continuation sections below for historical snapshots.
 
 | Scope | Result | Command / evidence |
@@ -287,3 +287,37 @@ local restoration; opaque SDK/server account state is UNPROVEN.
 BLOCKED: hosted CI budget (no reruns); qlty success status with95-blocking-issue
 text and login-gated details remains unreconciled, not a code PASS. Windows/macOS/
 Linux gameplay evidence and full type6/goal8 path proof remain unavailable.
+
+## Stale-recovery follow-up (2026-10-26)
+
+- Reproduced FAIL at7b8cb3e: later legitimate saves were accepted as trial during
+  recovery of an already Restored session. Private resume-repro.log records the
+  failing independent regression; no actual personal saves were used.
+- OFFLINE_PASS: completed and uncommitted-quarantine recovery refuses later save
+  changes (present/absent originals), preserving their independently hashed content.
+  Terminal journal corruption with unchanged/later personal states and corrupt
+  completion fences are covered. Missing/string original-presence metadata refuses
+  recovery.99 total PowerShell
+  helper/filesystem/process-record checks run on PowerShell7/Linux; ALL harness
+  ASTs and capture interop declarations compile. Native Windows/PS5.1 NOT_RUN.
+- OFFLINE_PASS:9 Python archive/path groups, including linked lab ancestors and
+  modeled NTFS reparse attributes; actual NTFS junction APIs remain NOT_RUN.
+- OFFLINE_PASS: Release0 warnings/errors;264 C# checks and9,314 original-derived
+  audit assertions. Encounter bindings/EXP/DEF/own-event paths for three Mettaton
+  forms and seven bomb groups come directly from original scripts, not route tables.
+- OFFLINE_PASS: generated Core/Neutral/decision/UI freshness;20 UI groups,381
+  deterministic glyphs and686 emitted navigation/localization cases. UI unchanged.
+- OFFLINE_PASS: authentic validator, four publishes, Linux packaged-source rebuild
+  (identical9abd0729 candidate) and synthetic G3M/xdelta parser checks are recorded in .research/resume-* private logs. No runtime
+  classification is inferred from any of these checks.
+- NOT_RUN: official original/patched Windows execution, Steam offline readiness,
+  NTFS crash behavior, hardware input and gameplay. Same-account save/history/endings
+  scenarios remain prohibited; source-bounded type6/goal8 remains UNKNOWN.
+- BLOCKED: hosted Actions budget (no dispatch), current qlty success status with95
+  blocking issues and detail redirect to login (freshly checked this run). No formal
+  approval, VerifiedPatch promotion, merge, release or proprietary artifact upload.
+
+The optional private host-stage mock initially refused an already populated old
+lab, as designed. A fresh-lab run then exposed a test-only relative-vs-absolute
+mapping comparison; both test inputs now resolve before invoking the launcher.
+The final fresh-lab run is recorded in resume-host-staging-final.log; no Sandbox/Steam/game execution occurred. Original inventory remained intact.

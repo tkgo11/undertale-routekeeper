@@ -8,6 +8,15 @@ DATA_SHA='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
 RUNNER_SHA='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
 INVENTORY_SHA='d0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a'
 MARKER='.routekeeper-disposable-runtime-lab'
+def assert_no_links(path):
+ # lstat detects NTFS reparse points (including junctions), not only symlinks.
+ path=Path(path).absolute()
+ for item in (path,*path.parents):
+  try:info=item.lstat()
+  except FileNotFoundError:continue
+  if stat.S_ISLNK(info.st_mode) or getattr(info,'st_file_attributes',0)&getattr(stat,'FILE_ATTRIBUTE_REPARSE_POINT',1024):raise ValueError('Linked/reparse runtime path refused')
+ return path
+
 def inventory_digest(files):
  return hashlib.sha256(''.join(f"{f['path']}\t{f['size']}\t{f['sha256']}\n" for f in sorted(files,key=lambda f:f['path'])).encode()).hexdigest()
 def digest(path):
@@ -18,7 +27,7 @@ def safe_entries(z):
  for entry in z.infolist():
   name=entry.filename.replace('\\','/');p=PurePosixPath(name)
   if p.is_absolute() or any(x in ['..','.'] or ':' in x or x.endswith((' ','.')) for x in p.parts):raise ValueError('Unsafe archive path')
-  if not p.parts or any(re.fullmatch(r'(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\..*)?',x,re.I) for x in p.parts):raise ValueError('Reserved archive path')
+  if not p.parts or any(re.fullmatch(r'(CON|PRN|AUX|NUL|COM[1-9\u00b9\u00b2\u00b3]|LPT[1-9\u00b9\u00b2\u00b3])(?:\..*)?',x,re.I) for x in p.parts):raise ValueError('Reserved archive path')
   if any(ord(c)<32 or c in '<>\"|?*' for c in name):raise ValueError('Windows-invalid archive character')
   key=str(p).casefold()
   if key in seen:raise ValueError('Duplicate case-insensitive archive path')
@@ -29,7 +38,7 @@ def safe_entries(z):
   yield entry,p
 
 def inspect(archive,expected_sha=ZIP_SHA,expected_size=ZIP_SIZE,expected_data=DATA_SHA,expected_runner=RUNNER_SHA):
- archive=Path(archive)
+ archive=assert_no_links(archive)
  if archive.stat().st_size!=expected_size or digest(archive)!=expected_sha:raise ValueError('Runtime ZIP identity mismatch')
  rows=[]
  with zipfile.ZipFile(archive) as z:
@@ -54,7 +63,8 @@ def inspect(archive,expected_sha=ZIP_SHA,expected_size=ZIP_SIZE,expected_data=DA
   return identity
 
 def prepare(archive,work):
- identity=inspect(archive);work=Path(work).resolve()
+ work=assert_no_links(work)
+ identity=inspect(archive)
  if work.exists():raise ValueError('Lab must be a new directory; never reuse a personal profile')
  work.mkdir(mode=0o700,parents=True);(work/MARKER).write_text('Disposable lab. Contains proprietary inputs; never publish.\n')
  try:
@@ -76,8 +86,8 @@ def prepare(archive,work):
  return identity
 
 def verify(work,expected_inventory=INVENTORY_SHA):
- work=Path(work).absolute()
- if work.is_symlink():raise ValueError('Linked lab directory')
+ work=assert_no_links(work)
+ assert_no_links(work/MARKER);assert_no_links(work/'identity-private.json')
  if not (work/MARKER).is_file():raise ValueError('Not a disposable runtime lab')
  identity=json.loads((work/'identity-private.json').read_text())
  if inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
@@ -85,10 +95,8 @@ def verify(work,expected_inventory=INVENTORY_SHA):
   p=work/'original'/f['path']
   # A linked ancestor can redirect a regular-looking file outside the pristine
   # tree. Reject it before opening/hash-reading any such target.
-  for parent in p.parents:
-   if parent==work.parent:break
-   if parent.is_symlink():raise ValueError('Linked original directory')
-  if p.is_symlink() or not p.is_file() or p.stat().st_size!=f['size'] or digest(p)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
+  assert_no_links(p)
+  if not p.is_file() or p.stat().st_size!=f['size'] or digest(p)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
  return identity
 
 def main():

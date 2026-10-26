@@ -119,7 +119,10 @@ $rkPaths = @{Lab=$rkLab; PatchedData=$rkCandidate; SteamExe="C:\Program Files (x
 Replace only the genuine client/library paths. Preflight is read only and can run
 before disconnecting so Windows can validate the Valve signature/chain. It does
 not establish ownership/SDK readiness; the official runner will test that. Do not
-disable signature/OS policy checks if they fail. Case-sensitive mutable paths,
+disable signature/OS policy checks if they fail. Linked ancestors and NTFS reparse points in the Python lab paths are refused;
+use physical paths rather than aliases. Windows reserved/aliased relative names
+(including superscript COM/LPT devices) are refused by both staging tools.
+Case-sensitive mutable paths,
 hardlinks, reparse points, unsupported file streams/inspection and unavailable
 ordinary-user permissions fail closed. These Windows API gates are NOT_RUN.
 
@@ -138,7 +141,9 @@ journals a same-volume quarantine, atomically publishes an allowlisted side copy
 starts the legitimate Steam client offline, then directly starts that official EXE
 with its own working directory. No app-id shim, SDK injection or registered-install
 swap is used. A quick exit/redirect is BLOCKED; do not fall back to replacing the
-registered game. Steam PID/restarts and adapter state are checked during observation.
+registered game. Steam/game PID, executable path, process start time, concurrent/redirected runners
+and adapter state are checked during observation and after game exit. These
+checks observe periodically; they do not prove all transient process/SDK activity.
 A process/window/zero exit code never becomes gameplay PASS automatically.
 
 Patched smoke controls: open settings with F10 only in safe overworld context;
@@ -209,6 +214,16 @@ lock and cannot block on the live game loop. Atomic flushed JSON/previous revisi
 and presence+digest checks cover partial staging, rename/journal gaps, repeated
 recovery, missing quarantine with verified snapshot fallback and detected corruption.
 Uncertain identity or corrupt snapshots fail closed and preserve all copies.
+A completed (Restored) journal is terminal: if local saves subsequently change,
+Recover/Archive/Cleanup refuse without moving or overwriting that personal state.
+Likewise, Prepared/QuarantinePending with no committed quarantine cannot classify
+new/changed saves as a trial. Do not delete later personal saves to make an old
+session match; preserve the active directory for manual review. Missing/ill-typed
+save-presence metadata is rejected, not interpreted as an absent original. A separate
+flushed restored.json fence is committed before the terminal journal update. Older
+active journal revisions cannot override this fence; a corrupt/mismatched fence
+stops recovery. This is tested failure recovery, not proof against real NTFS power loss.
+
 Actual Windows NTFS power-cut/process behavior is NOT_RUN. Content/tree verification
 does not claim ACL/timestamp, Steam cache, Cloud/server or account-history rollback.
 Archive retains everything; Cleanup retains snapshots/reports and removes only

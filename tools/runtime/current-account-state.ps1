@@ -37,6 +37,8 @@ function Assert-RkJournal($State,[string]$Root,[string]$Save,[string]$Owner) {
     if($State.root -cne $Root -or $State.phase -notin @('Prepared','QuarantinePending','Running','Restoring','Restored')){throw 'Session location or phase mismatch.'}
     Assert-RkNoLinks $Root;Assert-RkNoLinks $Save
     if((Test-RkWithin $Root $Save) -or (Test-RkWithin $Save $Root)){throw 'Session/save overlap refused.'}
+    if($State.originalPresent -isnot [bool] -or $State.originalDigest -isnot [string] -or $State.case -notin @('original','patched')){throw 'Session save identity is incomplete or has invalid types.'}
+    if(!$State.originalPresent -and $State.originalDigest -cne ''){throw 'Absent original must have an empty digest.'}
     if($State.originalPresent -and $State.originalDigest -notmatch '^[a-f0-9]{64}$'){throw 'Original identity missing.'}
 }
 function Save-RkJournal($State) { Write-RkAtomicJson (Join-Path $State.root 'session.json') $State }
@@ -67,18 +69,42 @@ function Start-RkSaveTransaction($State) {
     } elseif(Test-Path -LiteralPath $State.savePath){throw 'Unexpected save appeared before launch.'}
     $State.phase='Running';Save-RkJournal $State
 }
+function Test-RkCompletionFence($State) {
+    $path=Join-Path $State.root 'restored.json';Assert-RkNoLinks $path
+    if(!(Test-Path -LiteralPath $path)){return $false}
+    # Never fall back from a corrupt terminal fence to an earlier active state.
+    $fence=Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction Stop
+    if($fence.schema -ne 2 -or $fence.id -cne $State.id -or $fence.owner -cne $State.owner -or $fence.originalPresent -isnot [bool] -or $fence.originalPresent -ne $State.originalPresent -or $fence.originalDigest -cne $State.originalDigest){throw 'Restoration completion identity is corrupt or mismatched; preserve all files.'}
+    return $true
+}
+function Write-RkCompletionFence($State) {
+    if(Test-RkCompletionFence $State){return}
+    Write-RkAtomicJson (Join-Path $State.root 'restored.json') @{schema=2;id=$State.id;owner=$State.owner;originalPresent=$State.originalPresent;originalDigest=$State.originalDigest}
+}
 function Restore-RkSaveTransaction($State,[string]$Root,[string]$Save,[string]$Owner) {
     Assert-RkJournal $State $Root $Save $Owner
     $snapshot=Join-Path $Root 'snapshot';$protected=Join-Path $Root 'protected-save';$trial=Join-Path $Root 'trial-save'
     foreach($path in @($snapshot,$protected,$trial)){Assert-RkNoLinks $path}
-    if($State.phase -eq 'Prepared' -and !(Test-Path -LiteralPath $protected)){
-        if($State.originalPresent -and (!(Test-Path -LiteralPath $Save) -or (Get-RkTreeDigest $Save) -cne $State.originalDigest)){throw 'Prepared original changed; no quarantine was committed.'}
+    # A terminal journal is not permission to rewind later personal gameplay.
+    $completed=Test-RkCompletionFence $State
+    if($completed -or $State.phase -eq 'Restored'){
+        if(Test-Path -LiteralPath $protected){throw 'Restored journal still has a quarantine; preserve all evidence.'}
+        if($State.originalPresent){
+            if(!(Test-Path -LiteralPath $Save) -or (Get-RkTreeDigest $Save) -cne $State.originalDigest){throw 'Personal saves changed after restoration; refusing stale recovery.'}
+        } elseif(Test-Path -LiteralPath $Save){throw 'New personal saves appeared after restoration; refusing stale recovery.'}
+        Write-RkCompletionFence $State
+        if($State.phase -ne 'Restored'){$State.phase='Restored';Save-RkJournal $State}
+        return
+    }
+    # Before the committed quarantine rename, changed saves are still personal.
+    # Running/Restoring alone authorize the independently verified fallback copy.
+    if($State.phase -in @('Prepared','QuarantinePending') -and !(Test-Path -LiteralPath $protected)){
+        if($State.originalPresent -and (!(Test-Path -LiteralPath $Save) -or (Get-RkTreeDigest $Save) -cne $State.originalDigest)){throw 'Uncommitted original changed; automatic recovery refused.'}
         if(!$State.originalPresent -and (Test-Path -LiteralPath $Save)){throw 'Unexpected save in unstarted session.'}
     } else {
         # Presence + verified digest resolves crashes between a rename and journal.
-        if($State.originalPresent -and !(Test-Path -LiteralPath $protected) -and (Test-Path -LiteralPath $Save) -and (Get-RkTreeDigest $Save) -ceq $State.originalDigest){
-            if((Test-Path -LiteralPath $protected) -and (Get-RkTreeDigest $protected) -cne $State.originalDigest){throw 'Protected original changed; preserve evidence.'}
-        } else {
+        $alreadyReturned=$State.originalPresent -and !(Test-Path -LiteralPath $protected) -and (Test-Path -LiteralPath $Save) -and (Get-RkTreeDigest $Save) -ceq $State.originalDigest
+        if(!$alreadyReturned){
             if($State.originalPresent){
                 if(!(Test-Path -LiteralPath $snapshot) -or (Get-RkTreeDigest $snapshot) -cne $State.originalDigest){throw 'Independent snapshot is missing or corrupt.'}
                 if((Test-Path -LiteralPath $protected) -and (Get-RkTreeDigest $protected) -cne $State.originalDigest){throw 'Protected original changed; do not overwrite it.'}
@@ -101,6 +127,7 @@ function Restore-RkSaveTransaction($State,[string]$Root,[string]$Save,[string]$O
     }
     if($State.originalPresent){if((Get-RkTreeDigest $Save) -cne $State.originalDigest){throw 'Restored original digest mismatch.'}}
     elseif(Test-Path -LiteralPath $Save){throw 'Originally absent saves were not restored to absence.'}
+    Write-RkCompletionFence $State
     $State.phase='Restored';Save-RkJournal $State
 }
 function Get-RkSteamCacheInventory([string]$SteamRoot) {
@@ -199,4 +226,10 @@ function Assert-RkOriginalSmoke([string]$Parent,$Metadata,[string]$Save) {
         if($valid){$found=$true;break}
     }
     if(!$found){throw 'Patched comparison requires an archived, locally restored original smoke with explicit startup/English/keyboard/battle observations and identical harness/client/install/save/cache baselines.'}
+}
+
+function Assert-RkProcessIdentity($Observed,[int]$ExpectedId,[string]$ExpectedPath,[long]$ExpectedStartTicks) {
+    # Pure records for scheduler tests; callers observe actual OS process state.
+    $items=@($Observed)
+    if($items.Count -ne 1 -or $items[0].Id -ne $ExpectedId -or !$items[0].Path -or !$items[0].Path.Equals($ExpectedPath,[StringComparison]::OrdinalIgnoreCase) -or $items[0].StartTime.ToUniversalTime().Ticks -ne $ExpectedStartTicks){throw 'Unexpected/restarted/concurrent process; preserve evidence and close Steam/game manually.'}
 }

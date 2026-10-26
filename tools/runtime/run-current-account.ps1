@@ -83,24 +83,32 @@ try {
    $deadline=(Get-Date).AddSeconds(90)
    do {Start-Sleep -Milliseconds 500;$clients=@(Get-Process steam -ErrorAction SilentlyContinue)} while(!$clients.Count -and (Get-Date) -lt $deadline)
    if($clients.Count -ne 1 -or !$clients[0].Path.Equals($SteamExe,[StringComparison]::OrdinalIgnoreCase)){throw 'Expected Steam process was not observed.'}
+   $steamStartTicks=$clients[0].StartTime.ToUniversalTime().Ticks
    Assert-RkNetworkOffline;Assert-RkHash $SteamExe $s.steamSha
    # No -applaunch, app-id shim or DLL injection. If the official runner redirects
    # to the registered installation, fail; never swap that installation instead.
    $launches=if($RestartForSettings -and $Case -eq 'patched'){2}else{1}
    for($launch=0;$launch -lt $launches;$launch++){
     Assert-RkNetworkOffline
-    if(@(Get-Process steam -ErrorAction SilentlyContinue | Where-Object Id -eq $clients[0].Id).Count -ne 1){throw 'Steam client changed before game launch.'}
+    Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $clients[0].Id $SteamExe $steamStartTicks
+    if(@(Get-Process UNDERTALE -ErrorAction SilentlyContinue).Count){throw 'An unexpected game process exists before side-copy launch.'}
    $gameProcess=Start-Process -FilePath (Join-Path $run 'UNDERTALE.exe') -WorkingDirectory $run -PassThru
    Start-Sleep -Seconds 3;$gameProcess.Refresh()
    if($gameProcess.HasExited -or !$gameProcess.Path.Equals((Join-Path $run 'UNDERTALE.exe'),[StringComparison]::OrdinalIgnoreCase)){throw 'Official side-copy runner exited/redirected. This launch method is NOT validated; no install-swap fallback.'}
+   $gameStartTicks=$gameProcess.StartTime.ToUniversalTime().Ticks
+   Assert-RkProcessIdentity @(Get-Process UNDERTALE -ErrorAction SilentlyContinue) $gameProcess.Id (Join-Path $run 'UNDERTALE.exe') $gameStartTicks
    $report.processObserved=$true
    Write-Host 'Early smoke only. Do not SAVE/RESET or reach an ending. Observe from a second PowerShell. Keep Steam open until the final restoration prompt.'
    $gameDeadline=(Get-Date).AddMinutes($Minutes);$steamPid=$clients[0].Id
    while(!$gameProcess.WaitForExit(1000)){
     Assert-RkNetworkOffline
-    if(@(Get-Process steam -ErrorAction SilentlyContinue | Where-Object Id -eq $steamPid).Count -ne 1){throw 'Steam restarted/exited during observation; baseline invalidated.'}
+    Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $steamPid $SteamExe $steamStartTicks
+    Assert-RkProcessIdentity @(Get-Process UNDERTALE -ErrorAction SilentlyContinue) $gameProcess.Id (Join-Path $run 'UNDERTALE.exe') $gameStartTicks
     if((Get-Date) -ge $gameDeadline){$null=$gameProcess.CloseMainWindow();if(!$gameProcess.WaitForExit(10000)){$gameProcess.Kill();$gameProcess.WaitForExit()};break}
    }
+   Assert-RkNetworkOffline
+   Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $steamPid $SteamExe $steamStartTicks
+   if(@(Get-Process UNDERTALE -ErrorAction SilentlyContinue).Count){throw 'An unowned game process remains after side-copy exit; comparison blocked.'}
    $report.exitCode=$gameProcess.ExitCode
    if($gameProcess.ExitCode -ne 0){$report.result='BLOCKED'}
     if($launches -eq 2 -and $launch -eq 0){Write-Host 'Relaunching the SAME trial once for mod settings persistence. Personal saves remain protected.';Start-Sleep -Seconds 2}

@@ -22,6 +22,9 @@ function Assert-RkHash([string]$Path,[string]$Expected) {
 }
 function Assert-RkRelative([string]$Path) {
     if ([IO.Path]::IsPathRooted($Path) -or $Path.Contains(':') -or $Path -match '(^|[\\/])([.]{1,2}|)([\\/]|$)') { throw 'Unsafe runtime relative path.' }
+    foreach($component in ($Path -split '[\\/]')){
+        if($component -match '[\x00-\x1f<>:"|?*]' -or $component -match '[. ]$' -or $component -match '^(CON|PRN|AUX|NUL|COM[1-9\u00b9\u00b2\u00b3]|LPT[1-9\u00b9\u00b2\u00b3])([.]|$)'){throw 'Windows-aliased or reserved runtime path refused.'}
+    }
 }
 
 function Assert-RkTreeNoLinks([string]$Path) {
