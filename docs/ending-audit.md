@@ -156,3 +156,20 @@ that the shared monster parent has no inherited event callbacks. These facts clo
 specific standard-return/inheritance assumptions, not all compound-goal paths.
 Type6/goal8 remains UNKNOWN. No new reachability/automatic-intervention guarantee
 is asserted without remaining scripted path closure and genuine runtime evidence.
+
+## Armored/scripted actor path bounds (2026-10-26)
+
+The actual battlegroup->monstertype->monstersetup chain, rather than names or guessed
+IDs, binds quiz/second/third to groups48/57/80 and IDs33/40/50,HP9999/DEF999/EXP0.
+For ordinary unbuffed LV1 Stick power10, even random bonus below2 leaves negative
+base damage against DEF999; this is not a full proof for all stat/script changes.
+Bomb groups69..75 instantiate ID47 (HP99/DEF0/EXP0). All9 bomb own event resources
+only assign killed0; Destroy calls the shared collector, whose kill increment is
+inside killed1. Authentic object metadata confirms the parent is obj_monsterparent,
+which has no native events. Third-form Destroy differs from the first two and does
+not call the common collector. Goldens preserve these distinctions.
+
+Own-event closure does not exclude every external with/instance reference,
+scripted room return, reward transfer or encounter replay. No full type6/goal8
+reachable/impossible verdict follows; it remains UNKNOWN. Existing advisory-only
+protection is retained. These source facts are not native runtime evidence.

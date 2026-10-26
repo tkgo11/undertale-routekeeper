@@ -213,6 +213,16 @@ Check(cheap.Events.Count(e=>e.StartsWith("spare-initial-Snowdrake"))==1,"Repeate
 Check(root.GetProperty("encounterRewards").GetProperty("Jerry").GetInt32()==1,"Source Jerry reward changed");
 try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.BacktrackTo(1);orderModel.GiveWater();throw new Exception("Water remained available after departing");}catch(InvalidOperationException){checks++;}
 try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.BacktrackTo(1);orderModel.ResolveBoss(false);throw new Exception("Boss resolved from wrong region");}catch(InvalidOperationException){checks++;}
+// Original encounter -> actor -> setup chain. These bounds do not prove all
+// external dispatch, food/stat changes, or full compound-goal reachability.
+foreach(var row in root.GetProperty("zeroExpActors").EnumerateArray()) {
+    var n=Numbers(row);Check(n[4]==0,"Audited scripted actor EXP differs");
+    if(n[1]==47) Check(n[0]>=69&&n[0]<=75&&n[5]==0&&n[6]==1,"Bomb own-event death closure differs");
+    else {
+        Check(n[0] switch {48=>n[1]==33,57=>n[1]==40,80=>n[1]==50,_=>false},"Armored form encounter binding differs");
+        Check(n[2]==9999&&n[3]==999&&10-n[3]+2<0,"Unbuffed LV1 Stick cannot produce positive armored-form base damage");
+    }
+}
 foreach(var row in root.GetProperty("standardReturns").EnumerateArray()) {
     var n=Numbers(row);Check((n[0]==1&&(n[1]==0||n[2]!=0))==(n[3]==1),"Original standard win return can bypass reward settlement");
 }

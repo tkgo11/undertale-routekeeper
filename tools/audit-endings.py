@@ -215,10 +215,24 @@ for sourcePath in sorted(a.source.glob('*.gml')):
  if re.search(r'global\.kills\s*(?:\+=|-=|=(?!=)|\+\+)',text):
   read(sourcePath.stem);killSites.append(sourcePath.stem)
 for name in ['gml_Object_obj_mettatonb_quiz_Step_0','gml_Object_obj_mettatonb_second_Step_0','gml_Object_obj_mettatonb_third_Step_0','gml_Object_obj_battlebomb_Step_0','gml_Object_obj_heart_Step_0','gml_Object_obj_woshbody_Step_0']:read(name)
+# Resolve actors through actual encounter cases, never guessed monster IDs.
+zeroExpActors=[]
+for match in re.finditer(r'case (\d+):([\s\S]*?)(?=\n    case |\n})',groups):
+ section=match[2]
+ actor=re.search(r'instance_create\([^;]*\b(obj_mettatonb_(?:quiz|second|third)|obj_battlebomb)\)',section)
+ if not actor:continue
+ enemy=int(re.search(r'global.monstertype\[0\] = (\d+)',section)[1])
+ stats=body(setup,f'if (global.monstertype[myself] == {enemy})')
+ values=[int(re.search(r'global.'+key+r'\[myself\] = (-?\d+)',stats)[1]) for key in ['monsterhp','monsterdef','xpreward']]
+ own=[read(p.stem) for p in sorted(a.source.glob('gml_Object_'+actor[1]+'_*.gml'))]
+ zeroExpActors.append([int(match[1]),enemy,*values,int(any('killed = 1;' in text for text in own)),int('scr_monsterdefeat(' in read('gml_Object_'+actor[1]+'_Destroy_0'))])
+# Own-event closure is narrower than arbitrary cross-instance/global dispatch.
+bombOwn=[read(p.stem) for p in sorted(a.source.glob('gml_Object_obj_battlebomb_*.gml'))]
+assert all(value.strip()=='0' for text in bombOwn for value in re.findall(r'\bkilled\s*=\s*([^;]+);',text))
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)
 a.output.parent.mkdir(parents=True,exist_ok=True)
-result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits,'standardReturns':standardReturns,'killWriteSites':killSites}
+result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits,'standardReturns':standardReturns,'killWriteSites':killSites,'zeroExpActors':zeroExpActors}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
 if a.verify:
  if a.output.read_text()!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')

@@ -1057,6 +1057,10 @@
     {
       "Object": "obj_mettatonb_third",
       "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_battlebomb",
+      "Parent": "obj_monsterparent"
     }
   ],
   "RequiredObjectEvents": [
