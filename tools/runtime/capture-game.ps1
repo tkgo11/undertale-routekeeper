@@ -1,4 +1,5 @@
-# Capture only the foreground game's client area, never the Steam/desktop window.
+# Best-effort foreground client rectangle. Screen overlays/focus races remain
+# unverified; private output is not guaranteed window-isolated evidence.
 param([ValidateSet('original','patched')][string]$Case='patched',
     [ValidatePattern('^[A-Za-z0-9_-]{1,40}$')][string]$Label='observation',
     [ValidateRange(0,10)][int]$DelaySeconds=0)
@@ -29,7 +30,7 @@ public static class RoutekeeperCapture {
 }
 $null=[RoutekeeperCapture]::SetProcessDPIAware()
 $window=$process.MainWindowHandle
-if ($window -eq [IntPtr]::Zero -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window) { throw 'Focus UNDERTALE before capture; other windows are excluded.' }
+if ($window -eq [IntPtr]::Zero -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window) { throw 'Focus UNDERTALE before capture; screen overlays are not guaranteed to be excluded.' }
 $rect=New-Object RoutekeeperCapture+Rect
 $point=New-Object RoutekeeperCapture+Point
 if (![RoutekeeperCapture]::GetClientRect($window,[ref]$rect) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$point)) { throw 'Game client bounds unavailable.' }

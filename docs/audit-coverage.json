@@ -1,0 +1,2120 @@
+{
+  "schema": 1,
+  "audit_date": "2026-10-26",
+  "baseline_head": "818fabab978a465d2ae07ff7d054f6dcb1a667fb",
+  "snapshot": "Source tree committed with this inventory; git log -1 identifies the resulting HEAD.",
+  "decision": "NO-GO for current-account game smoke; see docs/code-audit.md",
+  "tracked_baseline_count": 159,
+  "files_count": 163,
+  "coverage_counts": {
+    "MANUAL_FULL_TEXT": 119,
+    "SELF_MANIFEST_FULL_SET_CHECK": 1,
+    "BINARY_FULL_DECODE_AND_PROVENANCE": 1,
+    "GENERATED_FULL_BYTE_COMPARISON": 36,
+    "DATA_ALL_RECORDS_AND_SOURCE": 5,
+    "THIRD_PARTY_FULL_BYTE_PROVENANCE": 1
+  },
+  "meaning": "COMPLETE = full declared inspection coverage. PASS applies only to verified_scope, not finding resolution, real gameplay, or compatibility approval. No sampling-based full-coverage claim.",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 172,
+      "lines": 4,
+      "sha256": "5643c412aee9642bad6bad81ae15c8d48eccb3202e2a70542030332195936488",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": ".github/workflows/authentic.yml",
+      "bytes": 3148,
+      "lines": 68,
+      "sha256": "d942ce5d64cce35fefe8532e510e47f9c1faa4cf397896221418c783b5426b34",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A11"
+      ]
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 3481,
+      "lines": 74,
+      "sha256": "e3ffb556b15a76a2cb8ef4da48a98c2a16b8636e3f50e271fe58d2786087a710",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A11"
+      ]
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 81,
+      "lines": 8,
+      "sha256": "988bad410ab2cb1b1e8a9e7c4895b257e2ab1c6880784ab771745adbdb9d867d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 8549,
+      "lines": 138,
+      "sha256": "fc732f709da91208cf7b2313936bdc88ed40b44e4d6626894a4cef6f471e60a6",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "Directory.Build.props",
+      "bytes": 230,
+      "lines": 8,
+      "sha256": "f2b70ee7c746112d345d279d2b21c149e35124eeb7ea6f88b5fd0ab39810cdbf",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "README.md",
+      "bytes": 3757,
+      "lines": 67,
+      "sha256": "897f53456d589214146654a8738d37ef9f75d3bfd6ab308b15f26c7cfe549476",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "RouteKeeper.slnx",
+      "bytes": 1055,
+      "lines": 18,
+      "sha256": "0a483908200b62ec669b22ecc2024ae53255653fecf906b8555613d78b010a7b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "bytes": 27081,
+      "lines": 412,
+      "sha256": "b9861de67344ce6643abdea81617495213378188a15fe172647e384d6796efd0",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/audit-coverage.json",
+      "bytes": null,
+      "lines": null,
+      "sha256": null,
+      "inspection": "COMPLETE",
+      "method": "SELF_MANIFEST_FULL_SET_CHECK",
+      "verification": "PASS",
+      "verified_scope": "Exact git tracked-path equality with four additions; every other file hash verified. Own digest intentionally null to avoid recursion.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/code-audit.md",
+      "bytes": 18169,
+      "lines": 168,
+      "sha256": "249bcccb675c586ebfb7df5fa00c9c83f77d10318c46ca8eea5c33d33d268cfe",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A12"
+      ]
+    },
+    {
+      "path": "docs/compatibility.md",
+      "bytes": 3599,
+      "lines": 54,
+      "sha256": "25e17c78843c73664f42c7f7bcefddc8aad1681bd430f8dd5efbd113c0799ebc",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/ending-audit.md",
+      "bytes": 14040,
+      "lines": 175,
+      "sha256": "994e40966a692722f347389be488e7b385564eefd4ed9e7b2e6e47cdf9b23614",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/installer.md",
+      "bytes": 4042,
+      "lines": 68,
+      "sha256": "6fbdcfaa4326a2294a9934f0c80da1257d992eaa9480421b095ee937bdd37085",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/integration-research.md",
+      "bytes": 5942,
+      "lines": 43,
+      "sha256": "d79eeafeddb9203a6150ecd1973138fbdf12985c065d0cd432eeb1eab795f4f3",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/private-data.md",
+      "bytes": 2945,
+      "lines": 46,
+      "sha256": "fa03b90ea846a2e162a319ec732e54a5252308e5fa533d0c226ad6b3590b7a83",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/route-rules.md",
+      "bytes": 9221,
+      "lines": 152,
+      "sha256": "1dfb66650ecd10760b9d1f7defb66528f9287cc698f80736f0bdbc67c865248b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/runtime-validation.md",
+      "bytes": 17176,
+      "lines": 263,
+      "sha256": "ac14a32f9cb4e154b073b22cce0a4b2f69958deb7d908db1a468323357052498",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/state-bindings.md",
+      "bytes": 3704,
+      "lines": 56,
+      "sha256": "c3f380bdda392903b424488234fbf85b13559cf9fe1e07369f44428e0b42884a",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/test-results.md",
+      "bytes": 24837,
+      "lines": 325,
+      "sha256": "ac106aa92bc3e84e0404b885a6004a0111d9145adb33c7c2d4318d00df9b477b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/ui-fonts.md",
+      "bytes": 4491,
+      "lines": 72,
+      "sha256": "6e48aea3d7e49c248a1556a3681eaf6e5930b18982907b7e0f075deadd0cefbb",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "docs/upstream-research.md",
+      "bytes": 2847,
+      "lines": 38,
+      "sha256": "b1c0aa0cd97319245f291c5772b364b8364aa0e3f204c7adf05f7ad22275e3e2",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "global.json",
+      "bytes": 59,
+      "lines": 1,
+      "sha256": "8abaad26584f555d7581405cc5e45e5bf4866a2c8b1fa64b937a42cf0c81d0ad",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/README.md",
+      "bytes": 4104,
+      "lines": 65,
+      "sha256": "4662204911988884f8235817f7d56f56a66b1153045647445e61af9751a15137",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/analyze.csx",
+      "bytes": 1558,
+      "lines": 26,
+      "sha256": "d1412a6ef48d946652012ea874b51a5a77d6b9a969fd498365f4666a5b310152",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/FONT-LICENSE.txt",
+      "bytes": 4360,
+      "lines": 93,
+      "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/font-source/provenance.json",
+      "bytes": 325,
+      "lines": 10,
+      "sha256": "77007d5a5d3253782d82b12136b6cf0ea5062d17fb29a933edfbb96f397773d8",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/font-source/routekeeper-korean.bdf.gz",
+      "bytes": 308130,
+      "lines": null,
+      "sha256": "7353b43426b4865320e5ac16cc7e04ce3964f5300bccb3dc1073b7eda2bbeb0b",
+      "inspection": "COMPLETE",
+      "method": "BINARY_FULL_DECODE_AND_PROVENANCE",
+      "verification": "PASS",
+      "verified_scope": "Entire gzip decompressed; pinned uncompressed SHA; all19223 BDF glyph records parsed; output atlas full-byte comparison; OFL provenance read.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/ui-font-size.txt",
+      "bytes": 8,
+      "lines": 1,
+      "sha256": "e748e4f7420203a83cc75e2dde6091ad2b6cb221636889ea37743a17a69cad8c",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes regenerated from pinned BDF; atlas decoded/visually inspected; full glyph metadata/coverage/geometry tests.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/ui-font.png",
+      "bytes": 49764,
+      "lines": null,
+      "sha256": "6b578789a49d8246a793f68ff183df24415a1ec4e19b51d7e263249173e91441",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes regenerated from pinned BDF; atlas decoded/visually inspected; full glyph metadata/coverage/geometry tests.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/assets/ui-font.tsv",
+      "bytes": 6666,
+      "lines": 381,
+      "sha256": "7c4df7394fb76af75c112576c06702df1f616cf44b90bded4bbe9b7008e85722",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes regenerated from pinned BDF; atlas decoded/visually inspected; full glyph metadata/coverage/geometry tests.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/bindings.csx",
+      "bytes": 6025,
+      "lines": 80,
+      "sha256": "da9e2e5112aff38359c37be8d784551cccb84fd87f71810f2811fdbe1d1e82b1",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/compare.csx",
+      "bytes": 2243,
+      "lines": 27,
+      "sha256": "67880364f14dc6b8cf18451e28e4784dab3bfd6eab0792d0683f88fd5da59687",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/export-preview-font.csx",
+      "bytes": 2580,
+      "lines": 35,
+      "sha256": "b7518ee76fbc95b9d68310780ec61d0a3110bce1e2caecfb1a37b2e01f462f9b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A02",
+        "A06"
+      ]
+    },
+    {
+      "path": "integration/generate_font.py",
+      "bytes": 4096,
+      "lines": 76,
+      "sha256": "81b765d41a06860ac1780ed069a80567fc9a869a3dde344ae1d59bfbaa851314",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/controller_create.gml",
+      "bytes": 2770,
+      "lines": 64,
+      "sha256": "3bd3116042ee81562aed90204342d81e528bf1994bac71900523f5f1a17f3f15",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/controller_draw.gml",
+      "bytes": 6724,
+      "lines": 101,
+      "sha256": "74eff88121c7f785a1cf1addb2ebe04a09282ef4f84633092f7006d1471f2de1",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/controller_step.gml",
+      "bytes": 10395,
+      "lines": 208,
+      "sha256": "89eeb06f99156ca43debdcca86be6989650f54ccbb21eba4d4bf01885fd9879b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_act.gml",
+      "bytes": 132,
+      "lines": 2,
+      "sha256": "a7cff540187ad95431011e97afaad09b3cc09f3df82d5858f59700f921803e6a",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_budget.gml",
+      "bytes": 155,
+      "lines": 2,
+      "sha256": "6b72ee23e2e0d8ad1d3a5e45265f27d1f834943907039af93aae8834dbbae53a",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_enemy.gml",
+      "bytes": 1131,
+      "lines": 21,
+      "sha256": "9e717865a37b64998282260cbdb8e38344fe5d15a70dd1bc3a27916d3229a364",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_enforceable.gml",
+      "bytes": 217,
+      "lines": 4,
+      "sha256": "27e72cae8a005de3018e259985e0140a7e3eba8613a0a18422737954b3f4e5b1",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_guard.gml",
+      "bytes": 7643,
+      "lines": 105,
+      "sha256": "6f81fd89ff8fa6bc3322404602ce2018f85a369dc02cfbef465fd83bacae9465",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_item.gml",
+      "bytes": 178,
+      "lines": 2,
+      "sha256": "55bacfb57835f329baf2539163307ecbacde6532b2d8568b1f098d143baad6f0",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_rating_resolution.gml",
+      "bytes": 149,
+      "lines": 4,
+      "sha256": "7aafacd9975f11bff789a1edca7484d19a983e12ba1aaa71622742557bb1e865",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_ratings.gml",
+      "bytes": 121,
+      "lines": 3,
+      "sha256": "0a0d0601a8a9065bf11b6dd6149730d0450f32ca9f380408886c13109b20e744",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_regional.gml",
+      "bytes": 214,
+      "lines": 4,
+      "sha256": "41090c4d31f764a0b1c906a3826c98750114f8e4baafcd260fb3a20003dc807a",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_required.gml",
+      "bytes": 236,
+      "lines": 4,
+      "sha256": "1c418faab673c5893bd364e0068b0bfd0bee08aa63ba53295a3dbfbe0906ce92",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_risk.gml",
+      "bytes": 2079,
+      "lines": 26,
+      "sha256": "72926196a37e594e70527295318927dcc1a0856457ec653ebb870f1c0fb5087b",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/decision_snow_act.gml",
+      "bytes": 113,
+      "lines": 2,
+      "sha256": "4f9cd996d443832ae5f2a1dbd19408b15ca7deebe0e3eed07d38ab928e56bf72",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/fact_init.gml",
+      "bytes": 2366,
+      "lines": 70,
+      "sha256": "648bf9c8f4355c513602075e972d58422cec0b62cf11a11a7db6be5b052d9281",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_armor.gml",
+      "bytes": 342,
+      "lines": 11,
+      "sha256": "d068fbc3a9025c41f5ed63ca0cc9e9b3ebe80210dfdcc8e5af9b86efe9d079da",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_evaluate.gml",
+      "bytes": 23954,
+      "lines": 160,
+      "sha256": "4251e043cff27bb743516f2fcd4ae7474fd63245d139222f0550107015b95fa7",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_experience.gml",
+      "bytes": 256,
+      "lines": 5,
+      "sha256": "e80029774952da752455af07b7c7f350d83079d3691a748c02e1daa84a84625c",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_healing.gml",
+      "bytes": 1047,
+      "lines": 34,
+      "sha256": "74eb95f3d6936130edfa98243af0090b0cac420a94dc3c89ba3bf2be21c12686",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_label.gml",
+      "bytes": 1024,
+      "lines": 11,
+      "sha256": "89fff975d92f17fc014f9e94f4b055e5894612f88565cfb35eaf72621015d6dd",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_pending_risk.gml",
+      "bytes": 985,
+      "lines": 16,
+      "sha256": "d3995506795cb096d69c932b348491c424d094cb18408ea332ae5309103edade",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_protect.gml",
+      "bytes": 1020,
+      "lines": 17,
+      "sha256": "d6a94f18ef4e81e239fafe365820a1e260980e8fe2c238d7a01200239fe75a79",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/greeting_risk.gml",
+      "bytes": 721,
+      "lines": 12,
+      "sha256": "354531138b6ef3ac1c9278903511c0f3bc92fc7930d81174c0d78450abe03e7b",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/neutral_classify.gml",
+      "bytes": 958,
+      "lines": 24,
+      "sha256": "b8bde426ad200593b899c16fc52e9a91d64c08585b6fc108b1e9f8dc6b4a9575",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/neutral_evaluate.gml",
+      "bytes": 52070,
+      "lines": 786,
+      "sha256": "7eb1bc2f03f6ef50cc78df51ab42a7e3035fa27c5ba3b69dcdd6212806d28a93",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/neutral_label.gml",
+      "bytes": 2397,
+      "lines": 21,
+      "sha256": "994360dc7b320bcc524ff399a849b5704a4723a6f0afc2e25076eac40b5d7843",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/neutral_modifiers.gml",
+      "bytes": 2617,
+      "lines": 12,
+      "sha256": "45b0fb6a662bf0c5c355a2215ad83d0d25c22e0ec1ec7f14ea2027210bf03593",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/neutral_protect.gml",
+      "bytes": 4060,
+      "lines": 122,
+      "sha256": "997b32f70b7f080079e8e5137b3dae04140ccfed30cae17e396f681be2ad3434",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_evaluate.gml",
+      "bytes": 532,
+      "lines": 10,
+      "sha256": "00f89bf969183b4566981d96ac2a55e6d17fd7e3b79f4fe57a4aa2d20bb4dd59",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_evaluate_0.gml",
+      "bytes": 4500,
+      "lines": 70,
+      "sha256": "33ee66031df88039680d0975588dc43cf6676c8ef50ee861723e9834e93754d5",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_evaluate_1.gml",
+      "bytes": 4500,
+      "lines": 70,
+      "sha256": "18ce2dc3d0bc55522ccaddc7afb429ff7b7cc2bf9add47fe2edfd2280ce3cf49",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_evaluate_2.gml",
+      "bytes": 3935,
+      "lines": 60,
+      "sha256": "99f34464b5717182b29a7b7a9ba15a72f5aacb511516d13b5d3e74c9066ff417",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_evaluate_4.gml",
+      "bytes": 3935,
+      "lines": 60,
+      "sha256": "f7b6ab1dbf1f6ee5f28d2880fa014d20004a964e98fefcc26555298c6d530923",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/route_objective.gml",
+      "bytes": 81965,
+      "lines": 1230,
+      "sha256": "e5e653b384a6bd05289b31de1ee15f6d25ac83a6ccd80bea64d9f637b507cc05",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/state_read.gml",
+      "bytes": 8975,
+      "lines": 157,
+      "sha256": "6fbcab289f8cd8f014d28fb1c0d1bcb51ab4cf07208ec30ab4dbea11b0645ef2",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_box.gml",
+      "bytes": 352,
+      "lines": 8,
+      "sha256": "0929871ee47e2b21bf550f4c2fa6d4063494e97f6256cc7d6ed88ee49469508d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_catalog.gml",
+      "bytes": 7584,
+      "lines": 60,
+      "sha256": "7dba418e43523c8b52163abe0da44b152cd7b3571193900d94c65cb6494ab7a0",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_heart.gml",
+      "bytes": 650,
+      "lines": 14,
+      "sha256": "fbbcedd33b808122309c393c3c9f91126dbcc7eeb75696239d92f3bab82fb4da",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_layout.gml",
+      "bytes": 911,
+      "lines": 29,
+      "sha256": "84789c5a0d951995cec5e55fc3ea1ebbf5386937d062a1599cb045fe00286e7b",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_line.gml",
+      "bytes": 661,
+      "lines": 12,
+      "sha256": "13e1292c31e1abbec36d4c0f8bfb699080db979a895f4e3c7dc10a038463df60",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_nav.gml",
+      "bytes": 217,
+      "lines": 6,
+      "sha256": "279fddb97b41ffb374a55e793e12778e5633ea9fd8ec4877bf97e0294fc0e71a",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_option.gml",
+      "bytes": 1661,
+      "lines": 32,
+      "sha256": "c0451652f2a5940d08c411d9c3bebfb4bd2138d4edb1c2818a61210c394ce737",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/ui_paragraph.gml",
+      "bytes": 925,
+      "lines": 20,
+      "sha256": "0a958e9880a10b4fd5a016cbe2a0be242c7f040ec82232e81f00c6d579a44350",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/gml/warning_session.gml",
+      "bytes": 1094,
+      "lines": 20,
+      "sha256": "c90c19ca8e910992b77c931ab7a9d34b355d2b150ca3988cce3a53030ef4124f",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/hooks.csx",
+      "bytes": 12341,
+      "lines": 116,
+      "sha256": "bd23159f2eae5045c4a24d0dd4cd4ed1b1da965142f555e51375a379422d81d2",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/patch.csx",
+      "bytes": 7340,
+      "lines": 119,
+      "sha256": "dbaab1f3a6f81936dc6974c0732145a5ee3adca586bee3b498649e60b65746fe",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/ui/catalog.json",
+      "bytes": 6392,
+      "lines": 266,
+      "sha256": "db39cc27afad6f02e599a6967b05a58b5d39937f7840d95c5853db701754d75e",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All layout/localized string records inspected; generation byte comparison;20 UI groups and686 emitted UI cases.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/ui/english-metrics.json",
+      "bytes": 5663,
+      "lines": 386,
+      "sha256": "ca6711a7b07de3126dc337341c3d4223afb500321b2074c8728308e732650156",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All95 ASCII glyph records inspected; original fnt_maintext provenance metrics and offline preview; runtime font NOT_RUN.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/ui/generate.py",
+      "bytes": 1431,
+      "lines": 23,
+      "sha256": "d6f918b03b78e2e40b118a66993ab87e125b98f6e3132689cf59b0707003cc99",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/ui/preview.py",
+      "bytes": 8573,
+      "lines": 130,
+      "sha256": "d49c8923b2b02cb3bb02772eaa67d7210de6559b24a9b8d6d9aed2268bfb9c85",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/ui/test_ui.py",
+      "bytes": 10681,
+      "lines": 157,
+      "sha256": "9febd76b45c83d6bbe4046e89a27817009862fe04dbd6c2d36c8325defe6d724",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "integration/verify.csx",
+      "bytes": 11506,
+      "lines": 133,
+      "sha256": "e982bf800e13da8566a28736bb88df4518b45a9c6f6fe19ba1c10a22a8592585",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "licenses/dotnet/LICENSE.txt",
+      "bytes": 1116,
+      "lines": 23,
+      "sha256": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "licenses/dotnet/ThirdPartyNotices.txt",
+      "bytes": 77436,
+      "lines": 1451,
+      "sha256": "2dc8f8c5a39401e928b5784ab564eb8b3ceb99ead3df8f260e0cab7e0bbecc7a",
+      "inspection": "COMPLETE",
+      "method": "THIRD_PARTY_FULL_BYTE_PROVENANCE",
+      "verification": "PASS",
+      "verified_scope": "Whole file byte-identical to SDK10.0.402 notices; all license/copyright sections indexed; not independent legal approval of each upstream clause.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "profiles/README.md",
+      "bytes": 763,
+      "lines": 5,
+      "sha256": "96162bb909db7357beb1b239ab40fc56992f3232c54945ed52b78f66237f0da4",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "profiles/bindings.json",
+      "bytes": 34983,
+      "lines": 1105,
+      "sha256": "13e381aeb83f79c45e678f54e486880f6d5c302f475d6a288f073735426df7a9",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "Every binding/evidence/room/resource record inspected; all127 source signatures freshly authenticated and compiled.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "profiles/registry.json",
+      "bytes": 814,
+      "lines": 20,
+      "sha256": "525d1fd7b30c221e5866fec3e4d88bbb0d5e850e6a47e67b8f6ba54f701002da",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All profile fields inspected; pinned identity/candidate matches; InspectedOnly unchanged; authentic installation refused.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/Engine.cs",
+      "bytes": 17556,
+      "lines": 197,
+      "sha256": "8a22527f67be0eafc57130e48cf0932b638686268c94e6655818ef4151b37407",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/GenocideTransitionModel.cs",
+      "bytes": 4881,
+      "lines": 85,
+      "sha256": "6cb32cdfcaa2c93e16c45fa8860c4237fcf4db6ea0833e9362c1476c4c4b51ab",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/GmlRuleEmitter.cs",
+      "bytes": 6570,
+      "lines": 90,
+      "sha256": "26f314c50559cbd55086855d1d5ca02363acfc0c587e22f038c936d05c58e679",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/KeepsakeGuidance.cs",
+      "bytes": 2529,
+      "lines": 29,
+      "sha256": "cdba26fb802a2487470cb590d245df8c0ff2c7806f1879cc390da0dc97f38aa4",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/NeutralCatalog.cs",
+      "bytes": 14536,
+      "lines": 192,
+      "sha256": "0d368dde4682a960063d8f48acc718c5a5b6326990e273d5c02a7ab3e512639b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/NeutralGmlEmitter.cs",
+      "bytes": 9166,
+      "lines": 175,
+      "sha256": "0cd4adf61649c17cd76825e2e89f30ac6f859cc82680ec1d44038f45b18276bb",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/NeutralGoals.cs",
+      "bytes": 11851,
+      "lines": 117,
+      "sha256": "cf6018126bd81d1d442e390b7ec9901abdfd6cebb0468f5b0881f0dbd5681c6a",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/Objectives.cs",
+      "bytes": 11327,
+      "lines": 74,
+      "sha256": "e2c8da480a3ccb50dd187e4d20c50fe83c7b571350780b2d81ebceddb279cf9c",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/Reachability.cs",
+      "bytes": 13865,
+      "lines": 200,
+      "sha256": "e6997c0750d7730216b29d15faa167e30d868c340e662f26df4386fd90412caa",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/RouteKeeper.Core.csproj",
+      "bytes": 187,
+      "lines": 3,
+      "sha256": "e1a91ad3b17614202de10e44136c7dbcc5e9cf97d5dea39cdae0418edeb2e8b9",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/StoryEligibility.cs",
+      "bytes": 426,
+      "lines": 8,
+      "sha256": "0446361d49da6a57c404be283821dd54fdafbfc328d1b9629755fa2e8ade80ce",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Decisions/DecisionPolicy.cs",
+      "bytes": 11244,
+      "lines": 142,
+      "sha256": "9d477d82c774b2b8d3e202a011d78ff6567856944c15d2669e7fe930c33c1be2",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Decisions/GreetingPolicy.cs",
+      "bytes": 5409,
+      "lines": 79,
+      "sha256": "ad1f787aa7959af7727aecf5ccd28b4156792c50a8f665ecd7a69d5d6fe82cb8",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Decisions/RouteKeeper.Decisions.csproj",
+      "bytes": 117,
+      "lines": 1,
+      "sha256": "91275edd3790c4f0cb484653195ccd8ad6af2f1a0a69b84fdb26b88c0b52407f",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.History/HistoryTransitions.cs",
+      "bytes": 2955,
+      "lines": 60,
+      "sha256": "90a6e92ff8399152e24ff3a0c14249b2d64b5630ffe08027c367acb5c5e6749c",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.History/RouteKeeper.History.csproj",
+      "bytes": 117,
+      "lines": 1,
+      "sha256": "91275edd3790c4f0cb484653195ccd8ad6af2f1a0a69b84fdb26b88c0b52407f",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Saves/RouteKeeper.Saves.csproj",
+      "bytes": 117,
+      "lines": 1,
+      "sha256": "91275edd3790c4f0cb484653195ccd8ad6af2f1a0a69b84fdb26b88c0b52407f",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Saves/SaveInventory.cs",
+      "bytes": 3111,
+      "lines": 63,
+      "sha256": "68c31273b1c992e79bbb76025edb5ff586382096d05540397df2502f4fec20c0",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/Compatibility.cs",
+      "bytes": 5695,
+      "lines": 91,
+      "sha256": "8ded9f79448cff1268878bbc2be36fc08513b7763f1d3d1af8b5aeae49461534",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/ExecutableInspector.cs",
+      "bytes": 6824,
+      "lines": 111,
+      "sha256": "fb11a6038297c71230395bd3e1d24737486ad03464884eda3721737b20416587",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/G3MPackage.cs",
+      "bytes": 6243,
+      "lines": 87,
+      "sha256": "23ae9f39a6cfa873a597340cd734f8671896884f2e2e1ffb66c8f0c5324397cf",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A12"
+      ]
+    },
+    {
+      "path": "src/RouteKeeper.Tool/ModBuilder.cs",
+      "bytes": 6217,
+      "lines": 91,
+      "sha256": "f62b89f0fba2611da0901b37effb6b487f689b32f6f52655da00807e7c7ca0c7",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A03",
+        "A06",
+        "A12"
+      ]
+    },
+    {
+      "path": "src/RouteKeeper.Tool/Program.cs",
+      "bytes": 4330,
+      "lines": 61,
+      "sha256": "c6cc2f7f6617d1956cc1f145d046210ec9a230a0f6f1ef167eeffa1a519ff586",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/RouteKeeper.Tool.csproj",
+      "bytes": 954,
+      "lines": 10,
+      "sha256": "c36a1c1fd57243d20d01452ff29a1b0ad204edd696a23fee0a2228fe083ed599",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/SafeInstaller.cs",
+      "bytes": 9797,
+      "lines": 165,
+      "sha256": "6fcfbddd0858be3b49f5f6bd6ef8078fd130549d5ec2a860a9cd9213344b9f97",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A01",
+        "A06",
+        "A07"
+      ]
+    },
+    {
+      "path": "src/RouteKeeper.Tool/SourceInstaller.cs",
+      "bytes": 1202,
+      "lines": 22,
+      "sha256": "9a65bd748804c023cccc9c0a6db61fdc8156ae9bfc91ebda4fb91b621098c1ae",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Tool/SteamDiscovery.cs",
+      "bytes": 2679,
+      "lines": 50,
+      "sha256": "c425a4838d688050359bb3f9e66343c85062015f9dcb89b03a6abc2ab0685c81",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tests/RouteKeeper.Audit.Tests/Program.cs",
+      "bytes": 22013,
+      "lines": 230,
+      "sha256": "4a1d22c1118a12c2a0c68dabc1360d4527092061c7bff6e594bb98ef7fa7c7ee",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Audit.Tests/RouteKeeper.Audit.Tests.csproj",
+      "bytes": 644,
+      "lines": 9,
+      "sha256": "140e00e5c96f0d353e621f06139c6101a4aa8986ad3fdeff8a3f1958e27a5250",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Core.Tests/GmlObjectiveInterpreter.cs",
+      "bytes": 5072,
+      "lines": 92,
+      "sha256": "4a3c6a8a63fe7477037ee8b583dc9e1a04ff51cae0ecfe36fda5f7834a5f3dc5",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Core.Tests/GmlSubsetInterpreter.cs",
+      "bytes": 2721,
+      "lines": 51,
+      "sha256": "3d099ae264a934c2ad8794b159e607d79bbfdb46a347fafea61474b419405899",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Core.Tests/Program.cs",
+      "bytes": 16124,
+      "lines": 210,
+      "sha256": "fcfc0151c0a60c84b56a37aadd8d06f07b39e3459493d8de6aab9b539b306f6b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Core.Tests/RouteKeeper.Core.Tests.csproj",
+      "bytes": 322,
+      "lines": 4,
+      "sha256": "f8e8eda683f32e8bd0b8ed2b1200532a107fcf25d89a4d258303fb68a23ea19d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Decisions.Tests/Program.cs",
+      "bytes": 28190,
+      "lines": 268,
+      "sha256": "f8d2ba29de0399dbeed25aacec6e0c4b604f6f4c7d16c3464fce2542671f3114",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Decisions.Tests/RouteKeeper.Decisions.Tests.csproj",
+      "bytes": 385,
+      "lines": 1,
+      "sha256": "33247a85919f8e5062b0d6cde1b11c217a7912cbe8499ed5854217d6516d97b1",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.History.Tests/Program.cs",
+      "bytes": 3114,
+      "lines": 28,
+      "sha256": "8b12e2d4358f26389fe2fcfdafb5c3fb51c26b2af22089d8fd54539e38359606",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.History.Tests/RouteKeeper.History.Tests.csproj",
+      "bytes": 255,
+      "lines": 1,
+      "sha256": "6b69512808d8eb32b23d0a7b428ee6ce8f47d784b0b3f54a7846dbba4a271369",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Neutral.Tests/GmlProgram.cs",
+      "bytes": 3151,
+      "lines": 61,
+      "sha256": "3098175d6113995ddab13c5a35edc4b57ca55f6bdd4fd8261eb5d683e46c994a",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Neutral.Tests/Program.cs",
+      "bytes": 13274,
+      "lines": 180,
+      "sha256": "c913773935d83f090efad775785571eb085ee4e3014fffea87c0ef2227cb0b70",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Neutral.Tests/RouteKeeper.Neutral.Tests.csproj",
+      "bytes": 380,
+      "lines": 1,
+      "sha256": "049b1bc20ee2f33f6fcfd8f6baaee527d630a551e6de47df854d54058db54f9b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Saves.Tests/Program.cs",
+      "bytes": 2634,
+      "lines": 39,
+      "sha256": "b3aac51384e7b42ea111082d747e26a6ac48d776ff23981bfe05ff8903fcadec",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Saves.Tests/RouteKeeper.Saves.Tests.csproj",
+      "bytes": 251,
+      "lines": 1,
+      "sha256": "587969595a07d35780d152fec1239a71d2662b620ada15cb6b99c2189fd1c185",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Tool.Tests/Program.cs",
+      "bytes": 22302,
+      "lines": 202,
+      "sha256": "f379c1890dffcf639ae0c5eb794b4ee2b138ce5c981319f249ef134ecd5718eb",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A01",
+        "A03",
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/RouteKeeper.Tool.Tests/RouteKeeper.Tool.Tests.csproj",
+      "bytes": 373,
+      "lines": 4,
+      "sha256": "60eb766f347a7a5697384d7cc644ee9ac05b9ac2b86a521753a04b1a4ee85fa4",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tests/golden/original-endings.json",
+      "bytes": 234047,
+      "lines": 3525,
+      "sha256": "1ac218b5451ac26a158ca09e7edb617c26a562b65474320aabb31989616cb2d0",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All sections/schemas and generation source inspected; entire file rederived from original conditions; all115 source SHA independently recomputed;9314 bounded/model assertions, not all gameplay paths.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tools/audit-endings.py",
+      "bytes": 20388,
+      "lines": 240,
+      "sha256": "203b22470c3f26cf25a0ce8753d712ce9ecf3625f3b8aba62040b69fa08b88d9",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A09"
+      ]
+    },
+    {
+      "path": "tools/audit-hooks.csx",
+      "bytes": 2872,
+      "lines": 45,
+      "sha256": "08c156dc34be06757f7d8a674e4cb5ad5ac4b3f4733d5340a4b705ae7a4ff5bb",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tools/install-utmt.py",
+      "bytes": 2400,
+      "lines": 47,
+      "sha256": "acb8d9e5899a326652e5dcf69f7890047ea504e73bad4c75724ab215fa85421f",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tools/runtime/Dockerfile",
+      "bytes": 630,
+      "lines": 10,
+      "sha256": "aac62a3b7d054a7516ff353a1a35f5556aa7e137f7acc541cb81f1547e3b6a2d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/audit-assets.csx",
+      "bytes": 2442,
+      "lines": 29,
+      "sha256": "5cbc18e4d4cf44c5bf4bbcab962751e2a751474b1041d1957ecc688e3cc63cb4",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/capture-client.ps1",
+      "bytes": 2231,
+      "lines": 37,
+      "sha256": "705201659d197a06a07d34e768e317135bd415720809881020ed1728a0921981",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07",
+        "A08"
+      ]
+    },
+    {
+      "path": "tools/runtime/capture-game.ps1",
+      "bytes": 3037,
+      "lines": 46,
+      "sha256": "84e2d06c727daa28e330437e5b70518dcf2b30a75adc1d943e64595db164212d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07",
+        "A08"
+      ]
+    },
+    {
+      "path": "tools/runtime/checkpoint-saves.ps1",
+      "bytes": 2810,
+      "lines": 42,
+      "sha256": "a84b9abdfff4ef35d2951dfc977a3718b1d292c00257662c9c29b831c08f93ce",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/current-account-state.ps1",
+      "bytes": 17700,
+      "lines": 235,
+      "sha256": "c0eda2686dab75581bbe41f6372353b36d5285f243e0ed865a37eaba1f051dd7",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/current-account-windows.ps1",
+      "bytes": 4334,
+      "lines": 73,
+      "sha256": "5cbca6a1fe0d94177599ed89fffddca63f9f0c947ed27980ed4a4cedec0a4ce7",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/inside-sandbox.ps1",
+      "bytes": 7526,
+      "lines": 110,
+      "sha256": "4a31fd9a0443ce1386c16f68c268b7fe4b0794a147fb814371e3b80176eeac1c",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/launch-windows-sandbox.ps1",
+      "bytes": 4239,
+      "lines": 57,
+      "sha256": "483420c2bbb705a56549106ab2be37901aab6a4ac667877717bcdb026e93071b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/run-current-account.ps1",
+      "bytes": 15859,
+      "lines": 170,
+      "sha256": "7a199bd655c82fada31dcee2dcbd8efaf6558eac1a987c3861170f6129fb9aa1",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/run-without-sandbox.ps1",
+      "bytes": 11630,
+      "lines": 202,
+      "sha256": "9a3f9088075c77f63bc03fa528f414a07c1d8539f5b12764b931994a64e00c22",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/safety.ps1",
+      "bytes": 5797,
+      "lines": 94,
+      "sha256": "7c1bd73a2e0ab5a5d4302b50e0621fdebf477cdbfac2c47cc1d09549ca7bc665",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/smoke-scenarios.json",
+      "bytes": 1514,
+      "lines": 10,
+      "sha256": "cbb2820fd099a4d9ca901bd8b0df1130b9c1cd89d37c160d7c6ad0b77177769e",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/test-current-account.ps1",
+      "bytes": 14716,
+      "lines": 158,
+      "sha256": "cf9a35ee6833940b6862ca8226eaa4696eccd3fe36575199a35be127dc762e03",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/test-sandbox.ps1",
+      "bytes": 8817,
+      "lines": 110,
+      "sha256": "2523becd6001d95f03807dc90b784e75e2574b112ccd580c89ba63e84230ccc6",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime/wine-smoke.sh",
+      "bytes": 2143,
+      "lines": 36,
+      "sha256": "1469544e0551727e6d9c39eb8077c440180ca71309e99d973c7e2689f22c265d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/runtime_lab.py",
+      "bytes": 6676,
+      "lines": 108,
+      "sha256": "5a3b1d0c7304db8fcdbe70915f493c30800161230dc0aadf931f81c41594710d",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A04",
+        "A05",
+        "A07"
+      ]
+    },
+    {
+      "path": "tools/test-g3m.py",
+      "bytes": 3245,
+      "lines": 31,
+      "sha256": "fdde21892c20d2d128beaa76632121f07bdc2c3af0dce0687ef5ac6cac03e92b",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tools/test-preview-export.py",
+      "bytes": 2641,
+      "lines": 42,
+      "sha256": "6580c724ba0fe853c911b87731a59f294ef813589b0e2ab61a538587556522fb",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A02"
+      ]
+    },
+    {
+      "path": "tools/test_runtime_lab.py",
+      "bytes": 4507,
+      "lines": 72,
+      "sha256": "ed811edba51a5f28226ce39fb7ec07f434436cb075dacb7101fe5a9ad56bfb99",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tools/test_workflow_safety.py",
+      "bytes": 1126,
+      "lines": 13,
+      "sha256": "fbe961a85aa24746b3f6fe242f96916e05d340b27c03f3666a43b3a7bed1efec",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": []
+    },
+    {
+      "path": "tools/validate-authentic.py",
+      "bytes": 4513,
+      "lines": 78,
+      "sha256": "f3fc63c60d558b01e99e7539da9d98c10fcf0f82701c3c0cde6986322079fe11",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
+      "findings": [
+        "A12"
+      ]
+    }
+  ]
+}

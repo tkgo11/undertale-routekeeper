@@ -49,11 +49,13 @@ public static class SafeInstaller
             RequireHash(target, initialHash);
             string oldHash = initialHash;
             var pending = new InstallJournal(1, profile.OriginalSha256, profile.PatchedSha256!, profile.Id, "Pending", oldHash);
+            RejectLinks(target, candidate, backup, journalPath, staged);
             WriteJournal(journalPath, pending);
             // Detect target changes since inspection and before atomic rename.
             RequireHash(target, oldHash);
             try
             {
+                RejectLinks(target, backup, journalPath, staged);
                 File.Move(staged, target, overwrite: true);
                 RequireHash(target, profile.PatchedSha256!);
                 WriteJournal(journalPath, pending with { Phase = "Installed" });
@@ -100,6 +102,7 @@ public static class SafeInstaller
         if (!CompatibilityRegistry.Equal(current, journal.InstalledSha256) && !CompatibilityRegistry.Equal(current, journal.OriginalSha256) && !CompatibilityRegistry.Equal(current, journal.PreviousSha256))
             throw new InvalidOperationException("Externally modified game; restoration refused.");
         RequireHash(target, current);
+        RejectLinks(target, backup, journalPath);
         if (!CompatibilityRegistry.Equal(current, journal.OriginalSha256)) AtomicCopy(backup, target);
         RequireHash(target, journal.OriginalSha256);
         WriteJournal(journalPath, journal with { Phase = "Restored" });
@@ -148,9 +151,15 @@ public static class SafeInstaller
     {
         foreach (string path in paths)
         {
-            var info = new FileInfo(path);
-            if (info.LinkTarget is not null || (info.Exists && info.Attributes.HasFlag(FileAttributes.ReparsePoint)))
-                throw new InvalidOperationException("Symbolic-link game data or installer sidecar refused.");
+            // Inspect every existing component, including directories and dangling
+            // links. A normal-looking leaf can otherwise traverse a linked ancestor.
+            // This is preflight/revalidation, not a race-free directory-handle API.
+            for (string? current = Path.GetFullPath(path); current is not null; current = Path.GetDirectoryName(current))
+            {
+                FileSystemInfo info = Directory.Exists(current) ? new DirectoryInfo(current) : new FileInfo(current);
+                if (info.LinkTarget is not null || (info.Exists && info.Attributes.HasFlag(FileAttributes.ReparsePoint)))
+                    throw new InvalidOperationException("Linked game-data path or installer sidecar refused.");
+            }
         }
     }
 }

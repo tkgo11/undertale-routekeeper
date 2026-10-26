@@ -67,6 +67,6 @@ labels OFFLINE_PREVIEW/gameplay NOT_RUN and records layout/font hashes. Tests co
 both languages, every warning/acknowledgement state, cursor wrap/paging, complete
 objective fit, bounded clipping, full progress counters, glyph baseline/coverage,
 binary pixels and deterministic font bytes. A separate source interpreter compares
-664 generated navigation/localization cases. None executes the GameMaker runner;
+686 generated navigation/localization cases. None executes the GameMaker runner;
 fullscreen/window scaling, actual event ordering and controller hardware remain
 runtime scenarios.

@@ -3,6 +3,32 @@
 Updated 2026-10-26. Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
 no merge, public release, profile promotion or original save/history mutation.
 
+## Pre-runtime whole-repository audit (2026-10-26)
+
+Baseline818fabab; PR1 stays OPEN/READY. See code-audit.md and audit-coverage.json
+for the complete per-file inspection inventory, findings, exact commands and limits.
+No official game, personal saves or registered Steam installation were used.
+
+Confirmed defects reproduced before fixing: installer followed linked ancestors;
+private font export could overwrite a linked disposable original; build receipts
+inherited VerifiedPatch for a different candidate. Ancestor rejection/CreateNew
+outputs/exact-output receipt approval now have executable regressions. New read-only
+audit closes all27 hook dispatch links and all115 original-golden source hashes.
+
+Current PASS: Release build0 warnings/errors;268 standard C# checks plus9,314
+original-derived/ordered-model assertions;33 generated GML files byte-identical;
+381 glyphs,20 UI groups,686 emitted UI comparisons;99 PowerShell filesystem/failure
+checks plus AST/interop compilation;9 archive groups;8 workflow contexts. Authentic
+compile/serialize/reload/preservation/refusals,4-RID publish and upstream-parser
+synthetic G3M roundtrip pass. Candidate9abd0729/InspectedOnly is unchanged.
+
+Same-account game smoke is NO-GO: original startup can mutate Steam permanent
+history; SDK/account isolation and Windows API/NTFS behavior remain unproven.
+Qlty's success/95-blocking status redirects to login: issue details BLOCKED, not
+passed. Both prior inline findings remain fixed but their outdated threads are
+unresolved; automatic COMMENTED reviews are not formal approval. No hosted CI was
+rerun. Historical test totals below describe earlier commits, not current totals.
+
 ## Current follow-up: stale-recovery refusal (2026-10-26)
 
 Continue existing PR1 OPEN/READY; preceding milestone below remains historical.

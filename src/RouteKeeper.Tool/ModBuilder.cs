@@ -47,7 +47,10 @@ public static class ModBuilder
             if (result.BytecodeVersion != original.BytecodeVersion) throw new InvalidDataException("Candidate bytecode differs.");
             RequireOriginal(source, original.Sha256);
             File.Move(candidate, output); // Never overwrite a concurrent or existing output.
-            return new(matching[0].Id, original.Sha256, result.Sha256, result.Size, matching[0].Status);
+            // Approval belongs to the exact output too, never just its input.
+            string status = matching[0].Status == "VerifiedPatch" && CompatibilityRegistry.Equal(matching[0].PatchedSha256, result.Sha256)
+                ? "VerifiedPatch" : "InspectedOnly";
+            return new(matching[0].Id, original.Sha256, result.Sha256, result.Size, status);
         }
         finally
         {

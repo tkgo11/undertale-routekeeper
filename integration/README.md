@@ -55,11 +55,11 @@ changing strings; `python integration/generate_font.py --verify` needs only stdl
 
 UndertaleModCli 0.9.2.0 is a separate build-time compiler. `patch.csx` imports source
 scripts and source-validated hooks; `verify.csx` reloads them, checks links and
-localization, validates intended modifications, and compares all 6,248 non-hook
+localization, validates intended modifications, and compares all 6,245 non-hook
 original code resources. Original texture payloads, embedded audio, font glyphs and
 room/sprite/sound counts are also checked. None of this proves gameplay behavior.
 
 See docs/state-bindings.md, docs/route-rules.md and docs/runtime-validation.md.
 Remaining work includes uncovered interaction paths and friendship decisions,
-individual greeting targets, complete authentic scenario coverage, platform
+unclosed compound-goal paths, complete authentic scenario coverage, platform
 provenance and runtime-tested profiles. Forced is experimental and scoped.

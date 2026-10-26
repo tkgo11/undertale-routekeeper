@@ -47,6 +47,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/validate-authentic.py --input private-data/data.win --cli $cli --builder src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $cli load private-data/data.win -s tools/audit-hooks.csx
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/test-preview-export.py --input private-data/data.win --cli $cli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Remove temporary proprietary inputs and outputs
         if: always()
         shell: pwsh

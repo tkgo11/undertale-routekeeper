@@ -2,7 +2,7 @@
 
 Input SHA-256: b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7.
 The adapter is specific to this input and pinned UndertaleModCli 0.9.2.0.
-`bindings.csx` checks 52 original code-resource signatures and 34 manifest
+`bindings.csx` checks 127 original code-resource signatures and 34 manifest
 expressions. `state_read.gml` also supplies aliases, availability/context and
 optional Neutral call observations. It rejects vanilla-global assignments and
 save-writing APIs. Actual runner behavior is not yet verified.

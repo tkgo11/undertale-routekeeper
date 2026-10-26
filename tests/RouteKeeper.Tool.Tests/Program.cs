@@ -2,7 +2,22 @@ using System.Text;
 using System.Text.Json;
 using RouteKeeper.Tool;
 
-string root = Path.Combine(Path.GetTempPath(), "routekeeper-tests-" + Guid.NewGuid().ToString("N"));
+// Explicit synthetic compiler subprocess; no actual GML/game execution here.
+var mockFixture=Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER");
+if(mockFixture is not null && args.FirstOrDefault() is "--version" or "load") {
+    if(args[0]=="--version"){Console.WriteLine("0.9.2.0");return 0;}
+    int outputIndex=Array.IndexOf(args,"-o");
+    if(outputIndex>=0)File.Copy(mockFixture,args[outputIndex+1],false);
+    return 0;
+}
+string PhysicalDirectory(string path) {
+    string full=Path.GetFullPath(path),current=Path.GetPathRoot(full)!;
+    foreach(var part in full[current.Length..].Split(new[]{Path.DirectorySeparatorChar,Path.AltDirectorySeparatorChar},StringSplitOptions.RemoveEmptyEntries)) {
+        var next=Path.Combine(current,part);current=new DirectoryInfo(next).ResolveLinkTarget(true)?.FullName??next;
+    }
+    return current;
+}
+string root = Path.Combine(PhysicalDirectory(Path.GetTempPath()), "routekeeper-tests-" + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(root);
 int passed = 0;
 try
@@ -33,6 +48,27 @@ try
     Check("wrong output hash rejected without target mutation", () => { Reject(() => SafeInstaller.Install(original, candidate, [profile with { PatchedSha256 = new string('0', 64) }], "Synthetic", "test")); Assert(SafeInstaller.Hash(original) == identity.Sha256 && !File.Exists(original + ".routekeeper-original")); });
     Check("exclusive lock prevents concurrent installers", () => { using var held = new FileStream(original + ".routekeeper-lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None); Reject(() => SafeInstaller.Install(original, candidate, [profile], "Synthetic", "test")); Assert(SafeInstaller.Hash(original) == identity.Sha256); });
     string save = Path.Combine(root, "file0"); File.WriteAllText(save, "synthetic save unchanged");
+    if (!OperatingSystem.IsWindows()) {
+        Check("ancestor-linked installation refused before sidecars", () => {
+            string physical=Path.Combine(root,"ancestor-physical"),alias=Path.Combine(root,"ancestor-alias");
+            Directory.CreateDirectory(physical);File.WriteAllBytes(Path.Combine(physical,"data.win"),Data(0));
+            Directory.CreateSymbolicLink(alias,physical);
+            Reject(()=>SafeInstaller.Install(Path.Combine(alias,"data.win"),candidate,[profile],"Synthetic","test"));
+            Assert(Directory.GetFiles(physical).Length==1&&SafeInstaller.Hash(Path.Combine(physical,"data.win"))==identity.Sha256);
+        });
+        Check("ancestor-linked candidate refused before target sidecars", () => {
+            string physical=Path.Combine(root,"candidate-physical"),alias=Path.Combine(root,"candidate-alias");
+            Directory.CreateDirectory(physical);File.WriteAllBytes(Path.Combine(physical,"candidate.win"),Data(1));Directory.CreateSymbolicLink(alias,physical);
+            Reject(()=>SafeInstaller.Install(original,Path.Combine(alias,"candidate.win"),[profile],"Synthetic","test"));
+            Assert(SafeInstaller.Hash(original)==identity.Sha256&&!File.Exists(original+".routekeeper-original"));
+        });
+        Check("ancestor-linked restore refused without external mutations", () => {
+            string physical=Path.Combine(root,"restore-physical"),alias=Path.Combine(root,"restore-alias");
+            Directory.CreateDirectory(physical);string target=Path.Combine(physical,"data.win");File.WriteAllBytes(target,Data(0));
+            SafeInstaller.Install(target,candidate,[profile],"Synthetic","test");Directory.CreateSymbolicLink(alias,physical);
+            Reject(()=>SafeInstaller.Restore(Path.Combine(alias,"data.win")));Assert(SafeInstaller.Hash(target)==profile.PatchedSha256);
+        });
+    } else Console.WriteLine("NOT_RUN ancestor symlink reproduction: native link permission required");
     Check("verified install backs up pristine original", () => { SafeInstaller.Install(original, candidate, [profile], "Synthetic", "test"); Assert(SafeInstaller.Hash(original) == profile.PatchedSha256 && SafeInstaller.Hash(original + ".routekeeper-original") == identity.Sha256); });
     Check("idempotent reinstall", () => { SafeInstaller.Install(original, candidate, [profile], "Synthetic", "test"); Assert(SafeInstaller.Hash(original + ".routekeeper-original") == identity.Sha256); });
     Check("restore and repeated restore", () => { SafeInstaller.Restore(original); SafeInstaller.Restore(original); Assert(SafeInstaller.Hash(original) == identity.Sha256); });
@@ -43,7 +79,8 @@ try
     Check("truncated FORM rejected", () => { var path = Path.Combine(root, "bad.win"); File.WriteAllBytes(path, [70, 79, 82, 77]); Reject(() => BuildInspector.Inspect(path)); });
     Check("oversized chunk rejected", () => { var path = Path.Combine(root, "bad.win"); var bytes = Data(0); bytes[12] = 250; File.WriteAllBytes(path, bytes); Reject(() => BuildInspector.Inspect(path)); });
     Check("pending update before replacement can restore", () => { File.WriteAllBytes(original + ".routekeeper-original", Data(0)); File.WriteAllBytes(original, Data(1)); var pending = new InstallJournal(1, identity.Sha256, SafeInstaller.Hash(candidate), profile.Id, "Pending", SafeInstaller.Hash(original)); File.WriteAllText(original + ".routekeeper.json", JsonSerializer.Serialize(pending)); SafeInstaller.Restore(original); Assert(SafeInstaller.Hash(original) == identity.Sha256); });
-    Check("symbolic-link target rejected", () => { if (OperatingSystem.IsWindows()) return; string link = Path.Combine(root, "linked.win"); File.CreateSymbolicLink(link, original); Reject(() => SafeInstaller.Install(link, candidate, [profile], "Synthetic", "test")); });
+    if (!OperatingSystem.IsWindows()) Check("symbolic-link target rejected", () => { string link = Path.Combine(root, "linked.win"); File.CreateSymbolicLink(link, original); Reject(() => SafeInstaller.Install(link, candidate, [profile], "Synthetic", "test")); });
+    else Console.WriteLine("NOT_RUN symbolic-link target: native link permission required");
     Check("duplicate GEN8 rejected", () => { string path = Path.Combine(root, "bad.win"); var data = Data(0); Encoding.ASCII.GetBytes("GEN8").CopyTo(data, 18); File.WriteAllBytes(path, data); Reject(() => BuildInspector.Inspect(path)); });
     Check("malformed journal fails closed", () => { File.WriteAllText(original + ".routekeeper.json", "{\"SchemaVersion\":1}"); Reject(() => SafeInstaller.Restore(original)); Assert(SafeInstaller.Hash(original) == identity.Sha256); });
     Check("Steam library discovery returns unverified metadata only", () =>
@@ -140,6 +177,26 @@ try
     Check("Runner traversal is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {ExecutableRelativePath="../UNDERTALE.exe"})));
     Check("Partial runner identity is rejected",()=>Reject(()=>SafeInstaller.ValidateRunner(gateData,exact with {ExecutableSha256=null})));
     Check("Pinned runner installs only the approved candidate",()=>{SafeInstaller.Install(gateData,gateCandidate,[exact],"Windows","x86");Assert(SafeInstaller.Hash(gateData)==profile.PatchedSha256&&SafeInstaller.Hash(gateData+".routekeeper-original")==identity.Sha256);SafeInstaller.Restore(gateData);});
+    Check("Unapproved candidate receipt cannot inherit VerifiedPatch from its input",()=>{
+        string assets=Path.Combine(root,"receipt-assets");Directory.CreateDirectory(Path.Combine(assets,"profiles"));Directory.CreateDirectory(Path.Combine(assets,"integration"));
+        File.WriteAllText(Path.Combine(assets,"integration","patch.csx"),"SYNTHETIC COMPILER CONTRACT ONLY");
+        File.WriteAllText(Path.Combine(assets,"integration","verify.csx"),"SYNTHETIC COMPILER CONTRACT ONLY");
+        string input=Path.Combine(root,"receipt-original.win"),fixture=Path.Combine(root,"receipt-fixture.win"),output=Path.Combine(root,"receipt-output.win");
+        File.WriteAllBytes(input,Data(0));File.WriteAllBytes(fixture,Data(1));
+        File.WriteAllText(Path.Combine(assets,"profiles","registry.json"),JsonSerializer.Serialize(new[]{profile with {PatchedSha256=new string('0',64)}}));
+        string compiler=Path.Combine(AppContext.BaseDirectory,"RouteKeeper.Tool.Tests"+(OperatingSystem.IsWindows()?".exe":""));
+        string? previousFixture=Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER");
+        try {
+            Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER",fixture);
+            var receipt=ModBuilder.BuildAsync(input,output,compiler,assets).GetAwaiter().GetResult();
+            Assert(receipt.CompatibilityStatus=="InspectedOnly"&&receipt.OutputSha256==SafeInstaller.Hash(fixture));
+            File.WriteAllText(Path.Combine(assets,"profiles","registry.json"),JsonSerializer.Serialize(new[]{profile with {PatchedSha256=SafeInstaller.Hash(fixture)}}));
+            var approved=ModBuilder.BuildAsync(input,output+".approved",compiler,assets).GetAwaiter().GetResult();Assert(approved.CompatibilityStatus=="VerifiedPatch");
+            File.WriteAllText(Path.Combine(assets,"profiles","registry.json"),JsonSerializer.Serialize(new[]{profile with {Status="InspectedOnly",PatchedSha256=SafeInstaller.Hash(fixture)}}));
+            var inspected=ModBuilder.BuildAsync(input,output+".inspected",compiler,assets).GetAwaiter().GetResult();Assert(inspected.CompatibilityStatus=="InspectedOnly");
+            Assert(SafeInstaller.Hash(input)==identity.Sha256);
+        } finally {Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER",previousFixture);}
+    });
     Console.WriteLine($"PASS {passed} synthetic tests; authentic gameplay NOT_RUN"); return 0;
 }
 finally { Directory.Delete(root, recursive: true); }

@@ -1,5 +1,13 @@
 # Authorized Windows runtime validation
 
+> PRE-RUNTIME FREEZE, 2026-10-26: same-account GAME smoke is **NO-GO**. Read
+> [code-audit.md](code-audit.md), especially A04/A05. Original SCR_GAMESTART can
+> read/write permanent history and call Steam deletion during startup itself.
+> Local snapshots, empty observed caches and Cloud-off do not prove SDK isolation.
+> Commands below remain experimental reference procedures, not execution approval.
+> Only offline/non-game validation is approved by this audit; no official runner
+> was executed. Do not clear history or weaken gates to obtain a pass.
+
 ## Exact input and privacy
 
 The authenticated numeric Releases API was used for Draft release422659795,

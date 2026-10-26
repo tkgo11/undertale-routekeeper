@@ -120,3 +120,19 @@ before push, after push and immediately before final reporting; validate new/edi
 findings against the actual HEAD. Private review evidence lives in .research/.
 Older dedicated-user/Sandbox scripts are historical alternatives, not requirements
 or validated infrastructure, and do not prove Steam account isolation.
+
+## Pre-runtime code freeze (2026-10-26)
+
+Read docs/code-audit.md and docs/audit-coverage.json before resuming. Same-account
+GAME smoke is NO-GO pending source-backed Steam startup-history safety and native
+filesystem/API validation. Do not run the official game during this audit. Existing
+operator Run examples are experimental procedures, not permission or approval.
+
+- `UndertaleModCli load private-data/data.win -s tools/audit-hooks.csx` verifies all
+  27 original dispatch links and every golden source hash without running the game.
+- `python tools/test-preview-export.py --input private-data/data.win --cli /path/to/UndertaleModCli`
+  exercises new-output/private-path/link refusal on disposable authentic copies.
+- Installer ancestor checks are best-effort revalidation, not hostile TOCTOU
+  protection; never claim race-free path handling or proven NTFS power-loss recovery.
+- Reconcile every tracked path and content hash with the audit inventory after
+  source changes. Its COMPLETE means inspection coverage, not runtime approval.

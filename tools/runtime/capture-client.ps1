@@ -1,4 +1,5 @@
-# Foreground client-area evidence only; no gameplay PASS is inferred.
+# Best-effort foreground client-area evidence; overlays/focus races can expose
+# other pixels. Keep private; no guaranteed window isolation or gameplay PASS.
 function Save-RkClientCapture([string]$Executable,[string]$Destination) {
  Assert-RkNoLinks $Destination
  $gameCandidates=@(Get-Process UNDERTALE -ErrorAction Stop | Where-Object {$_.Path -and $_.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)})
@@ -21,7 +22,7 @@ public static class RoutekeeperCapture {
 }
 $null=[RoutekeeperCapture]::SetProcessDPIAware()
 $window=$process.MainWindowHandle
-if ($window -eq [IntPtr]::Zero -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window) { throw 'Focus UNDERTALE before capture; other windows are excluded.' }
+if ($window -eq [IntPtr]::Zero -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window) { throw 'Focus UNDERTALE before capture; screen overlays are not guaranteed to be excluded.' }
 $rect=New-Object RoutekeeperCapture+Rect
 $point=New-Object RoutekeeperCapture+Point
 if (![RoutekeeperCapture]::GetClientRect($window,[ref]$rect) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$point)) { throw 'Game client bounds unavailable.' }

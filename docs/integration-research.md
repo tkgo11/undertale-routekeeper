@@ -39,5 +39,5 @@ confirms fire_labelevator242 -> truelab_elevatorinside243 -> truelab_elevator244
 interception happens at the recoverable Lab1 door. The final power switch sets
 flag49312, so intercepting only there would be too late. Generated predicates,
 transaction tests and authentic item-case extraction verify the independent parts.
-Mettaton EX rating completion was inspected but is not yet a protected adapter:
-its automatic turn boundary needs coherent pre-input prediction, not scene freezing.
+Mettaton EX now has a scoped turn-boundary refusal adapter; see ending-audit.md.
+Its scheduler/HP/inventory behavior still needs real-game verification.

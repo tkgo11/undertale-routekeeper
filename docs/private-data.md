@@ -3,7 +3,8 @@
 The main repository is PRIVATE. Authorized input was retrieved from its draft
 `dev-game-data` release using `gh release download`. No separate data repository
 is used. Originals remain in ignored `private-data/`; private analysis and patched
-outputs remain in ignored `.research/`. Neither path is a CI input or artifact.
+outputs remain in ignored `.research/`. The private structural job downloads only the pinned data.win into these working
+paths and uploads neither inputs nor private diagnostics as artifacts.
 LFS listed no tracked game data during initial inspection.
 
 ## Save safety
