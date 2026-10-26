@@ -84,45 +84,39 @@ in a public repository or a fork.
 - `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` checks ASTs/filesystem
   guards and compiles capture interop without Windows API calls. Optional Lab and
   PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
-- Newest candidate6a49b85c has NOT executed. Prior40d67856 Wine failure is not a
+- Newest candidate9abd0729 has NOT executed. Prior40d67856 Wine failure is not a
   runtime result for later candidates. Read the latest dated progress section.
 
-## Native Windows testing without Sandbox
+## Current-account native smoke (experimental, Windows NOT_RUN)
 
-- Optional operator-run harness: `tools/runtime/run-without-sandbox.ps1`. See
-  `docs/runtime-validation.md` for exact account, Cloud and offline requirements.
-- Requires distinct standard local users RKTestOriginal / RKTestPatched, a dedicated
-  per-user Steam installation, original/patched exact hashes, fresh test saves,
-  manual Steam Offline Mode and **all adapters disconnected**. Never run this
-  harness under the primary Windows account or with personal Steam saves.
-- Run `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` for cross-platform
-  AST and static safeguards. This does not execute any Windows or game APIs.
-- Steam/cloud history remains a residual risk; native test results stay
-  NOT_RUN until operator-observed. Keep InspectedOnly pending actual review.
-- PR #1 is Ready for review, not approved for merge/release; no unverified
-  native compatibility or Forced completeness claims.
+Primary command: tools/runtime/run-current-account.ps1. No new OS user, Sandbox,
+VM or elevation is required. It launches a pinned side-by-side official runner;
+the registered Steam installation is READ ONLY, even in Program Files/other libraries.
+Read docs/runtime-validation.md for exact preparation/recovery/evidence commands.
+Never introduce a registered-install swap fallback or fake Steam SDK ownership.
 
-## Current Windows account smoke without Sandbox or new users
+Cloud must be disabled globally/per game before testing, Steam authenticated then
+prepared offline and exited, and adapters manually disconnected. Known permanent
+history or preexisting app391540 cache FILES block Run: never delete personal data
+just to pass a gate. SDK/server/opaque account metadata remain UNPROVEN regardless
+of local restoration. No SAVE, RESET, TRUE RESET, Genocide/Soulless/ending testing.
+The original runner cannot enforce these operator restrictions programmatically.
 
-The **opt-in** native Windows smoke command is
-`tools/runtime/run-current-account.ps1` (`Preflight` / `Run` / `Recover` /
-`Archive`). It uses the existing non-elevated Windows user only, and does
-**not** require Windows Sandbox or additional Windows users. Follow the first
-Windows instructions in `docs/runtime-validation.md`.
+Current-account filesystem helpers have synthetic failure/recovery tests:
+`pwsh -NoProfile -File tools/runtime/test-current-account.ps1`.
+PowerShell5.1-compatible syntax is maintained, but actual Windows5.1/7 API,
+permissions, SDK readiness, side-copy launch and capture remain NOT_RUN.
+Program Files write access is unnecessary. Unsupported permission/case-sensitive/
+linked/stream/network checks fail closed; do not suggest elevation or disable guards.
 
-The tool verifies the exact Steam runner, pristine game data, candidate
-and ZIP inventory; requires explicit risk acknowledgment, Cloud disabled,
-Steam Offline Mode and manually disconnected network adapters. It snapshots
-and hashes existing local UNDERTALE saves, quarantines them for each smoke,
-uses uniquely marked temporary game installs, restores after Steam has fully
-exited and retains recovery metadata. Steam account-level history/cache
-is **not** isolated or rolled back by this approach. Never test SAVE,
-RESET/TRUE RESET, Genocide ERASE, Soulless or ending completion with it.
-For those, require a genuinely isolated environment or explicit separate
-review of the irreversible risks. Never imply Steam Cloud/server state
-is guaranteed safe solely from local-file restoration.
+Atomic journals and independently verified snapshots protect LOCAL save content.
+Recovery waits for Steam, steamwebhelper and UNDERTALE to exit; no Steam cache is
+rewound. Changed caches/registered files block comparison/archive/cleanup. Legacy
+schema1 swap sessions are refused, not automatically trusted or rerouted.
 
-Only source/static checks are available for the new harness as of this commit.
-Its native Windows/Steam/game behavior remains NOT_RUN; InspectedOnly is
-unchanged. The former two-local-user harness remains available for users
-seeking stronger isolation.
+PR1 is OPEN and READY, never convert it to Draft. Do not merge/release/promote
+InspectedOnly or retry billing-blocked CI. Refresh paginated reviews/threads/checks
+before push, after push and immediately before final reporting; validate new/edited
+findings against the actual HEAD. Private review evidence lives in .research/.
+Older dedicated-user/Sandbox scripts are historical alternatives, not requirements
+or validated infrastructure, and do not prove Steam account isolation.

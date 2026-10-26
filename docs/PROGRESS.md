@@ -1,7 +1,56 @@
 # Progress and resumption
 
-Updated 2026-10-25. Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
+Updated 2026-10-26. Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
 no merge, public release, profile promotion or original save/history mutation.
+
+## Current review/same-account milestone (2026-10-26)
+
+Resume on feat/routekeeper-foundation, PR1 OPEN/READY. Existing a76b08b source was
+fast-forwarded before work; do not restore Draft or revive the install-swap harness.
+This section supersedes historical current-account and Sandbox descriptions below.
+
+- Fresh authenticated paginated reviews/inline/issue comments, nested thread
+  resolution/outdated state and HEAD checks were fetched, not inferred from old
+  summaries. Both actionable inline findings at a76b08b were confirmed: pending
+  mixed-battle Snowdin kills bypassed the last Snowdrake guard; private forks could
+  dispatch the authentic workflow. Shared pending regional projection and ACT/
+  SPARE/FLEE guards now cover the former; job-level upstream/private/non-fork gate
+  and eight-context test cover the latter. Threads may remain unresolved/outdated
+  on GitHub; local fixes are not reviewer approval. Private ledger is .research/.
+- Same-account harness completely replaces registered-install swaps with an
+  atomically staged, exact-pinned side copy. Registered Steam libraries are read
+  only; no admin, extra OS user, Sandbox or VM is required. Legitimate Steam must
+  work offline; early runner exit/redirect fails closed, with no SDK bypass/fallback.
+- Atomic verified local snapshots/quarantine/journal recovery, exclusive locks,
+  link/case/stream/permission checks, client registration/signature, read-only Cloud
+  cache fingerprints and private observation/capture are implemented. Actual NTFS/
+  Windows APIs/Steam behavior remain NOT_RUN. Existing app cache FILES or permanent
+  history block smoke: do not delete personal data to bypass these gates. Local
+  content restoration never proves account/Cloud/server rollback or isolation.
+- Patched smoke requires an archived restored original with explicit operator
+  startup/English/keyboard/battle observations and identical tool/client/install/
+  local-save/cache baselines. No process/zero-exit/screenshot auto-grants PASS.
+  Legacy schema1 install swaps fail closed pending separate manual recovery review.
+- Original battlecontroller win/room return goldens now cover reward collection
+  before exit; kill-write sites and empty Mettaton parent/event evidence are pinned.
+  Type6/goal8 remains UNKNOWN; partial closure does not prove global reachability.
+
+Current OFFLINE_PASS: Release build,264 C# checks (38/60/87/17/55/7),9,291 independent
+original-derived/ordered-model assertions,20 UI groups,381 deterministic glyphs,
+686 emitted UI cases,7 archive groups,8 workflow contexts and67 PowerShell helper
+filesystem/failure checks. All generated source checks and authentic compile/reload/
+unchanged-resource checks pass;127 source signatures and27 original hooks validated.
+Candidate SHA256: 9abd0729f08497f8185ac9540eb514f3a466d41a4a2fcc5f005d484d8fa7ad4d.
+Four self-contained packages publish locally; Linux standalone authentic build produces the identical candidate and
+synthetic G3M parser/xdelta roundtrip passes (see test-results.md).
+No new native or compatibility runtime PASS. Profile remains InspectedOnly.
+
+Hosted Actions are budget-blocked; never rerun to chase this. Legacy qlty status
+says success but description says95 blocking issues; its detail URL requires login.
+Those unspecified issues are NOT independently cleared; source review approval,
+Windows native safety/Steam/UI/battles and native macOS/Linux still block merge,
+compatibility approval and release. See runtime-validation.md for exact operator
+commands, stop/recovery conditions and private evidence. Keep source-only commits.
 
 ## Newly implemented beyond the foundation
 
@@ -272,7 +321,7 @@ PR #1 was changed from Draft to Ready for review at user request; it
 remains open, unmerged and unreleased. Source-only review is appropriate,
 but native tests and compatibility sign-off must still block merge/release.
 
-## Same existing Windows account smoke workflow (source-only, NOT_RUN)
+## Historical superseded same-account install-swap workflow (NOT_RUN)
 
 Responding to the requirement of **no extra Windows user accounts** and no
 Windows Sandbox, added `tools/runtime/run-current-account.ps1`. It operates

@@ -1,9 +1,9 @@
 # Verification evidence
 
-Updated 2026-10-25. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
+Updated 2026-10-26. Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. The official runner reached Steam bootstrap
 under QEMU/Wine but no game window/room executed successfully.
-Current continuation:9,282 original-golden/ordered-event assertions and261 C#
+Current continuation:9,291 original-golden/ordered-event assertions and264 C#
 checks; see the dated continuation sections below for historical snapshots.
 
 | Scope | Result | Command / evidence |
@@ -11,7 +11,7 @@ checks; see the dated continuation sections below for historical snapshots.
 | Release build | PASS | `dotnet build RouteKeeper.slnx -c Release` (0 warnings/errors) |
 | Core | PASS | `dotnet run --project tests/RouteKeeper.Core.Tests -c Release`: 38 checks; 6,000 evaluator and 1,600 EN/KR/spoiler objective/progress comparisons |
 | Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 60 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
-| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 84 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
+| Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 87 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
 | History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
 | Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 55 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
 | Saves | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7 synthetic checks; supplied saves previously read without byte changes |
@@ -247,3 +247,43 @@ operator workflow in runtime-validation.md.
 - Real Windows/Steam launch, original/patch comparison and any gameplay:
   **NOT_RUN**. Steam Cloud/cache and persistent account history cannot be
   certified safe from this smoke workflow. Do not promote InspectedOnly.
+
+## Review and same-account side-copy continuation (2026-10-26)
+
+All following PASS labels are OFFLINE_PASS, not Windows execution:
+
+| Verification | Actual result / boundary |
+|---|---|
+| Release and seven executable suites | 0 warnings/errors; Core38, Neutral60, Decisions87, History17, Tool55, Saves7; Audit9291 |
+| Source/golden freshness | Core verify-native, Neutral verify-gml, Decisions verify-adapters/verify-ui, original audit verify all pass; UI686 emitted comparisons |
+| UI/font | 20 Pillow groups;381 Galmuri14 glyphs, deterministic atlas/layout unchanged |
+| Current-account protocol | PowerShell7.6.8 on Linux parses ALL scripts, compiles interop declarations and runs67 real temporary-filesystem checks; NOT Windows APIs/Steam/PowerShell5.1 |
+| Recovery failure injection | Before/after quarantine and restore rename gaps, previous/truncated journal, absent/empty/Unicode saves, missing protected copy fallback, corruption/identity refusal, identical-content trial quarantine, mid-copy failure, stale original comparison and locks |
+| Workflow gate | Actual authentic job expression tested over8 upstream/private/fork contexts; no hosted dispatch |
+| Archive | 7 safety groups; ZIP verification preserves exact220-file supplied inventory |
+| Authentic compile/serialize/reload |127 pinned original signatures plus parent/empty-event constraints;27 intended hooks;6,245 non-hook originals and original texture/audio/font payloads preserved |
+| Candidate refusal | Modified input and original overwrite rejected; pristine data unchanged |
+| Packaging | Four self-contained RIDs built on Linux; foreign executable execution NOT_RUN |
+| G3M | Real xdelta encode/decode and pinned upstream parser accept synthetic package; authentic export remains forbidden |
+
+Current candidate: 9abd0729f08497f8185ac9540eb514f3a466d41a4a2fcc5f005d484d8fa7ad4d (63,169,638 bytes).
+Private evidence: .research/final-*.log, final-authentic/summary.json and review-current/
+ledger.json with live review IDs/timestamps/commit/context/result. Original data,
+runner, saves, reports, screenshots and patched binaries are excluded from commits.
+
+Snowdrake regression includes Snowdin15 plus one unbanked mixed-encounter kill,
+SPARE/FLEE/ACT and wrong-region/stale-baseline cases. Original standard-win returns
+now have8 source-derived order cases; scripts that assign total kills are enumerated
+independently. Empty monster parent and Mettaton form inheritance are asserted,
+without claiming that every scripted zero-EXP exit is closed.
+
+NOT_RUN: native Windows PowerShell5.1/7, file handles/ACLs/capture, Steam Offline
+readiness, side-copy official runner launch, original/patched smoke, actual input/
+controller/Warning/Forced/HP/inventory behavior. No NATIVE_RUNTIME_PASS or new
+COMPATIBILITY_RUNTIME_PASS. Prior Wine failure was not repeated. Same-account
+smoke deliberately forbids SAVE/RESET/ending/permanent-history tests, even after
+local restoration; opaque SDK/server account state is UNPROVEN.
+
+BLOCKED: hosted CI budget (no reruns); qlty success status with95-blocking-issue
+text and login-gated details remains unreconciled, not a code PASS. Windows/macOS/
+Linux gameplay evidence and full type6/goal8 path proof remain unavailable.

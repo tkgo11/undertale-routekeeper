@@ -36,7 +36,7 @@ or Steam credentials were mounted into a container. Tests use fresh Wine profile
 | ZIP, identity, original preservation | OFFLINE_PASS | Pinned archive, safe extraction, all220 original file hashes verified |
 | Official original runner | BLOCKED | QEMU-user/Wine/Xvfb reaches Steam initialization; SteamAPI_InitSafe fails, mainwindow creation fails, then illegal instruction004D1820 |
 | Previously tested patched runner (40d67856…) | BLOCKED | Same failure before gameplay/controller evidence |
-| Current candidate (6a49b85c…) | NOT_RUN | Offline changes only; Wine was not retried without a new hypothesis |
+| Current candidate (9abd0729…) | NOT_RUN | Offline changes only; Wine was not retried without a new hypothesis |
 | Windows native runner | NOT_RUN | Linux cloud is not native Windows; no authenticated Steam session is available |
 | Mod initialization/settings/fonts/UI/input | NOT_RUN | No game window/room entered; offline previews do not substitute |
 | Battle/ACT/items/MERCY/FLEE/Forced outcomes | NOT_RUN | No actual combat executed |
@@ -77,250 +77,164 @@ Keep inherited proxy/CA settings during image construction. Game execution has
 network disabled. The smoke script never turns a live process into a gameplay
 PASS; results require scenario assertions and screenshot/log review.
 
-## Same existing Windows account — no Sandbox or extra user (SMOKE ONLY, NOT_RUN)
+## Same-account side-by-side native smoke (experimental; NOT_RUN)
 
-Use `tools/runtime/run-current-account.ps1` for **early gameplay smoke testing on
-the existing, non-elevated Windows account**. This is optional; it requires
-neither Windows Sandbox nor another Windows user. It deliberately does **not**
-certify SAVE/RESET/TRUE RESET, Genocide ERASE, Soulless or ending replay.
-Steam account-level caches and persistent history may change despite a disabled
-Cloud setting, offline Steam, and local-save restoration. A VM or a separate Steam
-account is more isolated. Use this method only if you accept that residual risk.
+No new Windows account, Sandbox, VM or administrator is required. Use unelevated
+Windows PowerShell5.1 or PowerShell7. **Native behavior has not been executed.**
+Synthetic filesystem passes do not validate Windows APIs/SDK/permissions. The
+registered Steam installation is read only; Program Files write permission is not
+needed. Other registered Steam libraries are read/validated through libraryfolders.
+Only the checksum-pinned supplied runner/data/media are copied into a private run.
+An unknown personal installed build is fingerprinted, not patched or approved.
 
-### Before beginning
+**Account risk:** a restored local folder is NOT Steam account-level restoration.
+Cloud-off/Offline Mode/unchanged observed caches do not prove SDK/server isolation.
+Known local permanent files or preexisting app391540 cache FILES refuse Run. Do not
+clear personal caches/history to bypass this gate. Opaque metadata cannot be proven
+safe here. Smoke is limited to startup/UI/settings/keyboard/early normal battles,
+warnings and nonlethal Forced refusal. No SAVE, RESET, TRUE RESET, Genocide ERASE,
+Soulless or ending scenarios. The unmodified runner cannot enforce this restriction;
+the operator must stop before those actions. Autosaves may still be written in the
+trial folder, which is why snapshot/restore and cache checks are necessary.
 
-1. In the existing Steam account, disable Steam Cloud for UNDERTALE and globally.
-   Use Steam **Go Offline**; wait until offline mode is configured, then **Exit
-   Steam completely**. Do not run a game with Cloud enabled to set this up.
-2. Manually disconnect Wi-Fi, Ethernet, VPN and other active network adapters.
-   The harness will refuse active adapters and never changes Windows networking.
-   Do not restart Steam manually before running the harness.
-3. Use your *original legitimate Steam library installation* and the already
-   verified private Windows ZIP. Game installation must still match the pinned
-   exact runner/data hashes; an updated build or modified game is rejected.
-4. Prepare a **new** private runtime lab and a new compiled candidate, from the
-   repository root. Paths below are examples; point to actual existing paths.
-   Do not put the lab/candidate inside the Steam game folder.
+### Prepare and preflight (same ordinary account)
 
-```powershell
-python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work "$env:USERPROFILE\private\rk-lab"
-dotnet run --project src/RouteKeeper.Tool -c Release -- build "$env:USERPROFILE\private\rk-lab\original\Undertale\data.win" "$env:USERPROFILE\private\candidate.win" "C:\tools\UndertaleModCli.exe" .
-python tools/runtime_lab.py verify --work "$env:USERPROFILE\private\rk-lab"
-powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Preflight
-```
-
-### One-account smoke: original, then patch
-
-Run from the repository root as the same **non-elevated** Windows user, never
-as administrator. Replace the two Steam paths with the genuine locations shown
-by the Steam client and **Properties > Installed Files > Browse**.
+Keep Cloud disabled both globally and for UNDERTALE. Authenticate owned UNDERTALE
+in the legitimate Steam client, select Go Offline/restart once, then EXIT Steam
+and its helpers. Prepare all tools/dependencies/inputs before disconnecting.
+Use the already provided private ZIP; no new game files or credentials are requested.
+The pinned official UndertaleModCli version is0.9.2.0; source/tool SDK is.NET10.
 
 ```powershell
-$steamExe = "C:\Program Files (x86)\Steam\steam.exe"
-$gameDir = "C:\Program Files (x86)\Steam\steamapps\common\Undertale"
-$lab = "$env:USERPROFILE\private\rk-lab"
-$candidate = "$env:USERPROFILE\private\candidate.win"
-powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Run -Case original -Lab $lab -PatchedData $candidate -SteamExe $steamExe -GameInstall $gameDir -AcceptSteamAccountRisk -CloudDisabledAndOffline -Minutes 30
+# In a fresh powershell.exe -NoProfile (5.1) or pwsh -NoProfile session, repo root:
+$rkLab = "$env:USERPROFILE\private\rk-lab"
+$rkCandidate = "$env:USERPROFILE\private\candidate.win"
+python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work $rkLab
+dotnet run --project src/RouteKeeper.Tool -c Release -- build "$rkLab\original\Undertale\data.win" $rkCandidate "C:\tools\UndertaleModCli.exe" .
+python tools/runtime_lab.py verify --work $rkLab
+$rkPaths = @{Lab=$rkLab; PatchedData=$rkCandidate; SteamExe="C:\Program Files (x86)\Steam\steam.exe"; GameInstall="C:\Program Files (x86)\Steam\steamapps\common\Undertale"}
+& .\tools\runtime\run-current-account.ps1 @rkPaths -Action Preflight
 ```
 
-The script snapshots the original `%LOCALAPPDATA%\UNDERTALE` folder in the
-private lab, verifies the independent copy, and moves the original save folder
-to an identifiable quarantine directory in the **same user profile**. It moves
-only the pinned game installation to an identifiable backup and temporarily
-copies approved original/patch game files into the registered Steam location.
-Steam is launched offline, without a Steam API/DRM replacement. Play only the
-**title screen, UI, language, keyboard/controller inputs, early battles, ordinary
-ACT/MERCY and basic warnings**. **Do not save, RESET, TRUE RESET, erase the
-world, play through Genocide/Soulless or test personal ending history**.
+Replace only the genuine client/library paths. Preflight is read only and can run
+before disconnecting so Windows can validate the Valve signature/chain. It does
+not establish ownership/SDK readiness; the official runner will test that. Do not
+disable signature/OS policy checks if they fail. Case-sensitive mutable paths,
+hardlinks, reparse points, unsupported file streams/inspection and unavailable
+ordinary-user permissions fail closed. These Windows API gates are NOT_RUN.
 
-Close the game and **exit Steam completely while disconnected** when asked.
-The script restores the original Steam installation and personal local save
-folder, preserves test-created saves in a separate marked location, and saves
-a JSON observation under `rk-lab\evidence\current-account`. A running game
-does not constitute runtime PASS. The script cannot undo Steam account-level
-cache or history changes.
+### Execute original, then patched
 
-Only after checking the restoration and private evidence, archive the completed
-session (this does NOT delete your original saves or backups):
+Manually disconnect Wi-Fi/Ethernet/VPN/adapters. The tool never changes networking
+or elevates. Keep Cloud off and the network disconnected through recovery/reboots.
+Steam/game/helpers must be completely exited before each Run/Recover/Archive.
 
 ```powershell
-powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Archive
+& .\tools\runtime\run-current-account.ps1 @rkPaths -Action Run -Case original -AcceptSteamAccountRisk -CloudDisabledAndOffline -Minutes 10
 ```
 
-Then keep Steam Cloud off and the PC disconnected, and repeat the Run command
-with **`-Case patched`**. The same Windows account is used; private local saves
-are quarantined again and restored. This is a comparative smoke test, **not**
-independent history isolation between original and patch.
+The tool independently hashes a snapshot of `%LOCALAPPDATA%\UNDERTALE`, durably
+journals a same-volume quarantine, atomically publishes an allowlisted side copy,
+starts the legitimate Steam client offline, then directly starts that official EXE
+with its own working directory. No app-id shim, SDK injection or registered-install
+swap is used. A quick exit/redirect is BLOCKED; do not fall back to replacing the
+registered game. Steam PID/restarts and adapter state are checked during observation.
+A process/window/zero exit code never becomes gameplay PASS automatically.
 
-### Interrupted session recovery
+Patched smoke controls: open settings with F10 only in safe overworld context;
+use the game's configured directions/confirm/cancel, or F5/F6/F7/F9 direction
+shortcuts. Select English/Korean and inspect every submenu, bounded HUD and warning;
+F8 acknowledges a warning (or the selected unused gamepad button). Set target True
+Pacifist, then compare Off/Passive/Active/Forced on an early EXP-producing FIGHT:
+acknowledge/retry only if safe, and leave ACT/MERCY usable. Do not actually kill an
+enemy to test a warning or consume an item you need. Check closing menus does not
+also confirm a vanilla action, HP/EXP/inventory remain coherent, and only mod
+settings persist on the optional second launch. These are expected observations,
+not evidence that the behavior has run. Physical gamepad needs a separate result.
 
-If power loss, an exception, or Steam shutdown prevents full restoration, **do
-not delete the session folder, Steam backup folder or personal-save quarantine**.
-Keep the network disconnected, close both Steam and UNDERTALE fully, and run:
+From a SECOND unelevated PowerShell, record observations (original: startup,
+English, keyboard and ordinary battle; patched: all eight protocol scenarios):
 
 ```powershell
-powershell -NoProfile -File tools/runtime/run-current-account.ps1 -Action Recover
+& .\tools\runtime\run-current-account.ps1 -Action Observe -Scenario startup -Outcome PASS -Actual "Observed title and fresh room; transitions and clean exit checked."
+# Focus the GAME within three seconds for optional foreground client-area capture:
+& .\tools\runtime\run-current-account.ps1 -Action Observe -Scenario korean -Outcome NOT_RUN -Actual "Capture for manual typography review" -Capture
 ```
 
-Recovery checks owner ID, session marker, save hashes and marked Steam installation
-before restoring. It preserves uncertain states rather than overwriting personal
-saves. If a recovery check fails, stop and review both copies manually without
-altering Steam caches. A verified snapshot also remains in the private lab.
+Fields are expected/actual/status/method=OPERATOR_REPORTED; these are operator
+assertions, not automated approval. The scenario definitions are smoke-scenarios.json.
+Reports, images, trial saves and independent snapshots stay privately under
+`%LOCALAPPDATA%\RoutekeeperSmoke\active`; the parent ACL is restricted to the
+owner/SYSTEM. Do not upload it to PR/CI. Capture/ACL/native APIs remain NOT_RUN.
 
-The current-account harness is **source-added but NOT_RUN on native Windows**.
-The PowerShell test script includes static assertions; source review does not
-prove real Windows process/Steam/game behavior. Do not mark a profile
-VerifiedPatch or merge/release based on these smoke observations.
+Close the game, then EXIT Steam fully when the final prompt appears. The script
+waits for Steam/webhelpers/game to stop before restoring local content. It checks
+the local tree, registered installation fingerprint and observed app/account Cloud
+cache fingerprints. A changed cache blocks comparison/archive/cleanup; no cache is
+rewound and no account-safe result is inferred. If any gate blocks, stop, retain
+all evidence and keep Cloud disabled; do not delete caches to force the next case.
 
-## Native Windows without Sandbox (opt-in; execution NOT_RUN)
-
-Windows Sandbox is **not required**. The script `tools/runtime/run-without-sandbox.ps1` runs on native Windows 11, including Home editions. To protect personal UNDERTALE saves, do not run it in a personal Windows user account. This is an operator-run workflow and **has not yet been executed on native Windows**; it must not be described as a passing runtime test.
-
-### Preparation and isolation
-
-Create two NEW, standard, non-administrator local Windows users, exactly named **RKTestOriginal** and **RKTestPatched**, respectively. Keep the main Windows account and its Steam/save folders untouched. Each test user needs a separate licensed Steam installation at `%LOCALAPPDATA%\RKTestSteam`, with UNDERTALE installed in that Steam library, and a private copy of the authorized ZIP and repository. The test script rejects the wrong username, administrator execution, the default machine-wide Steam directory, existing UNDERTALE saves and any preexisting app391540 Steam cache.
-
-A separate Windows user is not a separate Steam entitlement. Use an independently licensed test Steam account if possible. If the same licensed account is used, Steam account-level/cloud history is a residual risk: disable Cloud globally and for UNDERTALE **before any game launch** in each fresh test account. Authenticate via the official Steam interface, prepare the exact build, select Steam **Go Offline**, restart Steam, and **manually disconnect every network adapter**. The harness checks that all adapters are down; it **never changes Windows networking**. Do not copy host `userdata`, personal saves, Steam login information, or cloud cache.
-
-### Commands (run separately while signed into each new test account)
-
-From the repository root, prepare a new private lab and compile the pinned patch inside the current test user's profile:
+Record concrete PASS observations for original startup, English, keyboard and ordinary battle.
+A patched trial refuses to start without these archived original observations and
+identical runtime-tool tree, Steam client, registered install, local-save and observed
+cache baselines. Operator reports remain assertions, not automated gameplay approval.
+Only when local restoration AND observed baseline checks succeed:
 
 ```powershell
-python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work "$env:USERPROFILE\private\rk-lab"
-RouteKeeper.Tool.exe build "$env:USERPROFILE\private\rk-lab\original\Undertale\data.win" "$env:USERPROFILE\private\candidate.win" "C:\tools\UndertaleModCli.exe" "C:\src\undertale-routekeeper"
-python tools/runtime_lab.py verify --work "$env:USERPROFILE\private\rk-lab"
+& .\tools\runtime\run-current-account.ps1 -Action Archive
+& .\tools\runtime\run-current-account.ps1 @rkPaths -Action Run -Case patched -AcceptSteamAccountRisk -CloudDisabledAndOffline -RestartForSettings -Minutes 10
 ```
 
-Replace tool/source paths with their actual locations. The candidate must match the SHA-256 pinned in `profiles/registry.json`. Never use patched data as the input.
+RestartForSettings launches the same patched trial twice (keep Steam open between
+them), allowing actual mod settings persistence to be inspected. Personal saves
+remain quarantined until both finish. Original/patched episodes use fresh trial
+folders; this is NOT proven independent Steam history. Repeat ordinary controls,
+ACT/MERCY/FLEE, warning acknowledgement and Pacifist EXP refusal while retaining a
+nonlethal action. Do not use this protocol for ending or permanent-history testing.
+Hardware gamepad requires its own real observation; synthetic input parity is not
+hardware evidence. Native macOS/Linux still need separate exact builds/runners.
 
-In **RKTestOriginal**, after Steam setup, Cloud disablement, Offline Mode, and manual network disconnection:
+### Interrupted sessions, recovery and cleanup
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/runtime/run-without-sandbox.ps1 -Lab "$env:USERPROFILE\private\rk-lab" -PatchedData "$env:USERPROFILE\private\candidate.win" -Case original -AttestSeparateWindowsAccount -AttestSteamOfflineAndCloudDisabled -Minutes 60
+# Stay offline; EXIT Steam/webhelpers/game completely first.
+& .\tools\runtime\run-current-account.ps1 -Action Recover
+Get-Content "$env:LOCALAPPDATA\RoutekeeperSmoke\active\recovery.json" -Raw -Encoding UTF8
+# Optional INSTEAD OF Archive: remove only own game/trial/partial copies and archive.
+& .\tools\runtime\run-current-account.ps1 -Action Cleanup
 ```
 
-After the original exits, keep that account offline and close Steam. Switch to the **separate** RKTestPatched Windows account, repeat fresh Steam/lab preparation, and run:
+Exclusive session locks prevent concurrent runs/recovery; observation has its own
+lock and cannot block on the live game loop. Atomic flushed JSON/previous revision
+and presence+digest checks cover partial staging, rename/journal gaps, repeated
+recovery, missing quarantine with verified snapshot fallback and detected corruption.
+Uncertain identity or corrupt snapshots fail closed and preserve all copies.
+Actual Windows NTFS power-cut/process behavior is NOT_RUN. Content/tree verification
+does not claim ACL/timestamp, Steam cache, Cloud/server or account-history rollback.
+Archive retains everything; Cleanup retains snapshots/reports and removes only
+owned game/trial/partial copies. It never deletes Steam userdata or the pristine ZIP.
+If Steam restarts/network reconnects after a power failure, account guarantees still
+do not exist even when local recovery succeeds. Do not reconnect Cloud before review.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/runtime/run-without-sandbox.ps1 -Lab "$env:USERPROFILE\private\rk-lab" -PatchedData "$env:USERPROFILE\private\candidate.win" -Case patched -AttestSeparateWindowsAccount -AttestSteamOfflineAndCloudDisabled -Minutes 120
-```
+**Legacy schema1 swap sessions:** if `%LOCALAPPDATA%\RoutekeeperCurrentSession`
+exists, this tool refuses every new action. Keep Steam/network off and preserve
+that directory, its independently verified snapshot and the registered-install
+backup. Do not rerun the old unvalidated swap script, guess paths from a damaged
+JSON, delete backups or elevate merely to get the new smoke working. A partially
+swapped legacy installation needs separate manual recovery review using exact
+original hashes and the actual filesystem state; automatic recovery is deliberately
+BLOCKED. The new protocol never writes/renames a registered library to fix it.
 
-The script stages only pinned game files, verifies their hashes, temporarily swaps the **test user's own** Steam-installed UNDERTALE directory with a uniquely marked copy, and restores the original registered test installation in a finally block. If restoration fails, it retains marked backups for manual recovery; never delete them blindly. It does not read or modify primary-account files, Steam caches or permanent saves. It records a private JSON report under `rk-lab\evidence\direct-windows`; status remains `NOT_RUN` for unreviewed observations or `BLOCKED` upon failure, not automatic `NATIVE_RUNTIME_PASS`.
-
-Run the actual UI, input, battles, Forced warnings, saving/reloading and ending scenarios from the checklist below. Repeat only the **same** variant under the same test Windows account for settings/save persistence. Do not move an original-run save into the patched-run account or vice versa.
-
-The direct harness does not use Sandbox or virtualization, does not bypass Steam licensing, does not accept credentials, and does not disable isolation checks. Native APIs/Steam launch and the exact source-modified game remain NOT_RUN until physically executed by the operator. Reconnect networking only after closing Steam/the game and retiring these test profiles. Steam/account-level history remains a risk even with different Windows users; a disposable VM/Sandbox offers stronger isolation.
-
-## Windows-native Sandbox operator workflow (execution NOT_RUN)
-
-Requires Windows11 Pro/Enterprise Sandbox, Python, the source tool build and the
-pinned official UndertaleModCli. Use only the already authorized private ZIP. This
-procedure never asks for Steam credentials in chat or maps host Steam/save folders.
-
-1. On the host, prepare a NEW private lab and structurally compile a NEW candidate:
-
-   ```powershell
-   python tools/runtime_lab.py prepare --zip C:\private\runtime.zip --work C:\private\rk-lab
-   RouteKeeper.Tool.exe build C:\private\rk-lab\original\Undertale\data.win C:\private\candidate.win C:\tools\UndertaleModCli.exe C:\src\undertale-routekeeper
-   powershell -NoProfile -File tools/runtime/launch-windows-sandbox.ps1 -Lab C:\private\rk-lab -PatchedData C:\private\candidate.win -EnableSteamSetupNetworking
-   ```
-
-   The launcher checks the exact runner/data/candidate and pinned full inventory.
-   It stages only allowlisted game files and harness scripts. Only sandbox-input
-   is mapped read-only; a new empty evidence folder is mapped separately writable.
-   The host's original tree, supplied account manifest, other lab files and prior
-   evidence are excluded. Existing payloads refuse reuse. No installer approval
-   or VerifiedPatch override is added.
-
-2. Inside the fresh Sandbox only, set up the official licensed Steam client and
-   disable Steam Cloud globally **before** registering/installing owned UNDERTALE
-   in its default library, without starting it. Also disable the game Cloud option
-   in Properties. If a cache was already downloaded, start a fresh VM and disable
-   Cloud earlier; do not delete server records or reuse personal cached files. Use Steam > Go Offline and restart
-   the client in Offline Mode. Open PowerShell **as Administrator** inside the VM.
-   Never copy/map host Steam userdata, credentials or personal saves. The automatic
-   initial harness deliberately records BLOCKED until setup is attested.
-
-3. Run the original in the first fresh VM. Close that Sandbox while still offline.
-   Reopen the same host routekeeper.wsb for a **new VM**, repeat offline Steam setup,
-   and run the patch there:
-
-   ```powershell
-   & C:\RoutekeeperInput\inside-sandbox.ps1 -Case original -OfflineReady -Interactive -Minutes 30
-   # In a NEW Sandbox after repeating step2 (not in the original case VM):
-   & C:\RoutekeeperInput\inside-sandbox.ps1 -Case patched -OfflineReady -Interactive -Minutes 60
-   ```
-
-   OfflineReady is an operator attestation, not programmatic entitlement proof.
-   The harness requires the expected Steam process, disconnects VM adapters before
-   launch, refuses initial saves and any app391540 Cloud/cache files, verifies
-   registration and hashes, and uses Steam -applaunch391540. A missing offline
-   entitlement is BLOCKED; no Steam API replacement or ownership bypass is used.
-   The registered VM installation is moved aside, never deleted; only this run's
-   marked disposable copy is removed and the VM original restored in finally.
-   A lost marker/reparse point fails closed and preserves directories for review.
-
-   A VM session accepts only one Case. Steam SDK cached files can repopulate
-   permanent history even after local saves are swapped, so case switching refuses.
-   Repeat the SAME Case within its own VM for reload/settings persistence. Only
-   RKTEST saves created by that session are eligible. Install-directory routekeeper.ini is also retained per
-   case in case this runner resolves it there. No personal history is imported.
-
-4. With the game closed, capture VM-only filesystem checkpoints. Prefer the actual
-   in-game LOAD for validation. Restore additionally requires Steam fully exited
-   and an empty app391540 cache, otherwise it deliberately refuses:
-
-   ```powershell
-   & C:\RoutekeeperInput\checkpoint-saves.ps1 -Name ruins-before
-   & C:\RoutekeeperInput\checkpoint-saves.ps1 -Name ruins-before -Restore
-   # While the game runs, invoke this and focus the game within three seconds:
-   & C:\RoutekeeperInput\capture-game.ps1 -Case patched -Label korean-menu -DelaySeconds 3
-   ```
-
-   A filesystem checkpoint is not a VM/Steam memory snapshot. Restore never
-   rewrites Steam caches; it retains the previous local save/history folder and
-   refuses a local-only rewind that cached history could undo. Native validation
-   of even the supported empty-cache restore remains NOT_RUN. Do not describe
-   restored/edited test states
-   as a legitimate full playthrough. Create ending/history fixtures through
-   recorded disposable gameplay in a fresh VM per history scenario; never import
-   a personal permanent-history file.
-
-| Operator scenario | Required assertions; initial result NOT_RUN |
-|---|---|
-| Original then patched startup | Actual title/room, room transitions, clean exit; capture exact runner/data hashes |
-| UI/settings | English/Korean, approved pixel geometry, HUD/menu/warning clipping, language/mode/target/spoiler persistence after restart |
-| Controls | Confirm/cancel/menu close, held keys, simultaneous input, warning acknowledge and one matching replay; gamepad only if actually forwarded |
-| Modes and actions | Off untouched; Passive/Active dismissible; Forced scoped; FIGHT/ACT/items/MERCY/FLEE; no inventory/HP/EXP side effects from refusal |
-| Pending EXP | Two-enemy LV1 encounter: first kill's unbanked EXP affects second action; acknowledge/decline/switch modes; win/FLEE banks once |
-| Automatic events | EX below/at each rating/turn threshold, repeated qualification/Alarm/writer completion/attack wrap, both controller orders; no trapped required FIGHT |
-| Reload/deadlines | Same-room reload revokes warning acknowledgement; water departure and friendship order; SAVE and reload; RESET and TRUE RESET only on these VM saves |
-| Endings | Representative Neutral, Pacifist, Genocide and Soulless playthroughs; record history provenance and actual final playback; optional calendar-gated Art Club separately |
-
-Private reports/screenshots go to the separate evidence mapping. Captures require
-the marked game in the foreground and crop its client area; the Steam/desktop
-window is excluded. Capture failure is NOT_RUN, not gameplay failure or PASS. Interactive runs
-wait for game exit or the declared time limit; short smoke runs observe20 seconds.
-A process/window/screenshot never automatically becomes NATIVE_RUNTIME_PASS; the
-harness writes NOT_RUN pending scenario assertions. Record observations and failed
-assertions alongside each run ID. It does not change the compatibility registry.
-
-All scripts pass offline AST/guard tests under official PowerShell7.6.8 on Linux;
-the host allowlist staging/XML mapping was executed with Sandbox dispatch mocked.
-Windows API behavior, Steam readiness and actual Sandbox execution remain NOT_RUN.
-If Sandbox exposes a mapped root as a reparse point, guards deliberately refuse
-it until that mapping is reviewed; do not disable isolation checks to proceed.
-Sandbox may not forward a hardware gamepad. Mark that test NOT_RUN and validate
-later in a separately reviewed disposable Windows VM with controller passthrough.
-Native macOS/Linux still require their own exact-build inputs and native runs.
+The older dedicated-user/Sandbox scripts are historical alternatives, not this
+workflow's requirements or validated infrastructure. They also do not prove Steam
+account-level isolation. Keep PR1 Ready/open, InspectedOnly, and merge/release blocked.
 
 ## Cleanup
 
-Stop/remove only task-owned runtime containers. Remove task-owned tool images and
-failed temporary Wine prefixes after preserving useful private evidence. Delete
-new-runtime-lab, new-candidate.win and private screenshots/logs when no longer
-needed; the marker identifies task-owned disposable storage. Keep the VM offline after all tests; close Sandbox to
-discard its Steam session and VM files before any network reconnection. Keep the verified supplied ZIP/pristine
-inputs until intentionally removed. Follow private-data.md for Release/LFS/cloud
-cleanup; deleting local files does not promise deletion from backups or Git history.
+Use the current-account Cleanup command above only after successful recovery and
+baseline verification. It archives private snapshots/reports and removes only its
+owned game/trial/partial staging copies. Keep the supplied ZIP/pristine inputs
+until intentionally removed; never use cleanup to delete account caches/history.
+For old cloud Wine containers/prefixes, remove only task-owned storage after
+preserving useful private evidence. Follow private-data.md for Release/LFS/cloud
+cleanup; local removal does not promise deletion from backups or Git history.
