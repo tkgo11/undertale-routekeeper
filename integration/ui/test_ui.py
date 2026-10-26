@@ -142,6 +142,12 @@ class UiTests(unittest.TestCase):
         self.assertLess(guard.index('scr_routekeeper_read_state();'),guard.index('obj_routekeeper.rk_status == 3'))
         pending=(ROOT/'gml/greeting_pending_risk.gml').read_text()
         self.assertEqual(pending.count('global.xpreward[3]'),2)
+    def test_pending_snowdrake_counter_contract(self):
+        guard=(ROOT/'gml/decision_guard.gml').read_text();hooks=(ROOT/'hooks.csx').read_text()
+        self.assertIn('enemy, action, effective_snowdin,',guard)
+        self.assertIn('effective_snowdin >= 16',guard)
+        self.assertIn('effective_snowdin == 15',guard)
+        self.assertIn('scr_routekeeper_decision_regional(global.flag[203], global.kills, global.flag[201], global.flag[200], 203, global.inbattle == 1) >= 16',hooks)
     def test_baseline_cell_bounds(self):
         rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')

@@ -213,4 +213,8 @@ Check(cheap.Events.Count(e=>e.StartsWith("spare-initial-Snowdrake"))==1,"Repeate
 Check(root.GetProperty("encounterRewards").GetProperty("Jerry").GetInt32()==1,"Source Jerry reward changed");
 try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.BacktrackTo(1);orderModel.GiveWater();throw new Exception("Water remained available after departing");}catch(InvalidOperationException){checks++;}
 try{var orderModel=new RunTransitionModel();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.ResolveBoss(false);orderModel.Advance();orderModel.BacktrackTo(1);orderModel.ResolveBoss(false);throw new Exception("Boss resolved from wrong region");}catch(InvalidOperationException){checks++;}
+foreach(var row in root.GetProperty("standardReturns").EnumerateArray()) {
+    var n=Numbers(row);Check((n[0]==1&&(n[1]==0||n[2]!=0))==(n[3]==1),"Original standard win return can bypass reward settlement");
+}
+Check(EndingReachability.Neutral(6,8).Verdict==ReachabilityVerdict.Unknown,"Standard return proof must not classify unclosed scripted paths");
 Console.WriteLine($"PASS {checks} audit assertions (original-derived golden + ordered-event models); gameplay NOT_RUN");

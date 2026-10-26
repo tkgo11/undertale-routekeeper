@@ -38,6 +38,10 @@ public static class RoutekeeperBindings
             var room=data.Rooms.ByName(entry.GetProperty("Room").GetString());
             if(room==null||!room.GameObjects.Any(o=>o.ObjectDefinition?.Name.Content==entry.GetProperty("Object").GetString())) throw new Exception("Observed room entry chain changed.");
         }
+        foreach(var name in root.GetProperty("RequiredEmptyEventObjects").EnumerateArray()) {
+            var parent=data.GameObjects.ByName(name.GetString());
+            if(parent==null||parent.Events.SelectMany(e=>e).Any()) throw new Exception("Inherited event closure changed.");
+        }
         var context = new GlobalDecompileContext(data);
         int checkedEvidence = 0;
         foreach (var evidence in root.GetProperty("Evidence").EnumerateArray()) {

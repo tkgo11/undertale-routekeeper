@@ -59,7 +59,7 @@ goals (including LV1 with an Exile kill minimum), more optional post-friendship
 encounters, alarm/Draw/
 collision interactions and scripted outcomes outside the audited EX boundary.
 Runtime-only uncertainty: startup, real controller input, battle timing, saves,
-RESET/cloud effects and actual final playback. Keep InspectedOnly and Draft.
+RESET/cloud effects and actual final playback. Keep InspectedOnly; PR1 remains Ready for source review only.
 
 ## Ordered witnesses and runtime continuation
 
@@ -138,3 +138,21 @@ repeated battle Step and overworld return cannot bank the same rewards/counters
 twice in this numeric projection. Cross-phase warning/reload cases, current-state
 source contracts and100-cycle EX regressions supplement it. Actual Step/Alarm/
 Draw/Collision ordering, HP/inventory preservation and input timing remain NOT_RUN.
+
+## Review-directed source closure (2026-10-26)
+
+The Snowdrake review exposed a genuine snapshot/event-order mismatch: settled
+flag203 can be15 while global.kills already includes another enemy killed in the
+same encounter. The battler captures flag201 as the pre-battle total, and overworld
+settlement adds the delta only after return. Guard/ACT now use that region-qualified
+projection before SPARE/FLEE; stale negative deltas fail safely. This is shared
+predicate parity PLUS independent original settlement golden evidence, not a VM.
+
+The standard battlecontroller Other10 exit calls postbattle collection before
+room_goto only for won1; eight source-derived numeric cases now assert this order.
+The audit enumerates11 genuine global.kills write-site resources (equality tests
+excluded), pins zero-EXP Mettaton form and Woshbody/heart/bomb scripts and validates
+that the shared monster parent has no inherited event callbacks. These facts close
+specific standard-return/inheritance assumptions, not all compound-goal paths.
+Type6/goal8 remains UNKNOWN. No new reachability/automatic-intervention guarantee
+is asserted without remaining scripted path closure and genuine runtime evidence.

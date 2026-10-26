@@ -41,6 +41,7 @@ def compile_slice(source):
   elif m:=re.fullmatch(r'global.attacktype = (.*);',line):line='attacktype = '+expression(m[1])
   elif m:=re.fullmatch(r'turns -= (\d+);',line):line='turns -= '+m[1]
   elif m:=re.fullmatch(r'(?:global\.)?(xp|gold|inbattle|interact|regional|won|hp|prevhp|goodot|myplot|hitplot|d_con) ([-+]=|=) ([^();]+);',line.replace('global.flag[global.flag[200]]','regional')):line=m[1]+' '+m[2]+' '+expression(m[3])
+  elif line=='room_goto(global.currentroom);':line='room_return = 1'
   elif line=='instance_destroy();':line='destroyed = 1'
   elif m:=re.fullmatch(r'global.lv = (\d+);',line):line='lv = '+m[1]
   elif line=='scr_itemget(16);':line='requested = 1'
@@ -198,10 +199,26 @@ assert 'global.kills' not in read('gml_Object_obj_doodlebug_Destroy_0')
 assert 'killed = 1' not in read('gml_Object_obj_napstablook_Step_0')
 assert 'obj_endflowey' in body(step,'if (con == 11)')
 for name in ['gml_Object_obj_artclass_sign_Create_0','gml_Object_obj_artclass_sign_Alarm_0','gml_Object_obj_sosorry_Destroy_0','gml_Object_obj_sosorry_Step_0','gml_Object_obj_encounterer_jerry_Create_0','gml_Object_obj_encounterer_jerry_Step_0','gml_Object_obj_encounterer_glyde_Create_0','gml_Object_obj_maddummy_Create_0','gml_Object_obj_maddummy_Other_13','gml_Object_obj_maddummy_Alarm_3','gml_Object_obj_napstablook_Destroy_0','gml_Object_obj_bara01_Step_0','gml_Object_obj_bara02_Step_0','gml_Object_obj_spiderb_Step_0','gml_Object_obj_spiderb_Alarm_6','gml_Object_obj_doorA_Alarm_2','gml_Object_obj_doorB_Alarm_2','gml_Script_scr_runaway','gml_Script_scr_load']:read(name)
+# Standard win return dispatch cannot discard unbanked EXP: it requires won1,
+# which the original settlement prefix sets while banking rewards synchronously.
+exitSource=read('gml_Object_obj_battlecontroller_Other_10')
+exitSource=exitSource.replace('instance_exists(OBJ_WRITER)','writer_exists').replace('OBJ_WRITER.halt','halt')
+exitcode=compile_slice(exitSource);standardReturns=[]
+for won,writer,halt in itertools.product(range(2),repeat=3):
+ v=run(exitcode,dict(won=won,writer_exists=writer,halt=halt,room_return=0))
+ standardReturns.append([won,writer,halt,v['room_return']])
+# Syntactic counter-write inventory (all original resources), NOT a proof that
+# every actor's death or nonstandard script return is reachable or reward-safe.
+killSites=[]
+for sourcePath in sorted(a.source.glob('*.gml')):
+ text=sourcePath.read_text()
+ if re.search(r'global\.kills\s*(?:\+=|-=|=(?!=)|\+\+)',text):
+  read(sourcePath.stem);killSites.append(sourcePath.stem)
+for name in ['gml_Object_obj_mettatonb_quiz_Step_0','gml_Object_obj_mettatonb_second_Step_0','gml_Object_obj_mettatonb_third_Step_0','gml_Object_obj_battlebomb_Step_0','gml_Object_obj_heart_Step_0','gml_Object_obj_woshbody_Step_0']:read(name)
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)
 a.output.parent.mkdir(parents=True,exist_ok=True)
-result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits}
+result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits,'standardReturns':standardReturns,'killWriteSites':killSites}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
 if a.verify:
  if a.output.read_text()!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')

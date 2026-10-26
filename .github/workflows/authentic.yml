@@ -7,7 +7,7 @@ permissions:
   contents: write
 jobs:
   private-structural:
-    if: github.event.repository.private == true
+    if: github.repository == 'tkgo11/undertale-routekeeper' && github.event.repository.private == true && github.event.repository.fork == false
     strategy:
       fail-fast: false
       matrix:

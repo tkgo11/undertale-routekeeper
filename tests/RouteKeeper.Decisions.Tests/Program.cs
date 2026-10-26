@@ -11,7 +11,7 @@ if (args is ["--verify-budget", var checkedBudget]) {
     if (File.ReadAllText(checkedBudget).Replace("\r\n","\n") != DecisionPolicy.EmitBudgetGml()) throw new Exception("Stale budget policy");
     Console.WriteLine("PASS: generated kill budget current"); return;
 }
-var adapterSources=new Dictionary<string,string>{{"decision_enforceable.gml",DecisionPolicy.EmitEnforceableGml()},{"decision_rating_resolution.gml",DecisionPolicy.EmitRatingResolutionGml()},{"decision_ratings.gml",DecisionPolicy.EmitRatingsGml()},{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
+var adapterSources=new Dictionary<string,string>{{"decision_regional.gml",DecisionPolicy.EmitRegionalGml()},{"decision_enforceable.gml",DecisionPolicy.EmitEnforceableGml()},{"decision_rating_resolution.gml",DecisionPolicy.EmitRatingResolutionGml()},{"decision_ratings.gml",DecisionPolicy.EmitRatingsGml()},{"greeting_experience.gml",GreetingPolicy.EmitExperience()},{"decision_snow_act.gml",DecisionPolicy.EmitSnowActGml()},{"greeting_risk.gml",GreetingPolicy.EmitRisk()},{"greeting_healing.gml",GreetingPolicy.EmitHealing()},{"greeting_armor.gml",GreetingPolicy.EmitArmor()},{"warning_session.gml",WarningSession.EmitGml()},{"decision_risk.gml",DecisionPolicy.EmitGml()},{"decision_budget.gml",DecisionPolicy.EmitBudgetGml()},{"decision_required.gml",DecisionPolicy.EmitRequiredGml()},{"decision_item.gml",DecisionPolicy.EmitItemGml()},{"decision_act.gml",DecisionPolicy.EmitActGml()}};
 if (args is ["--emit-adapters",var adapterDirectory]) {
     Directory.CreateDirectory(adapterDirectory);foreach(var (name,text) in adapterSources)File.WriteAllText(Path.Combine(adapterDirectory,name),text);return;
 }
@@ -257,4 +257,12 @@ Check("1000 pending reward boundaries match emitted EXP projection",true);
 
 
 
+Check("Unbanked Snowdin kill protects the last Snowdrake",DecisionPolicy.RequiresDefeat(DecisionEnemy.Snowdrake,DecisionAction.Spare,DecisionPolicy.EffectiveRegionalKills(15,21,20,203,203,true),false));
+Check("Another region and stale negative deltas cannot masquerade as Snowdin progress",DecisionPolicy.EffectiveRegionalKills(15,21,20,204,203,true)==15&&DecisionPolicy.EffectiveRegionalKills(15,19,20,203,203,true)==-1);
+foreach(int settled in new[]{14,15,16})foreach(int delta in new[]{0,1,2})foreach(bool battle in new[]{false,true})foreach(int region in new[]{202,203,204}) {
+    int expected=settled+(battle&&region==203?delta:0);
+    var prefix=$"argument0={settled};argument1={20+delta};argument2=20;argument3={region};argument4=203;argument5={(battle?1:0)};";
+    if(int.Parse(new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitRegionalGml(),new Dictionary<string,int?>()).Run())!=expected)throw new Exception("Source regional projection mismatch");
+}
+Check("54 regional boundary/area/event cases match emitted projection",true);
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

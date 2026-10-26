@@ -87,6 +87,12 @@ public static class DecisionPolicy
         return new(!acknowledged, warning, acknowledged, false);
     }
 
+    // Original battler captures total kills; the overworld settles this delta
+    // only on return. Never attribute another region's pending delta to Snowdin.
+    public static int EffectiveRegionalKills(int settled,int total,int baseline,int currentCounter,int counter,bool inBattle)=>
+        !inBattle||currentCounter!=counter?settled:total<baseline?-1:settled+total-baseline;
+    public static string EmitRegionalGml()=>"// Source-derived pending regional kill projection; -1 means stale input.\nif (!argument5 || argument3 != argument4) return argument0;\nif (argument1 < argument2) return -1;\nreturn argument0 + argument1 - argument2;\n";
+
     public static bool RequiresDefeat(DecisionEnemy enemy, DecisionAction action, int snowdinKills = 0, bool snowdrakeKilled = false)
     {
         if (!Enum.IsDefined(enemy) || !Enum.IsDefined(action)) throw new ArgumentOutOfRangeException(nameof(enemy));

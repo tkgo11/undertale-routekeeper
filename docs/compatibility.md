@@ -11,7 +11,7 @@ hook/source evidence is in docs/integration-research.md.
 | Current Steam macOS | Depot 391542 exists; no game.ios/runner supplied | NOT_RUN | REFUSED |
 | Current Steam Linux | Depot 391544 exists; no game.unx/runner supplied | NOT_RUN | REFUSED |
 
-The expanded source validates 118 original resource signatures, 27 intended code
+The expanded source validates 127 original resource signatures, 27 intended code
 changes and all 6,245 non-hook original code resources. Original textures/audio/font
 glyphs are retained. This is structural evidence only.
 
@@ -24,7 +24,7 @@ compatibility-layer execution never promotes it. See runtime-validation.md for
 all archive hashes, isolation and the Steam initialization blocker.
 
 Expected experimental output SHA-256:
-`6a49b85ce707596257e98e7ae6470e32a968ef666e127bb87701498c3a7d0beb`.
+`9abd0729f08497f8185ac9540eb514f3a466d41a4a2fcc5f005d484d8fa7ad4d`.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.
@@ -46,3 +46,9 @@ Full source/output hashes and bytecode identity remain independently checked.
 Unknown/modified inputs have no automatic fallback patch path. An already patched
 input is rejected by development patch generation as well as exact-profile
 validation. No released G3M package currently exists.
+
+The 2026-10-26 candidate9abd0729 is structurally rebuilt/reloaded only. Its official
+runner and same-account side-copy workflow have NOT_RUN native Windows status.
+A read-only fingerprint of another personal Steam installation does not approve
+that installation/build. Neither local snapshot recovery nor operator smoke
+observations prove Steam account-level history isolation. Keep InspectedOnly.

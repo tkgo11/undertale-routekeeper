@@ -956,6 +956,51 @@
       "Resource": "gml_Script_scr_interact",
       "DecompilerSha256": "b2f806df8020fcfec67f3dda71b812606410c740ee15602cf284beba4228d3ca",
       "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlecontroller_Other_10",
+      "DecompilerSha256": "ef94fb547ea3ef1c62e49963da690e259fc2afcf1109b02afc070a80a0fd92e6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettaton_neo_Step_0",
+      "DecompilerSha256": "cba956189175e3162cde2802dd4d6e9f6ded1f12a12292cc4d1f5ae8d1bc7280",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_tsunderplane_Destroy_0",
+      "DecompilerSha256": "9366b00d7a03a16e9629aa5a7e9794b79ed46e5a37c2d9281fb2b5aefe6cbce4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_undyne_ex_Step_0",
+      "DecompilerSha256": "4853a6c6da25d0b8221d6d7bd0251d7387e44260abdab735f480c611298e207c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_quiz_Step_0",
+      "DecompilerSha256": "a623f24dcf0f57c948cbf14918cfbd0283fa1be0e2ea62a4e1f68ccdc98cb42e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_second_Step_0",
+      "DecompilerSha256": "62528bdab578989ba6f3e187c4f7f40a28ffbf94375d1c08d6ea1b184727409c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_third_Step_0",
+      "DecompilerSha256": "ca20829889547ff0b57fc157e8649eaf80bd8186c397d8e37d5772695f329278",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlebomb_Step_0",
+      "DecompilerSha256": "def2332e0ec947a2866b7b8e4a6ca7011db4622eb6c9f378961a0e27d71ce612",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_heart_Step_0",
+      "DecompilerSha256": "80dc2968648d589d0dc67b9a4de6b3a40e1fd7ecb9b9a30d2954129fab1dc9ae",
+      "Markers": []
     }
   ],
   "RequiredRooms": [
@@ -1000,6 +1045,18 @@
     {
       "Object": "obj_doorBmusicfade",
       "Parent": "obj_doorB"
+    },
+    {
+      "Object": "obj_mettatonb_quiz",
+      "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_mettatonb_second",
+      "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_mettatonb_third",
+      "Parent": "obj_monsterparent"
     }
   ],
   "RequiredObjectEvents": [
@@ -1037,5 +1094,8 @@
       "Room": "room_fire_sorry",
       "Object": "obj_artclass_sign"
     }
+  ],
+  "RequiredEmptyEventObjects": [
+    "obj_monsterparent"
   ]
 }
