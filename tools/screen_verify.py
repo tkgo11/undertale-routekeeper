@@ -431,6 +431,16 @@ def reference_provenance(meta):
     return meta
 
 
+
+def store_capture_record(assertion,root,actual,folder):
+    capture_path=child(root,assertion['capture']);raw=read(capture_path,MAX_JSON)
+    if digest(raw)!=assertion['captureSha256']:raise EvidenceError('Capture sidecar hash mismatch')
+    metadata=decode_json(raw)
+    if metadata.get('imageSha256')!=assertion['actualSha256']:raise EvidenceError('Capture metadata/frame hash mismatch')
+    state,reason=capture_status(metadata,actual)
+    put_json(folder/'capture-private.json',metadata)
+    return state,reason
+
 def visual(assertion, root, kind, folder):
     identifier = token(assertion['id'])
     row = result(identifier, 'visual', 'NEEDS_REVIEW', 'Insufficient visual evidence', expected='Defined visual contract', actual=None)
@@ -441,10 +451,22 @@ def visual(assertion, root, kind, folder):
         actual_raw = read(actual_path)
         put(folder/'submitted-actual.bin', actual_raw)
         actual, actual_raw = decode_png(actual_raw, assertion['actualSha256'])
-        normalized, geometry = normalize(actual, assertion.get('geometry'))
         put(folder/'actual.png', actual_raw)
-        put(folder/'normalized.png', png_bytes(normalized))
-        row['geometry'] = geometry
+        if assertion.get('method')=='capture-only':
+            if kind=='native-import':store_capture_record(assertion,root,actual,folder)
+            try:
+                normalized,geometry=normalize(actual,assertion.get('geometry'))
+                put(folder/'normalized.png',png_bytes(normalized));row['geometry']=geometry
+            except EvidenceError as error:
+                # Original-game scenes may contain sub-grid pixels. A bounded,
+                # valid raw capture is still reviewable, never forcibly resized.
+                row['geometry']={'normalized':False,'reason':str(error),'rawSize':list(actual.size)}
+            row.update(result='NEEDS_REVIEW',reason='No authoritative reference; capture-only observation cannot establish expected rendering or game state',
+                       method='capture-only',reviewableAsPass=False,actualSha256=assertion['actualSha256'],evidenceSource=assertion['actual'],
+                       question='Inspect only visible pixels; no expected reference exists. Do not infer the intended screen, gameplay or Steam history.')
+            return row
+        normalized,geometry=normalize(actual,assertion.get('geometry'))
+        put(folder/'normalized.png',png_bytes(normalized));row['geometry']=geometry
         ref = assertion['reference']
         provenance = reference_provenance(ref['provenance'])
         expected, expected_raw = png(child(root, ref['file']), ref['sha256'])
@@ -543,18 +565,8 @@ def visual(assertion, root, kind, folder):
         if (provenance['kind'] == 'proxy' or (provenance['font'] == 'native-en' and provenance['kind'] not in ('private-authentic', 'independently-reviewed'))) and row['result'] == 'PASS':
             row.update(result='NEEDS_REVIEW', reason='Proxy font/reference cannot establish authoritative native glyph rendering')
         if kind == 'native-import':
-            capture_path = child(root, assertion['capture'])
-            capture_raw = read(capture_path, MAX_JSON)
-            if digest(capture_raw) != assertion['captureSha256']:
-                raise EvidenceError('Capture sidecar hash mismatch')
-            metadata = decode_json(capture_raw)
-            if metadata.get('imageSha256') != assertion['actualSha256']:
-                raise EvidenceError('Capture metadata/frame hash mismatch')
-            state, reason = capture_status(metadata, actual)
-            row.update(result=state, reason=reason)
-            # No executable path, window title, username, PID or desktop origin in
-            # shareable metadata. Preserve the supplied capture only privately.
-            put_json(folder/'capture-private.json', metadata)
+            state,reason=store_capture_record(assertion,root,actual,folder)
+            row.update(result=state,reason=reason)
         row['actualSha256'] = assertion['actualSha256']
         row['evidenceSource'] = assertion['actual']
         row['ignoredRegions'] = assertion.get('ignore', [])
@@ -638,7 +650,7 @@ def verify(manifest_path, output):
                 if identifier not in supplied:
                     rows.append(dict(result(identifier, 'gameplay' if identifier.endswith('behavior') else 'precondition', 'NOT_RUN', 'Required scenario evidence not supplied'), scenario=scenario, mandatory=True))
             if manifest['kind'] == 'native-import':
-                rows.append(dict(result(scenario+'-safety', 'precondition', 'BLOCKED', 'Current same-account Steam execution NO-GO; capture cannot establish account safety'), scenario=scenario, mandatory=True))
+                rows.append(dict(result(scenario+'-safety', 'precondition', 'BLOCKED', 'No same-account isolation/safety approval; default Run remains NO-GO. Experimental consent is not an account-safety assertion'), scenario=scenario, mandatory=True))
         inventories = {}
         for file in sorted(stage.rglob('*')):
             if file.is_file():
@@ -720,7 +732,7 @@ def summarize(run):
         if matching and row['scope'] == 'visual' and row['result'] in ('PASS', 'NEEDS_REVIEW'):
             latest = matching[-1]
             row['reviewDecision'] = latest['decision']
-            row['result'] = {'accepted':'PASS', 'defect':'FAIL', 'uncertain':'NEEDS_REVIEW', 'invalid':'INVALID_EVIDENCE', 'recapture':'NEEDS_REVIEW'}[latest['decision']]
+            row['result'] = {'accepted':('PASS' if row.get('reviewableAsPass', True) else 'NEEDS_REVIEW'), 'defect':'FAIL', 'uncertain':'NEEDS_REVIEW', 'invalid':'INVALID_EVIDENCE', 'recapture':'NEEDS_REVIEW'}[latest['decision']]
             row['reason'] = 'Scoped reviewer judgment; automatic verdict retained'
             row['independent'] = False
         rows.append(row)

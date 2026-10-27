@@ -1,17 +1,4 @@
-# Best-effort foreground client pixels. This captures no game state, dispatches
-# no input and starts no process. Overlays are NOT proven absent. Keep private.
-function Save-RkClientCapture([string]$Executable,[string]$Destination,
- [ValidatePattern('^[a-f0-9]{64}$')][string]$ExpectedRunnerSha256='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58') {
- Assert-RkNoLinks $Executable
- Assert-RkNoLinks $Destination
- Assert-RkNoLinks ($Destination+'.json')
- if((Test-Path -LiteralPath $Destination) -or (Test-Path -LiteralPath ($Destination+'.json'))){throw 'Capture outputs must be new.'}
- Assert-RkHash $Executable $ExpectedRunnerSha256
- $gameCandidates=@(Get-Process UNDERTALE -ErrorAction Stop | Where-Object {$_.Path -and $_.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)})
- if($gameCandidates.Count -ne 1){throw 'One exact side-copy runner must be active.'}
- $process=$gameCandidates[0]
- Assert-RkHash $process.Path $ExpectedRunnerSha256
- $processStarted=$process.StartTime.ToUniversalTime().ToString('o')
+function Initialize-RkCapture {
  Add-Type -AssemblyName System.Drawing
  if (!('RoutekeeperCapture' -as [type])) {
 Add-Type @'
@@ -29,8 +16,33 @@ public static class RoutekeeperCapture {
 }
 '@
  }
+}
+# Best-effort foreground client pixels. This captures no game state, dispatches
+# no input and starts no process. Overlays are NOT proven absent. Keep private.
+function Save-RkClientCapture([string]$Executable,[string]$Destination,
+ [ValidatePattern('^[a-f0-9]{64}$')][string]$ExpectedRunnerSha256='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58') {
+ Assert-RkHash $Executable $ExpectedRunnerSha256
+ $gameCandidates=@(Get-Process UNDERTALE -ErrorAction Stop | Where-Object {$_.Path -and $_.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)})
+ if($gameCandidates.Count -ne 1){throw 'One exact side-copy runner must be active.'}
+ Save-RkWindowCapture $gameCandidates[0] $Executable $Destination $ExpectedRunnerSha256
+}
+# Also supports the purpose-built harmless native test window. This is capture,
+# not permission to launch a game or to infer gameplay from pixels.
+function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
+ [ValidatePattern('^[a-f0-9]{64}$')][string]$ExpectedRunnerSha256,[IntPtr]$ExplicitWindow=[IntPtr]::Zero) {
+ Assert-RkNoLinks $Executable
+ Assert-RkNoLinks $Destination
+ Assert-RkNoLinks ($Destination+'.json')
+ if((Test-Path -LiteralPath $Destination) -or (Test-Path -LiteralPath ($Destination+'.json'))){throw 'Capture outputs must be new.'}
+ Assert-RkHash $Executable $ExpectedRunnerSha256
+ $process=$Process
+ if(!$process.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)){throw 'Unexpected capture executable.'}
+ Assert-RkHash $process.Path $ExpectedRunnerSha256
+ $processStarted=$process.StartTime.ToUniversalTime().ToString('o')
+ Initialize-RkCapture
  $null=[RoutekeeperCapture]::SetProcessDPIAware()
  $window=$process.MainWindowHandle
+ if($ExplicitWindow -ne [IntPtr]::Zero){$window=$ExplicitWindow}
  if($window -eq [IntPtr]::Zero -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Focus exact UNDERTALE client before capture.'}
  [uint32]$owner=0
  $null=[RoutekeeperCapture]::GetWindowThreadProcessId($window,[ref]$owner)
@@ -55,7 +67,7 @@ public static class RoutekeeperCapture {
   [uint32]$afterOwner=0
   $null=[RoutekeeperCapture]::GetWindowThreadProcessId($window,[ref]$afterOwner)
   $process.Refresh()
-  if($process.HasExited -or $process.MainWindowHandle -ne $window -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
+  if($process.HasExited -or ($ExplicitWindow -eq [IntPtr]::Zero -and $process.MainWindowHandle -ne $window) -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
   if(![RoutekeeperCapture]::GetClientRect($window,[ref]$after) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$afterPoint) -or $after.Right -ne $rect.Right -or $after.Bottom -ne $rect.Bottom -or $point.X -ne $afterPoint.X -or $point.Y -ne $afterPoint.Y -or [RoutekeeperCapture]::GetDpiForWindow($window) -ne $dpi){throw 'Capture client geometry/DPI changed.'}
   Assert-RkHash $Executable $ExpectedRunnerSha256
   Assert-RkHash $process.Path $ExpectedRunnerSha256

@@ -289,3 +289,15 @@ No native Windows screenshot, original/patched runner, actual English/Korean
 rendering, physical input, Steam, GameMaker scheduler or gameplay was exercised.
 NO-GO and InspectedOnly are unchanged. This infrastructure is useful now for
 synthetic/preexisting evidence; it is not release or runtime compatibility approval.
+
+
+## Explicit capture-only observations
+
+The Windows E2E probe may have a valid native frame without an authoritative expected
+screen. `method:capture-only` is an explicit new scope, not an exact-comparison
+fallback. It validates PNG/hash/native sidecar, preserves raw pixels and queues
+NEEDS_REVIEW without inventing expected/diff images. Unsupported sub-grid normalization
+is recorded and the raw frame retained. Even an accepted visual review cannot turn
+this assertion into PASS. Ordinary exact assertions with missing references still
+return INVALID_EVIDENCE. Native account-safety scope remains BLOCKED independently
+of experimental execution consent. See windows-e2e.md for the narrower probe policy.

@@ -495,4 +495,30 @@ class ScreenTests(unittest.TestCase):
         self.assertEqual(data['result'],'FAIL')
 
 
+
+    def test_capture_only_without_reference_never_approved_to_pass(self):
+        self.a['method']='capture-only';del self.a['reference']
+        data=self.run_case();r=self.visual(data)
+        self.assertEqual(r['result'],'NEEDS_REVIEW')
+        self.assertFalse(r['reviewableAsPass'])
+        data=v.record_review(self.root/'run',r['reviewId'],'accepted','human','scoped-test','capture-review')
+        self.assertEqual(self.visual(data)['result'],'NEEDS_REVIEW')
+        self.assertFalse((self.root/'run/review'/r['reviewId']/'expected.png').exists())
+
+    def test_capture_only_keeps_subgrid_original_without_distortion(self):
+        self.file('actual.png',self.image.resize((640,480),Image.Resampling.NEAREST))
+        with Image.open(self.root/'actual.png') as source:image=source.copy()
+        image.putpixel((101,101),(255,0,0));self.file('actual.png',image)
+        self.a.update(actualSha256=self.sha('actual.png'),method='capture-only');del self.a['reference']
+        r=self.visual(self.run_case())
+        self.assertEqual(r['result'],'NEEDS_REVIEW')
+        self.assertFalse(r['geometry']['normalized'])
+        self.assertFalse((self.root/'run/review'/r['reviewId']/'normalized.png').exists())
+
+    def test_capture_only_native_still_requires_valid_sidecar(self):
+        self.manifest['kind']='native-import';self.a['method']='capture-only';del self.a['reference']
+        r=self.visual(self.run_case())
+        self.assertEqual(r['result'],'INVALID_EVIDENCE')
+
+
 if __name__=='__main__':unittest.main()

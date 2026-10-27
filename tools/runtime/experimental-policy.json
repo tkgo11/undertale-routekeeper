@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "id": "experimental-e2e-v1",
+  "scope": "non-destructive-smoke",
+  "disclosure": "Experimental same-account execution. Startup itself may read/write Steam permanent history or queue deletions. Cloud-off, Offline Mode and local restoration do not isolate or restore RemoteStorage/account state. No SAVE/RESET/ending/history tests, cache deletion, ownership bypass or registered-install replacement. Native behavior is unverified. Keep Cloud/network off after recovery.",
+  "hardRequirements": [
+    "exact-build-and-harness",
+    "native-non-game-validation",
+    "verified-local-backups",
+    "recognized-starting-state",
+    "legitimate-Steam-authentication",
+    "current-session-consent"
+  ],
+  "forbidden": [
+    "history-or-cache-cleanup",
+    "Cloud-setting-changes",
+    "Steam-shims",
+    "registered-install-writes",
+    "save-injection",
+    "unverified-state-input"
+  ],
+  "launchStatus": "OPT_IN_ORIGINAL_STARTUP_PROBE_ONLY",
+  "defaultRun": "NO-GO",
+  "fullGameplayStatus": "BLOCKED_UNVERIFIED_NATIVE_BOOTSTRAP_AND_GAME_INPUT"
+}

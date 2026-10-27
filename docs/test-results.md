@@ -1,5 +1,22 @@
 # Verification evidence
 
+## Windows E2E orchestration continuation
+
+See [windows-e2e.md](windows-e2e.md). New single-entry Check/Prepare/Preflight/
+DryRun/NativeTest/Smoke/Resume/Recover/Report/Cleanup coordination reuses the existing
+archive/builder, transaction, capture and screen-review implementations. The owner
+separately authorized a guarded original-startup experiment; default Run stays NO-GO.
+Smoke is deliberately an original-only process/window probe, not a complete native
+baseline; patched/gameplay execution remains blocked without source-backed starting
+state/input evidence. No Steam/game was launched in Cloud. Profile stays InspectedOnly.
+
+Synthetic state-machine16 tests and screen51 tests cover finite original/mod branches,
+input/focus/abort/crash/watchdog failures, review non-escalation, journal/result seals,
+private reports and existing transaction integration. A new post-trial digest fence
+refuses unknown changes before restoration. Window-targeted input and the harmless
+native test window are implemented but real Windows behavior is NOT_RUN.
+
+
 ## Deterministic screen verification — 2026-10-27 UTC
 
 Continuation hardening: SHA pins must be strings (numeric coercion refused),

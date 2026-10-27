@@ -17,6 +17,11 @@ Offline screen contracts and deferred human/AI visual review are available witho
 launching the game: [screen verification guide](docs/screen-verification.md).
 Visual approval never proves gameplay correctness or removes the startup NO-GO.
 
+Windows testing uses one [documented entry point](docs/windows-e2e.md) for offline
+preparation, synthetic DryRun and native non-game validation. A separately consented
+original startup probe remains runtime-unverified; full patched/gameplay automation
+is blocked by missing baseline/input evidence. Default Run stays NO-GO.
+
 ## Build and verify
 
 Install the SDK pinned in global.json. Executable test runners use `dotnet run`:

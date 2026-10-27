@@ -1,7 +1,20 @@
 # Same-account Steam startup safety
 
-Reviewed 2026-10-27 (KST). **NO-GO for starting either official runner.**
+Reviewed 2026-10-27 (KST). **NO-GO for default Run and account-safety approval.**
 No Steam client, UNDERTALE executable or compatibility-layer game was started.
+
+## Separately authorized experimental boundary
+
+The current owner explicitly accepts account-history risk for a distinct opt-in
+experiment. [windows-e2e.md](windows-e2e.md) documents the new test-windows entry
+point: native non-game validation, exact preparation, hard cache/history/path/
+identity gates, fresh disclosure consent and independent local backups precede an
+original-only startup probe. It sends no gameplay input into an unrecognized scene
+and never advances to patched execution without a real original baseline. Default
+run-current-account Run remains code-disabled. Risk consent is not account isolation
+or safety approval. No game/Steam was executed in Cloud; all native behavior is NOT_RUN.
+Existing SDK/history analysis below remains valid. No history/cache deletion or
+Cloud setting changes are authorized by this policy.
 
 ## Direct source and API evidence
 

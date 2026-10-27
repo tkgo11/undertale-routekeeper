@@ -1,5 +1,11 @@
 # Non-runtime delivery status — 2026-10-27 KST
 
+Latest opt-in experimental boundary: [windows-e2e.md](windows-e2e.md). Default
+Run and safety approval remain NO-GO. A separately authorized original-startup
+probe requires native gates/consent; it is not a patched/gameplay baseline. Cloud
+execution remains prohibited. Historical blanket launch restrictions below describe
+the earlier policy, not a runtime approval or a waiver of current hard guards.
+
 New offline screen/review tooling: [screen-verification.md](screen-verification.md).
 Existing-frame verification, synthetic fixtures and private deferred review are
 available without game execution. Native captures, Win32 APIs and gameplay remain

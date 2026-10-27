@@ -193,3 +193,22 @@ Optional local Python lint: install pyflakes3.4.0 alongside Pillow11.3.0, then
 - Visual acceptance never upgrades internal-state assertions, NO-GO or profiles.
 - Preserve immutable run/review files; improved evidence belongs in a new run.
   Exports require explicit private-pixel confirmation and never perform uploads.
+
+
+## Explicit Windows E2E experiment (later owner authorization)
+
+Read docs/windows-e2e.md before changing execution policy. The owner separately
+accepted Steam account risk for an opt-in original-startup probe after native
+non-game validation, exact identity, hard preflight, fresh consent and verified
+backups. Default run-current-account Run remains NO-GO, and Cloud must never launch
+Steam/game. Do not confuse permission for a probe with account isolation, a passed
+baseline, native compatibility or approval to run patched/progression scenarios.
+
+- `python tools/test_windows_e2e.py` and `pwsh -NoProfile -File tools/runtime/test-e2e.ps1`.
+- `tools/runtime/test-windows.ps1` is the single operator entry. Smoke is original
+  startup observation only; no unrecognized-state input or automatic patched run.
+- Reuse existing transactions. New experimental recovery requires a post-trial
+  fence before moving any existing trial content; unknown changes fail closed.
+- Targeted HWND messages are not physical input or verified GameMaker actions.
+- Capture-only review never becomes PASS. Preserve all private evidence and never
+  promote InspectedOnly from receipts, consent or non-game tests.
