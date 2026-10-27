@@ -2733,7 +2733,7 @@
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",
-  "coverage_note": "Entire prior198-file set rehashed:163 unchanged blobs retain earlier full-content inspection,34 changed blobs plus new report inspected and scoped regressions reviewed; source/generator/resource checks are offline only. See docs/offline-audit-2026-10-27.md. No sampling-based fresh manual rereading or runtime approval claim.",
+  "coverage_note": "Current199-path inventory carries earlier full-content inspections for161 unchanged baseline blobs;36 modified retained paths were inspected, plus the new offline audit report. The self-manifest is handled separately. Per-file hashes include the subsequent README/runtime documentation reconciliation. Source/generator/resource checks are offline only; no sampling-based fresh manual rereading or runtime approval claim. See docs/offline-audit-2026-10-27.md.",
   "localization_start_head": "05695725a76ad019402eba66d119e21640733899",
   "offline_audit_start_head": "06acf3ded1ce360ed8fa0bd632e5bb5ec434622e"
 }
