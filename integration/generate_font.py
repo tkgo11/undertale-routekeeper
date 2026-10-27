@@ -1,17 +1,48 @@
 #!/usr/bin/env python3
 """Deterministic binary-alpha bitmap atlas. No host fonts, Pillow or rasterizer needed."""
 from pathlib import Path
-import argparse, gzip, hashlib, io, json, math, os, stat, struct, tempfile, zlib
+import argparse
+import gzip
+import hashlib
+import io
+import json
+import math
+import os
+import stat
+import struct
+import tempfile
+import zlib
 from functools import lru_cache
 ROOT = Path(__file__).resolve().parent
+FONT_METADATA_PATH = ROOT.parent / 'locales/fonts.json'
+
+def valid_glyph_metadata(code, advance, width, height, dx, dy, seen):
+    """Preserve exact BDF metadata limits with auditable, independent checks."""
+    if code in seen:
+        return False
+    if not 0 <= code <= 65535:
+        return False
+    if not 0 <= advance <= 64:
+        return False
+    if not 0 <= width <= 64:
+        return False
+    if not 0 <= height <= 64:
+        return False
+    if abs(dx) > 64 or abs(dy) > 64:
+        return False
+    return True
+
 
 @lru_cache(maxsize=32)
 def glyph_source(font_id="galmuri14"):
-    meta = json.loads((ROOT.parent/'locales/fonts.json').read_text(encoding='utf-8'))[font_id]
+    meta = json.loads((FONT_METADATA_PATH).read_text(encoding='utf-8'))[font_id]
     source=ROOT.parent/meta['source']
-    if source.stat().st_size>16*1024*1024:raise ValueError('Compressed bitmap source exceeds 16MiB')
-    with gzip.GzipFile(fileobj=io.BytesIO(source.read_bytes())) as stream:raw=stream.read(16*1024*1024+1)
-    if len(raw)>16*1024*1024:raise ValueError('Bitmap source exceeds 16MiB')
+    if source.stat().st_size > 16 * 1024 * 1024:
+        raise ValueError('Compressed bitmap source exceeds 16MiB')
+    with gzip.GzipFile(fileobj=io.BytesIO(source.read_bytes())) as stream:
+        raw = stream.read(16 * 1024 * 1024 + 1)
+    if len(raw) > 16 * 1024 * 1024:
+        raise ValueError('Bitmap source exceeds 16MiB')
     if hashlib.sha256(raw).hexdigest() != meta['sha256']:
         raise ValueError('Pinned bitmap source checksum mismatch')
     result = {}
@@ -20,7 +51,8 @@ def glyph_source(font_id="galmuri14"):
         code = int(fields['ENCODING'][0]); advance = int(fields['DWIDTH'][0])
         w,h,dx,dy = map(int, fields['BBX']); start = lines.index('BITMAP')+1
         if code==-1:continue
-        if code in result or not 0<=code<=65535 or not 0<=advance<=64 or not 0<=w<=64 or not 0<=h<=64 or abs(dx)>64 or abs(dy)>64:raise ValueError('Unsupported bitmap source glyph metadata')
+        if not valid_glyph_metadata(code, advance, w, h, dx, dy, result):
+            raise ValueError('Unsupported bitmap source glyph metadata')
         pixels = []
         for y, row in enumerate(lines[start:start+h]):
             if len(row)>16 or len(row)*4<w:raise ValueError('Malformed bitmap row')
@@ -32,7 +64,7 @@ def glyph_source(font_id="galmuri14"):
     return result
 
 def locale_registry():
-    return [l for l in json.loads((ROOT.parent/'locales/languages.json').read_text(encoding='utf-8'))['languages'] if l['enabled']]
+    return [language for language in json.loads((ROOT.parent/'locales/languages.json').read_text(encoding='utf-8'))['languages'] if language['enabled']]
 
 @lru_cache(maxsize=128)
 def native_advance(code):
@@ -61,7 +93,7 @@ def stored_deflate(data):
 
 def generate(font_id="galmuri14"):
     glyphs=glyph_source(font_id); codes=required_chars(font_id); cell=24; width=768
-    line_height=json.loads((ROOT.parent/'locales/fonts.json').read_text(encoding='utf-8'))[font_id]['lineHeight']
+    line_height=json.loads((FONT_METADATA_PATH).read_text(encoding='utf-8'))[font_id]['lineHeight']
     height=1 << max(7,(math.ceil(len(codes)/32)*cell-1).bit_length())
     if height>2048: raise ValueError("Atlas exceeds verified 2048px bound; split-font support is unverified")
     pixels=bytearray(width*height); rows=[]
@@ -101,7 +133,7 @@ def publish(path,data,verify=False):
         if os.path.exists(name):os.unlink(name)
 
 def build_fonts(verify=False):
-    metadata=json.loads((ROOT.parent/'locales/fonts.json').read_text(encoding='utf-8'))
+    metadata=json.loads((FONT_METADATA_PATH).read_text(encoding='utf-8'))
     used=sorted({l['font'] for l in locale_registry() if metadata[l['font']]['kind']!='native'})
     manifest=[]; outputs={}
     for font_id in used:
