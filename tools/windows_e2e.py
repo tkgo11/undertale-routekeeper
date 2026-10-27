@@ -74,7 +74,7 @@ def plans():
 
 
 def source_pins():
-    files = ['tools/windows_e2e.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
+    files = ['tools/windows_e2e.py','tools/runtime_lab.py','tools/screen_verify.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
              'tools/runtime/input-window.ps1','tools/runtime/native-selftest.ps1','tools/runtime/experimental-session.ps1',
              'tools/runtime/capture-client.ps1','tools/runtime/safety.ps1',
              'tools/runtime/current-account-state.ps1','tools/runtime/current-account-windows.ps1',

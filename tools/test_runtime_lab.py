@@ -1,6 +1,6 @@
 import hashlib,io,json,os,stat,struct,tempfile,unittest,zipfile
 from pathlib import Path
-from runtime_lab import safe_entries,inspect,verify,prepare,MARKER,inventory_digest,assert_no_links
+from runtime_lab import safe_entries,inspect,verify,prepare,MARKER,inventory_digest,assert_no_links,remove_unpublished_work
 class ArchiveTests(unittest.TestCase):
  def archive(self,names):
   f=io.BytesIO()
@@ -56,6 +56,32 @@ class ArchiveTests(unittest.TestCase):
    archive.write_bytes(b'synthetic inspection control')
    with patch('runtime_lab.inspect',side_effect=swap_after_inspection),self.assertRaisesRegex(ValueError,'Pristine input changed'):prepare(archive,work)
    self.assertFalse(work.exists())
+ def test_unpublished_cleanup_clears_only_its_readonly_files(self):
+  import shutil
+  from unittest.mock import patch
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();work=root/'owned';work.mkdir()
+   file=work/'data.win';file.write_bytes(b'OWNED SYNTHETIC');file.chmod(0o400)
+   sentinel=root/'input.win';sentinel.write_bytes(b'CALLER INPUT');sentinel.chmod(0o400)
+   original=shutil.rmtree
+   def require_writable(path,*args,**kwargs):
+    self.assertTrue(file.stat().st_mode&stat.S_IWUSR)
+    return original(path,*args,**kwargs)
+   try:
+    with patch('runtime_lab.shutil.rmtree',side_effect=require_writable):remove_unpublished_work(work)
+    self.assertFalse(work.exists());self.assertEqual(sentinel.read_bytes(),b'CALLER INPUT')
+    self.assertFalse(sentinel.stat().st_mode&stat.S_IWUSR)
+   finally:sentinel.chmod(0o600)
+ def test_cleanup_failure_does_not_mask_validation(self):
+  from unittest.mock import patch
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();archive=root/'input.zip';work=root/'lab'
+   with zipfile.ZipFile(archive,'w') as z:z.writestr('Undertale/data.win',b'WRONG')
+   identity={'files':[dict(path='Undertale/data.win',size=5,sha256='0'*64)]}
+   with patch('runtime_lab.inspect',return_value=identity),patch('runtime_lab.remove_unpublished_work',side_effect=PermissionError('synthetic lock')):
+    with self.assertRaisesRegex(ValueError,'Pristine input changed') as caught:prepare(archive,work)
+   self.assertTrue(work.exists())
+   self.assertIn('cleanup incomplete',caught.exception.__notes__[0])
  def test_linked_original_parent(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();game=self.fixture(root);outside=root/'moved-game'

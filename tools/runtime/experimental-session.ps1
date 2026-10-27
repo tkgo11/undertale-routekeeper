@@ -51,6 +51,26 @@ function Assert-RkE2eRecoveryReady($State,[string]$Root,[string]$Save,[string]$O
  }
  $f=Get-Content -LiteralPath $path -Raw -Encoding UTF8|ConvertFrom-Json
  if($f.schema -ne 1 -or $f.id -cne $State.id -or $f.owner -cne $Owner -or $f.present -isnot [bool] -or $f.digest -isnot [string]){throw 'Trial fence identity corrupt.'}
+ if($f.present -and $f.digest -notmatch '^[a-f0-9]{64}$'){throw 'Invalid present-trial digest.'}
+ if(!$f.present -and $f.digest -cne ''){throw 'Absent trial has a nonempty digest.'}
+ if($State.phase -eq 'Restoring'){
+  # The shared transaction journals Restoring BEFORE renaming the trial. Resume
+  # only states independently accounted for by the archived trial and snapshot.
+  $archive=Join-Path $Root 'trial-save';Assert-RkNoLinks $archive
+  $archived=[bool](Test-Path -LiteralPath $archive)
+  if($archived){
+   if(!$f.present -or (Get-RkTreeDigest $archive) -cne $f.digest){throw 'Archived trial differs from its committed fence.'}
+  }
+  if($archived -or !$f.present){
+   if($State.originalPresent){
+    $snapshot=Join-Path $Root 'snapshot';Assert-RkNoLinks $snapshot
+    if(!(Test-Path -LiteralPath $snapshot) -or (Get-RkTreeDigest $snapshot) -cne $State.originalDigest){throw 'Independent original snapshot is missing or corrupt.'}
+   }
+   if(!$present){return}
+   if($State.originalPresent -and !(Test-Path -LiteralPath $protected) -and (Get-RkTreeDigest $Save) -ceq $State.originalDigest){return}
+   throw 'Unknown target during interrupted restoration; preserve all trees.'
+  }
+ }
  if($f.present -ne $present){throw 'Trial presence changed after closure; no recovery mutation authorized.'}
  if(!$present){if($f.digest -cne ''){throw 'Absent trial has a nonempty digest.'};return}
  if($f.digest -notmatch '^[a-f0-9]{64}$' -or (Get-RkTreeDigest $Save) -cne $f.digest){throw 'Unknown personal changes after trial closure; no overwrite or move is authorized.'}

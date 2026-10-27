@@ -1,5 +1,34 @@
 # Verification evidence
 
+## Live-review and actual CI follow-up
+
+The fresh Codex finding4391165198 was independently reproduced against the shared
+save transaction: interruption after trial archival left phase Restoring, but the
+new wrapper compared the missing/returned-original tree to the trial fence and
+refused legitimate recovery. Recovery now recognizes only independently verified
+archived-trial plus original-snapshot states. Failure injection covers both archive
+rename and returned-original/completion-fence gaps; tampered archives and unknown
+new targets remain refused. This is synthetic local restoration evidence, not NTFS
+power-loss or Steam account restoration proof.
+
+Automatic push workflows actually executed and exposed three code/test failures;
+they must not be described as billing-only failures. macOS fixtures now resolve
+only their own system-temp root (production no-link guards unchanged). Windows
+unpublished-lab cleanup makes only owned single-link read-only files writable and
+preserves the primary validation error if cleanup fails. The PR merge checkout also
+contained a newly added base-branch renovate.json absent from the old audit inventory;
+base synchronization and explicit inspection address that drift without ignoring files.
+No hosted workflow was manually rerun or billing setting changed.
+
+OFFLINE_PASS: locale37 including disposable developer workflow; archive14;
+PowerShell E2E43 including interrupted-restoration regressions; E2E Python16;
+screen51; Python lint. Preparation pins now include shared runtime_lab.py and
+screen_verify.py, so prior prepared seals cannot authorize the changed harness.
+Fresh authentic preparation evidence and post-push checks are recorded below when
+available. Native Windows/game/Steam execution remains NOT_RUN; no compatibility,
+merge or release approval follows. Review threads are not automatically resolved.
+
+
 ## Windows E2E orchestration continuation
 
 See [windows-e2e.md](windows-e2e.md). New single-entry Check/Prepare/Preflight/

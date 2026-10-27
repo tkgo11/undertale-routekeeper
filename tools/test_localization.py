@@ -20,7 +20,7 @@ ROOT=loc.ROOT
 class LocalizationTests(unittest.TestCase):
     def setUp(self):
         self.temporary=tempfile.TemporaryDirectory();self.addCleanup(self.temporary.cleanup)
-        self.root=Path(self.temporary.name)
+        self.root=Path(self.temporary.name).resolve()
         for name in ['locales','integration/assets/font-source']:
             shutil.copytree(ROOT/name,self.root/name)
         for name in ['integration/generate_font.py','integration/ui/english-metrics.json','integration/assets/FONT-LICENSE.txt']:
@@ -32,6 +32,21 @@ class LocalizationTests(unittest.TestCase):
     def reject(self,name,action,pattern):
         self.change(name,action)
         with self.assertRaisesRegex(ValueError,pattern):loc.validate(self.root)
+
+    def test_system_temp_alias_is_canonicalized_only_for_owned_fixture(self):
+        from unittest.mock import patch
+        target=self.root/'physical-temp';target.mkdir()
+        alias=self.root/'temp-alias'
+        try:alias.symlink_to(target,target_is_directory=True)
+        except OSError as error:self.skipTest('Temp alias fixture unavailable: '+str(error))
+        probe=LocalizationTests('test_enabled_complete_locales')
+        try:
+            with patch.object(tempfile,'tempdir',str(alias)):
+                probe.setUp()
+            self.assertEqual(probe.root,probe.root.resolve())
+            probe.test_enabled_complete_locales()
+            probe.change('locales/ko.json',lambda data:None)
+        finally:probe.doCleanups()
 
     def test_enabled_complete_locales(self):
         self.assertEqual([x['locale'] for x in loc.validate(self.root)],['en','ko'])

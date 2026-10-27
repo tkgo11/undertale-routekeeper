@@ -82,6 +82,45 @@ try {
  Check ((Get-Content -LiteralPath (Join-Path $save 'file0') -Raw) -ceq 'ORIGINAL SYNTHETIC') 'verified trial fence restores independent original snapshot'
  Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'
  Check ($s.phase -eq 'Restored') 'verified restoration is idempotent'
+ # Independent failure injection inside the SHARED restoration implementation.
+ function New-FencedFixture([string]$Name){
+  $localSave=Join-Path $root ($Name+'-save');New-Item -ItemType Directory -Path $localSave|Out-Null
+  [IO.File]::WriteAllText((Join-Path $localSave 'file0'),'ORIGINAL '+$Name)
+  $tx=New-RkSaveTransaction (Join-Path $root ($Name+'-tx')) $localSave 'SYNTHETIC' 'original' @{e2eKind='EXPERIMENTAL_ORIGINAL_PROBE'}
+  Start-RkSaveTransaction $tx;New-Item -ItemType Directory -Path $localSave|Out-Null
+  [IO.File]::WriteAllText((Join-Path $localSave 'file0'),'TRIAL '+$Name)
+  Write-RkE2eGameStopBoundary $tx;Write-RkE2eTrialFence $tx
+  return $tx
+ }
+ function Move-Item([string]$LiteralPath,[string]$Destination){
+  if($script:failProtectedReturn -and [IO.Path]::GetFileName($LiteralPath) -eq 'protected-save'){throw 'Injected protected return failure'}
+  Microsoft.PowerShell.Management\Move-Item -LiteralPath $LiteralPath -Destination $Destination
+ }
+ $mid=New-FencedFixture 'mid-restore';$script:failProtectedReturn=$true;$refused=$false
+ try{Restore-RkE2eSession $mid $mid.root $mid.savePath 'SYNTHETIC'}catch{$refused=$true}
+ Check ($refused -and $mid.phase -eq 'Restoring' -and !(Test-Path -LiteralPath $mid.savePath)) 'injected failure archives trial before original return'
+ $script:failProtectedReturn=$false
+ Restore-RkE2eSession $mid $mid.root $mid.savePath 'SYNTHETIC'
+ Check ((Get-Content -LiteralPath (Join-Path $mid.savePath 'file0') -Raw) -ceq 'ORIGINAL mid-restore') 'archived fenced trial permits safe restoration resume'
+ $tampered=New-FencedFixture 'tampered-archive';$script:failProtectedReturn=$true
+ try{Restore-RkE2eSession $tampered $tampered.root $tampered.savePath 'SYNTHETIC'}catch{}
+ $script:failProtectedReturn=$false
+ [IO.File]::WriteAllText((Join-Path $tampered.root 'trial-save/file0'),'UNKNOWN ARCHIVE CONTENT')
+ $refused=$false;try{Restore-RkE2eSession $tampered $tampered.root $tampered.savePath 'SYNTHETIC'}catch{$refused=$true}
+ Check ($refused -and !(Test-Path -LiteralPath $tampered.savePath)) 'tampered archived trial never permits interrupted recovery'
+ [IO.File]::WriteAllText((Join-Path $tampered.root 'trial-save/file0'),'TRIAL tampered-archive')
+ New-Item -ItemType Directory -Path $tampered.savePath|Out-Null
+ [IO.File]::WriteAllText((Join-Path $tampered.savePath 'file0'),'UNKNOWN TARGET CONTENT')
+ $refused=$false;try{Restore-RkE2eSession $tampered $tampered.root $tampered.savePath 'SYNTHETIC'}catch{$refused=$true}
+ Check ($refused -and (Get-Content -LiteralPath (Join-Path $tampered.savePath 'file0') -Raw) -ceq 'UNKNOWN TARGET CONTENT') 'unknown target during Restoring is preserved'
+ $script:originalFence=(Get-Command Write-RkCompletionFence).ScriptBlock
+ function Write-RkCompletionFence($State){if($script:failCompletion){throw 'Injected terminal fence failure'};& $script:originalFence $State}
+ $terminal=New-FencedFixture 'terminal-gap';$script:failCompletion=$true;$refused=$false
+ try{Restore-RkE2eSession $terminal $terminal.root $terminal.savePath 'SYNTHETIC'}catch{$refused=$true}
+ Check ($refused -and $terminal.phase -eq 'Restoring') 'injected failure after original return before completion fence'
+ $script:failCompletion=$false
+ Restore-RkE2eSession $terminal $terminal.root $terminal.savePath 'SYNTHETIC'
+ Check ($terminal.phase -eq 'Restored') 'verified returned original resumes across terminal fence gap'
  function Read-Host([string]$Prompt){return $script:answer}
  $session=[guid]::NewGuid().ToString('N');$nonce=[guid]::NewGuid().ToString('N')
  $script:answer='decline';$refused=$false

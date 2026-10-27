@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 35127,
-      "lines": 539,
-      "sha256": "e04ef8f7edab40d5fad99ebecf5cac00fb016a2b96ecda54b4dcabd6d0f3360f",
+      "bytes": 36995,
+      "lines": 568,
+      "sha256": "5b51d8f265feecdcd4b3fa41651931bf3d81aa78556e7cbb82809975c98eac9b",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -150,9 +150,9 @@
     },
     {
       "path": "docs/code-audit.md",
-      "bytes": 23481,
-      "lines": 234,
-      "sha256": "3e8a05b39145bc5c386646ff1c31915158e93791522fc0205881e8493e25c872",
+      "bytes": 23876,
+      "lines": 240,
+      "sha256": "192c0c07407817c30dce6050759530a3fb430eaf11c0ac9421d98ccdd0532ab6",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -172,7 +172,7 @@
         "A11",
         "A12"
       ],
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "docs/compatibility.md",
@@ -246,10 +246,10 @@
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 14825,
-      "lines": 203,
-      "sha256": "3639db3efa4aec3c735eaa2b88753cfa7ec23386538e8bfd3efbbf3e9608a3c8",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 15220,
+      "lines": 209,
+      "sha256": "74c4d4a8f012a1bcf8136a4a7e9d44f828f04a425b7aca94b68123c5c96347ac",
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "docs/offline-audit-2026-10-27.md",
@@ -354,16 +354,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 30946,
-      "lines": 423,
-      "sha256": "902cfd5b007fcfca4df4f2b7556cc9e615c5033361fe43c554111fd3cbc67f71",
+      "bytes": 32814,
+      "lines": 452,
+      "sha256": "de74cd203b71a14d7a5964c7caa6473214e198ded8f23c32f9f2e75651a3bd85",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -2462,10 +2462,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 13696,
-      "lines": 175,
-      "sha256": "a5dd0c40d6f4ec347a2667e99607a3862d3c1d423fde33e91c5f905ba0a94fab",
-      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
+      "bytes": 14886,
+      "lines": 195,
+      "sha256": "2e627bee961a3c7d96258fcd0ba26cfe77da65be15242f6b0c73a3188bda45c3",
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "tools/runtime/input-window.ps1",
@@ -2631,10 +2631,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 8033,
-      "lines": 101,
-      "sha256": "1e535668b9238cc2c365c23aa480f178d8457ce91673647ba3dbb15f53ce1458",
-      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
+      "bytes": 11428,
+      "lines": 140,
+      "sha256": "cd8e83c469882c11357b179042f61606d45e238b5f8225adbbfe033a0e0a4da6",
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "tools/runtime/test-sandbox.ps1",
@@ -2684,9 +2684,9 @@
     },
     {
       "path": "tools/runtime_lab.py",
-      "bytes": 7331,
-      "lines": 119,
-      "sha256": "4c6c99e36ba072f9436a67d4579b5d34fb2799f2bdf7c86d5d81d0012bcb293a",
+      "bytes": 7995,
+      "lines": 133,
+      "sha256": "791f2a1f2148aec9f1968758c6e120a82525e435575f4647f88b33875648eee7",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -2699,7 +2699,7 @@
         "A19",
         "A30"
       ],
-      "reviewed_against_head": "06acf3ded1ce360ed8fa0bd632e5bb5ec434622e"
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "tools/screen_verify.py",
@@ -2798,10 +2798,10 @@
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 19004,
-      "lines": 262,
-      "sha256": "8aede90314bd4cacd86f6b3fef6ba339506b60b3bfcc584e3ded5f856b7039ee",
-      "reviewed_against_head": "06acf3ded1ce360ed8fa0bd632e5bb5ec434622e"
+      "bytes": 19759,
+      "lines": 277,
+      "sha256": "374d583cf2ff329885a949682baf686fda63e5e40f1d6abe852268c6188c7a21",
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "tools/test_private_validation.py",
@@ -2820,9 +2820,9 @@
     },
     {
       "path": "tools/test_runtime_lab.py",
-      "bytes": 6300,
-      "lines": 96,
-      "sha256": "01c26421cede3290a67bd74acb7ebe5fe714040ccb07b575cab4d71f615ef0e0",
+      "bytes": 7922,
+      "lines": 122,
+      "sha256": "28f17b4144d673c690b27c42690cf2c298327d2413d4fe4bd548ec28ced27261",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -2831,7 +2831,7 @@
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "06acf3ded1ce360ed8fa0bd632e5bb5ec434622e"
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     },
     {
       "path": "tools/test_screen_verify.py",
@@ -2913,10 +2913,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 25240,
+      "bytes": 25288,
       "lines": 398,
-      "sha256": "8a5df43e7b132a4f523dd12b4641c8cca37ad736b60deb7016ed73a11725a4fb",
-      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
+      "sha256": "1c9aa02486ed43a949c237c8fd8a65ef70ba131abc62e7806473a8e45bbebdba",
+      "reviewed_against_head": "17e63d625be71e645eb9408608537abc309f6685"
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",

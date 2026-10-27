@@ -75,6 +75,18 @@ def verify_original_tree(original,files):
   path=original/f['path']
   if path.stat().st_size!=f['size'] or digest(path)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
 
+def remove_unpublished_work(work):
+ # Only a newly created, unpublished lab owned by prepare. Never originals passed
+ # by the caller. Windows cannot unlink the read-only bits we set on extraction.
+ work=assert_no_links(work)
+ for path in work.rglob('*'):
+  assert_no_links(path)
+  info=path.lstat()
+  if stat.S_ISREG(info.st_mode):
+   if info.st_nlink!=1:raise ValueError('Unpublished cleanup refused a hardlinked file')
+   path.chmod(info.st_mode|stat.S_IRUSR|stat.S_IWUSR)
+ shutil.rmtree(work)
+
 def prepare(archive,work):
  work=assert_no_links(work)
  identity=inspect(archive)
@@ -97,8 +109,10 @@ def prepare(archive,work):
    for p in (work/'runs'/kind).rglob('*'):
     if p.is_file():p.chmod(0o600)
   (work/'evidence').mkdir();(work/'identity-private.json').write_text(json.dumps(identity,indent=2)+'\n', encoding='utf-8', newline='\n')
- except BaseException:
-  shutil.rmtree(work);raise
+ except BaseException as failure:
+  try:remove_unpublished_work(work)
+  except (OSError,ValueError) as cleanup:failure.add_note('Unpublished cleanup incomplete; preserve private lab: '+type(cleanup).__name__)
+  raise
  return identity
 
 def verify(work,expected_inventory=INVENTORY_SHA):

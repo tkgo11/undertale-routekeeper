@@ -1,5 +1,11 @@
 # Non-runtime delivery status — 2026-10-27 KST
 
+Current review/CI follow-up: see the leading section of [test-results.md](test-results.md).
+Fresh review4391165198 and actual automatic-job failures were reproduced and fixed;
+historical billing-only descriptions below do not describe those executed jobs.
+Recovery remains bounded to verified archived-trial/snapshot states, never opaque
+Steam account history. Native gameplay remains NOT_RUN.
+
 Latest opt-in experimental boundary: [windows-e2e.md](windows-e2e.md). Default
 Run and safety approval remain NO-GO. A separately authorized original-startup
 probe requires native gates/consent; it is not a patched/gameplay baseline. Cloud
