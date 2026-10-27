@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 37701,
-      "lines": 578,
-      "sha256": "7e66564f79ce182d391b9c684873c5389ae47708c364c312f3fd4e2f48d1bf2b",
+      "bytes": 38195,
+      "lines": 586,
+      "sha256": "36122c1bf6b67c51c3f1006ec57d946e50b32d22cf94375a2222da2b4013b9fa",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "3bcf8ef04975f2c0718e2ddf7efd5d7a443d9cb1"
+      "reviewed_against_head": "b6527a8e1c37eade9945904b46e1ef2739e652e9"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -354,16 +354,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 33520,
-      "lines": 462,
-      "sha256": "b3b1381bda5bfb4741559ff86f8bdbfa060c611f8c10be3ec309e326673a3c79",
+      "bytes": 34014,
+      "lines": 470,
+      "sha256": "b5897167db821a62375d78ae8ac932e26817639e093355c4546d689adfc9e5db",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "3bcf8ef04975f2c0718e2ddf7efd5d7a443d9cb1"
+      "reviewed_against_head": "b6527a8e1c37eade9945904b46e1ef2739e652e9"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -2826,10 +2826,10 @@
       "findings": [
         "A14"
       ],
-      "bytes": 4124,
-      "lines": 98,
-      "sha256": "7875bc9cf4971bc87cc585c1fbf87fd93631c7c86b79375a4288a521f1d52813",
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "bytes": 4845,
+      "lines": 114,
+      "sha256": "44c36a52fa65320bfc4fdcf234cc2c704b3c5f44de3fdd905a1bf954d0c375cb",
+      "reviewed_against_head": "b6527a8e1c37eade9945904b46e1ef2739e652e9"
     },
     {
       "path": "tools/test_runtime_lab.py",

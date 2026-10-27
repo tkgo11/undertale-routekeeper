@@ -19,7 +19,7 @@ class PrivateValidation(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.root = Path(self.tmp.name)
+        self.root = Path(self.tmp.name).resolve()
         self.source = self.root / 'synthetic.win'
         self.source.write_bytes(b'SYNTHETIC ORIGINAL ONLY')
         self.original_hash = hashlib.sha256(self.source.read_bytes()).hexdigest()
@@ -48,6 +48,22 @@ class PrivateValidation(unittest.TestCase):
         if hasattr(kwargs.get('stdout'), 'write'):
             kwargs['stdout'].write(text)
         return subprocess.CompletedProcess(cmd, code, text, '')
+
+    def test_system_temp_alias_only_canonicalizes_owned_fixture(self):
+        physical = self.root / 'physical-temp'; physical.mkdir()
+        alias = self.root / 'temp-alias'
+        try:
+            alias.symlink_to(physical, target_is_directory=True)
+        except OSError:
+            self.skipTest('Native symlink privilege unavailable')
+        probe = PrivateValidation('test_repeated_runs_preserve_private_evidence')
+        try:
+            with patch.object(tempfile, 'tempdir', str(alias)):
+                probe.setUp()
+            self.assertEqual(probe.root, probe.root.resolve())
+            probe.test_repeated_runs_preserve_private_evidence()
+        finally:
+            probe.doCleanups()
 
     def test_outside_private_root_refused_before_compiler(self):
         outside = self.root / 'artifacts' / 'must-not-create'

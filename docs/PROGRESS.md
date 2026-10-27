@@ -2,6 +2,14 @@
 
 ## Live-review and actual CI follow-up
 
+Post-push macOS CI additionally exposed the same system-temp alias in the private
+validator test fixture. Its owned root now resolves physically; a nested alias
+regression runs the repeated-private-evidence flow. All6 synthetic private-validator
+tests pass. Production reject_links remains unchanged. Five standalone RIDs
+(win-x64, win-x86, linux-x64, osx-x64, osx-arm64), real synthetic G3M/xdelta roundtrip,
+original golden generation and27 hook/115 source-hash audits also passed locally.
+
+
 The fresh Codex finding4391165198 was independently reproduced against the shared
 save transaction: interruption after trial archival left phase Restoring, but the
 new wrapper compared the missing/returned-original tree to the trial fence and
