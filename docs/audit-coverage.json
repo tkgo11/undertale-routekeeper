@@ -98,16 +98,16 @@
     },
     {
       "path": "README.md",
-      "bytes": 4479,
-      "lines": 78,
-      "sha256": "2af8c811ef0f89a8641f7591b380dbef8af0ce1d44e98bda9e676bf4b9d06dd7",
+      "bytes": 4633,
+      "lines": 80,
+      "sha256": "6aa5e40e5aedae39fba9e82f3237d6fa331c7b39fca210b51786849bb93a2f7a",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+      "reviewed_against_head": "0d1f01259c6dd0c657810593c4f02858125e0654"
     },
     {
       "path": "RouteKeeper.slnx",
@@ -289,16 +289,16 @@
     },
     {
       "path": "docs/runtime-validation.md",
-      "bytes": 13773,
-      "lines": 212,
-      "sha256": "ce9d5597ae49701c5a40529ba7f31fad887e058bf593ccebc302a08fdc9cd4ea",
+      "bytes": 13920,
+      "lines": 213,
+      "sha256": "85a4ca166323b8e87df3f4f6392ad61fa3db4817c0b00c6b3a483b25f2729fd0",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "0d1f01259c6dd0c657810593c4f02858125e0654"
     },
     {
       "path": "docs/state-bindings.md",

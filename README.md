@@ -57,13 +57,15 @@ See [progress](docs/PROGRESS.md), [test evidence](docs/test-results.md),
 [route rules](docs/route-rules.md), [state/hook evidence](docs/state-bindings.md),
 [compatibility](docs/compatibility.md), [runtime needs](docs/runtime-validation.md),
 [Steam safety](docs/steam-safety.md), [technical reference](docs/technical-reference.md),
-[current non-runtime status](docs/non-runtime-status.md),
+[latest offline audit/status](docs/offline-audit-2026-10-27.md),
+[historical non-runtime baseline](docs/non-runtime-status.md),
 and [private input cleanup](docs/private-data.md). Repository privacy and data
 exposure must be audited before any public release. No game binaries, substantial
 original resources or personal saves belong in commits or ordinary CI artifacts.
 
-The supplied Windows runtime/manifest is now hash-identified. Original and patched
-official-runner attempts under Wine/QEMU are BLOCKED at Steam initialization;
+The supplied Windows runtime/manifest is now hash-identified. Historical original and40d67856 patched
+official-runner attempts under Wine/QEMU were BLOCKED at Steam initialization;
+the current4457dbf4 candidate has no runner execution evidence;
 no gameplay PASS is claimed. See [runtime validation](docs/runtime-validation.md)
 for isolated commands, evidence and the Windows-native harness.
 `RouteKeeper.Tool analyze-reachability` reports bounded source witnesses and explicit

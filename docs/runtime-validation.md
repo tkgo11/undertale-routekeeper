@@ -44,7 +44,8 @@ or Steam credentials were mounted into a container. Tests use fresh Wine profile
 | ZIP, identity, original preservation | OFFLINE_PASS | Pinned archive, safe extraction, all220 original file hashes verified |
 | Official original runner | BLOCKED | QEMU-user/Wine/Xvfb reaches Steam initialization; SteamAPI_InitSafe fails, mainwindow creation fails, then illegal instruction004D1820 |
 | Previously tested patched runner (40d67856…) | BLOCKED | Same failure before gameplay/controller evidence |
-| Current candidate (9abd0729…) | NOT_RUN | Offline changes only; Wine was not retried without a new hypothesis |
+| Historical candidate (9abd0729…) | NOT_RUN | Offline changes only; Wine was not retried without a new hypothesis |
+| Current candidate (4457dbf4…) | NOT_RUN | Authentic offline compile/reload only; no new runner execution. See offline-audit-2026-10-27.md |
 | Windows native runner | NOT_RUN | Linux cloud is not native Windows; no authenticated Steam session is available |
 | Mod initialization/settings/fonts/UI/input | NOT_RUN | No game window/room entered; offline previews do not substitute |
 | Battle/ACT/items/MERCY/FLEE/Forced outcomes | NOT_RUN | No actual combat executed |
