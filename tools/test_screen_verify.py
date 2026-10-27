@@ -291,7 +291,11 @@ class ScreenTests(unittest.TestCase):
         v.generate_reference(output,'ko','menu',2)
         ref=v.load_json(output/'reference.json')
         self.assertEqual(ref['provenance']['kind'],'synthetic')
-        v.generate_reference(self.root/'en','en','menu',0)
+        v.generate_reference(self.root/'en','en','languages',0)
+        provenance=v.load_json(self.root/'en/reference.json')['provenance']
+        for dependency in ('integration/ui/english-metrics.json','integration/ui/generate.py','tools/localization.py','locales/ko.json','integration/assets/fonts/galmuri14/ui-font.png'):
+            self.assertIn(dependency,provenance['sourceHashes'])
+        self.assertIn('pillow',provenance['runtimeVersions'])
         self.assertEqual(v.load_json(self.root/'en/reference.json')['provenance']['kind'],'proxy')
         (self.root/'input.json').write_bytes(v.canonical(self.manifest))
         proc=subprocess.run([sys.executable,str(v.ROOT/'tools/screen_verify.py'),'verify','--manifest',str(self.root/'input.json'),'--output',str(self.root/'cli-run')],capture_output=True,text=True)

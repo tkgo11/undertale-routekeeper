@@ -18,8 +18,9 @@ import stat
 import sys
 import tempfile
 import warnings
+import zlib
 
-from PIL import Image, ImageChops, ImageDraw, UnidentifiedImageError
+from PIL import Image, ImageChops, ImageDraw, UnidentifiedImageError, __version__ as pillow_version
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE = 16 * 1024 * 1024
@@ -849,10 +850,19 @@ def generate_reference(output, locale='ko', scene='menu', selection=0):
     elif scene == 'warning': renderer.warning(11, True)
     elif scene == 'hud': renderer.hud(renderer.text('no_objective'))
     else: raise EvidenceError('Unsupported reference scene')
-    sources = ['tools/screen_verify.py', 'integration/ui/preview.py', 'integration/ui/catalog.json', 'locales/languages.json', 'locales/fonts.json', f'locales/{locale}.json', 'integration/assets/ui-font.png', 'integration/assets/ui-font.tsv']
-    if renderer.font['kind'] != 'native':
-        sources += [f'integration/assets/fonts/{renderer.locale["font"]}/ui-font.png', f'integration/assets/fonts/{renderer.locale["font"]}/ui-font.tsv']
-    source_hashes = {p:digest(read(ROOT/p)) for p in sources}
+    # The picker can draw fonts from every enabled locale. Bind the complete
+    # maintained preview recipe, including native advances and fallback catalog,
+    # rather than merely the currently selected atlas.
+    sources = {'tools/screen_verify.py', 'tools/localization.py', 'integration/ui/preview.py',
+               'integration/ui/generate.py', 'integration/ui/catalog.json', 'integration/ui/english-metrics.json',
+               'locales/languages.json', 'locales/fonts.json', 'locales/en.json',
+               'integration/assets/ui-font.png', 'integration/assets/ui-font.tsv'}
+    fonts = localization.font_sources()
+    for language in locales:
+        sources.add(f'locales/{language["tag"]}.json')
+        if fonts[language['font']]['kind'] != 'native':
+            sources.update(f'integration/assets/fonts/{language["font"]}/ui-font.{suffix}' for suffix in ('png','tsv'))
+    source_hashes = {p:digest(read(ROOT/p)) for p in sorted(sources)}
     output = no_links(output)
     if output.exists():
         raise EvidenceError('Reference output must be new')
@@ -863,6 +873,7 @@ def generate_reference(output, locale='ko', scene='menu', selection=0):
         font = renderer.locale['font']
         put_json(stage/'reference.json', dict(file='reference.png', sha256=digest(read(stage/'reference.png')),
                   provenance=dict(source='ROUTEKEEPER offline Renderer', generatorVersion='screen-v1', sourceHashes=source_hashes,
+                                  runtimeVersions=dict(python=sys.version.split()[0], pillow=pillow_version, zlib=zlib.ZLIB_RUNTIME_VERSION),
                                   locale=locale, font=font, scene=scene, parameters={'selection':selection},
                                   kind='proxy' if renderer.font['kind'] == 'native' else 'synthetic',
                                   limitations=['Shared-source agreement is not independent behavioral evidence.'],

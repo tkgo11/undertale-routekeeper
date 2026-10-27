@@ -309,10 +309,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 19366,
-      "lines": 289,
-      "sha256": "d5b9beb2670448b43c75bf0cd0ded29c529f6473793159117e68b5b72e7dd326",
-      "reviewed_against_head": "e3cbd4fc4c78b591a89e51674398fa636dd302dc"
+      "bytes": 19583,
+      "lines": 291,
+      "sha256": "2b539dc27045ff4a31f2e78f80e364bcc90a14dd6fa22bda3b5180020de3191c",
+      "reviewed_against_head": "3a89ee05e5ad9fa0361e99360dbc823b60b0c0dc"
     },
     {
       "path": "docs/state-bindings.md",
@@ -2605,10 +2605,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 55312,
-      "lines": 977,
-      "sha256": "ac4c1fd1b4d9807b1c2919680086635e8f7c3f3f9345be265761a250c0caeae3",
-      "reviewed_against_head": "e3cbd4fc4c78b591a89e51674398fa636dd302dc"
+      "bytes": 55954,
+      "lines": 988,
+      "sha256": "e44231f2c590a1d57024191aa2711a7ace720a15b059853792d71414e09ff129",
+      "reviewed_against_head": "3a89ee05e5ad9fa0361e99360dbc823b60b0c0dc"
     },
     {
       "path": "tools/test-g3m.py",
@@ -2737,10 +2737,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 30211,
-      "lines": 494,
-      "sha256": "561fe8b5612c707b0c9e3dcf2409b0a6263a4afc2f025526f8a5299c3ef739b2",
-      "reviewed_against_head": "e3cbd4fc4c78b591a89e51674398fa636dd302dc"
+      "bytes": 30606,
+      "lines": 498,
+      "sha256": "603fc5fc950541ddb8313df5ceb83dcb10c18ceebc890be22e5f0257a1979739",
+      "reviewed_against_head": "3a89ee05e5ad9fa0361e99360dbc823b60b0c0dc"
     },
     {
       "path": "tools/test_source_encoding.py",

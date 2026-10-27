@@ -179,7 +179,9 @@ python tools/screen_verify.py reference --locale ko --scene hud --output private
 ```
 
 These reuse `integration/ui/preview.py`, generated translations, registered licensed
-font assets and original320x240 layout. Reference metadata includes source hashes,
+font assets and original320x240 layout. Reference metadata binds all enabled locale/font assets, canonical fallback text,
+English advance metrics and maintained preview/lookup code; it records Python,
+Pillow and zlib versions (byte compression portability is not assumed). It includes source hashes,
 font identity, scene parameters, glyph runs, used codepoints and line-height.
 Run `python tools/localization.py validate` and `python integration/ui/test_ui.py`
 for coverage/layout and run independent structural contracts for selected regions.
