@@ -59,6 +59,10 @@ runtime/native-platform behavior, BLOCKED is an external dependency/access limit
   UI catalog. Every tracked Path text read/write now specifies UTF-8; writes also
   force LF. A non-UTF8 locale simulation and whole-tree AST policy pass without
   changing generated GML/atlas bytes or the approved UI.
+- **Bounded FORM inspection:** duplicate names and excessive chunk tables were
+  accepted by the shallow diagnostic parser. Synthetic fixtures reproduced both
+  refusals missing. It now enforces unique chunk IDs and a1024-chunk diagnostic
+  cap, reusing one64KiB buffer; actual input/output identities are unchanged.
 - Action refs were independently resolved to commit IDs and pinned. New tests
   preserve the exact private upstream/nonfork gate and prohibit private artifact
   uploads. LF checkout protects generated source and inventory hashes on Windows.
@@ -68,7 +72,7 @@ runtime/native-platform behavior, BLOCKED is an external dependency/access limit
   threshold is12000 before turn19,10000 from turn19. Implementation already used
   turns, so no gameplay/GML rule change was needed.
 
-New issue details are A13..A19 in code-audit.md. A01..A03 fixes were retained and
+New issue details are A13..A20 in code-audit.md. A01..A03 fixes were retained and
 retested. A04..A10 native/history/race/model/privacy/qlty limits remain open.
 Third-party executable/profile trust is explicit; tools are not an adversarial
 process/filesystem sandbox. Existing-path guards are not race-free capabilities.
@@ -130,7 +134,7 @@ PYTHONPATH=.research/g3m-deps python tools/test-g3m.py \
 python tools/audit_inventory.py
 ```
 
-Results: build0 warnings/errors; six suites270 checks (38/60/87/17/61/7) and
+Results: build0 warnings/errors; six suites271 checks (38/60/87/17/62/7) and
 9314 original-golden/bounded-event assertions; private validator5, inventory3,
 workflow2 (including8 gate contexts), encoding2, archive9 and UI20 unittest groups;101
 current-account synthetic checks plus AST/interop/legacy helper checks.

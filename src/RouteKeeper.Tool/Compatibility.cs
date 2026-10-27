@@ -13,6 +13,8 @@ public sealed record CompatibilityProfile(string Id, string Status, string Platf
 /// <summary>Read-only FORM inspection; recognition alone never authorizes patching.</summary>
 public static class BuildInspector
 {
+    // Diagnostic resource bound, not a claim to support every future GM schema.
+    private const int MaximumChunks = 1024;
     public static BuildIdentity Inspect(string path)
     {
         using var stream = File.OpenRead(path);
@@ -21,24 +23,27 @@ public static class BuildInspector
         if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "FORM") throw new InvalidDataException("Not GameMaker FORM data.");
         if (reader.ReadUInt32() != stream.Length - 8) throw new InvalidDataException("FORM length mismatch.");
         List<ChunkSignature> chunks = [];
+        HashSet<string> names = new(StringComparer.Ordinal);
+        byte[] buffer = new byte[65536];
         byte? bytecode = null;
         while (stream.Position < stream.Length)
         {
+            if(chunks.Count>=MaximumChunks) throw new InvalidDataException("FORM chunk count exceeds the diagnostic safety limit.");
             if (stream.Length - stream.Position < 8) throw new InvalidDataException("Truncated chunk header.");
             string name = Encoding.ASCII.GetString(reader.ReadBytes(4));
             if (name.Any(c => !(c >= 'A' && c <= 'Z') && !(c >= '0' && c <= '9'))) throw new InvalidDataException("Invalid chunk identifier.");
+            if(!names.Add(name)) throw new InvalidDataException("Duplicate FORM chunk identifier.");
             uint length = reader.ReadUInt32();
             long offset = stream.Position;
             if (length > stream.Length - offset) throw new InvalidDataException("Chunk exceeds FORM bounds.");
             if (name == "GEN8")
             {
-                if (bytecode.HasValue || length < 2) throw new InvalidDataException("Invalid GEN8 chunk.");
+                if (length < 2) throw new InvalidDataException("Invalid GEN8 chunk.");
                 reader.ReadByte(); // UndertaleGeneralInfo.IsDebuggerDisabled
                 bytecode = reader.ReadByte();
                 stream.Position = offset;
             }
             using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-            byte[] buffer = new byte[65536];
             long remaining = length;
             while (remaining > 0)
             {

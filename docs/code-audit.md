@@ -198,3 +198,10 @@ A19 HIGH: default-encoding Python reads failed on the Hangul catalog in a CP1252
 locale simulation. All tracked Path text IO now explicitly selects UTF-8 and
 LF writes. Locale and whole-tree AST policy regressions pass; generated GML/font
 bytes and the candidate hash remain unchanged. This is not native Windows evidence.
+
+A20 MEDIUM: BuildInspector accepted duplicate identifiers and an excessive table
+of tiny chunks. Synthetic fixtures reproduced missing refusal. Pinned Undertale
+FORM readers register unique names in a dictionary. Inspection now rejects
+duplicates and more than1024 chunks and reuses one64KiB hash buffer. This is a
+diagnostic resource bound, not a new supported schema/profile or compatibility
+approval. Source/current output identity and all synthetic regressions pass.

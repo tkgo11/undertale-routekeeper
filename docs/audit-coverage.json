@@ -125,14 +125,14 @@
       "path": "docs/PROGRESS.md",
       "bytes": 29086,
       "lines": 442,
-      "sha256": "dadc9749d6e8a2a54f9f1b694e5c52f1f734713daadaa0b1a7dff847ed77c5ad",
+      "sha256": "d37f7506ad0cf2d98b35c78507c8547b113e4f68768702314837940e5516b88e",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -149,9 +149,9 @@
     },
     {
       "path": "docs/code-audit.md",
-      "bytes": 21361,
-      "lines": 200,
-      "sha256": "fec19adf56f2a40078fff08488fc0dcbcf807c977211ceff1a5988b630a0c89a",
+      "bytes": 21833,
+      "lines": 207,
+      "sha256": "c7f5005124d8c4c5ebfdea90d1845ac1428504ebb063fecf0f42ccdad315faa9",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -171,7 +171,7 @@
         "A11",
         "A12"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "docs/compatibility.md",
@@ -230,10 +230,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 12910,
-      "lines": 176,
-      "sha256": "d71d5b790b3d40f668f968f7e06ebb364adb8aa48b4eef02a692447ee19a4dd9",
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "bytes": 13227,
+      "lines": 180,
+      "sha256": "a6c8e3413dcd945be9c611e09ffddb1a077f22619ff22404a10342dfedb9e3f3",
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "docs/private-data.md",
@@ -314,14 +314,14 @@
       "path": "docs/test-results.md",
       "bytes": 25019,
       "lines": 327,
-      "sha256": "0950eecf1546d46a4f187ffa9740ff6e62f32781ce8b2701ff2f111d8c78fdef",
+      "sha256": "64652f6cfe8c6bdb08d541e9d6bf44b34ff0681a0de681be5fca6aea1b64b57c",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -1438,15 +1438,18 @@
     },
     {
       "path": "src/RouteKeeper.Tool/Compatibility.cs",
-      "bytes": 5695,
-      "lines": 91,
-      "sha256": "8ded9f79448cff1268878bbc2be36fc08513b7763f1d3d1af8b5aeae49461534",
+      "bytes": 6090,
+      "lines": 96,
+      "sha256": "fa6c9bd8e23a9d582273756ada317245dadbf642d00b4ede7ec6b629ed7485fa",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [
+        "A20"
+      ],
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "src/RouteKeeper.Tool/ExecutableInspector.cs",
@@ -1787,9 +1790,9 @@
     },
     {
       "path": "tests/RouteKeeper.Tool.Tests/Program.cs",
-      "bytes": 25343,
-      "lines": 242,
-      "sha256": "da1155d03c11c3b9c3c6287b081aeadd965117067ba5f5c5bfa213c3e12a4a76",
+      "bytes": 26448,
+      "lines": 260,
+      "sha256": "1740b076bb519ca1c429f14208360cac2818cf3fc733108eefaaef1850a23152",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -1800,9 +1803,10 @@
         "A03",
         "A09",
         "A16",
-        "A17"
+        "A17",
+        "A20"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
     },
     {
       "path": "tests/RouteKeeper.Tool.Tests/RouteKeeper.Tool.Tests.csproj",

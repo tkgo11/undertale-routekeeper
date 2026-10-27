@@ -237,6 +237,24 @@ try
             Assert(SafeInstaller.Hash(input)==identity.Sha256);
         } finally {Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER",previousFixture);}
     });
+    Check("Duplicate FORM names and excessive chunk tables fail closed",()=>{
+        byte[] AppendChunks(int count,bool duplicate){
+            using var memory=new MemoryStream();memory.Write(Data(0));
+            using var writer=new BinaryWriter(memory,Encoding.ASCII,leaveOpen:true);
+            const string digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for(int n=0;n<count;n++){
+                string name=duplicate?"TEST":"T"+digits[n/1296%36]+digits[n/36%36]+digits[n%36];
+                writer.Write(Encoding.ASCII.GetBytes(name));writer.Write(0u);
+            }
+            var bytes=memory.ToArray();System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(4),(uint)(bytes.Length-8));return bytes;
+        }
+        int denied=0;
+        foreach(var fixture in new[]{AppendChunks(1,true),AppendChunks(1024,false)}){
+            string malformed=Path.Combine(root,"excessive-form.win");File.WriteAllBytes(malformed,fixture);
+            try{BuildInspector.Inspect(malformed);}catch(InvalidDataException){denied++;}
+        }
+        Assert(denied==2);
+    });
     Console.WriteLine($"PASS {passed} synthetic tests; authentic gameplay NOT_RUN"); return 0;
 }
 finally { Directory.Delete(root, recursive: true); }

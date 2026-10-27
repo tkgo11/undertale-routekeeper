@@ -3,8 +3,8 @@
 Updated 2026-10-27 (KST). Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. Historical QEMU/Wine attempts reached Steam
 bootstrap without a game room; this continuation did not start Steam or the game.
-Current pre-runtime audit:9,314 original-golden/ordered-event assertions and270 C#
-checks (38/60/87/17/61/7). See [code-audit.md](code-audit.md) for current commands,
+Current pre-runtime audit:9,314 original-golden/ordered-event assertions and271 C#
+checks (38/60/87/17/62/7). See [code-audit.md](code-audit.md) for current commands,
 results and limits; the dated continuation sections below are historical snapshots.
 Same-account GAME smoke is code-disabled NO-GO; no game was executed.
 Current additional regressions, exact commands and evidence boundaries are in
@@ -17,7 +17,7 @@ Current additional regressions, exact commands and evidence boundaries are in
 | Neutral | PASS | `dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release`: 60 checks; 10,000 classifier, 19,000 target and 5,000 modifier comparisons |
 | Decisions | PASS | `dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release`: 87 checks; 10,000 risk, 1,000 budget, 72 encounter/action, 200 item-escape and 80 ACT comparisons |
 | History | PASS | `dotnet run --project tests/RouteKeeper.History.Tests -c Release`: 17 pure transition checks; no filesystem mutation |
-| Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 61 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
+| Installer/tool | PASS | `dotnet run --project tests/RouteKeeper.Tool.Tests -c Release`: 62 checks; backup/update/restore, refusal, recovery journal, discovery, executable headers, source-build gates |
 | Saves | PASS | `dotnet run --project tests/RouteKeeper.Saves.Tests -c Release`: 7 synthetic checks; supplied saves previously read without byte changes |
 | Generated source freshness | PASS | Core `--verify-native integration/gml`; Neutral `--verify-gml integration/gml`; Decisions `--verify-adapters integration/gml` |
 | Font metadata | PASS | `python integration/generate_font.py --verify`; embedded glyph coverage/bounds; original font for English |

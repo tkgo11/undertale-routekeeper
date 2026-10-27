@@ -17,7 +17,7 @@ response; G3M whole-string/portable aliases; commit-pinned Actions; resource met
 checkout; explicit-reviewed-path audit refresh/verification. Synthetic input
 overwrite and authentic scratch-collision failures were reproduced before fixes.
 
-Current local PASS: build0 warnings/errors,270 standard checks plus9314 bounded/
+Current local PASS: build0 warnings/errors,271 standard checks plus9314 bounded/
 source-golden assertions;101 PowerShell synthetic checks; private-validator5,
 inventory3, workflow2, archive9, UI20 groups;381 glyphs/686 emitted UI comparisons.
 Authentic compile/serialize/reload/preservation, all27 hook links/all115 golden
