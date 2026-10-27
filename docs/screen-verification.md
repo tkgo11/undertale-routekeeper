@@ -256,7 +256,8 @@ No provider backups/history deletion guarantee is made.
 
 Exports require explicit `--confirm-private-images`. They contain reencoded
 pixels (PNG ancillary metadata removed), allowlisted scenario/assertion IDs,
-objective metrics, limited reference kind/locale/font/scene, build hashes and a
+objective metrics, method/mask/threshold scope, source hashes without source paths,
+limited reference kind/locale/font/scene, build hashes and a
 narrow AI question. They exclude manifest notes, executable paths, PIDs, window
 titles, reviewer names, save content and opaque binary/sidecar files. **Pixels are
 not automatically redacted**; review them locally before choosing any external

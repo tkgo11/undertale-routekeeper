@@ -242,6 +242,8 @@ class ScreenTests(unittest.TestCase):
         v.export_review(run,self.root/'export',True)
         packet=(self.root/'export/packet.json').read_text(encoding='utf-8')
         self.assertNotIn('secret',packet);self.assertNotIn('Users',packet)
+        self.assertEqual(json.loads(packet)['cases'][0]['comparisonScope'][0]['method'],'exact')
+        self.assertEqual(json.loads(packet)['cases'][0]['referenceSourceHashes'],[['a'*64]])
         self.assertEqual(json.loads(packet)['cases'][0]['files']['actual.png'],v.digest(v.read(self.root/'export'/case/'actual.png')))
         v.record_review(run,case,'uncertain','ai','offline-reader','ai1')
         data=v.record_review(run,case,'accepted','human','local-reader','human1','ai1')
