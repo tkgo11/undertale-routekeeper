@@ -397,10 +397,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 15764,
-      "lines": 237,
-      "sha256": "e11453a14f76ae78360620428d5324dcc45bb1ae0952497325fe8a7b6aa6bb45",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 16050,
+      "lines": 241,
+      "sha256": "0a7280cf29e76b8cb0778cc44e0a80d839a9169cc89302dbbf87e2ec65c3790b",
+      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
     },
     {
       "path": "global.json",
@@ -2462,10 +2462,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 11976,
-      "lines": 151,
-      "sha256": "e3a9383e8df5eb8cb6b343b6155593175c482875151b5e04ae1f35ea9014ada4",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 13696,
+      "lines": 175,
+      "sha256": "a5dd0c40d6f4ec347a2667e99607a3862d3c1d423fde33e91c5f905ba0a94fab",
+      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
     },
     {
       "path": "tools/runtime/input-window.ps1",
@@ -2520,10 +2520,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 3650,
-      "lines": 46,
-      "sha256": "dd2c45cdeec17035eec2b7580069bad21c96baf6dff7f3d8783343f0d4882763",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 6306,
+      "lines": 78,
+      "sha256": "ddfc1c55e3f73a714d71e1e3fe9c1800df13cd5d012b3b841f2a5503ccad1396",
+      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
     },
     {
       "path": "tools/runtime/run-current-account.ps1",
@@ -2631,10 +2631,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 7314,
-      "lines": 92,
-      "sha256": "735701f12fa32d263182b46a2e2d60c72c2f4246bfee9cf5c23cb17ad9aea3ba",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 8033,
+      "lines": 101,
+      "sha256": "1e535668b9238cc2c365c23aa480f178d8457ce91673647ba3dbb15f53ce1458",
+      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
     },
     {
       "path": "tools/runtime/test-sandbox.ps1",
@@ -2913,10 +2913,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 24978,
-      "lines": 397,
-      "sha256": "109206169d8a2d4207aec771926ebd1e7fadeb60c164d91509aabd6013f362db",
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "bytes": 25240,
+      "lines": 398,
+      "sha256": "8a5df43e7b132a4f523dd12b4641c8cca37ad736b60deb7016ed73a11725a4fb",
+      "reviewed_against_head": "92688e8957eaa7c3491a53d615b583fe263c1774"
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",

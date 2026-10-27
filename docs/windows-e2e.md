@@ -77,7 +77,7 @@ Windows/Steam evidence. Missing/changed seals and journal-chain gaps refuse repo
 | Prepare | Existing archive validator + source builder + exact copies + seals | Offline only; InspectedOnly unchanged |
 | Preflight | Prepared identity, existing Steam/save/cache/NTFS guards, offline adapters, closed processes, storage | Read-only game/save/cache inspection, no launch |
 | DryRun | Two explicit synthetic cases, finite state transitions, inputs/captures/verifier/review/report; real synthetic save transaction via PS | All fake process/Steam observations labeled; no game subprocess |
-| NativeTest | Harmless owned WinForms window, targeted key down/up observation, private client capture, independent white-bar/black-field check, disposable local recovery | Code/AST compiled; actual Windows execution NOT_RUN |
+| NativeTest | Harmless owned WinForms window, key down/up, focus-loss/abort refusal, hardlink/ADS/junction negative fixtures, private capture, white-bar/black-field check and local recovery | Code/AST compiled; actual Windows execution NOT_RUN |
 | Smoke | Native gates + NativeTest + fresh consent + original-only startup observation + owned stop + fenced local recovery + private capture-only review | Original bootstrap not proven; never automatically launches patched game |
 | Resume / Recover | Verified recovery only, **never stale input replay**; requires explicit Work for new sessions | Refuses unknown trial changes and live processes |
 | Report | Sealed JSON, journal, private HTML and per-scenario visual report links | Process exit/screenshot/review is not gameplay PASS |
@@ -195,7 +195,11 @@ termination/recovery; do not claim a process simulator proves it.
 # Resume means recovery only, not replaying automation.
 ```
 
-A new post-trial fence records presence/digest only after processes stop. Existing
+An immutable game-stop boundary records presence/digest immediately after the owned
+game exits, before waiting for client shutdown. A later post-trial fence may be
+committed only after all processes stop and the local data still matches. Changes
+during shutdown, including a known trial disappearing, are not absorbed as trusted
+trial data. Existing
 trial content must still match that fence before recovery moves it. Missing fence,
 unknown changes, corrupt journal/snapshot or later personal gameplay refuses
 recovery. An absent destination may be restored only from the already independently

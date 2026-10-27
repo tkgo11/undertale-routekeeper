@@ -64,7 +64,16 @@ try {
  Check $refused 'unfenced post-crash trial is preserved, not guessed'
  $script:fakeBusy=$true;$refused=$false;try{Write-RkE2eTrialFence $s}catch{$refused=$true}
  Check $refused 'live process blocks trial closure fence'
- $script:fakeBusy=$false;Write-RkE2eTrialFence $s
+ $script:fakeBusy=$false;Write-RkE2eGameStopBoundary $s
+ [IO.File]::WriteAllText((Join-Path $save 'file0'),'UNRECOGNIZED SHUTDOWN CHANGE')
+ $refused=$false;try{Write-RkE2eTrialFence $s}catch{$refused=$true}
+ Check $refused 'changes during Steam shutdown cannot be absorbed into a later fence'
+ [IO.File]::WriteAllText((Join-Path $save 'file0'),'TRIAL SYNTHETIC')
+ Write-RkE2eTrialFence $s
+ $renamed=Join-Path $root 'unexpectedly-renamed-trial';Move-Item -LiteralPath $save -Destination $renamed
+ $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
+ Check ($refused -and !(Test-Path -LiteralPath $save)) 'known trial disappearance is not treated as an originally absent target'
+ Move-Item -LiteralPath $renamed -Destination $save
  [IO.File]::WriteAllText((Join-Path $save 'file0'),'LATER PERSONAL CHANGE')
  $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
  Check ($refused -and (Get-Content -LiteralPath (Join-Path $save 'file0') -Raw) -ceq 'LATER PERSONAL CHANGE') 'unknown changes after trial closure cannot be moved or overwritten'

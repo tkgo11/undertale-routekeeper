@@ -10,11 +10,25 @@ function New-RkExperimentalConsent([string]$Session,[string]$Nonce) {
 }
 # Experimental coordinator. Reuses existing save transactions and capture.
 # No cache/history restoration, registered-install writes or global keyboard input.
+function Write-RkE2eGameStopBoundary($State) {
+ if(@(Get-Process UNDERTALE -ErrorAction SilentlyContinue).Count){throw 'Game still running; no stop boundary.'}
+ Assert-RkNativeSaveTree $State.savePath
+ $path=Join-Path $State.root 'game-stop-boundary.json';Assert-RkNoLinks $path
+ if(Test-Path -LiteralPath $path){throw 'Game-stop boundary already exists; never absorb later changes.'}
+ $present=[bool](Test-Path -LiteralPath $State.savePath)
+ $digest=if($present){Get-RkTreeDigest $State.savePath}else{''}
+ Write-RkAtomicJson $path @{schema=1;id=$State.id;owner=$State.owner;present=$present;digest=$digest}
+}
 function Write-RkE2eTrialFence($State) {
  Assert-RkProcessesClosed;Assert-RkNetworkOffline;Assert-RkNativeSaveTree $State.savePath
  Assert-RkJournal $State $State.root $State.savePath $State.owner
  $present=[bool](Test-Path -LiteralPath $State.savePath)
  $digest=if($present){Get-RkTreeDigest $State.savePath}else{''}
+ $boundary=Join-Path $State.root 'game-stop-boundary.json';Assert-RkNoLinks $boundary
+ if(Test-Path -LiteralPath $boundary){
+  $b=Get-Content -LiteralPath $boundary -Raw -Encoding UTF8|ConvertFrom-Json
+  if($b.schema -ne 1 -or $b.id -cne $State.id -or $b.owner -cne $State.owner -or $b.present -isnot [bool] -or $b.present -ne $present -or $b.digest -cne $digest){throw 'Local data changed during client shutdown; no trial fence may absorb it.'}
+ }elseif($present){throw 'No owned game-stop boundary for existing data; preserve unknown changes.'}
  Write-RkAtomicJson (Join-Path $State.root 'trial-fence.json') @{schema=1;id=$State.id;owner=$State.owner;present=$present;digest=$digest}
 }
 function Assert-RkE2eRecoveryReady($State,[string]$Root,[string]$Save,[string]$Owner) {
@@ -24,14 +38,23 @@ function Assert-RkE2eRecoveryReady($State,[string]$Root,[string]$Save,[string]$O
  if($State.phase -eq 'Restored' -or (Test-RkCompletionFence $State)){return}
  $protected=Join-Path $Root 'protected-save'
  if($State.phase -in @('Prepared','QuarantinePending') -and !(Test-Path -LiteralPath $protected)){return}
- # An absent target cannot be overwritten. Never infer original presence; the
- # common transaction still verifies its independent snapshot/original identity.
- if(!(Test-Path -LiteralPath $Save)){return}
+ $present=[bool](Test-Path -LiteralPath $Save)
  $path=Join-Path $Root 'trial-fence.json';Assert-RkNoLinks $path
- if(!(Test-Path -LiteralPath $path)){throw 'No committed trial fence. Preserve unknown changes; automatic recovery refused.'}
+ if(!(Test-Path -LiteralPath $path)){
+  if($present){throw 'No committed trial fence. Preserve unknown changes; automatic recovery refused.'}
+  $boundary=Join-Path $Root 'game-stop-boundary.json';Assert-RkNoLinks $boundary
+  if(Test-Path -LiteralPath $boundary){
+   $b=Get-Content -LiteralPath $boundary -Raw -Encoding UTF8|ConvertFrom-Json
+   if($b.schema -ne 1 -or $b.id -cne $State.id -or $b.owner -cne $Owner -or $b.present -isnot [bool] -or $b.present -or $b.digest -cne ''){throw 'Known trial disappeared or stop boundary is corrupt; preserve all snapshots.'}
+  }
+  return
+ }
  $f=Get-Content -LiteralPath $path -Raw -Encoding UTF8|ConvertFrom-Json
  if($f.schema -ne 1 -or $f.id -cne $State.id -or $f.owner -cne $Owner -or $f.present -isnot [bool] -or $f.digest -isnot [string]){throw 'Trial fence identity corrupt.'}
- if(!$f.present -or $f.digest -notmatch '^[a-f0-9]{64}$' -or (Get-RkTreeDigest $Save) -cne $f.digest){throw 'Unknown personal changes after trial closure; no overwrite or move is authorized.'}
+ if($f.present -ne $present){throw 'Trial presence changed after closure; no recovery mutation authorized.'}
+ if(!$present){if($f.digest -cne ''){throw 'Absent trial has a nonempty digest.'};return}
+ if($f.digest -notmatch '^[a-f0-9]{64}$' -or (Get-RkTreeDigest $Save) -cne $f.digest){throw 'Unknown personal changes after trial closure; no overwrite or move is authorized.'}
+
 }
 function Restore-RkE2eSession($State,[string]$Root,[string]$Save,[string]$Owner) {
  Assert-RkProcessesClosed;Assert-RkNetworkOffline;Assert-RkNativeSaveTree $Save;Assert-RkNativeSaveTree $Root
@@ -124,6 +147,7 @@ function Invoke-RkOriginalProbe([string]$Work,[string]$SteamExe,[string]$GameIns
   finally {
    try {
     Stop-RkOwnedProbeProcess $gameProcess $runner $gameTicks
+    if($gameProcess -and !$unknownChildren){Write-RkE2eGameStopBoundary $state}
     if($steamProcess){
      $steamProcess.Refresh()
      if(!$steamProcess.HasExited){

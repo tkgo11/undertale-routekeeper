@@ -339,6 +339,7 @@ def check_native_test(work):
     work=screen.no_links(work);receipt=screen.load_json(work/'receipt.json')
     if sys.platform!='win32':raise StopRun('Native validation cannot be certified on this platform')
     if receipt.get('kind')!='NATIVE_NON_GAME_SELFTEST' or receipt.get('localSyntheticRecovery')!='VERIFIED' or not all(k in receipt.get('keyEvents',[]) for k in ('down:40','up:40')):raise StopRun('Native self-test receipt incomplete')
+    if receipt.get('focusLossBlocked') is not True or receipt.get('abortFileBlocked') is not True or set(receipt.get('filesystemChecks',[]))!={'hardlink-refused','stream-refused','junction-refused'}:raise StopRun('Native negative/input safety tests incomplete')
     for field,name in [('sourceSha','native-selftest.ps1'),('inputSha','input-window.ps1'),('captureSha','capture-client.ps1')]:
         if receipt.get(field)!=screen.hash_file(ROOT/'tools/runtime'/name):raise StopRun('Native helper changed since test')
     sidecar=screen.load_json(work/'window.png.json')
