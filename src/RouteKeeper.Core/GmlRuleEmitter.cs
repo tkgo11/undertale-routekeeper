@@ -42,18 +42,18 @@ public static class GmlRuleEmitter
         text.Append("global.rk_objective_text = scr_routekeeper_objective();\nreturn rk_result;\n");
         return text.ToString();
     }
-    private static void TextAssignment(StringBuilder text,string minimal,string detailed,string koreanMinimal,string koreanDetailed,string? countFact=null,int quota=0)
+    private static void TextAssignment(StringBuilder text,string minimal,string detailed,string? countFact=null,int quota=0)
     {
-        string Expression(string value)
-        {
-            var pieces=value.Split("{remaining}",StringSplitOptions.None);
-            return pieces.Length==1 ? Quote(value) : string.Join($" + string(max(0, {quota} - global.rk_{countFact})) + ",pieces.Select(Quote));
+        string Expression(string id) {
+            var expression=TextCatalog.Gml(id);
+            if(countFact is not null) expression=$"string_replace_all({expression}, \"{{remaining}}\", string(max(0, {quota} - global.rk_{countFact})))";
+            return expression;
         }
-        text.Append($"rk_text = {Expression(minimal)};\nif (global.rk_spoilers == 1) rk_text = {Expression(detailed)};\nif (global.rk_language == 1) {{\n rk_text = {Expression(koreanMinimal)};\n if (global.rk_spoilers == 1) rk_text = {Expression(koreanDetailed)};\n}}\n");
+        text.Append($"rk_text = {Expression(minimal)};\nif (global.rk_spoilers == 1) rk_text = {Expression(detailed)};\n");
     }
     public static string EmitObjectives()
     {
-        var text=new StringBuilder("// Generated from the same ObjectiveRules used by C#.\nvar rk_text, rk_unknown, rk_action, rk_blocked;\nrk_text = \"Your next step is not clear yet.\";\nif (global.rk_language == 1) rk_text = \"다음 목표를 아직 알 수 없습니다.\";\nglobal.rk_objective_id = \"unknown\";\nglobal.rk_progress_met = 0; global.rk_progress_total = 0;\nrk_unknown = 0; rk_action = 0; rk_blocked = 0;\n");
+        var text=new StringBuilder("// Generated from the same ObjectiveRules used by C#.\nvar rk_text, rk_unknown, rk_action, rk_blocked;\nrk_text = scr_routekeeper_text(\"guidance.your_next_step_is_not_clear_yet\",global.rk_language);\nglobal.rk_objective_id = \"unknown\";\nglobal.rk_progress_met = 0; global.rk_progress_total = 0;\nrk_unknown = 0; rk_action = 0; rk_blocked = 0;\n");
         foreach(var route in Enum.GetValues<RouteId>().Where(r=>r!=RouteId.Neutral))
         {
             var definition=RouteCatalog.Get(route);
@@ -66,13 +66,13 @@ public static class GmlRuleEmitter
                 var guard=r.GuardFact is null ? "" : $" && ({Valid(r.GuardFact)}) && global.rk_{r.GuardFact} >= {r.GuardMinimum}";
                 text.Append($"if (({Valid(r.Fact)}) && !("+Match(r)+")"+guard+") {\n");
                 text.Append($"global.rk_objective_id = {Quote(r.Fact)};\n");
-                TextAssignment(text,r.Minimal,r.Detailed,r.KoreanMinimal,r.KoreanDetailed);
+                TextAssignment(text,r.MinimalKey,r.DetailedKey);
                 text.Append("return rk_text;\n}\n");
             }
             foreach(var rule in ObjectiveRules.For(route))
             {
                 text.Append($"if ({rule.Condition.Gml}) {{\nglobal.rk_objective_id = {Quote(rule.Id)};\n");
-                TextAssignment(text,rule.Minimal,rule.Detailed,rule.KoreanMinimal,rule.KoreanDetailed,rule.CountFact,rule.Quota);
+                TextAssignment(text,rule.MinimalKey,rule.DetailedKey,rule.CountFact,rule.Quota);
                 text.Append("return rk_text;\n}\n");
             }
             text.Append("}\n");

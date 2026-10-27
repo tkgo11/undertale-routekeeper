@@ -1,5 +1,15 @@
 # Progress and resumption
 
+## Multilingual localization continuation (2026-10-27)
+
+See [localization-validation.md](localization-validation.md) for the current scope,
+commands, actual results and limits. The locale registry/catalogs now drive C# and
+native GML, language paging/settings tags, glyph subsets and licensed font injection.
+English/Korean237 keys;393 glyphs; contributor add/build tested without rule edits.
+Candidate4457dbf4 replaces9abd0729 only as offline evidence; InspectedOnly and
+Steam same-account NO-GO remain. No game/Steam launch, merge or release.
+
+
 Updated 2026-10-27 (KST). Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
 no merge, public release, profile promotion or original save/history mutation.
 

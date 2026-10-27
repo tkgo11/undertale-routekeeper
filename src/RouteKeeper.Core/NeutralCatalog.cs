@@ -22,8 +22,13 @@ public sealed record NeutralOutcome(NeutralEnding Ending, int OriginalBranch, IR
     public int ModifierMask => Modifiers.Aggregate(0,(mask,id)=>mask | NeutralCatalog.ModifierRules.Single(m=>m.Id==id).Bit);
 }
 public sealed record NeutralModifier(string Id,int Bit,ObjectiveCondition Condition);
-public sealed record NeutralTarget(NeutralEnding Id, string English, string Korean, int? TorielDead,
-    int? PapyrusDead, int? UndyneDead, int? MettatonDead, int MinimumKills, int MaximumKills);
+public sealed record NeutralTarget(NeutralEnding Id, string TextKey, int? TorielDead,
+    int? PapyrusDead, int? UndyneDead, int? MettatonDead, int MinimumKills, int MaximumKills)
+{
+    public string English=>TextCatalog.Get(TextKey,0);
+    public string Korean=>TextCatalog.Get(TextKey,"ko");
+    public string Label(Language language)=>TextCatalog.Get(TextKey,language);
+}
 
 public static class NeutralCatalog
 {
@@ -31,25 +36,25 @@ public static class NeutralCatalog
     private const int Unlimited = int.MaxValue;
     public static IReadOnlyList<NeutralTarget> Targets { get; } = new NeutralTarget[]
     {
-        new(NeutralEnding.Any,"Any Neutral type","유형 무관",null,null,null,null,0,Unlimited),
-        new(NeutralEnding.Family,"Family","가족",0,0,0,0,0,0),
-        new(NeutralEnding.BetrayedUnbefriendedMettatonAlive,"Betrayed: no friendship, robot spared","배신: 우정 없음, 로봇 생존",0,0,0,0,0,9),
-        new(NeutralEnding.BetrayedUnbefriendedMettatonDead,"Betrayed: no friendship, robot killed","배신: 우정 없음, 로봇 사망",0,0,0,1,1,9),
-        new(NeutralEnding.BetrayedBefriendedMettatonAlive,"Betrayed: friendship, robot spared","배신: 우정 후, 로봇 생존",0,0,0,0,1,9),
-        new(NeutralEnding.BetrayedBefriendedMettatonDead,"Betrayed: friendship, robot killed","배신: 우정 후, 로봇 사망",0,0,0,1,1,9),
-        new(NeutralEnding.ExiledUndyneAlivePapyrusAlive,"Exiled: warrior and skeleton alive","추방: 전사와 해골 생존",0,0,0,null,10,Unlimited),
-        new(NeutralEnding.ExiledUndyneAlivePapyrusDead,"Exiled: warrior alive, skeleton dead","추방: 전사 생존, 해골 사망",0,1,0,null,1,Unlimited),
-        new(NeutralEnding.ExiledUndyneDeadPapyrusAlive,"Exiled: warrior dead, skeleton alive","추방: 전사 사망, 해골 생존",0,0,1,null,1,Unlimited),
-        new(NeutralEnding.ExiledUndyneDeadPapyrusDead,"Exiled: warrior and skeleton dead","추방: 전사와 해골 사망",0,1,1,null,2,Unlimited),
-        new(NeutralEnding.UndynePapyrusAlive,"Undyne: Papyrus alive","언다인: 파피루스 생존",1,0,0,null,1,Unlimited),
-        new(NeutralEnding.UndynePapyrusDead,"Undyne: Papyrus dead","언다인: 파피루스 사망",1,1,0,null,2,Unlimited),
-        new(NeutralEnding.MettatonPapyrusAlive,"Mettaton: Papyrus alive","메타톤: 파피루스 생존",1,0,1,0,2,Unlimited),
-        new(NeutralEnding.MettatonPapyrusDead,"Mettaton: Papyrus dead","메타톤: 파피루스 사망",1,1,1,0,3,Unlimited),
-        new(NeutralEnding.Papyrus,"Papyrus","파피루스",1,0,1,1,3,Unlimited),
-        new(NeutralEnding.Dog,"Dog: only four bosses killed","개: 보스 네 명만 처치",1,1,1,1,4,4),
-        new(NeutralEnding.LeaderlessLowKills,"Leaderless: total below 20","지도자 없음: 총 20킬 미만",1,1,1,1,5,19),
-        new(NeutralEnding.LeaderlessHighKills,"Leaderless: total 20+","지도자 없음: 총 20킬 이상",1,1,1,1,20,Unlimited),
-        new(NeutralEnding.Alphys,"Alphys: aborted late Genocide","알피스: 후반 몰살 중단",1,1,1,1,4,Unlimited)
+        new(NeutralEnding.Any,"ending.any_neutral_type",null,null,null,null,0,Unlimited),
+        new(NeutralEnding.Family,"ending.family",0,0,0,0,0,0),
+        new(NeutralEnding.BetrayedUnbefriendedMettatonAlive,"ending.betrayed_no_friendship_robot_spared",0,0,0,0,0,9),
+        new(NeutralEnding.BetrayedUnbefriendedMettatonDead,"ending.betrayed_no_friendship_robot_killed",0,0,0,1,1,9),
+        new(NeutralEnding.BetrayedBefriendedMettatonAlive,"ending.betrayed_friendship_robot_spared",0,0,0,0,1,9),
+        new(NeutralEnding.BetrayedBefriendedMettatonDead,"ending.betrayed_friendship_robot_killed",0,0,0,1,1,9),
+        new(NeutralEnding.ExiledUndyneAlivePapyrusAlive,"ending.exiled_warrior_and_skeleton_alive",0,0,0,null,10,Unlimited),
+        new(NeutralEnding.ExiledUndyneAlivePapyrusDead,"ending.exiled_warrior_alive_skeleton_dead",0,1,0,null,1,Unlimited),
+        new(NeutralEnding.ExiledUndyneDeadPapyrusAlive,"ending.exiled_warrior_dead_skeleton_alive",0,0,1,null,1,Unlimited),
+        new(NeutralEnding.ExiledUndyneDeadPapyrusDead,"ending.exiled_warrior_and_skeleton_dead",0,1,1,null,2,Unlimited),
+        new(NeutralEnding.UndynePapyrusAlive,"ending.undyne_papyrus_alive",1,0,0,null,1,Unlimited),
+        new(NeutralEnding.UndynePapyrusDead,"ending.undyne_papyrus_dead",1,1,0,null,2,Unlimited),
+        new(NeutralEnding.MettatonPapyrusAlive,"ending.mettaton_papyrus_alive",1,0,1,0,2,Unlimited),
+        new(NeutralEnding.MettatonPapyrusDead,"ending.mettaton_papyrus_dead",1,1,1,0,3,Unlimited),
+        new(NeutralEnding.Papyrus,"ending.papyrus",1,0,1,1,3,Unlimited),
+        new(NeutralEnding.Dog,"ending.dog_only_four_bosses_killed",1,1,1,1,4,4),
+        new(NeutralEnding.LeaderlessLowKills,"ending.leaderless_total_below_20",1,1,1,1,5,19),
+        new(NeutralEnding.LeaderlessHighKills,"ending.leaderless_total_20",1,1,1,1,20,Unlimited),
+        new(NeutralEnding.Alphys,"ending.alphys_aborted_late_genocide",1,1,1,1,4,Unlimited)
     }.AsReadOnly();
     private static FactTest Eq(string fact,int value)=>new(fact,Comparison.Equal,value);
     private static FactTest Min(string fact,int value)=>new(fact,Comparison.AtLeast,value);
@@ -85,19 +90,19 @@ public static class NeutralCatalog
         var target=Get(targetId);
         var blocked=false; var unknown=false; var action=false;
         var objectives=new List<Objective>(); var reasons=new List<string>();
-        void Mark(string fact,string english,string korean,bool invalidated=false)
+        void Mark(string fact,string key,bool invalidated=false)
         {
             if(invalidated) { blocked=true; reasons.Add("invalidated:"+fact); }
             else action=true;
-            if(objectives.Count==0) objectives.Add(new(fact,language==Language.Korean?korean:english));
+            if(objectives.Count==0) objectives.Add(new(fact,TextCatalog.Get(key,language).Replace("{character}",fact.Replace("neutral_", "").Replace("_dead", ""),StringComparison.Ordinal)));
         }
         if(state["hard_mode"] is null || state["world_erased"] is null || state["true_lab_completed"] is null) unknown=true;
-        if(state["hard_mode"]==1) Mark("hard_mode","Hard Mode cannot reach a Neutral ending.","하드 모드에서는 뉴트럴 엔딩에 도달할 수 없습니다.",true);
-        if(state["world_erased"]==1) Mark("world_erased","The world is erased; permanent-history choices remain yours.","세계가 지워졌습니다. 영구 기록은 직접 결정해야 합니다.",true);
+        if(state["hard_mode"]==1) Mark("hard_mode","guidance.hard_mode_cannot_reach_a_neutral_ending",true);
+        if(state["world_erased"]==1) Mark("world_erased","guidance.the_world_is_erased_permanent_history_choices_remain_yours",true);
         var stage=state["murder_level"];
         if(stage is null) unknown=true;
-        else if(stage>=16) Mark("murder_level","The Genocide conclusion is already committed.","몰살 결말이 이미 확정되었습니다.",true);
-        if(state["true_lab_completed"]==1) Mark("true_lab_completed","The True Pacifist finale is already unlocked.","진정한 불살의 최종 분기가 이미 열렸습니다.",true);
+        else if(stage>=16) Mark("murder_level","guidance.the_genocide_conclusion_is_already_committed",true);
+        if(state["true_lab_completed"]==1) Mark("true_lab_completed","guidance.the_true_pacifist_finale_is_already_unlocked",true);
         foreach(var (fact,resolved,expected) in Bosses)
         {
             if(expected(target) is not int wanted) continue;
@@ -106,19 +111,17 @@ public static class NeutralCatalog
             if(actual==wanted) continue;
             var permanentlyWrong=actual==1 || state[resolved]==1;
             if(wanted==1 && !permanentlyWrong && state[resolved] is null) unknown=true;
-            var character=fact.Replace("neutral_", "").Replace("_dead", "");
-            Mark(fact,spoilers==SpoilerLevel.Detailed?$"Resolve {character}'s encounter with the selected outcome.":"Preserve the selected encounter outcomes.",
-                "선택한 조우 결과를 지켜 주세요.",permanentlyWrong);
+            Mark(fact,spoilers==SpoilerLevel.Detailed?"guidance.resolve_character_s_encounter_with_the_selected_outcome":"guidance.preserve_the_selected_encounter_outcomes",permanentlyWrong);
         }
         var kills=state["kills"];
         if(kills is null) unknown=true;
-        else if(kills>target.MaximumKills) Mark("kills","The selected kill limit has been exceeded.","선택한 처치 수 제한을 초과했습니다.",true);
-        else if(kills<target.MinimumKills) Mark("kills","Follow the selected encounters before the final battle.","최종 전투 전에 선택한 조우 조건을 충족하세요.");
+        else if(kills>target.MaximumKills) Mark("kills","guidance.the_selected_kill_limit_has_been_exceeded",true);
+        else if(kills<target.MinimumKills) Mark("kills","guidance.follow_the_selected_encounters_before_the_final_battle");
         if(kills is int observedKills && target.MaximumKills<int.MaxValue)
         {
             int reserved=Bosses.Count(b=>b.Item3(target)==1&&state[b.Item1]==0);
             if((long)observedKills+reserved>target.MaximumKills)
-                Mark("kills","Too few kills remain for the required boss outcomes.","필수 보스 결과를 위한 처치 수가 남아 있지 않습니다.",true);
+                Mark("kills","guidance.too_few_kills_remain_for_the_required_boss_outcomes",true);
         }
         if(targetId is >=1 and <=5)
         {
@@ -127,23 +130,23 @@ public static class NeutralCatalog
             else if(targetId==1 && friendship<4)
             {
                 var locked=kills>0 || state["water_opportunity_missed"]==1;
-                Mark("neutral_undyne_friendship","Complete the warrior's friendship without gaining EXP.","EXP를 얻지 않고 전사와 우정을 쌓으세요.",locked);
+                Mark("neutral_undyne_friendship","guidance.complete_the_warrior_s_friendship_without_gaining_exp",locked);
             }
             else if(targetId is 2 or 3 && friendship>0 && kills>0)
-                Mark("neutral_undyne_friendship","The friendship betrayal changes this variant.","우정 배신 기록이 이 변형을 바꿉니다.",true);
+                Mark("neutral_undyne_friendship","guidance.the_friendship_betrayal_changes_this_variant",true);
             else if(targetId is 2 or 3 && friendship>3)
-                Mark("neutral_undyne_friendship","This friendship no longer matches the selected variant.","이 우정은 선택한 변형과 맞지 않습니다.",true);
+                Mark("neutral_undyne_friendship","guidance.this_friendship_no_longer_matches_the_selected_variant",true);
             else if(targetId is 4 or 5 && friendship<=0)
-                Mark("neutral_undyne_friendship","Start the warrior's friendship before any additional kills.","추가 처치 전에 전사와 우정을 시작하세요.",kills>0 || state["water_opportunity_missed"]==1);
+                Mark("neutral_undyne_friendship","guidance.start_the_warrior_s_friendship_before_any_additional_kills",kills>0 || state["water_opportunity_missed"]==1);
         }
         if(targetId==18)
         {
-            if(stage is >=0 and <12) Mark("murder_level","Follow Genocide through Waterfall, then abandon it in Hotland.","워터폴까지 몰살 조건을 지킨 뒤 핫랜드에서 중단하세요.",state["undyne_resolved"]==1);
+            if(stage is >=0 and <12) Mark("murder_level","guidance.follow_genocide_through_waterfall_then_abandon_it_in_hotland",state["undyne_resolved"]==1);
         }
         else if(target.MettatonDead==1 && stage>=12)
-            Mark("murder_level","The late Genocide history overrides this Neutral outcome.","후반 몰살 기록이 이 뉴트럴 결과를 바꿉니다.",true);
+            Mark("murder_level","guidance.the_late_genocide_history_overrides_this_neutral_outcome",true);
         if(!blocked && objectives.Count==0)
-            objectives.Add(new("continue",language==Language.Korean?"선택한 결과를 유지하며 여정을 계속하세요.":"Continue while preserving the selected outcomes."));
+            objectives.Add(new("continue",TextCatalog.Get("guidance.continue_while_preserving_the_selected_outcomes",language)));
         var status=blocked?RouteStatus.BLOCKED:unknown?RouteStatus.UNKNOWN:action?RouteStatus.ACTION_REQUIRED:RouteStatus.ON_TRACK;
         var basis=new Evaluation(status,objectives,reasons,true);
         var goal=state["target_greeting"]??0;

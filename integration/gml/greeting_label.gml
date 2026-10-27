@@ -1,11 +1,11 @@
 // Generated call-condition labels; conditions can share dialogue slots.
-if (argument0 == 0) { if (argument1 == 1) return "추가 목표 없음"; return "No extra goal"; }
-if (argument0 == 1) { if (argument1 == 1) return "친구의 전화"; return "Friend's call"; }
-if (argument0 == 2) { if (argument1 == 1) return "추방 / 로봇 생존"; return "Exile / robot spared"; }
-if (argument0 == 3) { if (argument1 == 1) return "추방 / 로봇 처치"; return "Exile / robot defeated"; }
-if (argument0 == 4) { if (argument1 == 1) return "기념품 소지"; return "Carry a keepsake"; }
-if (argument0 == 5) { if (argument1 == 1) return "SAVE 없이 진행"; return "Never SAVE"; }
-if (argument0 == 6) { if (argument1 == 1) return "처음 방어구 유지"; return "Keep starting armor"; }
-if (argument0 == 7) { if (argument1 == 1) return "회복 아이템 없이"; return "No healing items"; }
-if (argument0 == 8) { if (argument1 == 1) return "LV 1 / 회복 없음 / 방어구"; return "LV 1 / no healing / armor"; }
+if (argument0 == 0) return scr_routekeeper_text("guidance.no_extra_goal",argument1);
+if (argument0 == 1) return scr_routekeeper_text("guidance.friend_s_call",argument1);
+if (argument0 == 2) return scr_routekeeper_text("guidance.exile_robot_spared",argument1);
+if (argument0 == 3) return scr_routekeeper_text("guidance.exile_robot_defeated",argument1);
+if (argument0 == 4) return scr_routekeeper_text("guidance.carry_a_keepsake",argument1);
+if (argument0 == 5) return scr_routekeeper_text("guidance.never_save",argument1);
+if (argument0 == 6) return scr_routekeeper_text("guidance.keep_starting_armor",argument1);
+if (argument0 == 7) return scr_routekeeper_text("guidance.no_healing_items",argument1);
+if (argument0 == 8) return scr_routekeeper_text("guidance.lv_1_no_healing_armor",argument1);
 return "";

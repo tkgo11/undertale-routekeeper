@@ -68,3 +68,11 @@ no gameplay PASS is claimed. See [runtime validation](docs/runtime-validation.md
 for isolated commands, evidence and the Windows-native harness.
 `RouteKeeper.Tool analyze-reachability` reports bounded source witnesses and explicit
 unknowns; it is not a runtime compatibility or full reachability proof.
+
+## Mod translations
+
+ROUTEKEEPER UI/guidance uses the data-only [locale contributor guide](locales/README.md).
+Add a disabled template with `python tools/localization.py add --locale es --name Español`,
+translate/register it, then run `python tools/localization.py build`. English/Korean
+remain the validated enabled locales; legacy settings migrate to stable tags.
+This does not translate the original game or establish native runtime compatibility.

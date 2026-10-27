@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Offline layout/raster invariants using pinned metrics, never a runtime claim."""
-import json,re,unittest,tempfile
+import unittest,tempfile
 from pathlib import Path
-from preview import Renderer,ROOT,L
+from preview import Renderer,ROOT,L,localization
 import sys
 sys.path.insert(0,str(ROOT))
 from generate_font import generate
 from PIL import Image
 class UiTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.renderers=[Renderer(i) for i in range(2)]
+    def setUpClass(cls):cls.renderers=[Renderer(i) for i in range(len(localization.enabled()))]
     def test_font_reproducible(self):
         first,count=generate();second,_=generate();self.assertEqual(first,second)
         for name,data in first.items():self.assertEqual(data,(ROOT/'assets'/name).read_bytes())
@@ -36,32 +36,36 @@ class UiTests(unittest.TestCase):
                 r.runs=[];r.menu(selected)
                 for x,y,w,h,text in r.runs:
                     self.assertLessEqual(x+w,L['menu_right']-3);self.assertLessEqual(y+h,L['menu_bottom']-3)
-            for size in [2,3,4,5,19]:
+            for size in [1,2,3,5,10,19,32]:
                 for selected in range(size):
                     options=[('Variant ' if r.lang==0 else '변형 ')+str(i) for i in range(size)]
                     r.runs=[];r.menu(selected,options)
                     self.assertLessEqual(len(r.runs),L['visible_rows']+2)
                     first=selected//L['visible_rows']*L['visible_rows']
                     self.assertEqual([run[4] for run in r.runs if run[4] in options],options[first:first+L['visible_rows']])
+    def test_language_picker_uses_each_registered_font(self):
+        for r in self.renderers:
+            for selected in range(len(localization.enabled())):
+                r.runs=[];r.languages(selected)
+                for x,y,w,h,text in r.runs:self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,217)
+                for locale in localization.enabled():self.assertIn(locale['name'],[run[4] for run in r.runs])
     def test_hud_clip_and_coverage(self):
         for r in self.renderers:
-            for message in ['Long objective '*50,'남은 필수 조우를 마치세요. '*50]:
+            for message in [localization.text('ui.no_objective',r.lang)*50]:
                 r.runs=[];r.hud(message)
                 for x,y,w,h,text in r.runs:
                     self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,L['hud_bottom']-3)
         self.assertLessEqual((L['hud_bottom']-L['hud_top'])/240,0.12)
     def test_labels_do_not_hide_distinctions(self):
-        source=(ROOT/'gml/neutral_label.gml').read_text(encoding='utf-8')
-        for literal in re.findall(r'return ("[^"\n]*")',source):
-            text=json.loads(literal);language=int(any(ord(c)>126 for c in text));r=self.renderers[language]
-            self.assertLessEqual(r.width(text),252,text)
+        for r in self.renderers:
+            for name in ['neutral_label.gml','greeting_label.gml']:
+                for text in r.source_labels(name):self.assertLessEqual(r.width(text),252,text)
     def test_full_objectives_fit_progress_page(self):
-        for path in [ROOT/'gml/route_objective.gml',ROOT/'gml/neutral_evaluate.gml',ROOT/'gml/greeting_evaluate.gml']:
-            for literal in re.findall(r'"(?:[^"\\]|\\.)*"',path.read_text(encoding='utf-8')):
-                text=json.loads(literal)
-                if len(text)<30:continue
-                language=int(any(ord(c)>126 for c in text));r=self.renderers[language]
-                self.assertFalse(r.wrap('* '+text,264,4)[-1].endswith('...'),text)
+        for r in self.renderers:
+            for key in localization.load(ROOT.parent/'locales/en.json'):
+                if key.startswith('guidance.'):
+                    text=localization.text(key,r.lang).replace('{remaining}','99999').replace('{character}','mettaton')
+                    self.assertFalse(r.wrap('* '+text,264,4)[-1].endswith('...'),text)
     def test_progress_counter_is_not_truncated(self):
         for r in self.renderers:
             for total in range(1,100):
@@ -72,11 +76,11 @@ class UiTests(unittest.TestCase):
         self.assertEqual(L['scale'],2)
     def test_native_source_safety_contract(self):
         draw=(ROOT/'gml/controller_draw.gml').read_text(encoding='utf-8');step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
-        self.assertIn('draw_set_font(fnt_maintext)',draw);self.assertNotIn('display_set_gui_size',draw)
+        self.assertIn('draw_set_font(scr_routekeeper_locale_font(global.rk_language))',draw);self.assertNotIn('display_set_gui_size',draw)
         self.assertNotIn('gameplay tests pending',draw);self.assertIn('control_check_pressed(0)',step);self.assertIn('control_check_pressed(1)',step)
         self.assertGreater(step.index('control_clear(0); control_clear(1); control_clear(2);',step.index('accept = control_check_pressed(0)')),step.index('cancel = control_check_pressed(1)'))
         self.assertIn('obj_routekeeper.rk_menu',(ROOT/'hooks.csx').read_text(encoding='utf-8'))
-        self.assertIn('string_pos("한국어",argument2)',(ROOT/'gml/ui_line.gml').read_text(encoding='utf-8'))
+        self.assertIn('if (rk_menu_page == 5) draw_set_font(scr_routekeeper_locale_font(index));',draw)
     def test_small_controller_and_disconnect_contract(self):
         step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertIn('rk_pad_ready = count > 0;',step)

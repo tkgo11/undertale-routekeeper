@@ -86,7 +86,10 @@ internal sealed class GmlObjectiveInterpreter
         if (!Is("(")) return Read(token);
         Next(); var first = Expression();
         if (token == "string") { Need(")"); return first.ToString()!; }
-        Need(","); var second = Expression(); Need(")");
+        Need(","); var second = Expression();
+        if (token == "string_replace_all") { Need(","); var third = Expression(); Need(")"); return first.ToString()!.Replace(second.ToString()!,third.ToString()!,StringComparison.Ordinal); }
+        Need(")");
+        if (token == "scr_routekeeper_text") return RouteKeeper.Core.TextCatalog.Get(first.ToString()!,Number(second));
         return token switch { "max" => Math.Max(Number(first), Number(second)), "min" => Math.Min(Number(first), Number(second)), _ => throw new Exception("Unsupported function " + token) };
     }
 }

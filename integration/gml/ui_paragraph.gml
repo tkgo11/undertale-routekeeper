@@ -14,7 +14,7 @@ while (string_length(text) > 0 && count < argument4) {
     rest = string_delete(text, 1, take);
     while (string_length(rest) > 0 && string_char_at(rest, 1) == " ") rest = string_delete(rest, 1, 1);
     if (count == argument4 - 1 && string_length(rest) > 0) line += "...";
-    scr_routekeeper_ui_line(argument0, argument1 + count*18, line, width);
+    scr_routekeeper_ui_line(argument0, argument1 + count*scr_routekeeper_locale_line_height(global.rk_language), line, width);
     text = rest; count += 1;
 }
 return count;

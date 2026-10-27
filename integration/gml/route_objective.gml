@@ -1,7 +1,6 @@
 // Generated from the same ObjectiveRules used by C#.
 var rk_text, rk_unknown, rk_action, rk_blocked;
-rk_text = "Your next step is not clear yet.";
-if (global.rk_language == 1) rk_text = "다음 목표를 아직 알 수 없습니다.";
+rk_text = scr_routekeeper_text("guidance.your_next_step_is_not_clear_yet",global.rk_language);
 global.rk_objective_id = "unknown";
 global.rk_progress_met = 0; global.rk_progress_total = 0;
 rk_unknown = 0; rk_action = 0; rk_blocked = 0;
@@ -71,222 +70,134 @@ else if (global.rk_soul_sold < 0 || global.rk_soul_sold > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
-rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_world_is_erased_permanent_history_decisions_remain_yours",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_world_must_be_restored_before_continuing_some_choices",global.rk_language);
 return rk_text;
 }
 if ((global.rk_hard_mode >= 0 && global.rk_hard_mode <= 1) && !(global.rk_hard_mode == 0)) {
 global.rk_objective_id = "hard_mode";
-rk_text = "This challenge cannot reach the selected ending.";
-if (global.rk_spoilers == 1) rk_text = "Hard Mode ends in the Ruins and cannot reach a normal ending.";
-if (global.rk_language == 1) {
- rk_text = "이 도전에서는 선택한 엔딩에 도달할 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "하드 모드는 폐허에서 끝나므로 일반 엔딩에 도달할 수 없습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.this_challenge_cannot_reach_the_selected_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.hard_mode_ends_in_the_ruins_and_cannot_reach",global.rk_language);
 return rk_text;
 }
 if ((global.rk_experience >= 0 && global.rk_experience <= 2147483647) && !(global.rk_experience == 0)) {
 global.rk_objective_id = "experience";
-rk_text = "Avoid gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Do not kill enemies or gain EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP 획득을 피하세요.";
- if (global.rk_spoilers == 1) rk_text = "적을 죽이거나 EXP를 얻지 마세요.";
-}
+rk_text = scr_routekeeper_text("guidance.avoid_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.do_not_kill_enemies_or_gain_exp",global.rk_language);
 return rk_text;
 }
 if ((global.rk_kills_total >= 0 && global.rk_kills_total <= 2147483647) && !(global.rk_kills_total == 0)) {
 global.rk_objective_id = "kills_total";
-rk_text = "Keep everyone safe.";
-if (global.rk_spoilers == 1) rk_text = "Do not kill any monsters; the letter event checks the kill count separately from EXP.";
-if (global.rk_language == 1) {
- rk_text = "모두를 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "아무 몬스터도 죽이지 마세요. 편지 이벤트는 EXP와 별도로 처치 수를 확인합니다.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_everyone_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.do_not_kill_any_monsters_the_letter_event_checks",global.rk_language);
 return rk_text;
 }
 if ((global.rk_papyrus_alive >= 0 && global.rk_papyrus_alive <= 1) && !(global.rk_papyrus_alive == 1)) {
 global.rk_objective_id = "papyrus_alive";
-rk_text = "Keep your new friends safe.";
-if (global.rk_spoilers == 1) rk_text = "Spare Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "새 친구들을 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 살려 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_your_new_friends_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_papyrus",global.rk_language);
 return rk_text;
 }
 if ((global.rk_undyne_alive >= 0 && global.rk_undyne_alive <= 1) && !(global.rk_undyne_alive == 1)) {
 global.rk_objective_id = "undyne_alive";
-rk_text = "Keep your new friends safe.";
-if (global.rk_spoilers == 1) rk_text = "Spare Undyne.";
-if (global.rk_language == 1) {
- rk_text = "새 친구들을 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인을 살려 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_your_new_friends_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_undyne",global.rk_language);
 return rk_text;
 }
 if ((global.rk_water_opportunity_missed >= 0 && global.rk_water_opportunity_missed <= 1) && !(global.rk_water_opportunity_missed == 0)) {
 global.rk_objective_id = "water_opportunity_missed";
-rk_text = "Help anyone who needs immediate aid.";
-if (global.rk_spoilers == 1) rk_text = "Give Undyne water when she collapses in Hotland.";
-if (global.rk_language == 1) {
- rk_text = "즉시 도움이 필요한 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "핫랜드에서 쓰러진 언다인에게 물을 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.help_anyone_who_needs_immediate_aid",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.give_undyne_water_when_she_collapses_in_hotland",global.rk_language);
 return rk_text;
 }
 if ((global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1) && !(global.rk_epilogue_matches == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1) && global.rk_epilogue_resolved >= 1) {
 global.rk_objective_id = "epilogue_matches";
-rk_text = "The final choice differs from your selected outcome.";
-if (global.rk_spoilers == 1) rk_text = "Keep the selected Stay or Leave epilogue choice; existing SOUL history determines its normal or altered form.";
-if (global.rk_language == 1) {
- rk_text = "마지막 선택이 목표한 결과와 다릅니다.";
- if (global.rk_spoilers == 1) rk_text = "함께 살기 또는 떠나기 선택을 지켜 주세요. 기존 영혼 기록에 따라 일반 또는 변형 결말이 됩니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_final_choice_differs_from_your_selected_outcome",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.keep_the_selected_stay_or_leave_epilogue_choice_existing",global.rk_language);
 return rk_text;
 }
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 0)) {
 global.rk_objective_id = "soul_sold";
-rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
-if (global.rk_language == 1) {
- rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
-}
+rk_text = scr_routekeeper_text("guidance.existing_permanent_history_does_not_match_this_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.an_earlier_soul_sale_determines_this_ending_reset_does",global.rk_language);
 return rk_text;
 }
 if ((global.rk_water_opportunity_active >= 0 && global.rk_water_opportunity_active <= 1 && global.rk_water_opportunity_active == 1)) {
 global.rk_objective_id = "water_opportunity_missed";
-rk_text = "Help the collapsed person before leaving.";
-if (global.rk_spoilers == 1) rk_text = "Take water from the cooler and give it to Undyne before leaving.";
-if (global.rk_language == 1) {
- rk_text = "떠나기 전에 쓰러진 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "떠나기 전에 정수기의 물을 언다인에게 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.help_the_collapsed_person_before_leaving",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.take_water_from_the_cooler_and_give_it_to",global.rk_language);
 return rk_text;
 }
 if ((global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 0) && (global.rk_papyrus_hangout_available >= 0 && global.rk_papyrus_hangout_available <= 1 && global.rk_papyrus_hangout_available == 1)) {
 global.rk_objective_id = "papyrus_friendship";
-rk_text = "Visit your new friend's home.";
-if (global.rk_spoilers == 1) rk_text = "Go to Papyrus's house and finish his date or hangout.";
-if (global.rk_language == 1) {
- rk_text = "새 친구의 집을 방문하세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스의 집에서 데이트 또는 어울리기를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.visit_your_new_friend_s_home",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.go_to_papyrus_s_house_and_finish_his_date",global.rk_language);
 return rk_text;
 }
 if ((global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 0) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_hangout_available >= 0 && global.rk_undyne_hangout_available <= 1 && global.rk_undyne_hangout_available == 1)) {
 global.rk_objective_id = "undyne_friendship";
-rk_text = "Meet your friends at their home.";
-if (global.rk_spoilers == 1) rk_text = "Meet Papyrus outside Undyne's house and finish her hangout.";
-if (global.rk_language == 1) {
- rk_text = "친구의 집에서 함께 시간을 보내세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인의 집 앞에서 파피루스를 만나 어울리기를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.meet_your_friends_at_their_home",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.meet_papyrus_outside_undyne_s_house_and_finish_her",global.rk_language);
 return rk_text;
 }
 if ((global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 0) && (global.rk_mettaton_defeated >= 0 && global.rk_mettaton_defeated <= 1 && global.rk_mettaton_defeated == 1)) {
 global.rk_objective_id = "prior_neutral_completion";
-rk_text = "Finish the journey, then continue from your SAVE.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Asgore and Omega Flowey, then reload your SAVE.";
-if (global.rk_language == 1) {
- rk_text = "여정을 마친 뒤 SAVE에서 계속하세요.";
- if (global.rk_spoilers == 1) rk_text = "아스고어와 오메가 플라위를 물리친 뒤 SAVE를 불러오세요.";
-}
+rk_text = scr_routekeeper_text("guidance.finish_the_journey_then_continue_from_your_save",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.defeat_asgore_and_omega_flowey_then_reload_your_save",global.rk_language);
 return rk_text;
 }
 if ((global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 0) && (global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_date_available >= 0 && global.rk_alphys_date_available <= 1 && global.rk_alphys_date_available == 1)) {
 global.rk_objective_id = "alphys_friendship";
-rk_text = "Deliver your friend's message.";
-if (global.rk_spoilers == 1) rk_text = "Get Undyne's letter, deliver it to Alphys, and finish the date.";
-if (global.rk_language == 1) {
- rk_text = "친구의 편지를 전해 주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인의 편지를 알피스에게 전하고 데이트를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.deliver_your_friend_s_message",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.get_undyne_s_letter_deliver_it_to_alphys_and",global.rk_language);
 return rk_text;
 }
 if ((global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1) && (global.rk_true_lab_completed >= 0 && global.rk_true_lab_completed <= 1 && global.rk_true_lab_completed == 0) && (global.rk_true_lab_available >= 0 && global.rk_true_lab_available <= 1 && global.rk_true_lab_available == 1)) {
 global.rk_objective_id = "true_lab_completed";
-rk_text = "Explore the path your friends opened.";
-if (global.rk_spoilers == 1) rk_text = "Enter the bathroom in Alphys's lab and complete the True Lab.";
-if (global.rk_language == 1) {
- rk_text = "친구들이 열어 준 길을 탐험하세요.";
- if (global.rk_spoilers == 1) rk_text = "알피스의 연구실 화장실로 들어가 진실의 연구소를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.explore_the_path_your_friends_opened",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.enter_the_bathroom_in_alphys_s_lab_and_complete",global.rk_language);
 return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1 && global.rk_epilogue_resolved == 1) && (global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1 && global.rk_epilogue_matches == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "ending_complete";
-rk_text = "Your selected path is complete.";
-if (global.rk_spoilers == 1) rk_text = "The barrier is open, and your final choice matches your goal.";
-if (global.rk_language == 1) {
- rk_text = "선택한 경로를 마쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "결계가 열렸고 마지막 선택도 목표와 맞습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.your_selected_path_is_complete",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_barrier_is_open_and_your_final_choice_matches",global.rk_language);
 return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "epilogue";
-rk_text = "Finish your farewells and choose your future.";
-if (global.rk_spoilers == 1) rk_text = "Speak with your friends, leave the Underground, then keep your selected Stay/Leave choice.";
-if (global.rk_language == 1) {
- rk_text = "친구들에게 인사하고 앞날을 선택하세요.";
- if (global.rk_spoilers == 1) rk_text = "친구들과 이야기한 뒤 지하를 떠나 함께 살기 또는 떠나기 선택을 지키세요.";
-}
+rk_text = scr_routekeeper_text("guidance.finish_your_farewells_and_choose_your_future",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.speak_with_your_friends_leave_the_underground_then_keep",global.rk_language);
 return rk_text;
 }
 if ((global.rk_true_lab_completed >= 0 && global.rk_true_lab_completed <= 1 && global.rk_true_lab_completed == 1) && (global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 0) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1) && (global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 1)) {
 global.rk_objective_id = "barrier";
-rk_text = "Return to the barrier and help your friends.";
-if (global.rk_spoilers == 1) rk_text = "Return to the barrier and complete the Asriel encounter without RESET.";
-if (global.rk_language == 1) {
- rk_text = "결계로 돌아가 친구들을 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "결계로 돌아가 리셋하지 않고 아스리엘 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.return_to_the_barrier_and_help_your_friends",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.return_to_the_barrier_and_complete_the_asriel_encounter",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 0)) {
 global.rk_objective_id = "travel_ruins";
-rk_text = "Explore the Ruins without gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Spare Toriel and continue out of the Ruins without gaining EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP를 얻지 않고 폐허를 탐험하세요.";
- if (global.rk_spoilers == 1) rk_text = "토리엘을 살리고 EXP를 얻지 않은 채 폐허를 나가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.explore_the_ruins_without_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_toriel_and_continue_out_of_the_ruins_without",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 1)) {
 global.rk_objective_id = "travel_snowdin";
-rk_text = "Continue through the forest and make a friend.";
-if (global.rk_spoilers == 1) rk_text = "Spare Papyrus, then visit his house for a date or hangout.";
-if (global.rk_language == 1) {
- rk_text = "숲을 지나며 새 친구를 만드세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 살린 뒤 집을 방문해 데이트 또는 어울리기를 하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_through_the_forest_and_make_a_friend",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_papyrus_then_visit_his_house_for_a_date",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 2)) {
 global.rk_objective_id = "travel_waterfall";
-rk_text = "Continue through the caverns and help those in need.";
-if (global.rk_spoilers == 1) rk_text = "Flee from Undyne to Hotland, then give her water when she collapses.";
-if (global.rk_language == 1) {
- rk_text = "동굴을 지나며 도움이 필요한 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인에게서 핫랜드까지 도망친 뒤 쓰러진 언다인에게 물을 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_through_the_caverns_and_help_those_in_need",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.flee_from_undyne_to_hotland_then_give_her_water",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area >= 3)) {
 global.rk_objective_id = "travel_hotland";
-rk_text = "Continue toward the castle without gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Spare Mettaton EX and continue toward Asgore without gaining EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP를 얻지 않고 성을 향해 계속 가세요.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 EX를 살리고 EXP를 얻지 않은 채 아스고어에게 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_toward_the_castle_without_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_mettaton_ex_and_continue_toward_asgore_without_gaining",global.rk_language);
 return rk_text;
 }
 }
@@ -356,222 +267,134 @@ else if (global.rk_soul_sold < 0 || global.rk_soul_sold > 1) rk_unknown = 1;
 else { rk_action = 1; rk_blocked = 1; }
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
-rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_world_is_erased_permanent_history_decisions_remain_yours",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_world_must_be_restored_before_continuing_some_choices",global.rk_language);
 return rk_text;
 }
 if ((global.rk_hard_mode >= 0 && global.rk_hard_mode <= 1) && !(global.rk_hard_mode == 0)) {
 global.rk_objective_id = "hard_mode";
-rk_text = "This challenge cannot reach the selected ending.";
-if (global.rk_spoilers == 1) rk_text = "Hard Mode ends in the Ruins and cannot reach a normal ending.";
-if (global.rk_language == 1) {
- rk_text = "이 도전에서는 선택한 엔딩에 도달할 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "하드 모드는 폐허에서 끝나므로 일반 엔딩에 도달할 수 없습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.this_challenge_cannot_reach_the_selected_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.hard_mode_ends_in_the_ruins_and_cannot_reach",global.rk_language);
 return rk_text;
 }
 if ((global.rk_experience >= 0 && global.rk_experience <= 2147483647) && !(global.rk_experience == 0)) {
 global.rk_objective_id = "experience";
-rk_text = "Avoid gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Do not kill enemies or gain EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP 획득을 피하세요.";
- if (global.rk_spoilers == 1) rk_text = "적을 죽이거나 EXP를 얻지 마세요.";
-}
+rk_text = scr_routekeeper_text("guidance.avoid_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.do_not_kill_enemies_or_gain_exp",global.rk_language);
 return rk_text;
 }
 if ((global.rk_kills_total >= 0 && global.rk_kills_total <= 2147483647) && !(global.rk_kills_total == 0)) {
 global.rk_objective_id = "kills_total";
-rk_text = "Keep everyone safe.";
-if (global.rk_spoilers == 1) rk_text = "Do not kill any monsters; the letter event checks the kill count separately from EXP.";
-if (global.rk_language == 1) {
- rk_text = "모두를 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "아무 몬스터도 죽이지 마세요. 편지 이벤트는 EXP와 별도로 처치 수를 확인합니다.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_everyone_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.do_not_kill_any_monsters_the_letter_event_checks",global.rk_language);
 return rk_text;
 }
 if ((global.rk_papyrus_alive >= 0 && global.rk_papyrus_alive <= 1) && !(global.rk_papyrus_alive == 1)) {
 global.rk_objective_id = "papyrus_alive";
-rk_text = "Keep your new friends safe.";
-if (global.rk_spoilers == 1) rk_text = "Spare Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "새 친구들을 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 살려 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_your_new_friends_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_papyrus",global.rk_language);
 return rk_text;
 }
 if ((global.rk_undyne_alive >= 0 && global.rk_undyne_alive <= 1) && !(global.rk_undyne_alive == 1)) {
 global.rk_objective_id = "undyne_alive";
-rk_text = "Keep your new friends safe.";
-if (global.rk_spoilers == 1) rk_text = "Spare Undyne.";
-if (global.rk_language == 1) {
- rk_text = "새 친구들을 지켜 주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인을 살려 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.keep_your_new_friends_safe",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_undyne",global.rk_language);
 return rk_text;
 }
 if ((global.rk_water_opportunity_missed >= 0 && global.rk_water_opportunity_missed <= 1) && !(global.rk_water_opportunity_missed == 0)) {
 global.rk_objective_id = "water_opportunity_missed";
-rk_text = "Help anyone who needs immediate aid.";
-if (global.rk_spoilers == 1) rk_text = "Give Undyne water when she collapses in Hotland.";
-if (global.rk_language == 1) {
- rk_text = "즉시 도움이 필요한 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "핫랜드에서 쓰러진 언다인에게 물을 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.help_anyone_who_needs_immediate_aid",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.give_undyne_water_when_she_collapses_in_hotland",global.rk_language);
 return rk_text;
 }
 if ((global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1) && !(global.rk_epilogue_matches == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1) && global.rk_epilogue_resolved >= 1) {
 global.rk_objective_id = "epilogue_matches";
-rk_text = "The final choice differs from your selected outcome.";
-if (global.rk_spoilers == 1) rk_text = "Keep the selected Stay or Leave epilogue choice; existing SOUL history determines its normal or altered form.";
-if (global.rk_language == 1) {
- rk_text = "마지막 선택이 목표한 결과와 다릅니다.";
- if (global.rk_spoilers == 1) rk_text = "함께 살기 또는 떠나기 선택을 지켜 주세요. 기존 영혼 기록에 따라 일반 또는 변형 결말이 됩니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_final_choice_differs_from_your_selected_outcome",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.keep_the_selected_stay_or_leave_epilogue_choice_existing",global.rk_language);
 return rk_text;
 }
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 1)) {
 global.rk_objective_id = "soul_sold";
-rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
-if (global.rk_language == 1) {
- rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
-}
+rk_text = scr_routekeeper_text("guidance.existing_permanent_history_does_not_match_this_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.an_earlier_soul_sale_determines_this_ending_reset_does",global.rk_language);
 return rk_text;
 }
 if ((global.rk_water_opportunity_active >= 0 && global.rk_water_opportunity_active <= 1 && global.rk_water_opportunity_active == 1)) {
 global.rk_objective_id = "water_opportunity_missed";
-rk_text = "Help the collapsed person before leaving.";
-if (global.rk_spoilers == 1) rk_text = "Take water from the cooler and give it to Undyne before leaving.";
-if (global.rk_language == 1) {
- rk_text = "떠나기 전에 쓰러진 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "떠나기 전에 정수기의 물을 언다인에게 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.help_the_collapsed_person_before_leaving",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.take_water_from_the_cooler_and_give_it_to",global.rk_language);
 return rk_text;
 }
 if ((global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 0) && (global.rk_papyrus_hangout_available >= 0 && global.rk_papyrus_hangout_available <= 1 && global.rk_papyrus_hangout_available == 1)) {
 global.rk_objective_id = "papyrus_friendship";
-rk_text = "Visit your new friend's home.";
-if (global.rk_spoilers == 1) rk_text = "Go to Papyrus's house and finish his date or hangout.";
-if (global.rk_language == 1) {
- rk_text = "새 친구의 집을 방문하세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스의 집에서 데이트 또는 어울리기를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.visit_your_new_friend_s_home",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.go_to_papyrus_s_house_and_finish_his_date",global.rk_language);
 return rk_text;
 }
 if ((global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 0) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_hangout_available >= 0 && global.rk_undyne_hangout_available <= 1 && global.rk_undyne_hangout_available == 1)) {
 global.rk_objective_id = "undyne_friendship";
-rk_text = "Meet your friends at their home.";
-if (global.rk_spoilers == 1) rk_text = "Meet Papyrus outside Undyne's house and finish her hangout.";
-if (global.rk_language == 1) {
- rk_text = "친구의 집에서 함께 시간을 보내세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인의 집 앞에서 파피루스를 만나 어울리기를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.meet_your_friends_at_their_home",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.meet_papyrus_outside_undyne_s_house_and_finish_her",global.rk_language);
 return rk_text;
 }
 if ((global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 0) && (global.rk_mettaton_defeated >= 0 && global.rk_mettaton_defeated <= 1 && global.rk_mettaton_defeated == 1)) {
 global.rk_objective_id = "prior_neutral_completion";
-rk_text = "Finish the journey, then continue from your SAVE.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Asgore and Omega Flowey, then reload your SAVE.";
-if (global.rk_language == 1) {
- rk_text = "여정을 마친 뒤 SAVE에서 계속하세요.";
- if (global.rk_spoilers == 1) rk_text = "아스고어와 오메가 플라위를 물리친 뒤 SAVE를 불러오세요.";
-}
+rk_text = scr_routekeeper_text("guidance.finish_the_journey_then_continue_from_your_save",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.defeat_asgore_and_omega_flowey_then_reload_your_save",global.rk_language);
 return rk_text;
 }
 if ((global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 0) && (global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_date_available >= 0 && global.rk_alphys_date_available <= 1 && global.rk_alphys_date_available == 1)) {
 global.rk_objective_id = "alphys_friendship";
-rk_text = "Deliver your friend's message.";
-if (global.rk_spoilers == 1) rk_text = "Get Undyne's letter, deliver it to Alphys, and finish the date.";
-if (global.rk_language == 1) {
- rk_text = "친구의 편지를 전해 주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인의 편지를 알피스에게 전하고 데이트를 마치세요.";
-}
+rk_text = scr_routekeeper_text("guidance.deliver_your_friend_s_message",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.get_undyne_s_letter_deliver_it_to_alphys_and",global.rk_language);
 return rk_text;
 }
 if ((global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1) && (global.rk_true_lab_completed >= 0 && global.rk_true_lab_completed <= 1 && global.rk_true_lab_completed == 0) && (global.rk_true_lab_available >= 0 && global.rk_true_lab_available <= 1 && global.rk_true_lab_available == 1)) {
 global.rk_objective_id = "true_lab_completed";
-rk_text = "Explore the path your friends opened.";
-if (global.rk_spoilers == 1) rk_text = "Enter the bathroom in Alphys's lab and complete the True Lab.";
-if (global.rk_language == 1) {
- rk_text = "친구들이 열어 준 길을 탐험하세요.";
- if (global.rk_spoilers == 1) rk_text = "알피스의 연구실 화장실로 들어가 진실의 연구소를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.explore_the_path_your_friends_opened",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.enter_the_bathroom_in_alphys_s_lab_and_complete",global.rk_language);
 return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_epilogue_resolved >= 0 && global.rk_epilogue_resolved <= 1 && global.rk_epilogue_resolved == 1) && (global.rk_epilogue_matches >= 0 && global.rk_epilogue_matches <= 1 && global.rk_epilogue_matches == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "ending_complete";
-rk_text = "Your selected path is complete.";
-if (global.rk_spoilers == 1) rk_text = "The barrier is open, and your final choice matches your goal.";
-if (global.rk_language == 1) {
- rk_text = "선택한 경로를 마쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "결계가 열렸고 마지막 선택도 목표와 맞습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.your_selected_path_is_complete",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_barrier_is_open_and_your_final_choice_matches",global.rk_language);
 return rk_text;
 }
 if ((global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 1) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1)) {
 global.rk_objective_id = "epilogue";
-rk_text = "Finish your farewells and choose your future.";
-if (global.rk_spoilers == 1) rk_text = "Speak with your friends, leave the Underground, then keep your selected Stay/Leave choice.";
-if (global.rk_language == 1) {
- rk_text = "친구들에게 인사하고 앞날을 선택하세요.";
- if (global.rk_spoilers == 1) rk_text = "친구들과 이야기한 뒤 지하를 떠나 함께 살기 또는 떠나기 선택을 지키세요.";
-}
+rk_text = scr_routekeeper_text("guidance.finish_your_farewells_and_choose_your_future",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.speak_with_your_friends_leave_the_underground_then_keep",global.rk_language);
 return rk_text;
 }
 if ((global.rk_true_lab_completed >= 0 && global.rk_true_lab_completed <= 1 && global.rk_true_lab_completed == 1) && (global.rk_barrier_broken >= 0 && global.rk_barrier_broken <= 1 && global.rk_barrier_broken == 0) && (global.rk_papyrus_friendship >= 0 && global.rk_papyrus_friendship <= 1 && global.rk_papyrus_friendship == 1) && (global.rk_undyne_friendship >= 0 && global.rk_undyne_friendship <= 1 && global.rk_undyne_friendship == 1) && (global.rk_alphys_friendship >= 0 && global.rk_alphys_friendship <= 1 && global.rk_alphys_friendship == 1) && (global.rk_prior_neutral_completion >= 0 && global.rk_prior_neutral_completion <= 1 && global.rk_prior_neutral_completion == 1)) {
 global.rk_objective_id = "barrier";
-rk_text = "Return to the barrier and help your friends.";
-if (global.rk_spoilers == 1) rk_text = "Return to the barrier and complete the Asriel encounter without RESET.";
-if (global.rk_language == 1) {
- rk_text = "결계로 돌아가 친구들을 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "결계로 돌아가 리셋하지 않고 아스리엘 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.return_to_the_barrier_and_help_your_friends",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.return_to_the_barrier_and_complete_the_asriel_encounter",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 0)) {
 global.rk_objective_id = "travel_ruins";
-rk_text = "Explore the Ruins without gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Spare Toriel and continue out of the Ruins without gaining EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP를 얻지 않고 폐허를 탐험하세요.";
- if (global.rk_spoilers == 1) rk_text = "토리엘을 살리고 EXP를 얻지 않은 채 폐허를 나가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.explore_the_ruins_without_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_toriel_and_continue_out_of_the_ruins_without",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 1)) {
 global.rk_objective_id = "travel_snowdin";
-rk_text = "Continue through the forest and make a friend.";
-if (global.rk_spoilers == 1) rk_text = "Spare Papyrus, then visit his house for a date or hangout.";
-if (global.rk_language == 1) {
- rk_text = "숲을 지나며 새 친구를 만드세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 살린 뒤 집을 방문해 데이트 또는 어울리기를 하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_through_the_forest_and_make_a_friend",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_papyrus_then_visit_his_house_for_a_date",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area == 2)) {
 global.rk_objective_id = "travel_waterfall";
-rk_text = "Continue through the caverns and help those in need.";
-if (global.rk_spoilers == 1) rk_text = "Flee from Undyne to Hotland, then give her water when she collapses.";
-if (global.rk_language == 1) {
- rk_text = "동굴을 지나며 도움이 필요한 상대를 도와주세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인에게서 핫랜드까지 도망친 뒤 쓰러진 언다인에게 물을 주세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_through_the_caverns_and_help_those_in_need",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.flee_from_undyne_to_hotland_then_give_her_water",global.rk_language);
 return rk_text;
 }
 if ((global.rk_area >= 0 && global.rk_area <= 4 && global.rk_area >= 3)) {
 global.rk_objective_id = "travel_hotland";
-rk_text = "Continue toward the castle without gaining EXP.";
-if (global.rk_spoilers == 1) rk_text = "Spare Mettaton EX and continue toward Asgore without gaining EXP.";
-if (global.rk_language == 1) {
- rk_text = "EXP를 얻지 않고 성을 향해 계속 가세요.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 EX를 살리고 EXP를 얻지 않은 채 아스고어에게 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_toward_the_castle_without_gaining_exp",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.spare_mettaton_ex_and_continue_toward_asgore_without_gaining",global.rk_language);
 return rk_text;
 }
 }
@@ -632,272 +455,164 @@ else { rk_action = 1; rk_blocked = 1; }
 global.rk_progress_met = 0; if (global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) global.rk_progress_met = global.rk_genocide_stage; if (global.rk_sans_defeated == 1) global.rk_progress_met = global.rk_progress_met + 1; global.rk_progress_total = 17;
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
-rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_world_is_erased_permanent_history_decisions_remain_yours",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_world_must_be_restored_before_continuing_some_choices",global.rk_language);
 return rk_text;
 }
 if ((global.rk_hard_mode >= 0 && global.rk_hard_mode <= 1) && !(global.rk_hard_mode == 0)) {
 global.rk_objective_id = "hard_mode";
-rk_text = "This challenge cannot reach the selected ending.";
-if (global.rk_spoilers == 1) rk_text = "Hard Mode cannot reach a Genocide ending.";
-if (global.rk_language == 1) {
- rk_text = "이 도전에서는 선택한 엔딩에 도달할 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "하드 모드에서는 몰살 엔딩에 도달할 수 없습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.this_challenge_cannot_reach_the_selected_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.hard_mode_cannot_reach_a_genocide_ending",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1) && !(global.rk_genocide_aborted == 0)) {
 global.rk_objective_id = "genocide_aborted";
-rk_text = "A required encounter was missed.";
-if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or a required encounter was lost.";
-if (global.rk_language == 1) {
- rk_text = "필수 조우를 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.a_required_encounter_was_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.a_required_enemy_was_spared_or_a_required_encounter",global.rk_language);
 return rk_text;
 }
 if ((global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1) && !(global.rk_snowdrake_lost == 0)) {
 global.rk_objective_id = "snowdrake_lost";
-rk_text = "A required enemy can no longer be found.";
-if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before no further encounters or live Snowdrake remain.";
-if (global.rk_language == 1) {
- rk_text = "필수 적을 더는 찾을 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다.";
-}
+rk_text = scr_routekeeper_text("guidance.a_required_enemy_can_no_longer_be_found",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.snowdrake_must_be_killed_before_no_further_encounters_or",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 2) && (global.rk_toriel_resolved >= 0 && global.rk_toriel_resolved <= 1) && global.rk_toriel_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The first region's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete the Ruins kill quota and kill Toriel before leaving the Ruins.";
-if (global.rk_language == 1) {
- rk_text = "첫 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_first_region_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_the_ruins_kill_quota_and_kill_toriel_before",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 8) && (global.rk_papyrus_resolved >= 0 && global.rk_papyrus_resolved <= 1) && global.rk_papyrus_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The forest's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Snowdin's quota and unique encounters before killing Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "숲 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_forest_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_snowdin_s_quota_and_unique_encounters_before_killing",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 12) && (global.rk_undyne_resolved >= 0 && global.rk_undyne_resolved <= 1) && global.rk_undyne_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The cavern's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.";
-if (global.rk_language == 1) {
- rk_text = "동굴 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_cavern_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_waterfall_s_quota_shyren_and_glad_dummy_then",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 16) && (global.rk_mettaton_defeated >= 0 && global.rk_mettaton_defeated <= 1) && global.rk_mettaton_defeated >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The final region's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Hotland/CORE's quota and required encounters before defeating Mettaton NEO.";
-if (global.rk_language == 1) {
- rk_text = "마지막 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 NEO를 처치하기 전에 핫랜드와 코어의 처치 수와 필수 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_final_region_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_hotland_core_s_quota_and_required_encounters_before",global.rk_language);
 return rk_text;
 }
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 0)) {
 global.rk_objective_id = "soul_sold";
-rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
-if (global.rk_language == 1) {
- rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
-}
+rk_text = scr_routekeeper_text("guidance.existing_permanent_history_does_not_match_this_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.an_earlier_soul_sale_determines_this_ending_reset_does",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 0) && (global.rk_kills_ruins >= 0 && global.rk_kills_ruins <= 2147483647 && global.rk_kills_ruins <= 19)) {
 global.rk_objective_id = "quota_ruins";
-rk_text = "Defeat " + string(max(0, 20 - global.rk_kills_ruins)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 20 - global.rk_kills_ruins)) + " more enemies in the Ruins before leaving.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 20 - global.rk_kills_ruins)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "폐허를 떠나기 전에 적 " + string(max(0, 20 - global.rk_kills_ruins)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 20 - global.rk_kills_ruins)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_the_ruins_before_leaving",global.rk_language), "{remaining}", string(max(0, 20 - global.rk_kills_ruins)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 1)) {
 global.rk_objective_id = "toriel";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Toriel, then enter Snowdin.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "토리엘을 처치한 뒤 스노우딘으로 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_toriel_then_enter_snowdin",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 2)) {
 global.rk_objective_id = "doggo";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Doggo; do not spare required enemies.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "도고를 처치하세요. 필수 적을 살려 주지 마세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_doggo_do_not_spare_required_enemies",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 3)) {
 global.rk_objective_id = "dog_pair";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Dogamy and Dogaressa.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "도가미와 도가레사를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_dogamy_and_dogaressa",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 4)) {
 global.rk_objective_id = "greater_dog";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Greater Dog; kill Lesser Dog if encountered.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "그레이터 도그를 처치하세요. 레서 도그와 조우했다면 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_greater_dog_kill_lesser_dog_if_encountered",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 5)) {
 global.rk_objective_id = "snowdrake";
-rk_text = "Find the missing required enemy before exhausting the area.";
-if (global.rk_spoilers == 1) rk_text = "Kill Snowdrake before the Snowdin encounter quota is exhausted.";
-if (global.rk_language == 1) {
- rk_text = "지역의 적이 사라지기 전에 필수 적을 찾으세요.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘 조우 수가 소진되기 전에 스노우드레이크를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.find_the_missing_required_enemy_before_exhausting_the_area",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_snowdrake_before_the_snowdin_encounter_quota_is_exhausted",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 6) && (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647 && global.rk_kills_snowdin <= 15)) {
 global.rk_objective_id = "quota_snowdin";
-rk_text = "Defeat " + string(max(0, 16 - global.rk_kills_snowdin)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 16 - global.rk_kills_snowdin)) + " more enemies in Snowdin before Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 16 - global.rk_kills_snowdin)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 만나기 전에 스노우딘의 적 " + string(max(0, 16 - global.rk_kills_snowdin)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 16 - global.rk_kills_snowdin)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_snowdin_before_papyrus",global.rk_language), "{remaining}", string(max(0, 16 - global.rk_kills_snowdin)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 7)) {
 global.rk_objective_id = "papyrus";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Papyrus after completing the Snowdin quota.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘의 처치 수를 채운 뒤 파피루스를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_papyrus_after_completing_the_snowdin_quota",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 8)) {
 global.rk_objective_id = "shyren";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Shyren.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "샤이렌을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_shyren",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 9)) {
 global.rk_objective_id = "glad_dummy";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Glad Dummy.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "글래드 더미를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_glad_dummy",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 10) && (global.rk_kills_waterfall >= 0 && global.rk_kills_waterfall <= 2147483647 && global.rk_kills_waterfall <= 17)) {
 global.rk_objective_id = "quota_waterfall";
-rk_text = "Defeat " + string(max(0, 18 - global.rk_kills_waterfall)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 18 - global.rk_kills_waterfall)) + " more enemies in Waterfall before Undyne.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 18 - global.rk_kills_waterfall)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인을 만나기 전에 워터폴의 적 " + string(max(0, 18 - global.rk_kills_waterfall)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 18 - global.rk_kills_waterfall)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_waterfall_before_undyne",global.rk_language), "{remaining}", string(max(0, 18 - global.rk_kills_waterfall)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 11)) {
 global.rk_objective_id = "undyne";
-rk_text = "Complete the region's decisive encounter.";
-if (global.rk_spoilers == 1) rk_text = "Attack Monster Kid, then defeat Undyne the Undying.";
-if (global.rk_language == 1) {
- rk_text = "지역의 결정적인 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "몬스터 키드를 공격한 뒤 불사의 언다인을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_decisive_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.attack_monster_kid_then_defeat_undyne_the_undying",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 12)) {
 global.rk_objective_id = "royal_guards";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill the Royal Guards.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "왕실 근위병을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_the_royal_guards",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 13)) {
 global.rk_objective_id = "muffet";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Muffet.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "머펫을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_muffet",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 14) && (global.rk_kills_hotland_core >= 0 && global.rk_kills_hotland_core <= 2147483647 && global.rk_kills_hotland_core <= 39)) {
 global.rk_objective_id = "quota_hotland_core";
-rk_text = "Defeat " + string(max(0, 40 - global.rk_kills_hotland_core)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 40 - global.rk_kills_hotland_core)) + " more enemies in Hotland/CORE before Mettaton NEO.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 40 - global.rk_kills_hotland_core)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 NEO를 만나기 전에 핫랜드와 코어의 적 " + string(max(0, 40 - global.rk_kills_hotland_core)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 40 - global.rk_kills_hotland_core)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_hotland_core_before_mettaton",global.rk_language), "{remaining}", string(max(0, 40 - global.rk_kills_hotland_core)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 15)) {
 global.rk_objective_id = "mettaton_neo";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Mettaton NEO after exhausting the Hotland/CORE quota.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "핫랜드와 코어의 처치 수를 채운 뒤 메타톤 NEO를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_mettaton_neo_after_exhausting_the_hotland_core_quota",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 0)) {
 global.rk_objective_id = "genocide_final";
-rk_text = "Continue to the final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Sans, then continue toward the throne room.";
-if (global.rk_language == 1) {
- rk_text = "마지막 조우로 가세요.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리친 뒤 왕좌의 방으로 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_to_the_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.defeat_sans_then_continue_toward_the_throne_room",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 1)) {
 global.rk_objective_id = "genocide_throne";
-rk_text = "Continue to the throne room and choose your future.";
-if (global.rk_spoilers == 1) rk_text = "Continue through the throne room. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "왕좌의 방으로 가서 앞날을 선택하세요.";
- if (global.rk_spoilers == 1) rk_text = "왕좌의 방을 지나세요. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_to_the_throne_room_and_choose_your_future",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.continue_through_the_throne_room_some_choices_outlast_a",global.rk_language);
 return rk_text;
 }
 }
@@ -958,272 +673,164 @@ else { rk_action = 1; rk_blocked = 1; }
 global.rk_progress_met = 0; if (global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) global.rk_progress_met = global.rk_genocide_stage; if (global.rk_sans_defeated == 1) global.rk_progress_met = global.rk_progress_met + 1; global.rk_progress_total = 17;
 if ((global.rk_world_erased >= 0 && global.rk_world_erased <= 1) && !(global.rk_world_erased == 0)) {
 global.rk_objective_id = "world_erased";
-rk_text = "The world is erased. Permanent-history decisions remain yours.";
-if (global.rk_spoilers == 1) rk_text = "The world must be restored before continuing. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.";
- if (global.rk_spoilers == 1) rk_text = "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.the_world_is_erased_permanent_history_decisions_remain_yours",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.the_world_must_be_restored_before_continuing_some_choices",global.rk_language);
 return rk_text;
 }
 if ((global.rk_hard_mode >= 0 && global.rk_hard_mode <= 1) && !(global.rk_hard_mode == 0)) {
 global.rk_objective_id = "hard_mode";
-rk_text = "This challenge cannot reach the selected ending.";
-if (global.rk_spoilers == 1) rk_text = "Hard Mode cannot reach a Genocide ending.";
-if (global.rk_language == 1) {
- rk_text = "이 도전에서는 선택한 엔딩에 도달할 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "하드 모드에서는 몰살 엔딩에 도달할 수 없습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.this_challenge_cannot_reach_the_selected_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.hard_mode_cannot_reach_a_genocide_ending",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_aborted >= 0 && global.rk_genocide_aborted <= 1) && !(global.rk_genocide_aborted == 0)) {
 global.rk_objective_id = "genocide_aborted";
-rk_text = "A required encounter was missed.";
-if (global.rk_spoilers == 1) rk_text = "A required enemy was spared or a required encounter was lost.";
-if (global.rk_language == 1) {
- rk_text = "필수 조우를 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.a_required_encounter_was_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.a_required_enemy_was_spared_or_a_required_encounter",global.rk_language);
 return rk_text;
 }
 if ((global.rk_snowdrake_lost >= 0 && global.rk_snowdrake_lost <= 1) && !(global.rk_snowdrake_lost == 0)) {
 global.rk_objective_id = "snowdrake_lost";
-rk_text = "A required enemy can no longer be found.";
-if (global.rk_spoilers == 1) rk_text = "Snowdrake must be killed before no further encounters or live Snowdrake remain.";
-if (global.rk_language == 1) {
- rk_text = "필수 적을 더는 찾을 수 없습니다.";
- if (global.rk_spoilers == 1) rk_text = "새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다.";
-}
+rk_text = scr_routekeeper_text("guidance.a_required_enemy_can_no_longer_be_found",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.snowdrake_must_be_killed_before_no_further_encounters_or",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 2) && (global.rk_toriel_resolved >= 0 && global.rk_toriel_resolved <= 1) && global.rk_toriel_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The first region's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete the Ruins kill quota and kill Toriel before leaving the Ruins.";
-if (global.rk_language == 1) {
- rk_text = "첫 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_first_region_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_the_ruins_kill_quota_and_kill_toriel_before",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 8) && (global.rk_papyrus_resolved >= 0 && global.rk_papyrus_resolved <= 1) && global.rk_papyrus_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The forest's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Snowdin's quota and unique encounters before killing Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "숲 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_forest_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_snowdin_s_quota_and_unique_encounters_before_killing",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 12) && (global.rk_undyne_resolved >= 0 && global.rk_undyne_resolved <= 1) && global.rk_undyne_resolved >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The cavern's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.";
-if (global.rk_language == 1) {
- rk_text = "동굴 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_cavern_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_waterfall_s_quota_shyren_and_glad_dummy_then",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16) && !(global.rk_genocide_stage >= 16) && (global.rk_mettaton_defeated >= 0 && global.rk_mettaton_defeated <= 1) && global.rk_mettaton_defeated >= 1) {
 global.rk_objective_id = "genocide_stage";
-rk_text = "The final region's requirements were missed.";
-if (global.rk_spoilers == 1) rk_text = "Complete Hotland/CORE's quota and required encounters before defeating Mettaton NEO.";
-if (global.rk_language == 1) {
- rk_text = "마지막 지역의 조건을 놓쳤습니다.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 NEO를 처치하기 전에 핫랜드와 코어의 처치 수와 필수 조우를 완료하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.the_final_region_s_requirements_were_missed",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.complete_hotland_core_s_quota_and_required_encounters_before",global.rk_language);
 return rk_text;
 }
 if ((global.rk_soul_sold >= 0 && global.rk_soul_sold <= 1) && !(global.rk_soul_sold == 1)) {
 global.rk_objective_id = "soul_sold";
-rk_text = "Existing permanent history does not match this ending.";
-if (global.rk_spoilers == 1) rk_text = "An earlier SOUL sale determines this ending. RESET does not erase that choice.";
-if (global.rk_language == 1) {
- rk_text = "기존 영구 기록이 이 엔딩과 맞지 않습니다.";
- if (global.rk_spoilers == 1) rk_text = "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.";
-}
+rk_text = scr_routekeeper_text("guidance.existing_permanent_history_does_not_match_this_ending",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.an_earlier_soul_sale_determines_this_ending_reset_does",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 0) && (global.rk_kills_ruins >= 0 && global.rk_kills_ruins <= 2147483647 && global.rk_kills_ruins <= 19)) {
 global.rk_objective_id = "quota_ruins";
-rk_text = "Defeat " + string(max(0, 20 - global.rk_kills_ruins)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 20 - global.rk_kills_ruins)) + " more enemies in the Ruins before leaving.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 20 - global.rk_kills_ruins)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "폐허를 떠나기 전에 적 " + string(max(0, 20 - global.rk_kills_ruins)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 20 - global.rk_kills_ruins)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_the_ruins_before_leaving",global.rk_language), "{remaining}", string(max(0, 20 - global.rk_kills_ruins)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 1)) {
 global.rk_objective_id = "toriel";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Toriel, then enter Snowdin.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "토리엘을 처치한 뒤 스노우딘으로 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_toriel_then_enter_snowdin",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 2)) {
 global.rk_objective_id = "doggo";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Doggo; do not spare required enemies.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "도고를 처치하세요. 필수 적을 살려 주지 마세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_doggo_do_not_spare_required_enemies",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 3)) {
 global.rk_objective_id = "dog_pair";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Dogamy and Dogaressa.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "도가미와 도가레사를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_dogamy_and_dogaressa",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 4)) {
 global.rk_objective_id = "greater_dog";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Greater Dog; kill Lesser Dog if encountered.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "그레이터 도그를 처치하세요. 레서 도그와 조우했다면 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_greater_dog_kill_lesser_dog_if_encountered",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 5)) {
 global.rk_objective_id = "snowdrake";
-rk_text = "Find the missing required enemy before exhausting the area.";
-if (global.rk_spoilers == 1) rk_text = "Kill Snowdrake before the Snowdin encounter quota is exhausted.";
-if (global.rk_language == 1) {
- rk_text = "지역의 적이 사라지기 전에 필수 적을 찾으세요.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘 조우 수가 소진되기 전에 스노우드레이크를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.find_the_missing_required_enemy_before_exhausting_the_area",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_snowdrake_before_the_snowdin_encounter_quota_is_exhausted",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 6) && (global.rk_kills_snowdin >= 0 && global.rk_kills_snowdin <= 2147483647 && global.rk_kills_snowdin <= 15)) {
 global.rk_objective_id = "quota_snowdin";
-rk_text = "Defeat " + string(max(0, 16 - global.rk_kills_snowdin)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 16 - global.rk_kills_snowdin)) + " more enemies in Snowdin before Papyrus.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 16 - global.rk_kills_snowdin)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "파피루스를 만나기 전에 스노우딘의 적 " + string(max(0, 16 - global.rk_kills_snowdin)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 16 - global.rk_kills_snowdin)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_snowdin_before_papyrus",global.rk_language), "{remaining}", string(max(0, 16 - global.rk_kills_snowdin)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 7)) {
 global.rk_objective_id = "papyrus";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Papyrus after completing the Snowdin quota.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "스노우딘의 처치 수를 채운 뒤 파피루스를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_papyrus_after_completing_the_snowdin_quota",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 8)) {
 global.rk_objective_id = "shyren";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Shyren.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "샤이렌을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_shyren",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 9)) {
 global.rk_objective_id = "glad_dummy";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Glad Dummy.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "글래드 더미를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_glad_dummy",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 10) && (global.rk_kills_waterfall >= 0 && global.rk_kills_waterfall <= 2147483647 && global.rk_kills_waterfall <= 17)) {
 global.rk_objective_id = "quota_waterfall";
-rk_text = "Defeat " + string(max(0, 18 - global.rk_kills_waterfall)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 18 - global.rk_kills_waterfall)) + " more enemies in Waterfall before Undyne.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 18 - global.rk_kills_waterfall)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "언다인을 만나기 전에 워터폴의 적 " + string(max(0, 18 - global.rk_kills_waterfall)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 18 - global.rk_kills_waterfall)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_waterfall_before_undyne",global.rk_language), "{remaining}", string(max(0, 18 - global.rk_kills_waterfall)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 11)) {
 global.rk_objective_id = "undyne";
-rk_text = "Complete the region's decisive encounter.";
-if (global.rk_spoilers == 1) rk_text = "Attack Monster Kid, then defeat Undyne the Undying.";
-if (global.rk_language == 1) {
- rk_text = "지역의 결정적인 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "몬스터 키드를 공격한 뒤 불사의 언다인을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_decisive_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.attack_monster_kid_then_defeat_undyne_the_undying",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 12)) {
 global.rk_objective_id = "royal_guards";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill the Royal Guards.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "왕실 근위병을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_the_royal_guards",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 13)) {
 global.rk_objective_id = "muffet";
-rk_text = "Complete the next required encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Muffet.";
-if (global.rk_language == 1) {
- rk_text = "다음 필수 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "머펫을 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_next_required_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_muffet",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 14) && (global.rk_kills_hotland_core >= 0 && global.rk_kills_hotland_core <= 2147483647 && global.rk_kills_hotland_core <= 39)) {
 global.rk_objective_id = "quota_hotland_core";
-rk_text = "Defeat " + string(max(0, 40 - global.rk_kills_hotland_core)) + " more enemies before moving on.";
-if (global.rk_spoilers == 1) rk_text = "Defeat " + string(max(0, 40 - global.rk_kills_hotland_core)) + " more enemies in Hotland/CORE before Mettaton NEO.";
-if (global.rk_language == 1) {
- rk_text = "다음으로 가기 전에 적 " + string(max(0, 40 - global.rk_kills_hotland_core)) + "명을 더 처치하세요.";
- if (global.rk_spoilers == 1) rk_text = "메타톤 NEO를 만나기 전에 핫랜드와 코어의 적 " + string(max(0, 40 - global.rk_kills_hotland_core)) + "명을 더 처치하세요.";
-}
+rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_before_moving_on",global.rk_language), "{remaining}", string(max(0, 40 - global.rk_kills_hotland_core)));
+if (global.rk_spoilers == 1) rk_text = string_replace_all(scr_routekeeper_text("guidance.defeat_remaining_more_enemies_in_hotland_core_before_mettaton",global.rk_language), "{remaining}", string(max(0, 40 - global.rk_kills_hotland_core)));
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 15)) {
 global.rk_objective_id = "mettaton_neo";
-rk_text = "Complete the region's final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Kill Mettaton NEO after exhausting the Hotland/CORE quota.";
-if (global.rk_language == 1) {
- rk_text = "지역의 마지막 조우를 완료하세요.";
- if (global.rk_spoilers == 1) rk_text = "핫랜드와 코어의 처치 수를 채운 뒤 메타톤 NEO를 처치하세요.";
-}
+rk_text = scr_routekeeper_text("guidance.complete_the_region_s_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.kill_mettaton_neo_after_exhausting_the_hotland_core_quota",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 0)) {
 global.rk_objective_id = "genocide_final";
-rk_text = "Continue to the final encounter.";
-if (global.rk_spoilers == 1) rk_text = "Defeat Sans, then continue toward the throne room.";
-if (global.rk_language == 1) {
- rk_text = "마지막 조우로 가세요.";
- if (global.rk_spoilers == 1) rk_text = "샌즈를 물리친 뒤 왕좌의 방으로 가세요.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_to_the_final_encounter",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.defeat_sans_then_continue_toward_the_throne_room",global.rk_language);
 return rk_text;
 }
 if ((global.rk_genocide_stage >= 0 && global.rk_genocide_stage <= 16 && global.rk_genocide_stage == 16) && (global.rk_sans_defeated >= 0 && global.rk_sans_defeated <= 1 && global.rk_sans_defeated == 1)) {
 global.rk_objective_id = "genocide_throne";
-rk_text = "Continue to the throne room and choose your future.";
-if (global.rk_spoilers == 1) rk_text = "Continue through the throne room. Some choices outlast a RESET.";
-if (global.rk_language == 1) {
- rk_text = "왕좌의 방으로 가서 앞날을 선택하세요.";
- if (global.rk_spoilers == 1) rk_text = "왕좌의 방을 지나세요. 어떤 선택은 RESET 뒤에도 남습니다.";
-}
+rk_text = scr_routekeeper_text("guidance.continue_to_the_throne_room_and_choose_your_future",global.rk_language);
+if (global.rk_spoilers == 1) rk_text = scr_routekeeper_text("guidance.continue_through_the_throne_room_some_choices_outlast_a",global.rk_language);
 return rk_text;
 }
 }

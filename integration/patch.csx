@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Security.Cryptography;
 using UndertaleModLib.Compiler;
 using UndertaleModLib.Models;
@@ -73,32 +74,41 @@ if (!Data.GameObjects.ByName("obj_time").Persistent)
 foreach (var name in new[] {"obj_mainchara", "obj_battlecontroller", "obj_heart"})
     if (Data.GameObjects.ByName(name) == null) throw new Exception("Missing safety gate: " + name);
 
-// Add a new atlas; never rewrite the game's fonts or texture pages.
-var page = new UndertaleEmbeddedTexture { Name = Data.Strings.MakeString("Routekeeper UI atlas") };
-var fontImage = GMImage.FromPng(File.ReadAllBytes(Path.Combine(folder, "assets", "ui-font.png")));
-page.TextureData.Image = fontImage;
-Data.EmbeddedTextures.Add(page);
-var item = new UndertaleTexturePageItem {
-    Name = Data.Strings.MakeString("Routekeeper font page"),
-    SourceWidth = (ushort)fontImage.Width, SourceHeight = (ushort)fontImage.Height,
-    TargetWidth = (ushort)fontImage.Width, TargetHeight = (ushort)fontImage.Height,
-    BoundingWidth = (ushort)fontImage.Width, BoundingHeight = (ushort)fontImage.Height, TexturePage = page
-};
-Data.TexturePageItems.Add(item);
-var font = new UndertaleFont {
-    Name = Data.Strings.MakeString("fnt_routekeeper"),
-    DisplayName = Data.Strings.MakeString("Routekeeper Korean Pixel (Galmuri-derived)"),
-    EmSize = 18, AntiAliasing = 0, RangeStart = 32, Texture = item
-};
-foreach (var line in File.ReadAllLines(Path.Combine(folder, "assets", "ui-font.tsv"))) {
-    var v = line.Split('\t').Select(int.Parse).ToArray();
-    font.Glyphs.Add(new UndertaleFont.Glyph {
-        Character = (ushort)v[0], SourceX = (ushort)v[1], SourceY = (ushort)v[2],
-        SourceWidth = 24, SourceHeight = 18, Shift = (short)v[3], Offset = (short)v[4]
-    });
+// Append manifest-declared licensed atlases; original fonts/pages remain unchanged.
+var fontManifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder,"assets","fonts","manifest.json")));
+foreach (var entry in fontManifest.RootElement.EnumerateArray()) {
+    string FontFile(string field) {
+        var relative = entry.GetProperty(field).GetString();
+        if (Path.IsPathRooted(relative) || relative.Split('/','\\').Contains("..")) throw new Exception("Invalid font manifest path");
+        var path=Path.Combine(folder,"assets",relative); RejectLinks(path); return path;
+    }
+    var resource=entry.GetProperty("resource").GetString();
+    if (!System.Text.RegularExpressions.Regex.IsMatch(resource,@"^fnt_routekeeper[a-zA-Z0-9_]*$") || Data.Fonts.ByName(resource)!=null) throw new Exception("Font resource conflict");
+    var page = new UndertaleEmbeddedTexture { Name = Data.Strings.MakeString("Routekeeper "+resource) };
+    var fontImage = GMImage.FromPng(File.ReadAllBytes(FontFile("atlas")));
+    if (fontImage.Width>2048 || fontImage.Height>2048) throw new Exception("Unsupported font atlas size");
+    page.TextureData.Image=fontImage; Data.EmbeddedTextures.Add(page);
+    var item = new UndertaleTexturePageItem {
+        Name=Data.Strings.MakeString("Routekeeper "+resource),
+        SourceWidth=(ushort)fontImage.Width,SourceHeight=(ushort)fontImage.Height,
+        TargetWidth=(ushort)fontImage.Width,TargetHeight=(ushort)fontImage.Height,
+        BoundingWidth=(ushort)fontImage.Width,BoundingHeight=(ushort)fontImage.Height,TexturePage=page
+    };
+    Data.TexturePageItems.Add(item);
+    var font = new UndertaleFont {
+        Name=Data.Strings.MakeString(resource),DisplayName=Data.Strings.MakeString(entry.GetProperty("displayName").GetString()),
+        EmSize=entry.GetProperty("lineHeight").GetInt32(),AntiAliasing=0,RangeStart=32,Texture=item
+    };
+    int previous=-1;
+    foreach(var line in File.ReadAllLines(FontFile("glyphs"))) {
+        var v=line.Split('\t').Select(int.Parse).ToArray();
+        if(v.Length!=5 || v[0]<=previous || v[0]>65535 || v[0]<32 || v[1]<0 || v[2]<0 || v[1]+24>fontImage.Width || v[2]+18>fontImage.Height || v[3]<0 || v[3]>24 || v[4]<-24 || v[4]>24) throw new Exception("Invalid glyph metadata");
+        previous=v[0];
+        font.Glyphs.Add(new UndertaleFont.Glyph {Character=(ushort)v[0],SourceX=(ushort)v[1],SourceY=(ushort)v[2],SourceWidth=24,SourceHeight=18,Shift=(short)v[3],Offset=(short)v[4]});
+    }
+    if(font.Glyphs.Count!=entry.GetProperty("glyphCount").GetInt32()) throw new Exception("Glyph count mismatch");
+    font.RangeEnd=font.Glyphs.Last().Character;Data.Fonts.Add(font);
 }
-font.RangeEnd = font.Glyphs.Last().Character;
-Data.Fonts.Add(font);
 var obj = new UndertaleGameObject {
     Name = Data.Strings.MakeString("obj_routekeeper"), Persistent = true, Visible = true, Awake = true
 };

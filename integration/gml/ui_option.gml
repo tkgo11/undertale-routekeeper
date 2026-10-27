@@ -9,12 +9,12 @@ if (page == 1) {
 }
 if (page == 8) return scr_routekeeper_greeting_label(index,lang);
 if (page == 7) {
-    if (global.rk_spoilers == 0 && index > 0) { if (lang == 1) return "유형 " + string(index); return "Type " + string(index); }
+    if (global.rk_spoilers == 0 && index > 0) { return string_replace_all(scr_routekeeper_ui_catalog("type_number",lang),"{index}",string(index)); }
     return scr_routekeeper_neutral_label(index,lang);
 }
 if (page == 2) {
     if (global.rk_target_route == 3) {
-        if (global.rk_spoilers == 0 && index > 0) { if (lang == 1) return "변형 " + string(index); return "Variant " + string(index); }
+        if (global.rk_spoilers == 0 && index > 0) { return string_replace_all(scr_routekeeper_ui_catalog("variant_number",lang),"{index}",string(index)); }
         return scr_routekeeper_neutral_label(index,lang);
     }
     if (index == 0) return scr_routekeeper_ui_catalog("either",lang);
@@ -28,5 +28,4 @@ if (page == 3) {
     return scr_routekeeper_ui_catalog("forced",lang);
 }
 if (page == 4) { if (index == 0) return scr_routekeeper_ui_catalog("minimal",lang); return scr_routekeeper_ui_catalog("detailed",lang); }
-if (index == 0) return "English";
-return "한국어";
+return scr_routekeeper_locale_name(index);

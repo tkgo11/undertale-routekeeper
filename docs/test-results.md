@@ -1,5 +1,15 @@
 # Verification evidence
 
+## Localization validation (2026-10-27)
+
+See [localization-validation.md](localization-validation.md) for the current scope,
+commands, actual results and limits. The locale registry/catalogs now drive C# and
+native GML, language paging/settings tags, glyph subsets and licensed font injection.
+English/Korean237 keys;393 glyphs; contributor add/build tested without rule edits.
+Candidate4457dbf4 replaces9abd0729 only as offline evidence; InspectedOnly and
+Steam same-account NO-GO remain. No game/Steam launch, merge or release.
+
+
 Updated 2026-10-27 (KST). Local host Debian13 x64, SDK10.0.402, UndertaleModCli0.9.2.0.
 PASS applies only to the stated scope. Historical QEMU/Wine attempts reached Steam
 bootstrap without a game room; this continuation did not start Steam or the game.

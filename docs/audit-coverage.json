@@ -5,13 +5,13 @@
   "snapshot": "Source tree committed with this inventory; git log -1 identifies the resulting HEAD.",
   "decision": "NO-GO for current-account game smoke; see docs/code-audit.md",
   "tracked_baseline_count": 159,
-  "files_count": 173,
+  "files_count": 198,
   "coverage_counts": {
-    "MANUAL_FULL_TEXT": 129,
+    "MANUAL_FULL_TEXT": 134,
     "SELF_MANIFEST_FULL_SET_CHECK": 1,
     "BINARY_FULL_DECODE_AND_PROVENANCE": 1,
-    "GENERATED_FULL_BYTE_COMPARISON": 36,
-    "DATA_ALL_RECORDS_AND_SOURCE": 5,
+    "GENERATED_FULL_BYTE_COMPARISON": 50,
+    "DATA_ALL_RECORDS_AND_SOURCE": 11,
     "THIRD_PARTY_FULL_BYTE_PROVENANCE": 1
   },
   "meaning": "COMPLETE = full declared inspection coverage. PASS applies only to verified_scope, not finding resolution, real gameplay, or compatibility approval. No sampling-based full-coverage claim.",
@@ -46,18 +46,18 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 3917,
-      "lines": 79,
-      "sha256": "d990695f80a7d483648066f5ec04243ed2318ff66c32fbdd924206814ee8142b",
+      "bytes": 4072,
+      "lines": 83,
+      "sha256": "c69ffc6798f7aebb84485a7d901489de7f3b095faf8dd58ded414a7a483a0a6e",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A11"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": ".gitignore",
@@ -73,16 +73,16 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 10724,
-      "lines": 172,
-      "sha256": "ae2d56642e0e7e50797f448e7e6017cf7aa8dd23b6a37819a3010d0635c1d922",
+      "bytes": 11471,
+      "lines": 184,
+      "sha256": "2c0912e4404e32d6d482a00a308267b45eda3c058dec429079978a5774efeac7",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "Directory.Build.props",
@@ -98,16 +98,16 @@
     },
     {
       "path": "README.md",
-      "bytes": 4026,
-      "lines": 70,
-      "sha256": "a8333234e00910aa9f86a9e6a7c9f73fbaaf9a903a89b169e1c255714d150bba",
+      "bytes": 4479,
+      "lines": 78,
+      "sha256": "2af8c811ef0f89a8641f7591b380dbef8af0ce1d44e98bda9e676bf4b9d06dd7",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "RouteKeeper.slnx",
@@ -123,16 +123,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 29086,
-      "lines": 442,
-      "sha256": "d37f7506ad0cf2d98b35c78507c8547b113e4f68768702314837940e5516b88e",
+      "bytes": 29633,
+      "lines": 452,
+      "sha256": "c9fa1919b217d484c0a5dfd0122276c5672e85ae006ede21343d2ba74a71b7fe",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -145,7 +145,7 @@
       "verified_scope": "Exact git tracked-path equality with four additions; every other file hash verified. Own digest intentionally null to avoid recursion.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "docs/code-audit.md",
@@ -175,15 +175,16 @@
     },
     {
       "path": "docs/compatibility.md",
-      "bytes": 3599,
-      "lines": 54,
-      "sha256": "25e17c78843c73664f42c7f7bcefddc8aad1681bd430f8dd5efbd113c0799ebc",
+      "bytes": 4011,
+      "lines": 60,
+      "sha256": "ec9f2754823fa97ac77a2e89084d31e064957e2333dae01cf24196d07d3b8d36",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "docs/ending-audit.md",
@@ -221,6 +222,19 @@
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": []
+    },
+    {
+      "path": "docs/localization-validation.md",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 8026,
+      "lines": 116,
+      "sha256": "78c31d09a4c45a478cac147dbce9b1b2140605429e4fb652e2314fdbed21564d",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "docs/non-runtime-status.md",
@@ -312,16 +326,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 25019,
-      "lines": 327,
-      "sha256": "64652f6cfe8c6bdb08d541e9d6bf44b34ff0681a0de681be5fca6aea1b64b57c",
+      "bytes": 25551,
+      "lines": 337,
+      "sha256": "1fc0b5af16d6046603006bc7326637bb95cb47ff77806ce8aac8e55eb3b26754",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -420,6 +434,58 @@
       "findings": []
     },
     {
+      "path": "integration/assets/fonts/galmuri14/ui-font-size.txt",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 8,
+      "lines": 1,
+      "sha256": "e748e4f7420203a83cc75e2dde6091ad2b6cb221636889ea37743a17a69cad8c",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/assets/fonts/galmuri14/ui-font.png",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 49764,
+      "lines": null,
+      "sha256": "a16880bce6a9d57ef2b8a0f7e322e8e49f4e2d9013425e926ef2b31e3f89005c",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/assets/fonts/galmuri14/ui-font.tsv",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 6888,
+      "lines": 393,
+      "sha256": "26006c987f3b293df1239277d6f4356b3169ccbbd5512a0229434eb913fdbbe8",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/assets/fonts/manifest.json",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 754,
+      "lines": 20,
+      "sha256": "c96721455282a16732137840219b37cb7f0b4da84ade0dbc6b80e335f5efc567",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
       "path": "integration/assets/ui-font-size.txt",
       "bytes": 8,
       "lines": 1,
@@ -435,25 +501,27 @@
       "path": "integration/assets/ui-font.png",
       "bytes": 49764,
       "lines": null,
-      "sha256": "6b578789a49d8246a793f68ff183df24415a1ec4e19b51d7e263249173e91441",
+      "sha256": "a16880bce6a9d57ef2b8a0f7e322e8e49f4e2d9013425e926ef2b31e3f89005c",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes regenerated from pinned BDF; atlas decoded/visually inspected; full glyph metadata/coverage/geometry tests.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/assets/ui-font.tsv",
-      "bytes": 6666,
-      "lines": 381,
-      "sha256": "7c4df7394fb76af75c112576c06702df1f616cf44b90bded4bbe9b7008e85722",
+      "bytes": 6888,
+      "lines": 393,
+      "sha256": "26006c987f3b293df1239277d6f4356b3169ccbbd5512a0229434eb913fdbbe8",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes regenerated from pinned BDF; atlas decoded/visually inspected; full glyph metadata/coverage/geometry tests.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/bindings.csx",
@@ -496,54 +564,57 @@
     },
     {
       "path": "integration/generate_font.py",
-      "bytes": 4128,
-      "lines": 76,
-      "sha256": "804c5914461dc78c71633babfc9e558973fccdacf8cac7c402f07c275a036dee",
+      "bytes": 7004,
+      "lines": 124,
+      "sha256": "7990042eecd15b243c0dfb948b48c8e49a7bd58f0d8e88db6724a28f7f4a162d",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/controller_create.gml",
-      "bytes": 2770,
-      "lines": 64,
-      "sha256": "3bd3116042ee81562aed90204342d81e528bf1994bac71900523f5f1a17f3f15",
+      "bytes": 2891,
+      "lines": 66,
+      "sha256": "9465667710a29d43e2708764fe307ba3f7578e4ce68ccfe972789065e561fa79",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/controller_draw.gml",
-      "bytes": 6724,
-      "lines": 101,
-      "sha256": "74eff88121c7f785a1cf1addb2ebe04a09282ef4f84633092f7006d1471f2de1",
+      "bytes": 7146,
+      "lines": 103,
+      "sha256": "7defcbd4f2d46e48c34e1489e7f9d35ed0c112fc68657f195c91861d474ce246",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/controller_step.gml",
-      "bytes": 10395,
-      "lines": 208,
-      "sha256": "89eeb06f99156ca43debdcca86be6989650f54ccbb21eba4d4bf01885fd9879b",
+      "bytes": 11320,
+      "lines": 212,
+      "sha256": "c9e5863adad5b89707cd50d240360ee373f781f92b0a4d9f5a886fcc5d43f898",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/decision_act.gml",
@@ -715,15 +786,16 @@
     },
     {
       "path": "integration/gml/greeting_evaluate.gml",
-      "bytes": 23954,
+      "bytes": 21313,
       "lines": 160,
-      "sha256": "4251e043cff27bb743516f2fcd4ae7474fd63245d139222f0550107015b95fa7",
+      "sha256": "bcf72c8d5357caf116eee9a4cb8d8554da8ba25d23376723880233fcea9db078",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/greeting_experience.gml",
@@ -751,15 +823,16 @@
     },
     {
       "path": "integration/gml/greeting_label.gml",
-      "bytes": 1024,
+      "bytes": 878,
       "lines": 11,
-      "sha256": "89fff975d92f17fc014f9e94f4b055e5894612f88565cfb35eaf72621015d6dd",
+      "sha256": "d35b3c0589a5992e750244bc4fd44c91eee3ba5487aea80d3c3f205d7bbf81ef",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/greeting_pending_risk.gml",
@@ -798,6 +871,97 @@
       "findings": []
     },
     {
+      "path": "integration/gml/locale_count.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 37,
+      "lines": 2,
+      "sha256": "691cc9a2b0e584b9e98080ec63c5fab2aa2b77eee71847453ada0a094d786cc5",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_font.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 135,
+      "lines": 4,
+      "sha256": "3f205745b12a0610005341e704cd2acc7405d3f77fc3da9e9a6245ca77f975c0",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_index.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 101,
+      "lines": 4,
+      "sha256": "7b2240e94208e50db5d241246738c450ac571a3fb5fd0edd43e78f85ae221898",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_legacy.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 107,
+      "lines": 4,
+      "sha256": "fc982ef07de825449e6e1d64377321358e7ab254444d1355a37cab019b284631",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_line_height.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 106,
+      "lines": 4,
+      "sha256": "607277c4eebb86d500603c00b5163af5455393dc6472d2cd5df9d63926ab3e8b",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_name.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 119,
+      "lines": 4,
+      "sha256": "279ff1614749942cd4d61be5f4faf42875059ef17b04fd19c451ec2236963ae1",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/locale_tag.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 102,
+      "lines": 4,
+      "sha256": "7b2a008a3a62c4c408fd0a442ddf25c2dea84fab8a7d8f533bc710297066b017",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
       "path": "integration/gml/neutral_classify.gml",
       "bytes": 958,
       "lines": 24,
@@ -811,27 +975,29 @@
     },
     {
       "path": "integration/gml/neutral_evaluate.gml",
-      "bytes": 52070,
-      "lines": 786,
-      "sha256": "7eb1bc2f03f6ef50cc78df51ab42a7e3035fa27c5ba3b69dcdd6212806d28a93",
+      "bytes": 49027,
+      "lines": 780,
+      "sha256": "ea2d5339b7a151f2780338dc0e54c7d9d0e262ff3e26850a49afd0faff71c803",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/neutral_label.gml",
-      "bytes": 2397,
+      "bytes": 1885,
       "lines": 21,
-      "sha256": "994360dc7b320bcc524ff399a849b5704a4723a6f0afc2e25076eac40b5d7843",
+      "sha256": "cf6e03d3e76e0aa5d4de0a44a543f452ea3d1dc15c968af07806f57be374bfda",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/neutral_modifiers.gml",
@@ -919,15 +1085,16 @@
     },
     {
       "path": "integration/gml/route_objective.gml",
-      "bytes": 81965,
-      "lines": 1230,
-      "sha256": "e5e653b384a6bd05289b31de1ee15f6d25ac83a6ccd80bea64d9f637b507cc05",
+      "bytes": 69084,
+      "lines": 837,
+      "sha256": "e68b92cd8b5df4263e025b19f98820465c2add33eca992bcffb23bd35afde459",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/state_read.gml",
@@ -940,6 +1107,45 @@
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": []
+    },
+    {
+      "path": "integration/gml/text.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 235,
+      "lines": 4,
+      "sha256": "2f26fc19a20bca51b6cec1841c4267a3079243f27b5b41c9fb593656348ed93b",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/text_0.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 25198,
+      "lines": 239,
+      "sha256": "d63c361787a0199210c7fa900f3380f919a976781f0bd8ec0840031455f1e0af",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "integration/gml/text_1.gml",
+      "inspection": "COMPLETE",
+      "method": "GENERATED_FULL_BYTE_COMPARISON",
+      "verification": "PASS",
+      "verified_scope": "Entire output regenerated and compared; locale registry/dictionaries/font source and licenses inspected;30 locale tests including authentic four-locale/two-font compile/reload; original resource preservation. See docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 27531,
+      "lines": 239,
+      "sha256": "fe59055cddae0725c32fe0c7c1f54a373c88252a6c8250d2c58b5f6e060b987c",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/ui_box.gml",
@@ -955,15 +1161,16 @@
     },
     {
       "path": "integration/gml/ui_catalog.gml",
-      "bytes": 7584,
-      "lines": 60,
-      "sha256": "7dba418e43523c8b52163abe0da44b152cd7b3571193900d94c65cb6494ab7a0",
+      "bytes": 102,
+      "lines": 2,
+      "sha256": "f8edea926c9850167238d8dee582b0a4f9d2a4873b55d5b15793f62207250b96",
       "inspection": "COMPLETE",
       "method": "GENERATED_FULL_BYTE_COMPARISON",
       "verification": "PASS",
-      "verified_scope": "All bytes match independent regeneration to private temporary outputs; generators fully read; authentic GML compiled/reloaded.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/ui_heart.gml",
@@ -991,15 +1198,16 @@
     },
     {
       "path": "integration/gml/ui_line.gml",
-      "bytes": 661,
-      "lines": 12,
-      "sha256": "13e1292c31e1abbec36d4c0f8bfb699080db979a895f4e3c7dc10a038463df60",
+      "bytes": 557,
+      "lines": 11,
+      "sha256": "64cb7108e91fa2b1ca3d80d517f142bb217d254aab82a85837a83674d23ae1b1",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/ui_nav.gml",
@@ -1015,27 +1223,29 @@
     },
     {
       "path": "integration/gml/ui_option.gml",
-      "bytes": 1661,
-      "lines": 32,
-      "sha256": "c0451652f2a5940d08c411d9c3bebfb4bd2138d4edb1c2818a61210c394ce737",
+      "bytes": 1686,
+      "lines": 31,
+      "sha256": "ee7b20c61d264f36a8f5f8da2faaac891fd26c82ce5a326df4653637f8b240d5",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/ui_paragraph.gml",
-      "bytes": 925,
+      "bytes": 977,
       "lines": 20,
-      "sha256": "0a958e9880a10b4fd5a016cbe2a0be242c7f040ec82232e81f00c6d579a44350",
+      "sha256": "6ef54758acb080f1a790eed79c0a7cc3bf2ed9b1305d88710852d798cdcb57bb",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/gml/warning_session.gml",
@@ -1063,30 +1273,31 @@
     },
     {
       "path": "integration/patch.csx",
-      "bytes": 7780,
-      "lines": 125,
-      "sha256": "e9f087c9efc10363afce62dfe42f107b1f6b4add8bf5b952131e9fc5224e68a6",
+      "bytes": 9033,
+      "lines": 135,
+      "sha256": "3ace1e0876f8df836237b930a259235f656c54a70a8e9ece52d6d28a43840c56",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A13"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/ui/catalog.json",
-      "bytes": 6392,
-      "lines": 266,
-      "sha256": "db39cc27afad6f02e599a6967b05a58b5d39937f7840d95c5853db701754d75e",
+      "bytes": 636,
+      "lines": 32,
+      "sha256": "4835a0cae9473ebf95ba37e1bdf3c75fc110f0ab8a2e6ae4c0eb72293eae87fb",
       "inspection": "COMPLETE",
       "method": "DATA_ALL_RECORDS_AND_SOURCE",
       "verification": "PASS",
-      "verified_scope": "All layout/localized string records inspected; generation byte comparison;20 UI groups and686 emitted UI cases.",
+      "verified_scope": "All unchanged layout records inspected; translation content moved to locales;21 offline UI groups and696 emitted UI comparisons.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/ui/english-metrics.json",
@@ -1102,63 +1313,63 @@
     },
     {
       "path": "integration/ui/generate.py",
-      "bytes": 1495,
+      "bytes": 1580,
       "lines": 23,
-      "sha256": "ebb18656b02b40df2e8d4770387616241fd8bdfc5046cd198bbeb30b5ca2754f",
+      "sha256": "e6d409efa5a885ee90d62f48de30066ef9eb148bc7b22b69558f81444f27d234",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/ui/preview.py",
-      "bytes": 8701,
-      "lines": 130,
-      "sha256": "d5fc6546bbaf17dac4f07fd1557c27d3a288f2014db481123272f918e47bf0db",
+      "bytes": 9539,
+      "lines": 142,
+      "sha256": "242219bebafe653cfe2f5822ea1831e287a3a60fc17ffd1e35f0c5c9548aedaa",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/ui/test_ui.py",
-      "bytes": 11094,
-      "lines": 158,
-      "sha256": "cf84ca13d7b60ad2ccc06d4832062e5831e96e31497f15e3b816e47a3f2ff2c1",
+      "bytes": 11348,
+      "lines": 162,
+      "sha256": "7236a9cf4bc30ca59b845a0b11e5094592187bc4886c2e0fd6383da0985aa91e",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "integration/verify.csx",
-      "bytes": 17579,
-      "lines": 196,
-      "sha256": "520c4a1beb80a7c38dc27a367a4622d90217237b3c9f7a04b052d334074d80ca",
+      "bytes": 18081,
+      "lines": 202,
+      "sha256": "1c456b3f00d83c4445e067e6447ccf1ffa37fcf099c6e4ca06d5100f3ece7295",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A18"
       ],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "licenses/dotnet/LICENSE.txt",
@@ -1183,6 +1394,84 @@
       "verified_scope": "Whole file byte-identical to SDK10.0.402 notices; all license/copyright sections indexed; not independent legal approval of each upstream clause.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": []
+    },
+    {
+      "path": "locales/README.md",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 7967,
+      "lines": 129,
+      "sha256": "483615639ee188f13ffb45247299bf0121bae8f2206c941c9365ae36b1ca8475",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "locales/context.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 40243,
+      "lines": 1467,
+      "sha256": "b9c3004830ab0d8541f124fffb53219c3f87443d85b045e5eaaeb8f828a7ab0c",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "locales/en.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 19920,
+      "lines": 239,
+      "sha256": "3f9220e219b19729f41f78540f3e4ad6b086bbeade259d64fd1e75ba8efb655f",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "locales/fonts.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 749,
+      "lines": 22,
+      "sha256": "0d33c89bb3445e6c2095b7d21eb029c216db7c6ed739d2a8dfbbb9a83ad13d96",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "locales/ko.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 22222,
+      "lines": 239,
+      "sha256": "95e69781dcaf5d564db69909c4da76efcfbfe88da3ae5efd8001a8ba50be6131",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "locales/languages.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 393,
+      "lines": 8,
+      "sha256": "9e2e617ba482d02e227a68782d1db1a612125d1c9cb58b55dfe3aba5fae2807a",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "profiles/README.md",
@@ -1212,25 +1501,27 @@
       "path": "profiles/registry.json",
       "bytes": 814,
       "lines": 20,
-      "sha256": "525d1fd7b30c221e5866fec3e4d88bbb0d5e850e6a47e67b8f6ba54f701002da",
+      "sha256": "14cc07a68905caa8157dba1a7a0b1a71e51ce6457c435498c7b6a7c50a1e3091",
       "inspection": "COMPLETE",
       "method": "DATA_ALL_RECORDS_AND_SOURCE",
       "verification": "PASS",
-      "verified_scope": "All profile fields inspected; pinned identity/candidate matches; InspectedOnly unchanged; authentic installation refused.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/Engine.cs",
-      "bytes": 17556,
-      "lines": 197,
-      "sha256": "8a22527f67be0eafc57130e48cf0932b638686268c94e6655818ef4151b37407",
+      "bytes": 14534,
+      "lines": 188,
+      "sha256": "7f386635da6b6826643048d62efc28163edc280feb18131dd0e4eecdecd16ecd",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/GenocideTransitionModel.cs",
@@ -1246,75 +1537,81 @@
     },
     {
       "path": "src/RouteKeeper.Core/GmlRuleEmitter.cs",
-      "bytes": 6570,
+      "bytes": 6278,
       "lines": 90,
-      "sha256": "26f314c50559cbd55086855d1d5ca02363acfc0c587e22f038c936d05c58e679",
+      "sha256": "522c60b6c36b237cb04c0f2eb9ae612198037c19f729f74c1bbc76a1bd742a2c",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/KeepsakeGuidance.cs",
-      "bytes": 2529,
-      "lines": 29,
-      "sha256": "cdba26fb802a2487470cb590d245df8c0ff2c7806f1879cc390da0dc97f38aa4",
+      "bytes": 2110,
+      "lines": 30,
+      "sha256": "b250d3599599e26ef347d3378d1aea46d3aed30374c5ef829f93c277285d7b8f",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/NeutralCatalog.cs",
-      "bytes": 14536,
-      "lines": 192,
-      "sha256": "0d368dde4682a960063d8f48acc718c5a5b6326990e273d5c02a7ab3e512639b",
+      "bytes": 13375,
+      "lines": 195,
+      "sha256": "e6c58ac73f660ffca01b1768d3877ef7e20f424b57de27ab054c7d0c5d0094be",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/NeutralGmlEmitter.cs",
-      "bytes": 9166,
-      "lines": 175,
-      "sha256": "0cd4adf61649c17cd76825e2e89f30ac6f859cc82680ec1d44038f45b18276bb",
+      "bytes": 8715,
+      "lines": 169,
+      "sha256": "5cfdb4781d9a32f22574ec2944500fbe1891fcc78e3e4cc1c4416eb50e48256d",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/NeutralGoals.cs",
-      "bytes": 11851,
-      "lines": 117,
-      "sha256": "cf6018126bd81d1d442e390b7ec9901abdfd6cebb0468f5b0881f0dbd5681c6a",
+      "bytes": 10611,
+      "lines": 125,
+      "sha256": "91ff3b9091d5258ed798d05322e6d25d9c20ca3de605a1b6353ca5e7750be0c3",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/Objectives.cs",
-      "bytes": 11327,
+      "bytes": 7938,
       "lines": 74,
-      "sha256": "e2c8da480a3ccb50dd187e4d20c50fe83c7b571350780b2d81ebceddb279cf9c",
+      "sha256": "5509be2a1a23e39708764c98e05c6bbb790e28cbd233bd972ca336e6b5e72ae3",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/Reachability.cs",
@@ -1330,15 +1627,16 @@
     },
     {
       "path": "src/RouteKeeper.Core/RouteKeeper.Core.csproj",
-      "bytes": 187,
-      "lines": 3,
-      "sha256": "e1a91ad3b17614202de10e44136c7dbcc5e9cf97d5dea39cdae0418edeb2e8b9",
+      "bytes": 322,
+      "lines": 4,
+      "sha256": "744ae472ea4a5a9d55ce05e3bfb8dbda4036c0745141a9702b55aa6059de723b",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
-      "findings": []
+      "findings": [],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Core/StoryEligibility.cs",
@@ -1351,6 +1649,19 @@
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": []
+    },
+    {
+      "path": "src/RouteKeeper.Core/TextCatalog.cs",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 3306,
+      "lines": 43,
+      "sha256": "7dee142bc7568f25d0135acb4559f934084f77c9158ae0cbd78ee9e90b65e3db",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Decisions/DecisionPolicy.cs",
@@ -1527,16 +1838,16 @@
     },
     {
       "path": "src/RouteKeeper.Tool/RouteKeeper.Tool.csproj",
-      "bytes": 1014,
-      "lines": 11,
-      "sha256": "2354d6a5278c7af1d9792abeeca6c7475c3e8648a508f18ba374f6ab5f7ce366",
+      "bytes": 1153,
+      "lines": 12,
+      "sha256": "6da3518cd27c5537f67aafd0982567e88b413c28176dca59c91a8ef8e2995e3c",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "src/RouteKeeper.Tool/SafeInstaller.cs",
@@ -1608,17 +1919,18 @@
     },
     {
       "path": "tests/RouteKeeper.Core.Tests/GmlObjectiveInterpreter.cs",
-      "bytes": 5072,
-      "lines": 92,
-      "sha256": "4a3c6a8a63fe7477037ee8b583dc9e1a04ff51cae0ecfe36fda5f7834a5f3dc5",
+      "bytes": 5392,
+      "lines": 95,
+      "sha256": "631438358e667e789eaf51640c8d3c6fcba9b034db4808bc911a35720727bea2",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A09"
-      ]
+      ],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tests/RouteKeeper.Core.Tests/GmlSubsetInterpreter.cs",
@@ -1636,17 +1948,18 @@
     },
     {
       "path": "tests/RouteKeeper.Core.Tests/Program.cs",
-      "bytes": 16124,
-      "lines": 210,
-      "sha256": "fcfc0151c0a60c84b56a37aadd8d06f07b39e3459493d8de6aab9b539b306f6b",
+      "bytes": 18105,
+      "lines": 232,
+      "sha256": "c7249fd1103c997abe051c109ea19420cb73cd86a783d5595aeba10cff1bd546",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A09"
-      ]
+      ],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tests/RouteKeeper.Core.Tests/RouteKeeper.Core.Tests.csproj",
@@ -1664,31 +1977,33 @@
     },
     {
       "path": "tests/RouteKeeper.Decisions.Tests/Program.cs",
-      "bytes": 28190,
+      "bytes": 28303,
       "lines": 268,
-      "sha256": "f8d2ba29de0399dbeed25aacec6e0c4b604f6f4c7d16c3464fce2542671f3114",
+      "sha256": "9667de8ba35d6efca882c3cb4c37ed222ecda9610c78e9e1bb38017dd5cbdf4c",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A09"
-      ]
+      ],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tests/RouteKeeper.Decisions.Tests/RouteKeeper.Decisions.Tests.csproj",
-      "bytes": 385,
+      "bytes": 466,
       "lines": 1,
-      "sha256": "33247a85919f8e5062b0d6cde1b11c217a7912cbe8499ed5854217d6516d97b1",
+      "sha256": "f2df215884f2ef6f32895db4ac2b97356c1a1493bb5def48bcf21b4d7431da23",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A09"
-      ]
+      ],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tests/RouteKeeper.History.Tests/Program.cs",
@@ -1720,17 +2035,18 @@
     },
     {
       "path": "tests/RouteKeeper.Neutral.Tests/GmlProgram.cs",
-      "bytes": 3151,
-      "lines": 61,
-      "sha256": "3098175d6113995ddab13c5a35edc4b57ca55f6bdd4fd8261eb5d683e46c994a",
+      "bytes": 3272,
+      "lines": 63,
+      "sha256": "3bcf7dbbfdd547872fc4ad6ad0624c34618819b696eb4bfd9626caf5dc562fe9",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
-      "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [
         "A09"
-      ]
+      ],
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tests/RouteKeeper.Neutral.Tests/Program.cs",
@@ -1823,6 +2139,19 @@
       ]
     },
     {
+      "path": "tests/golden/localization-migration.json",
+      "inspection": "COMPLETE",
+      "method": "DATA_ALL_RECORDS_AND_SOURCE",
+      "verification": "PASS",
+      "verified_scope": "All records validated against canonical/context schema, required/obsolete/empty keys, placeholders, Unicode/glyph/layout gates and pre-refactor own-mod migration fixture; deterministic native generation and authentic compilation.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 39548,
+      "lines": 1137,
+      "sha256": "4171b636c10f4d4746a1d88f977527bac2ed6c98883f4de1c4e481ac110fd8a5",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
       "path": "tests/golden/original-endings.json",
       "bytes": 234047,
       "lines": 3525,
@@ -1890,6 +2219,19 @@
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": []
+    },
+    {
+      "path": "tools/localization.py",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 18253,
+      "lines": 252,
+      "sha256": "fe2b29a94dea7739b6f22d1bda56569ae36bfabe4fca37227b22e0db6ad9d3dd",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
     },
     {
       "path": "tools/runtime/Dockerfile",
@@ -2248,6 +2590,19 @@
       "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
     },
     {
+      "path": "tools/test_localization.py",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 15749,
+      "lines": 217,
+      "sha256": "b1261142de660de19f30b783040e27bf9fd779c0f99bc2c9064ff927e0275b2e",
+      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
       "path": "tools/test_private_validation.py",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
@@ -2325,5 +2680,6 @@
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",
-  "coverage_note": "All163 starting blobs rehashed against the previous whole-content audit. Unchanged inspections carried forward; all modified/new maintained files fully reviewed and applicable offline checks rerun. Coverage is not runtime approval."
+  "coverage_note": "Prior unchanged full-content inspections carried forward. All localization changes reviewed by complete source/diff inspection or full deterministic output comparison, migration fixture and authentic resource-preservation checks; no runtime approval.",
+  "localization_start_head": "05695725a76ad019402eba66d119e21640733899"
 }

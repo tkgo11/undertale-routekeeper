@@ -59,14 +59,14 @@ if (instance_exists(obj_time) && variable_global_exists("osflavor")
                 code = rk_pad_candidate[j];
                 if (code != global.button0 && code != global.button1 && code != global.button2) {
                     rk_pad_button[count] = code;
-                    if (j == 0) rk_pad_label[count] = "L1";
-                    if (j == 1) rk_pad_label[count] = "R1";
-                    if (j == 2) rk_pad_label[count] = "L3";
-                    if (j == 3) rk_pad_label[count] = "R3";
-                    if (j == 4) rk_pad_label[count] = "L2";
-                    if (j == 5) rk_pad_label[count] = "R2";
-                    if (j == 6) rk_pad_label[count] = "Select";
-                    if (j == 7) rk_pad_label[count] = "Start";
+                    if (j == 0) rk_pad_label[count] = scr_routekeeper_text("input.pad_l1",global.rk_language);
+                    if (j == 1) rk_pad_label[count] = scr_routekeeper_text("input.pad_r1",global.rk_language);
+                    if (j == 2) rk_pad_label[count] = scr_routekeeper_text("input.pad_l3",global.rk_language);
+                    if (j == 3) rk_pad_label[count] = scr_routekeeper_text("input.pad_r3",global.rk_language);
+                    if (j == 4) rk_pad_label[count] = scr_routekeeper_text("input.pad_l2",global.rk_language);
+                    if (j == 5) rk_pad_label[count] = scr_routekeeper_text("input.pad_r2",global.rk_language);
+                    if (j == 6) rk_pad_label[count] = scr_routekeeper_text("input.pad_select",global.rk_language);
+                    if (j == 7) rk_pad_label[count] = scr_routekeeper_text("input.pad_start",global.rk_language);
                     count += 1;
                 }
             }
@@ -75,7 +75,7 @@ if (instance_exists(obj_time) && variable_global_exists("osflavor")
             for (j = 1; j <= joystick_buttons(device) && count < 4; j += 1) {
                 if (j != global.button0 && j != global.button1 && j != global.button2) {
                     rk_pad_button[count] = j;
-                    rk_pad_label[count] = "B" + string(j);
+                    rk_pad_label[count] = string_replace_all(scr_routekeeper_text("input.joystick_button",global.rk_language),"{button}",string(j));
                     count += 1;
                 }
             }
@@ -146,7 +146,7 @@ if (cancel) {
 }
 // Retain the original optional mode/language shortcuts inside settings only.
 if (keyboard_check_pressed(122)) { global.rk_mode = (global.rk_mode + 1) mod 4; changed = 1; }
-if (keyboard_check_pressed(123)) { global.rk_language = 1 - global.rk_language; changed = 1; }
+if (keyboard_check_pressed(123)) { global.rk_language = (global.rk_language + 1) mod scr_routekeeper_locale_count(); if (rk_menu_page == 5) rk_choice = global.rk_language; changed = 1; }
 old_page = rk_menu_page;
 if (rk_menu_page == 0) {
     rk_menu_row = scr_routekeeper_ui_nav(rk_menu_row,delta,7);
@@ -165,6 +165,7 @@ if (rk_menu_page == 0) {
     if (accept || left) rk_menu_page = 0;
 } else {
     options = 2;
+    if (rk_menu_page == 5) options = scr_routekeeper_locale_count();
     if (rk_menu_page == 1) options = 5;
     if (rk_menu_page == 2) options = 3;
     if (rk_menu_page == 7) options = 19;
@@ -194,14 +195,17 @@ if (changed) {
     rk_dismissed = 0;
     scr_routekeeper_warning_session(3, 0, "", 0);
     ini_open("routekeeper.ini");
-    ini_write_real("Guidance", "schema", 3);
+    ini_write_real("Guidance", "schema", 4);
     ini_write_real("Guidance", "target_greeting", global.rk_target_greeting);
     ini_write_real("Guidance", "target_route", global.rk_target_route);
     ini_write_real("Guidance", "target_epilogue", global.rk_target_epilogue);
     ini_write_real("Guidance", "target_neutral", global.rk_target_neutral);
     ini_write_real("Guidance", "mode", global.rk_mode);
     ini_write_real("Guidance", "spoilers", global.rk_spoilers);
-    ini_write_real("Guidance", "language", global.rk_language);
+    ini_write_string("Guidance", "locale", scr_routekeeper_locale_tag(global.rk_language));
+    // Preserve the old numeric field only for the original two language tags.
+    if (scr_routekeeper_locale_tag(global.rk_language) == "ko") ini_write_real("Guidance", "language", 1);
+    else ini_write_real("Guidance", "language", 0);
     ini_close();
     scr_routekeeper_read_state();
     rk_status = scr_routekeeper_evaluate();

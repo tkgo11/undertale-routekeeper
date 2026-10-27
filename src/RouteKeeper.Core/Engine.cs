@@ -44,8 +44,7 @@ public static class GameStateReader
     public static GameState ReadNormalized(IReadOnlyDictionary<string, int?> observations) => new(observations);
 }
 
-public sealed record Requirement(string Fact, int Expected, bool Irreversible, string Minimal, string Detailed,
-    string KoreanMinimal, string KoreanDetailed, Comparison Comparison = Comparison.Equal, string? GuardFact = null, int GuardMinimum = 1)
+public sealed record Requirement(string Fact, int Expected, bool Irreversible, string MinimalKey, string DetailedKey, Comparison Comparison = Comparison.Equal, string? GuardFact = null, int GuardMinimum = 1)
 {
     public bool Matches(int value) => Comparison switch { Comparison.AtLeast => value >= Expected, Comparison.AtMost => value <= Expected, _ => value == Expected };
     public bool? IsMet(GameState state)
@@ -59,13 +58,11 @@ public sealed record Requirement(string Fact, int Expected, bool Irreversible, s
         }
         return value is null ? null : false;
     }
-    public string Describe(SpoilerLevel spoilers, Language language) => (language, spoilers) switch
-    {
-        (Language.Korean, SpoilerLevel.Detailed) => KoreanDetailed,
-        (Language.Korean, _) => KoreanMinimal,
-        (_, SpoilerLevel.Detailed) => Detailed,
-        _ => Minimal
-    };
+    public string Minimal=>TextCatalog.Get(MinimalKey,0);
+    public string Detailed=>TextCatalog.Get(DetailedKey,0);
+    public string KoreanMinimal=>TextCatalog.Get(MinimalKey,"ko");
+    public string KoreanDetailed=>TextCatalog.Get(DetailedKey,"ko");
+    public string Describe(SpoilerLevel spoilers,Language language)=>TextCatalog.Get(spoilers==SpoilerLevel.Detailed?DetailedKey:MinimalKey,language);
 }
 public sealed record RouteDefinition(RouteId Id, IReadOnlyList<Requirement> Requirements, bool CompleteCoverage);
 public sealed record Objective(string Fact, string Text);
@@ -74,44 +71,37 @@ public sealed record Evaluation(RouteStatus Status, IReadOnlyList<Objective> Obj
 
 public static class RouteCatalog
 {
-    private static Requirement R(string fact, int expected, bool irreversible, string minimal, string detailed,
-        string koreanMinimal, string koreanDetailed, Comparison comparison = Comparison.Equal, string? guard = null, int guardMinimum = 1) =>
-        new(fact, expected, irreversible, minimal, detailed, koreanMinimal, koreanDetailed, comparison, guard, guardMinimum);
+    private static Requirement R(string fact, int expected, bool irreversible, string minimal, string detailed, Comparison comparison = Comparison.Equal, string? guard = null, int guardMinimum = 1) =>
+        new(fact, expected, irreversible, minimal, detailed, comparison, guard, guardMinimum);
     private static readonly Requirement WorldAvailable = R("world_erased",0,true,
-        "The world is erased. Permanent-history decisions remain yours.",
-        "The world must be restored before continuing. Some choices outlast a RESET.",
-        "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다.",
-        "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다.");
+        "guidance.the_world_is_erased_permanent_history_decisions_remain_yours","guidance.the_world_must_be_restored_before_continuing_some_choices");
     private static readonly Requirement[] Pacifist = [
-        R("hard_mode",0,true,"This challenge cannot reach the selected ending.","Hard Mode ends in the Ruins and cannot reach a normal ending.","이 도전에서는 선택한 엔딩에 도달할 수 없습니다.","하드 모드는 폐허에서 끝나므로 일반 엔딩에 도달할 수 없습니다."),
-        R("experience",0,true,"Avoid gaining EXP.","Do not kill enemies or gain EXP.","EXP 획득을 피하세요.","적을 죽이거나 EXP를 얻지 마세요."),
-        R("kills_total",0,true,"Keep everyone safe.","Do not kill any monsters; the letter event checks the kill count separately from EXP.","모두를 지켜 주세요.","아무 몬스터도 죽이지 마세요. 편지 이벤트는 EXP와 별도로 처치 수를 확인합니다."),
-        R("papyrus_alive",1,true,"Keep your new friends safe.","Spare Papyrus.","새 친구들을 지켜 주세요.","파피루스를 살려 주세요."),
-        R("undyne_alive",1,true,"Keep your new friends safe.","Spare Undyne.","새 친구들을 지켜 주세요.","언다인을 살려 주세요."),
-        R("water_opportunity_missed",0,true,"Help anyone who needs immediate aid.","Give Undyne water when she collapses in Hotland.","즉시 도움이 필요한 상대를 도와주세요.","핫랜드에서 쓰러진 언다인에게 물을 주세요."),
-        R("papyrus_friendship",1,false,"Spend time with your new friend.","Complete Papyrus's date or hangout at his house.","새 친구와 시간을 보내세요.","파피루스의 집에서 데이트 또는 어울리기를 완료하세요."),
-        R("undyne_friendship",1,false,"Visit the friend who needs a hand.","Complete Undyne's hangout with Papyrus at her house.","도움이 필요한 친구를 찾아가세요.","파피루스와 함께 언다인의 집에서 어울리기를 완료하세요."),
-        R("prior_neutral_completion",1,false,"Finish the journey, then continue from your SAVE.","Defeat Omega Flowey in a Neutral ending, then reload your SAVE.","여정을 마친 뒤 SAVE에서 계속하세요.","뉴트럴 엔딩에서 오메가 플라위를 물리친 뒤 SAVE를 불러오세요."),
-        R("alphys_friendship",1,false,"Deliver your friend's message.","Deliver Undyne's letter and complete Alphys's date.","친구의 편지를 전해 주세요.","언다인의 편지를 전하고 알피스와의 데이트를 완료하세요."),
-        R("true_lab_completed",1,false,"Explore the path your friends opened.","Complete the True Lab, then return to the barrier.","친구들이 열어 준 길을 탐험하세요.","진실의 연구소를 완료한 뒤 결계로 돌아가세요."),
-        R("barrier_broken",1,false,"Return to the barrier and help your friends.","Complete the Asriel encounter and break the barrier.","결계로 돌아가 친구들을 도와주세요.","아스리엘 조우를 완료하고 결계를 부수세요."),
-        R("epilogue_matches",1,true,"The final choice differs from your selected outcome.","Keep the selected Stay or Leave epilogue choice; existing SOUL history determines its normal or altered form.","마지막 선택이 목표한 결과와 다릅니다.","함께 살기 또는 떠나기 선택을 지켜 주세요. 기존 영혼 기록에 따라 일반 또는 변형 결말이 됩니다.",guard:"epilogue_resolved")
+        R("hard_mode",0,true,"guidance.this_challenge_cannot_reach_the_selected_ending","guidance.hard_mode_ends_in_the_ruins_and_cannot_reach"),
+        R("experience",0,true,"guidance.avoid_gaining_exp","guidance.do_not_kill_enemies_or_gain_exp"),
+        R("kills_total",0,true,"guidance.keep_everyone_safe","guidance.do_not_kill_any_monsters_the_letter_event_checks"),
+        R("papyrus_alive",1,true,"guidance.keep_your_new_friends_safe","guidance.spare_papyrus"),
+        R("undyne_alive",1,true,"guidance.keep_your_new_friends_safe","guidance.spare_undyne"),
+        R("water_opportunity_missed",0,true,"guidance.help_anyone_who_needs_immediate_aid","guidance.give_undyne_water_when_she_collapses_in_hotland"),
+        R("papyrus_friendship",1,false,"guidance.spend_time_with_your_new_friend","guidance.complete_papyrus_s_date_or_hangout_at_his_house"),
+        R("undyne_friendship",1,false,"guidance.visit_the_friend_who_needs_a_hand","guidance.complete_undyne_s_hangout_with_papyrus_at_her_house"),
+        R("prior_neutral_completion",1,false,"guidance.finish_the_journey_then_continue_from_your_save","guidance.defeat_omega_flowey_in_a_neutral_ending_then_reload"),
+        R("alphys_friendship",1,false,"guidance.deliver_your_friend_s_message","guidance.deliver_undyne_s_letter_and_complete_alphys_s_date"),
+        R("true_lab_completed",1,false,"guidance.explore_the_path_your_friends_opened","guidance.complete_the_true_lab_then_return_to_the_barrier"),
+        R("barrier_broken",1,false,"guidance.return_to_the_barrier_and_help_your_friends","guidance.complete_the_asriel_encounter_and_break_the_barrier"),
+        R("epilogue_matches",1,true,"guidance.the_final_choice_differs_from_your_selected_outcome","guidance.keep_the_selected_stay_or_leave_epilogue_choice_existing",guard:"epilogue_resolved")
     ];
     private static Requirement History(int expected) => R("soul_sold",expected,true,
-        "Existing permanent history does not match this ending.",
-        "An earlier SOUL sale determines this ending. RESET does not erase that choice.",
-        "기존 영구 기록이 이 엔딩과 맞지 않습니다.",
-        "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다.");
+        "guidance.existing_permanent_history_does_not_match_this_ending","guidance.an_earlier_soul_sale_determines_this_ending_reset_does");
     private static readonly Requirement[] Genocide = [
-        R("hard_mode",0,true,"This challenge cannot reach the selected ending.","Hard Mode cannot reach a Genocide ending.","이 도전에서는 선택한 엔딩에 도달할 수 없습니다.","하드 모드에서는 몰살 엔딩에 도달할 수 없습니다."),
-        R("genocide_aborted",0,true,"A required encounter was missed.","A required enemy was spared or a required encounter was lost.","필수 조우를 놓쳤습니다.","필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다."),
-        R("snowdrake_lost",0,true,"A required enemy can no longer be found.","Snowdrake must be killed before no further encounters or live Snowdrake remain.","필수 적을 더는 찾을 수 없습니다.","새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다."),
-        R("genocide_stage",2,true,"The first region's requirements were missed.","Complete the Ruins kill quota and kill Toriel before leaving the Ruins.","첫 지역의 조건을 놓쳤습니다.","폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요.",Comparison.AtLeast,"toriel_resolved"),
-        R("genocide_stage",8,true,"The forest's requirements were missed.","Complete Snowdin's quota and unique encounters before killing Papyrus.","숲 지역의 조건을 놓쳤습니다.","파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요.",Comparison.AtLeast,"papyrus_resolved"),
-        R("genocide_stage",12,true,"The cavern's requirements were missed.","Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.","동굴 지역의 조건을 놓쳤습니다.","워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요.",Comparison.AtLeast,"undyne_resolved"),
-        R("genocide_stage",16,true,"The final region's requirements were missed.","Complete Hotland/CORE's quota and required encounters before defeating Mettaton NEO.","마지막 지역의 조건을 놓쳤습니다.","메타톤 NEO를 처치하기 전에 핫랜드와 코어의 처치 수와 필수 조우를 완료하세요.",Comparison.AtLeast,"mettaton_defeated"),
-        R("genocide_stage",16,false,"Complete the area's remaining encounters.","Complete the required Genocide encounters in order.","현재 지역에 남은 조우를 완료하세요.","몰살의 필수 조우를 순서에 맞게 완료하세요.",Comparison.AtLeast),
-        R("sans_defeated",1,false,"Complete the final encounter.","Defeat Sans, then continue to the throne room.","마지막 조우를 완료하세요.","샌즈를 물리친 뒤 왕좌의 방으로 계속 가세요.")
+        R("hard_mode",0,true,"guidance.this_challenge_cannot_reach_the_selected_ending","guidance.hard_mode_cannot_reach_a_genocide_ending"),
+        R("genocide_aborted",0,true,"guidance.a_required_encounter_was_missed","guidance.a_required_enemy_was_spared_or_a_required_encounter"),
+        R("snowdrake_lost",0,true,"guidance.a_required_enemy_can_no_longer_be_found","guidance.snowdrake_must_be_killed_before_no_further_encounters_or"),
+        R("genocide_stage",2,true,"guidance.the_first_region_s_requirements_were_missed","guidance.complete_the_ruins_kill_quota_and_kill_toriel_before",Comparison.AtLeast,"toriel_resolved"),
+        R("genocide_stage",8,true,"guidance.the_forest_s_requirements_were_missed","guidance.complete_snowdin_s_quota_and_unique_encounters_before_killing",Comparison.AtLeast,"papyrus_resolved"),
+        R("genocide_stage",12,true,"guidance.the_cavern_s_requirements_were_missed","guidance.complete_waterfall_s_quota_shyren_and_glad_dummy_then",Comparison.AtLeast,"undyne_resolved"),
+        R("genocide_stage",16,true,"guidance.the_final_region_s_requirements_were_missed","guidance.complete_hotland_core_s_quota_and_required_encounters_before",Comparison.AtLeast,"mettaton_defeated"),
+        R("genocide_stage",16,false,"guidance.complete_the_area_s_remaining_encounters","guidance.complete_the_required_genocide_encounters_in_order",Comparison.AtLeast),
+        R("sans_defeated",1,false,"guidance.complete_the_final_encounter","guidance.defeat_sans_then_continue_to_the_throne_room")
     ];
     public static RouteDefinition Get(RouteId id) => id switch
     {
@@ -130,6 +120,7 @@ public static class RouteCatalog
 
 public static class RouteEvaluator
 {
+    public static Evaluation Evaluate(RouteId route,GameState state,string locale,SpoilerLevel spoilers=SpoilerLevel.Minimal)=>Evaluate(route,state,spoilers,(Language)TextCatalog.Index(locale));
     public static Evaluation Evaluate(RouteId route,GameState state,SpoilerLevel spoilers=SpoilerLevel.Minimal,Language language=Language.English)
     {
         if (route == RouteId.Neutral) return NeutralCatalog.Evaluate(state["target_neutral"] ?? 0,state,spoilers,language);
@@ -190,8 +181,8 @@ public static class GuidanceController
         var risk=decision is not null && DecisionMonitor.BreaksRoute(route,state,decision);
         var status=evaluation.Status==RouteStatus.BLOCKED ? RouteStatus.BLOCKED : risk ? RouteStatus.AT_RISK : evaluation.Status;
         var show=mode!=GuidanceMode.Off && safeToDisplay && (mode!=GuidanceMode.Passive || risk || status==RouteStatus.BLOCKED);
-        var message=risk ? (language==Language.Korean ? "이 선택은 선택한 경로를 막을 수 있습니다." : "This choice may block your selected route.") : evaluation.Objectives.FirstOrDefault()?.Text;
-        if(show && message is null) message=language==Language.Korean ? "다음 목표를 아직 알 수 없습니다." : "Your next step is not clear yet.";
+        var message=risk ? (TextCatalog.Get("guidance.this_choice_may_block_your_selected_route",language)) : evaluation.Objectives.FirstOrDefault()?.Text;
+        if(show && message is null) message=TextCatalog.Get("guidance.your_next_step_is_not_clear_yet",language);
         return new(status,show,mode!=GuidanceMode.Forced,false,show?message:null,mode==GuidanceMode.Forced?"UNVERIFIED_NO_INTERVENTION":"OBSERVE_ONLY");
     }
 }

@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "fallback": "en",
+  "languages": [
+    {"tag":"en","name":"English","enabled":true,"status":"complete","font":"native-en","legacyValue":0,"direction":"ltr","shaping":"none","fallbackPolicy":"strict"},
+    {"tag":"ko","name":"한국어","enabled":true,"status":"complete","font":"galmuri14","legacyValue":1,"direction":"ltr","shaping":"none","fallbackPolicy":"strict"}
+  ]
+}

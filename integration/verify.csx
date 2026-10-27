@@ -83,12 +83,18 @@ var draw=Get("gml_Object_obj_routekeeper_Draw_64");
 Check(draw.Contains("scr_routekeeper_ui_option") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
 foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})
     Check(draw.Contains(restored),"draw state restored "+restored.Split('(')[0]);
-var font=Data.Fonts.ByName("fnt_routekeeper");
-Check(font?.Texture!=null,"embedded font atlas");
-var glyphs=font.Glyphs.Select(g=>(char)g.Character).ToHashSet();
-var required=string.Concat(Directory.GetFiles(Path.Combine(folder,"gml"),"*.gml").Select(File.ReadAllText))
-    .Where(c=>c>126 && !char.IsControl(c)).Distinct().ToArray();
-Check(required.All(glyphs.Contains),"all "+required.Length+" non-ASCII source characters have glyphs");
+var fontManifest=JsonDocument.Parse(File.ReadAllText(Path.Combine(folder,"assets","fonts","manifest.json")));
+int addedFonts=fontManifest.RootElement.GetArrayLength();
+foreach(var entry in fontManifest.RootElement.EnumerateArray()) {
+    var font=Data.Fonts.ByName(entry.GetProperty("resource").GetString());
+    Check(font?.Texture!=null,"registered embedded font atlas");
+    var expectedGlyphs=File.ReadAllLines(Path.Combine(folder,"assets",entry.GetProperty("glyphs").GetString())).Select(l=>l.Split('\t').Select(int.Parse).ToArray()).ToArray();
+    Check(font.Glyphs.Count==expectedGlyphs.Length,"registered glyph count");
+    for(int i=0;i<expectedGlyphs.Length;i++) {
+        var g=font.Glyphs[i];var e=expectedGlyphs[i];
+        Check(g.Character==e[0] && g.SourceX==e[1] && g.SourceY==e[2] && g.Shift==e[3] && g.Offset==e[4] && g.SourceWidth==24 && g.SourceHeight==18,"registered glyph metrics");
+    }
+}
 Check(Data.Code.Count==6272+scripts.Length+3,"expected new code footprint");
 var originalPath=Environment.GetEnvironmentVariable("ROUTEKEEPER_ORIGINAL");
 if(!string.IsNullOrEmpty(originalPath)) {
@@ -96,8 +102,8 @@ if(!string.IsNullOrEmpty(originalPath)) {
         var pristine=UndertaleIO.Read(source);
         RoutekeeperBindings.Validate(pristine,folder,originalPath);
         Check(Data.Rooms.Count==pristine.Rooms.Count && Data.Sprites.Count==pristine.Sprites.Count && Data.Sounds.Count==pristine.Sounds.Count,"original room/sprite/sound resource counts");
-        Check(Data.GameObjects.Count==pristine.GameObjects.Count+1 && Data.Fonts.Count==pristine.Fonts.Count+1
-            && Data.EmbeddedTextures.Count==pristine.EmbeddedTextures.Count+1 && Data.TexturePageItems.Count==pristine.TexturePageItems.Count+1,"additive controller/font footprint");
+        Check(Data.GameObjects.Count==pristine.GameObjects.Count+1 && Data.Fonts.Count==pristine.Fonts.Count+addedFonts
+            && Data.EmbeddedTextures.Count==pristine.EmbeddedTextures.Count+addedFonts && Data.TexturePageItems.Count==pristine.TexturePageItems.Count+addedFonts,"additive controller/font footprint");
         // Payload equality alone misses muted sounds, shifted texture rectangles,
         // font sampling changes and collision geometry. Compare the serialized
         // legacy fields explicitly; never reflect over arbitrary model getters.

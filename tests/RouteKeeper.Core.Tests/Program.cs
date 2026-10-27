@@ -1,5 +1,27 @@
 using RouteKeeper.Core;
 
+if (args is ["--verify-locales"]) {
+    foreach(var locale in TextCatalog.Languages)foreach(var key in TextCatalog.Keys)
+        if(string.IsNullOrWhiteSpace(TextCatalog.Get(key,locale.Tag)))throw new Exception("Empty locale entry");
+    if(TextCatalog.Migrate(null,0)!=0 || TextCatalog.Migrate(null,1)!=TextCatalog.Index("ko") || TextCatalog.Migrate("removed",1)!=0 || TextCatalog.Index("missing")!=0)throw new Exception("Locale migration");
+    var random=new Random(393001);
+    foreach(var locale in TextCatalog.Languages)for(int sample=0;sample<100;sample++) {
+        var facts=RouteCatalog.Facts.ToDictionary(k=>k,k=>(int?)random.Next(2));
+        var state=new GameState(facts);
+        foreach(var route in Enum.GetValues<RouteId>())foreach(var spoilers in Enum.GetValues<SpoilerLevel>()) {
+            var baseline=RouteEvaluator.Evaluate(route,state,spoilers);
+            var translated=RouteEvaluator.Evaluate(route,state,locale.Tag,spoilers);
+            if(baseline.Status!=translated.Status || baseline.MetRequirements!=translated.MetRequirements || baseline.TotalRequirements!=translated.TotalRequirements || !baseline.Reasons.SequenceEqual(translated.Reasons))throw new Exception("Locale changed route semantics");
+            foreach(var mode in Enum.GetValues<GuidanceMode>()) {
+                var a=GuidanceController.Update(mode,route,state,language:Language.English);
+                var b=GuidanceController.Update(mode,route,state,language:(Language)TextCatalog.Index(locale.Tag));
+                if(a.Status!=b.Status || a.Show!=b.Show || a.BlockDecision!=b.BlockDecision || a.Dismissible!=b.Dismissible || a.Enforcement!=b.Enforcement)throw new Exception("Locale changed guidance policy");
+            }
+        }
+        if(facts.Any(f=>state[f.Key]!=f.Value))throw new Exception("Locale changed facts");
+    }
+    Console.WriteLine($"PASS {TextCatalog.Languages.Count} compiled locales, settings migration and language-independent policy");return;
+}
 var nativeFiles = GmlRuleEmitter.EmitNativeFiles();
 if (args is ["--emit-native", var directory] || args is ["--emit-gml", var sourceFile])
 {

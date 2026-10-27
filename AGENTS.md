@@ -84,7 +84,7 @@ in a public repository or a fork.
 - `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` checks ASTs/filesystem
   guards and compiles capture interop without Windows API calls. Optional Lab and
   PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
-- Newest candidate9abd0729 has NOT executed. Prior40d67856 Wine failure is not a
+- Newest candidate4457dbf4 has NOT executed. Prior40d67856 Wine failure is not a
   runtime result for later candidates. Read the latest dated progress section.
 
 ## Current-account native smoke (experimental, Windows NOT_RUN)
@@ -170,3 +170,15 @@ tracked AST policy. Preserve this even on UTF-8 Linux; native Windows is NOT_RUN
 
 Optional local Python lint: install pyflakes3.4.0 alongside Pillow11.3.0, then
 `python -m pyflakes integration tools`. CI pins both; do not rerun hosted jobs.
+
+## Data-only mod localization
+
+- `python tools/localization.py build` validates locales/fonts and regenerates all
+  native dictionaries/objectives/UI/font assets. Do not hand-edit text_*.gml.
+- `python tools/localization.py build --verify` checks generated freshness.
+- `ROUTEKEEPER_LOCALE_E2E=1 python tools/test_localization.py` tests the disposable
+  add/translate/build workflow without editing gameplay rules.
+- Canonical text/context/registry live in locales/. See locales/README.md for limits,
+  licenses, placeholders and strict enabled-locale completeness. Locale changes
+  require fresh authentic offline compilation and candidate evidence; never runtime
+  approval. Preserve legacy language0=en/1=ko and tag-based future INI settings.

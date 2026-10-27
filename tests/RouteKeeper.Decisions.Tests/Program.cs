@@ -26,11 +26,11 @@ if (args is ["--verify-ui",var uiDirectory]) {
         if(new GmlObjectiveInterpreter(code,new Dictionary<string,int?>()).Run()!=((cursor+delta+size)%size).ToString())throw new Exception("UI navigation parity");
         cases++;
     }
-    using var ui=System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(uiDirectory,"ui","catalog.json")));
+    using var ui=System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(uiDirectory,"..","locales","en.json")));
     var catalog=File.ReadAllText(Path.Combine(uiDirectory,"gml","ui_catalog.gml"));
-    foreach(var entry in ui.RootElement.GetProperty("text").EnumerateObject())for(int language=0;language<2;language++) {
-        var code=$"argument0 = \"{entry.Name}\"; argument1 = {language};\n"+catalog;
-        if(new GmlObjectiveInterpreter(code,new Dictionary<string,int?>()).Run()!=entry.Value[language].GetString())throw new Exception("UI localization parity");
+    foreach(var entry in ui.RootElement.EnumerateObject().Where(e=>e.Name.StartsWith("ui.",StringComparison.Ordinal)))for(int language=0;language<RouteKeeper.Core.TextCatalog.Languages.Count;language++) {
+        var code=$"argument0 = \"{entry.Name[3..]}\"; argument1 = {language};\n"+catalog;
+        if(new GmlObjectiveInterpreter(code,new Dictionary<string,int?>()).Run()!=RouteKeeper.Core.TextCatalog.Get(entry.Name,language))throw new Exception("UI localization parity");
         cases++;
     }
     Console.WriteLine($"PASS {cases} UI navigation/localization emitted-GML comparisons; gameplay NOT_RUN");return;

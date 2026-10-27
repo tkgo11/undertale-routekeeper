@@ -9,8 +9,8 @@ public static class NeutralGmlEmitter
     {
         var code=new StringBuilder("// Generated Neutral target labels; selectable IDs 0..18.\n");
         foreach(var target in NeutralCatalog.Targets)
-            code.Append($"if (argument0 == {(int)target.Id}) {{ if (argument1 == 1) return {Quote(target.Korean)}; return {Quote(target.English)}; }}\n");
-        return code.Append("return \"Unknown target\";\n").ToString();
+            code.Append($"if (argument0 == {(int)target.Id}) return {TextCatalog.Gml(target.TextKey,"argument1")};\n");
+        return code.Append("return \"\";\n").ToString();
     }
     public static string EmitProtection()
     {
@@ -141,30 +141,24 @@ if (global.rk_target_greeting > 0) {
 global.rk_progress_met = matched;
 global.rk_progress_total = total;
 if (blocked) {
-    global.rk_objective_text = "This Neutral outcome is blocked in this run.";
-    if (global.rk_language == 1) global.rk_objective_text = "이번 회차에서 선택한 뉴트럴 결과가 막혔습니다.";
+    global.rk_objective_text = scr_routekeeper_text("guidance.this_neutral_outcome_is_blocked_in_this_run",global.rk_language);
     if (global.rk_greeting_status == 3) global.rk_objective_text = global.rk_greeting_text;
     return 3;
 }
 if (unknown) {
-    global.rk_objective_text = "Observe the remaining encounters before selecting an outcome.";
-    if (global.rk_language == 1) global.rk_objective_text = "남은 조우 상태를 확인하세요.";
+    global.rk_objective_text = scr_routekeeper_text("guidance.observe_the_remaining_encounters_before_selecting_an_outcome",global.rk_language);
     if (global.rk_greeting_status > 0) global.rk_objective_text = global.rk_greeting_text;
     return 4;
 }
-global.rk_objective_text = "Continue while preserving the selected encounter outcomes.";
-if (global.rk_language == 1) global.rk_objective_text = "선택한 조우 결과를 유지하며 진행하세요.";
+global.rk_objective_text = scr_routekeeper_text("guidance.continue_while_preserving_the_selected_encounter_outcomes",global.rk_language);
 if (nt == 1 && friend < 4) {
-    global.rk_objective_text = "Befriend the warrior without gaining EXP.";
-    if (global.rk_language == 1) global.rk_objective_text = "EXP 없이 전사와 우정을 쌓으세요.";
+    global.rk_objective_text = scr_routekeeper_text("guidance.befriend_the_warrior_without_gaining_exp",global.rk_language);
 }
 if ((nt == 4 || nt == 5) && friend <= 0) {
-    global.rk_objective_text = "Start the warrior's friendship before additional kills.";
-    if (global.rk_language == 1) global.rk_objective_text = "추가 처치 전에 전사와 우정을 시작하세요.";
+    global.rk_objective_text = scr_routekeeper_text("guidance.start_the_warrior_s_friendship_before_additional_kills",global.rk_language);
 }
 if (nt == 18 && stage < 12) {
-    global.rk_objective_text = "Maintain the regional route through Waterfall.";
-    if (global.rk_language == 1) global.rk_objective_text = "워터폴까지 지역 경로 조건을 지키세요.";
+    global.rk_objective_text = scr_routekeeper_text("guidance.maintain_the_regional_route_through_waterfall",global.rk_language);
 }
 if (global.rk_target_greeting > 0 && global.rk_greeting_status == 1) global.rk_objective_text = global.rk_greeting_text;
 if (action) return 1;

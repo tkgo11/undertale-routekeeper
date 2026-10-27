@@ -54,7 +54,9 @@ internal sealed class GmlProgram
     int Atom()
     {
         if(Is("(")){Next();var value=Expression();Need(")");return value;}
-        var token=Next();if(token.StartsWith('"'))return 0;
+        var token=Next();
+        if(token=="scr_routekeeper_text") { Need("(");Expression();Need(",");Expression();Need(")");return 0; }
+        if(token.StartsWith('"'))return 0;
         return int.TryParse(token,NumberStyles.Integer,CultureInfo.InvariantCulture,out var n)?n:Read(token);
     }
     int Read(string key)=>values.GetValueOrDefault(key,-1);
