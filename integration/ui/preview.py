@@ -1,12 +1,21 @@
 #!/usr/bin/env python3
 """Offline UI geometry/font renderer. This does not execute the GameMaker VM."""
 from pathlib import Path
-import argparse,json,sys,hashlib,struct,re
+import argparse
+import json
+import sys
+import hashlib
+import struct
+import re
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from generate_font import chunk,stored_deflate
 from PIL import Image,ImageDraw,__version__ as pillow_version
 from generate import CAT,ROOT,localization
-L=CAT['layout'];WHITE=(255,255,255,255);BLACK=(0,0,0,255);YELLOW=(255,255,0,255);RED=(255,0,0,255)
+L = CAT['layout']
+WHITE = (255,255,255,255)
+BLACK = (0,0,0,255)
+YELLOW = (255,255,0,255)
+RED = (255,0,0,255)
 class Renderer:
     def __init__(self,language,native=None):
         self.lang=language; self.locale=localization.enabled()[language]; self.font=localization.font_sources()[self.locale["font"]]; self.line_height=self.font["lineHeight"]; self.image=Image.new('RGBA',(320,240),BLACK);self.draw=ImageDraw.Draw(self.image);self.runs=[]
@@ -34,7 +43,9 @@ class Renderer:
         while text and self.width(text+'...')>width:text=text[:-1]
         return text+'...'
     def line(self,x,y,text,width,color=WHITE):
-        text=self.fit(text,width);assert self.width(text)<=width
+        text=self.fit(text,width)
+        if self.width(text)>width:
+            raise ValueError('Preview text exceeds requested width')
         self.runs.append((x,y,self.width(text),self.line_height,text))
         for char in text:
             advance,im,offset=self.glyphs[ord(char)];im=im.copy()
