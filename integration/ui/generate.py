@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Shared geometry, localization and navigation for native GML and offline previews."""
-import json,argparse,sys
+import json
+import argparse
+import sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT.parent/'tools'))
-import localization
+import localization  # noqa: E402 - tools path must be registered first.
 CAT=json.loads((ROOT/'ui/catalog.json').read_text(encoding='utf-8'))
 CAT['text']={k[3:]:[localization.text(k,i) for i,_ in enumerate(localization.enabled())] for k in localization.load(ROOT.parent/'locales/en.json') if k.startswith('ui.')}
 def sources():
