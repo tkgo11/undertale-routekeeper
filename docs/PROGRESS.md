@@ -17,6 +17,36 @@ refuses unknown changes before restoration. Window-targeted input and the harmle
 native test window are implemented but real Windows behavior is NOT_RUN.
 
 
+
+## Verified preparation evidence
+
+The real Prepare pipeline passed using the authorized ZIP and the physical
+UndertaleModCli0.9.2.0 executable, at code commit
+3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1. It extracted/verified all220 original
+files, built through the existing compiler/serialize/reload/preservation builder,
+reverified both side copies and sealed the complete current harness identity.
+`verify-prepared` passed again. An initial CLI symlink was correctly refused;
+its failed unsealed lab was preserved, and no guard was disabled. An older valid
+preparation was also deliberately refused after harness changes.
+
+Original SHA256 b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7;
+candidate63,195,750 bytes, SHA256
+4457dbf421230c596df0d2c27754e8e94293c03c8e1106c6c1b07b9552f2c96c.
+Runner remains c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58.
+No game-data source/font/UI/profile change was needed. InspectedOnly unchanged.
+Private artifacts: .research/windows-e2e/prepared-final and its build-private.log;
+reproducible logs: .research/windows-e2e/{python-final,screen-final,ps-final,
+legacy-final,build-final,generated-final,verified-final,golden-final,hooks-final}.log.
+
+OFFLINE_PASS: E2E16, screen51, new PowerShell37 AST/controlled-response/filesystem
+checks plus shared101 recovery checks; Release0 warnings/errors; C#279 and9317
+independent golden/bounded assertions; locale36, UI22, archive12, workflow2,
+encoding2 and inventory3. Original-source golden and hook-source audits passed.
+Single-entry DryRun also generated private JSON/HTML/visual review artifacts and
+restored actual synthetic filesystem bytes at private-evidence/windows-e2e-delivery.
+These checks do not establish native message delivery, capture, NTFS durability,
+Steam account safety or actual gameplay. Full native scenarios remain PARTIAL.
+
 ## Deterministic screen verification — 2026-10-27 UTC
 
 Continuation hardening: SHA pins must be strings (numeric coercion refused),

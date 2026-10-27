@@ -74,16 +74,16 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 13352,
+      "bytes": 13355,
       "lines": 214,
-      "sha256": "b5a302f5a906dc22ebd0f390f4a01e3f05ab39e76203d71b0465104af2c4145f",
+      "sha256": "8c37b83d11ca17f20044eb979981060073b30fa56af2730b6d0d460902ba0b12",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
     },
     {
       "path": "Directory.Build.props",
@@ -101,14 +101,14 @@
       "path": "README.md",
       "bytes": 5200,
       "lines": 89,
-      "sha256": "b4e71b7b7ee48744376e138c02dd7ec01a2e56f9a83ae92deed6ffc68e1d47d2",
+      "sha256": "d68f6691d3e1d1e5560465963ca1ac7cdd1aa912928fcaeb2bb12a39ef9b760e",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
     },
     {
       "path": "RouteKeeper.slnx",
@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 33264,
-      "lines": 509,
-      "sha256": "d1455398b4fb8b532dd0bf5b7c5bfc7fa69bfb24905319eb9031c237fcb0f121",
+      "bytes": 35127,
+      "lines": 539,
+      "sha256": "e04ef8f7edab40d5fad99ebecf5cac00fb016a2b96ecda54b4dcabd6d0f3360f",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -354,16 +354,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 29083,
-      "lines": 393,
-      "sha256": "93fb3eded30fc1587f8565d63a4b9c97967fd0617d04fcfd312eca84b3e92ae6",
+      "bytes": 30946,
+      "lines": 423,
+      "sha256": "902cfd5b007fcfca4df4f2b7556cc9e615c5033361fe43c554111fd3cbc67f71",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "953e0ffce43899d1cebc665d47d3f0c008f97a0e"
+      "reviewed_against_head": "3de8c3b8534d7007c5437fdcc6b5b890ea9f8ae1"
     },
     {
       "path": "docs/ui-fonts.md",

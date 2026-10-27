@@ -4,7 +4,7 @@ Private development of native UNDERTALE route guidance. The implementation now
 includes five ending families, 18 specific Neutral targets plus Any, Pacifist
 Stay/Leave variants, live state bindings, objectives/progress, bilingual settings
 and scoped pre-decision protections. The pixel UI now uses native-style submenus,
-a compact HUD and a licensed Korean bitmap font. **Runtime-unverified; not release-ready.** Same-account game launch is code-disabled
+a compact HUD and a licensed Korean bitmap font. **Runtime-unverified; not release-ready.** Default same-account Run is code-disabled
 (NO-GO), including the original runner; read-only Preflight remains available.
 
 Game data compiles with a persistent GML controller, original-style EN/KR UI and

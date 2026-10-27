@@ -89,7 +89,7 @@ in a public repository or a fork.
 
 ## Current-account native smoke (experimental, Windows NOT_RUN)
 
-Primary command: tools/runtime/run-current-account.ps1. Run is now code-disabled
+Legacy default command: tools/runtime/run-current-account.ps1. Run is code-disabled
 (NO-GO), even with operator risk flags; see docs/steam-safety.md. No new OS user,
 Sandbox, VM or elevation is required for Preflight/synthetic checks. The retained
 experimental launch design uses a pinned side-by-side official runner;
