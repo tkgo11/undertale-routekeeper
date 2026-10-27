@@ -29,6 +29,16 @@ available. Native Windows/game/Steam execution remains NOT_RUN; no compatibility
 merge or release approval follows. Review threads are not automatically resolved.
 
 
+Fresh authentic preparation at3bcf8ef04975f2c0718e2ddf7efd5d7a443d9cb1 passed
+compile/serialize/reload/preservation and all220 original/copy inventory checks.
+The prepared harness seal includes the recovery fix and both shared Python engines;
+verify-prepared passed independently afterward. Private evidence is
+.research/windows-e2e/prepared-reviewfix and authentic-reviewfix.log /
+verified-reviewfix.log. Original b718f822 and candidate4457dbf4 hashes remain exactly
+as recorded below; candidate size remains63,195,750. No runtime was started.
+Current tracked inventory is214, including the unchanged owner-provided base
+Renovate preset. Historical prepared-final evidence below predates this follow-up.
+
 ## Windows E2E orchestration continuation
 
 See [windows-e2e.md](windows-e2e.md). New single-entry Check/Prepare/Preflight/

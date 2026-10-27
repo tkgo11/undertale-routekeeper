@@ -239,3 +239,18 @@ experimental probe, actual Steam ownership startup, original/patched gameplay,
 fonts/physical input, battles and endings. Full native scenario execution remains
 PARTIAL/BLOCKED pending verified bootstrap/input and independent observation.
 InspectedOnly, installation refusal, no merge/release and private-asset rules remain.
+
+## Interrupted recovery and portable fixture validation
+
+A journal at Restoring is not a completed recovery. The wrapper validates the
+archived trial against its committed fence and the independent original snapshot
+before resuming the shared transaction. It also recognizes an already returned
+original when the final completion fence was interrupted. Changed archives or an
+unknown new save target stop recovery without moving that target. Synthetic tests
+inject both failures; actual NTFS power-loss behavior remains NOT_RUN.
+
+Prepared seals include runtime_lab.py and screen_verify.py as well as native
+helpers: changing those shared components requires a fresh preparation, never
+editing an old receipt. On archive validation failure, only unpublished owned
+single-link files have read-only bits cleared for cleanup; a cleanup failure keeps
+the original validation exception and preserves the unsealed private lab.
