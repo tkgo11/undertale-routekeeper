@@ -11,7 +11,7 @@ have versioned required/missing-evidence contracts. Windows capture now writes
 hash-bound geometry/focus/PID/DPI sidecars and reuses one interop implementation.
 Capture/launch is not exercised; same-account NO-GO and InspectedOnly unchanged.
 
-OFFLINE_PASS:44 new synthetic tests, Release build0 warnings/errors,279 standard
+OFFLINE_PASS:45 new synthetic tests, Release build0 warnings/errors,279 standard
 C# checks plus9317 audit assertions,22 UI groups, archive12, generated locale/
 GML freshness, source/workflow/lint checks and101 PowerShell synthetic checks with
 AST/interop compilation only. Real CLI demo:1-pixel review -> visual accepted ->

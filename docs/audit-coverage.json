@@ -126,14 +126,14 @@
       "path": "docs/PROGRESS.md",
       "bytes": 31638,
       "lines": 484,
-      "sha256": "8dea0a9d97538786b4336723044478271f1c741fc7de5a91113a16005396b6ef",
+      "sha256": "30583771c84233fa0c9ce30ad92063a263eb338ccad3ba43019a7741ba4fbaf0",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "e48be94259c423661b0cc4e71312714d5ed53314"
+      "reviewed_against_head": "b0a7702381848a122eb6c67aa93005bcc9a68d32"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -309,10 +309,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 18614,
-      "lines": 280,
-      "sha256": "44ba956a923902b04be2e3cf8c746b4b12fd733f96a304454438d0bbaf8e4f78",
-      "reviewed_against_head": "e48be94259c423661b0cc4e71312714d5ed53314"
+      "bytes": 18778,
+      "lines": 282,
+      "sha256": "3a0884fb81427174b4f702d9fab9dc8770dba4b649e284bb9ba41c035937cd14",
+      "reviewed_against_head": "b0a7702381848a122eb6c67aa93005bcc9a68d32"
     },
     {
       "path": "docs/state-bindings.md",
@@ -356,14 +356,14 @@
       "path": "docs/test-results.md",
       "bytes": 27457,
       "lines": 368,
-      "sha256": "3e7d606f613b8a81b1eafd66cecfa6ef33b5d5ee82144acf06b042296ed3c30c",
+      "sha256": "f6daa59b9e3b2af0b4d176cbfc24ffc033088c329f578fb0668abbcd1ecf00a8",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "e48be94259c423661b0cc4e71312714d5ed53314"
+      "reviewed_against_head": "b0a7702381848a122eb6c67aa93005bcc9a68d32"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -2605,10 +2605,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 53137,
-      "lines": 951,
-      "sha256": "cc179e9e617529ce9ca985bfe1cbf30b8d298b61250b2580ca53a6d857dfe16b",
-      "reviewed_against_head": "e48be94259c423661b0cc4e71312714d5ed53314"
+      "bytes": 53261,
+      "lines": 955,
+      "sha256": "beae418860c076de5c773c1e88f5bd288fbb3a616ac4e71334dc251368ceccd8",
+      "reviewed_against_head": "b0a7702381848a122eb6c67aa93005bcc9a68d32"
     },
     {
       "path": "tools/test-g3m.py",
@@ -2737,10 +2737,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 26124,
-      "lines": 430,
-      "sha256": "39e8cc396c43004e3931655fd4c77852738c3488d5eb2af14487b2562ff9b654",
-      "reviewed_against_head": "e48be94259c423661b0cc4e71312714d5ed53314"
+      "bytes": 26655,
+      "lines": 440,
+      "sha256": "0309ef157d25739582be53d2f394c6c74ac7694613283ba355e19b86fc4b91c5",
+      "reviewed_against_head": "b0a7702381848a122eb6c67aa93005bcc9a68d32"
     },
     {
       "path": "tools/test_source_encoding.py",

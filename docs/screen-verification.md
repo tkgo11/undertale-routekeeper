@@ -230,7 +230,9 @@ review/ID/{submitted-actual.bin,actual.png,normalized.png,expected.png,diff.png,
 comparison.png,metadata.json}, optional capture-private.json/frame files, and
 append-only decisions/*.json. Invalid cases may have only bounded rejected bytes
 and metadata: absence of expected/decoded imagery is itself INVALID_EVIDENCE.
-Summary seals the manifest and every evidence file, including metadata. New run
+Summary seals the manifest and every evidence file, including metadata. A post-publication validation failure preserves the published evidence and original
+error; cleanup never masks it by deleting an already-renamed staging directory.
+New run
 publication uses a private staging directory and rename; output reuse refuses.
 A128MiB/4096-new-file write budget bounds a run, each JSON is<=1MiB and frame/assertion
 counts are bounded. References/exports also stage and refuse replacement. Private
@@ -263,7 +265,7 @@ visual evidence, never authority to change route logic, protections or profiles.
 
 ## Actual verification and limitations
 
-44 synthetic tests exercise equality,1-pixel differences, cursor/glyph/layout/
+45 synthetic tests exercise equality,1-pixel differences, cursor/glyph/layout/
 background/locale/obstruction cases, exact/masked/calibrated/structural/temporal
 methods, proxy English, missing references/frames, scale/aspect/bars/blur, corrupt/
 truncated/transparent/oversized/fake-type images, metadata/focus/identity/timing,

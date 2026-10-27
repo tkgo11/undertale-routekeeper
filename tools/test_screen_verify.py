@@ -427,4 +427,14 @@ class ScreenTests(unittest.TestCase):
             self.assertIn('icc_profile',original.info)
 
 
+
+    def test_post_publication_failure_preserves_original_error_and_evidence(self):
+        with patch.object(v,'summarize',side_effect=v.EvidenceError('post-publication validation failure')):
+            with self.assertRaisesRegex(v.EvidenceError,'post-publication validation failure'):
+                self.run_case()
+        self.assertTrue((self.root/'run/summary.json').exists())
+        self.assertFalse(list(self.root.glob('.screen-*')))
+        self.assertEqual(v.summarize(self.root/'run')['nativeGameplay'],'NOT_RUN')
+
+
 if __name__=='__main__':unittest.main()

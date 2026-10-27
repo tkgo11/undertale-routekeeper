@@ -649,7 +649,8 @@ def verify(manifest_path, output):
         stage.rename(output)
         return summarize(output)
     except BaseException:
-        shutil.rmtree(stage)
+        if stage.exists():
+            shutil.rmtree(stage)
         raise
     finally:
         WRITE_BUDGET.reset(budget)
@@ -805,7 +806,8 @@ def export_review(run, output, confirm_private_images=False):
             raise EvidenceError('Export output appeared concurrently')
         stage.rename(output)
     except BaseException:
-        shutil.rmtree(stage)
+        if stage.exists():
+            shutil.rmtree(stage)
         raise
 
 
@@ -849,7 +851,8 @@ def generate_reference(output, locale='ko', scene='menu', selection=0):
             raise EvidenceError('Reference output appeared concurrently')
         stage.rename(output)
     except BaseException:
-        shutil.rmtree(stage)
+        if stage.exists():
+            shutil.rmtree(stage)
         raise
 
 
@@ -887,7 +890,8 @@ def prepare_import(capture, reference, scenario, output):
             raise EvidenceError('Import directory appeared concurrently')
         stage.rename(output)
     except BaseException:
-        shutil.rmtree(stage)
+        if stage.exists():
+            shutil.rmtree(stage)
         raise
 
 
