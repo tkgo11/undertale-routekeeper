@@ -23,6 +23,7 @@ runtime/native-platform behavior, BLOCKED is an external dependency/access limit
 | Standalone4 RID / G3M | COMPLETE offline | Self-contained single-file publish, packaged candidate rebuild, actual synthetic xdelta roundtrip/current upstream parser. Foreign OS execution and authentic G3M install NOT_RUN/BLOCKED. |
 | Current-account launch safety | COMPLETE refusal / BLOCKED launch | Run unconditionally fails before touching profile/files/processes; Preflight/recovery retained. No proven same-account Steam isolation; NO-GO. |
 | Audit inventory/generator/workflow consistency | COMPLETE for recorded tree |173 paths; explicit full review required for digest refresh, missing/extra/duplicate/drift regression tests; LF text checkout and commit-pinned Actions. |
+| Project-wide public distribution license | PARTIAL | No repository-wide own-source license declared; third-party notices verified separately. Rights-holder decision needed before public distribution; no license assigned or package published. |
 | qlty95 findings / hosted Actions | BLOCKED | Details redirect to login; success is not triage. Billing blocked; no rerun or configuration/policy changes. |
 | Native Windows/macOS/Linux game/Steam/API | NOT_RUN | Explicitly excluded. No game executable, Steam launch, Wine gameplay or personal save/installation write. |
 
@@ -165,6 +166,9 @@ are automatically removed. Do not upload private logs or full patched outputs.
   fingerprint/severity/commit) is needed to triage95 findings. Existing GitHub
   statuses/check runs do not contain that report. Hosted CI requires external
   billing availability; no retries/settings changes were made.
+- **Rights-holder decision:** project-wide source license is not declared. Existing
+  third-party/font/runtime notices do not select it. Confirm this before public
+  distribution; private validation is not a public license grant.
 - **Native non-game NOT_RUN:** operator may run the synthetic PS5.1/7 commands in
   steam-safety.md; actual Win32 API/NTFS metadata/failure behavior needs disposable
   native validation. None is a license to start Steam/the game.

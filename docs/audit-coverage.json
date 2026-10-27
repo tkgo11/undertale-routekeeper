@@ -199,16 +199,16 @@
     },
     {
       "path": "docs/installer.md",
-      "bytes": 5191,
-      "lines": 86,
-      "sha256": "838d32aec174744dcb4208c90aba6853b0b557923b65ef33210a0bbb7a6df6c1",
+      "bytes": 5696,
+      "lines": 95,
+      "sha256": "cb99ae4e09354daa6ccb1dbc439b76e926825e11f948201485803a677cfc87bf",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained source/configuration/test/documentation read; applicable local checks reviewed.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e"
+      "reviewed_against_head": "aa5e4c7d6e3a1361f202fdd01f14b8995c81e46f"
     },
     {
       "path": "docs/integration-research.md",
@@ -230,10 +230,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 13227,
-      "lines": 180,
-      "sha256": "a6c8e3413dcd945be9c611e09ffddb1a077f22619ff22404a10342dfedb9e3f3",
-      "reviewed_against_head": "74874b1ab239b7f2f1b41562dab8c9237d88a465"
+      "bytes": 13703,
+      "lines": 184,
+      "sha256": "4d65fe099b176fef91da3df43222fbac0c80e8f4a3834584e3fb9814df3df9ba",
+      "reviewed_against_head": "aa5e4c7d6e3a1361f202fdd01f14b8995c81e46f"
     },
     {
       "path": "docs/private-data.md",

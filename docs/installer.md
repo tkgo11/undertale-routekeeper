@@ -84,3 +84,12 @@ from normal output. Compiler version accepts exactly0.9.2.0 with optional build
 metadata. Private structural validation streams logs to new per-run directories
 below repository .research; never publish those logs. Third-party executables and
 engineering profiles are trusted inputs, not sandboxed untrusted programs.
+
+## Project distribution license decision
+
+No repository-wide license for ROUTEKEEPER's own source is currently declared.
+The OFL font license, .NET notices and external compiler GPL notices do not grant
+a public license to this project's code. Packages built here are private validation
+artifacts. The repository rights holder must select/confirm the project license
+and review applicable redistribution obligations before public distribution.
+This task does not assign a license or publish any package.
