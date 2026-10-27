@@ -5,9 +5,9 @@
   "snapshot": "Source tree committed with this inventory; git log -1 identifies the resulting HEAD.",
   "decision": "NO-GO for current-account game smoke; see docs/code-audit.md",
   "tracked_baseline_count": 159,
-  "files_count": 213,
+  "files_count": 214,
   "coverage_counts": {
-    "MANUAL_FULL_TEXT": 149,
+    "MANUAL_FULL_TEXT": 150,
     "SELF_MANIFEST_FULL_SET_CHECK": 1,
     "BINARY_FULL_DECODE_AND_PROVENANCE": 1,
     "GENERATED_FULL_BYTE_COMPARISON": 50,
@@ -1551,6 +1551,19 @@
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
       "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+    },
+    {
+      "path": "renovate.json",
+      "inspection": "COMPLETE",
+      "method": "MANUAL_FULL_TEXT",
+      "verification": "PASS",
+      "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
+      "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
+      "findings": [],
+      "bytes": 124,
+      "lines": 6,
+      "sha256": "b48c968967cbdd7500410ab90caaa978a00353516a6e48b4d22e03491dba12a8",
+      "reviewed_against_head": "83d2f93d278279698de5e58d71f994bcfe7b24ae"
     },
     {
       "path": "src/RouteKeeper.Core/Engine.cs",
