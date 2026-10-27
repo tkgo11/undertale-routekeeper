@@ -26,24 +26,41 @@ def load(path):
     return json.loads(path.read_text(encoding='utf-8'), object_pairs_hook=unique)
 
 
+def mapping(path):
+    value=load(path)
+    if not isinstance(value,dict):raise ValueError('Expected JSON object: '+path.name)
+    return value
+
+
+def portable_component(name):
+    # Win32 reserves device basenames even with an extension. Apply on every
+    # host so a locally successful build remains check-outable on Windows.
+    stem=name.split('.')[0].upper()
+    return bool(name) and name not in ('.','..') and not name.endswith((' ','.')) and not any(ord(c)<32 or c in '<>:"|?*' for c in name) and stem not in {'CON','PRN','AUX','NUL','CLOCK$',*(f'COM{i}' for i in range(1,10)),*(f'LPT{i}' for i in range(1,10))}
+
+
 def write(path, value):
     font_module().publish(path,(json.dumps(value,ensure_ascii=False,indent=2,sort_keys=True)+'\n').encode('utf-8'))
 
 
 def registry(root=ROOT):
-    value = load(root/'locales/languages.json')
-    if value.get('schema') != 1 or value.get('fallback') != 'en': raise ValueError('Unsupported locale registry')
+    value = mapping(root/'locales/languages.json')
+    if type(value.get('schema')) is not int or value.get('schema') != 1 or value.get('fallback') != 'en': raise ValueError('Unsupported locale registry')
+    if not isinstance(value.get('languages'),list):raise ValueError('Unsupported languages metadata')
     seen = set()
     for item in value['languages']:
+        if not isinstance(item,dict):raise ValueError('Invalid locale metadata')
         if not isinstance(item.get('enabled'),bool) or not isinstance(item.get('name'),str):raise ValueError('Invalid locale metadata types')
         if (not isinstance(item['tag'],str) or len(item['tag'])>63 or not TAG.fullmatch(item['tag'])) or item['tag'] in seen: raise ValueError('Invalid/duplicate locale tag')
+        if not portable_component(item['tag']):raise ValueError('Locale tag is not portable on Windows')
         seen.add(item['tag'])
         if set(item)-{'tag','name','enabled','status','font','legacyValue','direction','shaping','fallbackPolicy'}: raise ValueError('Unknown locale metadata')
         if item['direction'] != 'ltr' or item['shaping'] != 'none': raise ValueError('Shaping/bidi are not verified')
         if item['fallbackPolicy'] not in ('strict','fallback-en'): raise ValueError('Unknown fallback policy')
         if item['status'] not in ('draft','complete'): raise ValueError('Unknown translation status')
         if item['enabled'] and item['status'] != 'complete': raise ValueError('Draft locale cannot be enabled')
-        if item.get('legacyValue') is not None and (item['tag'],item['legacyValue']) not in [('en',0),('ko',1)]: raise ValueError('Legacy values are reserved')
+        if 'legacyValue' in item and (type(item['legacyValue']) is not int or (item['tag'],item['legacyValue']) not in [('en',0),('ko',1)]):raise ValueError('Legacy values must be reserved integers')
+        if item['tag'] in ('en','ko') and item.get('legacyValue')!=('en','ko').index(item['tag']):raise ValueError('Legacy locale mapping is required')
     enabled = [x for x in value['languages'] if x['enabled']]
     if not enabled or enabled[0]['tag'] != 'en' or len(enabled)>32: raise ValueError('English first; at most32 enabled locales')
     if any(x['tag']=='ko' for x in enabled) and enabled[1]['tag']!='ko': raise ValueError('Preserve legacy Korean index1')
@@ -76,17 +93,20 @@ def unicode_check(value, where):
 
 
 def font_sources(root=ROOT):
-    fonts=load(root/'locales/fonts.json')
+    fonts=mapping(root/'locales/fonts.json')
     for key, f in fonts.items():
+        if not portable_component(key):raise ValueError('Font ID is not portable on Windows')
+        if not isinstance(f,dict):raise ValueError('Invalid font metadata')
         if not re.fullmatch('[a-z][a-z0-9_-]*',key): raise ValueError('Invalid font ID')
         if f.get('kind')=='native':
             if key!='native-en' or f.get('resource')!='fnt_maintext' or f.get('baseline')!=14 or f.get('lineHeight')!=16:raise ValueError('Unverified native font')
             continue
         if f.get('kind')!='bdf' or not re.fullmatch(r'fnt_routekeeper[a-zA-Z0-9_]*',f.get('resource','')):raise ValueError('Unsupported font kind/resource')
-        if f.get('license') not in ('OFL-1.1','MIT','CC0-1.0') or not f.get('reviewed'): raise ValueError('Font requires reviewed redistribution permission: '+key)
+        if f.get('license') not in ('OFL-1.1','MIT','CC0-1.0') or f.get('reviewed') is not True: raise ValueError('Font requires reviewed redistribution permission: '+key)
         for field in ('source','licenseFile'):
             relative=Path(f[field])
             if relative.is_absolute() or '..' in relative.parts or '\\' in f[field]:raise ValueError('Unsafe font path')
+            if any(not portable_component(part) for part in relative.parts):raise ValueError('Font path is not portable on Windows')
             path=root/relative
             if not path.is_relative_to(root/'integration/assets') and not path.is_relative_to(root/'locales/fonts'): raise ValueError('Font path outside permitted asset directories')
             if any(p.is_symlink() or (p.exists() and getattr(p.lstat(),'st_file_attributes',0)&stat.FILE_ATTRIBUTE_REPARSE_POINT) for p in [path,*path.parents]): raise ValueError('Linked font input refused')
@@ -102,19 +122,34 @@ def font_module(root=ROOT):
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
 
+def validate_references(root,base):
+    sources=list((root/'src/RouteKeeper.Core').glob('*.cs'))+list((root/'integration/gml').glob('*.gml'))
+    for path in sorted(sources):
+        source=path.read_text(encoding='utf-8')
+        if source.startswith('// Generated'):continue  # Freshness is a separate check.
+        # Preserve quoted literals (including URL slashes) while excluding
+        # ordinary line/block comments from this bounded reference scan.
+        source=re.sub(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*|/\*[\s\S]*?\*/',lambda m:' ' if m[0].startswith(('//','/*')) else m[0],source)
+        ids=set(re.findall(r'\b(?:guidance|ending|input|ui)\.[a-z][a-z0-9_]*\b',source))
+        ids.update('ui.'+key for key in re.findall(r'scr_routekeeper_ui_catalog\("([a-z][a-z0-9_]*)"\s*,',source))
+        missing=ids-set(base)
+        if missing:raise ValueError('Unregistered text reference '+','.join(sorted(missing))+' in '+path.name)
+
+
 def validate(root=ROOT, tag=None):
-    languages=enabled(root);base=load(root/'locales/en.json');context=load(root/'locales/context.json');fonts=font_sources(root)
+    languages=enabled(root);base=mapping(root/'locales/en.json');context=mapping(root/'locales/context.json');fonts=font_sources(root)
     if set(base)!=set(context):raise ValueError('Canonical/context key drift')
     for key,value in base.items():
         if not re.fullmatch(r'[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+',key):raise ValueError('Invalid semantic text ID '+key)
         if set(PLACEHOLDER.findall(value))!=set(context[key]['placeholders']):raise ValueError('Canonical placeholder/context drift '+key)
         if set(context[key].get('optionalPlaceholders',[]))-set(context[key]['placeholders']):raise ValueError('Invalid optional placeholder '+key)
+    validate_references(root,base)
     selected=languages if tag is None else [x for x in registry(root)['languages'] if x['tag']==tag]
     if not selected:raise ValueError('Unknown locale')
     font=font_module(root)
     results=[]
     for locale in selected:
-        dictionary=load(root/f"locales/{locale['tag']}.json")
+        dictionary=mapping(root/f"locales/{locale['tag']}.json")
         missing=sorted(set(base)-set(dictionary));obsolete=sorted(set(dictionary)-set(base));empty=sorted(k for k,v in dictionary.items() if not isinstance(v,str) or not v.strip())
         if obsolete or empty or (missing and (locale['enabled'] or locale['fallbackPolicy']!='fallback-en')):raise ValueError(f"{locale['tag']}: missing={missing}; obsolete={obsolete}; empty={empty}")
         if locale['font'] not in fonts:raise ValueError('Unregistered font '+locale['font'])
@@ -177,7 +212,7 @@ def generated(root=ROOT):
     dispatch='// Generated from locales; unknown locale/key falls back to English.\n'
     for i,locale in enumerate(languages):
         dispatch+=f'if (argument1 == {i}) return scr_routekeeper_text_{i}(argument0);\n'
-        dictionary=load(root/f"locales/{locale['tag']}.json")
+        dictionary=mapping(root/f"locales/{locale['tag']}.json")
         body='// Generated translation dictionary; no gameplay rules.\n'
         for key in sorted(base):body+=f'if (argument0 == {json.dumps(key)}) return {gml_string(dictionary.get(key) or base[key])};\n'
         body+=('return "";\n' if i==0 else 'return scr_routekeeper_text_0(argument0);\n')
@@ -197,6 +232,7 @@ def generated(root=ROOT):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('command',choices=['add','validate','build','preview','coverage']);p.add_argument('--locale');p.add_argument('--name');p.add_argument('--font',default='galmuri14');p.add_argument('--verify',action='store_true');p.add_argument('--output',type=Path);a=p.parse_args()
     if a.command=='add':
+        if a.locale and not portable_component(a.locale):raise ValueError('Locale tag is not portable on Windows')
         if not a.locale or (len(a.locale)>63 or not TAG.fullmatch(a.locale)) or not a.name:raise ValueError('Supply a valid --locale and --name')
         value=registry();path=ROOT/f'locales/{a.locale}.json'
         if path.exists() or any(x['tag']==a.locale for x in value['languages']):raise ValueError('Locale already exists')

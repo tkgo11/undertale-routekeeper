@@ -265,4 +265,11 @@ foreach(int settled in new[]{14,15,16})foreach(int delta in new[]{0,1,2})foreach
     if(int.Parse(new GmlObjectiveInterpreter(prefix+DecisionPolicy.EmitRegionalGml(),new Dictionary<string,int?>()).Run())!=expected)throw new Exception("Source regional projection mismatch");
 }
 Check("54 regional boundary/area/event cases match emitted projection",true);
+long expectedRegionalProjection=2L*int.MaxValue;
+Check("Regional projection preserves large positive deltas without int wrap",(long)DecisionPolicy.EffectiveRegionalKills(int.MaxValue,int.MaxValue,0,203,203,true)==expectedRegionalProjection&&DecisionPolicy.RequiresDefeat(DecisionEnemy.Snowdrake,DecisionAction.Spare,DecisionPolicy.EffectiveRegionalKills(int.MaxValue,int.MaxValue,0,203,203,true),false));
+Check("Source item classifiers cannot be changed through public collections",FrozenItems());
+bool FrozenItems(){
+    bool Frozen(IReadOnlyList<int> values){if(values is not IList<int> list)return true;try{list[0]=list[0];return false;}catch(NotSupportedException){return true;}}
+    return Frozen(GreetingPolicy.HealingItems)&&Frozen(GreetingPolicy.ArmorItems);
+}
 Console.WriteLine($"PASS {count} decision checks. Authentic runtime NOT_RUN.");

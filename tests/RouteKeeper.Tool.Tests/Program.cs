@@ -234,6 +234,14 @@ try
                 Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION",previousVersion);
                 Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_DIAGNOSTICS",previousDiagnostics);
             }
+            if (!OperatingSystem.IsWindows()) Check("Source builder refuses linked output ancestors before compilation",()=>{
+                string physical=Path.Combine(root,"builder-physical"),alias=Path.Combine(root,"builder-alias");Directory.CreateDirectory(physical);Directory.CreateSymbolicLink(alias,physical);
+                string destination=Path.Combine(alias,"candidate.win");bool refused=false;
+                try{ModBuilder.BuildAsync(input,destination,compiler,assets).GetAwaiter().GetResult();}
+                catch(InvalidOperationException ex) when(ex.Message.Contains("Linked",StringComparison.Ordinal)){refused=true;}
+                Assert(refused&&!File.Exists(Path.Combine(physical,"candidate.win"))&&!Directory.EnumerateFileSystemEntries(physical).Any());
+            });
+            else Console.WriteLine("NOT_RUN builder ancestor links: native link permission required");
             Assert(SafeInstaller.Hash(input)==identity.Sha256);
         } finally {Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER",previousFixture);}
     });

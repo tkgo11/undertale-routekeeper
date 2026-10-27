@@ -9,8 +9,8 @@ public sealed record CallDecision(int Goal,CallAction Action,int Item=0,bool Hea
 public static class GreetingPolicy
 {
     // Exact scr_itemuseb main-switch cases invoking scr_recoitem (including delayed noodles).
-    public static readonly int[] HealingItems=[1,2,4,5,6,7,8,9,10,16,17,18,19,20,21,22,23,28,35,36,37,38,39,40,41,42,43,55,58,59,61,62];
-    public static readonly int[] ArmorItems=[12,15,24,44,46,48,50,53,64];
+    public static IReadOnlyList<int> HealingItems {get;}=Array.AsReadOnly<int>([1,2,4,5,6,7,8,9,10,16,17,18,19,20,21,22,23,28,35,36,37,38,39,40,41,42,43,55,58,59,61,62]);
+    public static IReadOnlyList<int> ArmorItems {get;}=Array.AsReadOnly<int>([12,15,24,44,46,48,50,53,64]);
     public static bool ExperienceRisk(int experience,int reward,int enemy,bool levelOnly,int pendingReward=0) =>
         enemy is >=1 and <=5 or 7 || (levelOnly ? (long)experience+pendingReward+reward>=10 : reward>0);
     public static string EmitExperience()=>"// Generated EXP threshold; scr_levelup LV2 begins at XP10.\nif ((argument2 >= 1 && argument2 <= 5) || argument2 == 7) return 1;\nif (argument3 == 1) { if (argument0 + argument4 + argument1 >= 10) return 1; return 0; }\nif (argument1 > 0) return 1;\nreturn 0;\n";

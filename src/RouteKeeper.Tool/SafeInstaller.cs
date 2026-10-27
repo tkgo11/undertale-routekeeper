@@ -147,7 +147,7 @@ public static class SafeInstaller
         input.CopyTo(output);
         output.Flush(flushToDisk: true);
     }
-    private static void RejectLinks(params string[] paths)
+    internal static void RejectLinks(params string[] paths)
     {
         foreach (string path in paths)
         {

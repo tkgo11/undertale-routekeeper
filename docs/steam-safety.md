@@ -99,3 +99,7 @@ All of the following are needed; none is supplied by offline tests:
 If1 cannot be established under the user's constraints, keep NO-GO. Do not replace
 Steam APIs, change app identity, modify original history handling, ask credentials,
 clear personal state, require a VM or manufacture a safe result.
+
+The2026-10-27 offline follow-up tightens runtime-lab file-set/extraction verification
+and source-builder paths only. It establishes no Steam/account isolation and does
+not reopen Run or authorize any operator action. See offline-audit-2026-10-27.md.

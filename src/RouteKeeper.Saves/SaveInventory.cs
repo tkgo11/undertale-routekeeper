@@ -10,7 +10,7 @@ public sealed record LineSave(IReadOnlyList<string> Lines, string Newline, bool 
 /// <summary>Read-only inventory. Deliberately exposes no API for writing game saves.</summary>
 public static class SaveInventory
 {
-    private static readonly Dictionary<string, SaveKind> Known = new(StringComparer.Ordinal)
+    private static readonly Dictionary<string, SaveKind> Known = new(StringComparer.OrdinalIgnoreCase)
     {
         ["file0"] = SaveKind.Playthrough, ["file8"] = SaveKind.PersistentEncounter,
         ["file9"] = SaveKind.Recovery, ["undertale.ini"] = SaveKind.Configuration,
@@ -27,7 +27,7 @@ public static class SaveInventory
             var kind = Known.GetValueOrDefault(name);
             if (!Known.ContainsKey(name))
             {
-                if (!name.StartsWith("system_information_", StringComparison.Ordinal)) continue;
+                if (!name.StartsWith("system_information_", StringComparison.OrdinalIgnoreCase)) continue;
                 kind = SaveKind.PermanentHistory; // Unknown history files are protected too.
             }
             if ((File.GetAttributes(file) & FileAttributes.ReparsePoint) != 0)
@@ -40,9 +40,21 @@ public static class SaveInventory
 
     public static LineSave ReadLines(string path)
     {
-        var info = new FileInfo(path);
-        if (info.Length > 1024 * 1024) throw new InvalidDataException("Save exceeds read-only parser limit.");
-        var text = File.ReadAllText(path, new UTF8Encoding(false, true));
+        using var input=File.OpenRead(path);
+        return ReadLines(input);
+    }
+
+    // Bound bytes actually consumed, rather than trusting a pre-read file length
+    // that a concurrent writer can invalidate. The caller retains stream ownership.
+    internal static LineSave ReadLines(Stream input)
+    {
+        const int maximum=1024*1024;
+        var bytes=new byte[maximum+1];int count=0,read;
+        while(count<bytes.Length && (read=input.Read(bytes,count,bytes.Length-count))!=0)count+=read;
+        if(count>maximum)throw new InvalidDataException("Save exceeds read-only parser limit.");
+        using var data=new MemoryStream(bytes,0,count,writable:false);
+        using var reader=new StreamReader(data,new UTF8Encoding(false,true),detectEncodingFromByteOrderMarks:true);
+        var text=reader.ReadToEnd();
         if (text.Contains('\0')) throw new InvalidDataException("Unexpected binary save.");
         var newline = text.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
         var normalized = text.Replace("\r\n", "\n", StringComparison.Ordinal);

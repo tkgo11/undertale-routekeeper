@@ -8,7 +8,7 @@ public sealed class GenocideTransitionModel
     readonly List<string> events=[];
     int kills,pending,area;
     bool sans;
-    public IReadOnlyDictionary<int,int> Flags=>flags;
+    public IReadOnlyDictionary<int,int> Flags=>flags.AsReadOnly();
     public IReadOnlyList<string> Events=>events.AsReadOnly();
     public int Stage=>MurderStage(flags);
     int Get(int n)=>flags.GetValueOrDefault(n);
@@ -37,7 +37,7 @@ public sealed class GenocideTransitionModel
     public void Settle(){flags[202+area]=Get(202+area)+pending;events.Add("overworld-return:region="+area+":delta="+pending);pending=0;}
     public void Ordinary(int count)
     {
-        if(count<1||pending!=0||Get(202+area)+count>new[]{20,16,18,40}[area])throw new InvalidOperationException("No remaining modeled population.");
+        if(count<1||pending!=0||(long)Get(202+area)+count>new[]{20,16,18,40}[area])throw new InvalidOperationException("No remaining modeled population.");
         for(int i=0;i<count;i++){Kill(1,"ordinary-encounter:region="+area);Settle();}
     }
     public void Toriel()

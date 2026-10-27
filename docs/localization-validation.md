@@ -1,5 +1,13 @@
 # Localization implementation and offline evidence
 
+Follow-up: [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md) adds strict
+legacy/permission types, Windows-portable names, missing literal-reference checks,
+immutable shared metadata and faithful title/progress previews. The current36-test
+workflow includes add/translate/validate/build/preview/coverage/verify. Original237
+en/ko strings,393 glyphs and candidate4457dbf4 are unchanged. Earlier totals below
+record the original refactor, not the current expanded audit.
+
+
 2026-10-27; starting/fetched branch HEAD05695725a76ad019402eba66d119e21640733899.
 Scope: ROUTEKEEPER's own UI/guidance; original game translation is excluded.
 Contributor instructions and font provenance: [locales/README.md](../locales/README.md).

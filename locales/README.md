@@ -127,3 +127,11 @@ properly authorized runtime verification. Same-account Steam NO-GO remains intac
 Optional authentic extension compilation (existing authorized data only) is documented
 in [localization-validation.md](../docs/localization-validation.md). This exercises
 additional locales/fonts in a disposable copy without launching a game.
+
+Follow-up validation rejects reserved Windows file/device components on every host,
+requires literal boolean font review and exact integer legacy mappings, and checks
+maintained literal text references against the canonical dictionary (comments and
+generated files excluded; dynamic-key coverage/freshness remains a separate check).
+ISO tags that are reserved Windows basenames need a distinct portable registered
+tag; they are never silently renamed. Shared Core rule/locale views are read-only.
+The disposable end-to-end regression executes the full preview/coverage workflow.

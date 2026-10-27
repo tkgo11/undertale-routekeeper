@@ -25,6 +25,11 @@ with tempfile.TemporaryDirectory(prefix='routekeeper-g3m-test-') as directory:
   from utils.mod.config import parse_mod_config
   parse_mod_config(config);print('PASS current upstream G3M parser accepts generated config')
  second=root/'second.zip';invoke('g3m-package',original,candidate,xdelta,second,'Synthetic','test',assets);assert archive.read_bytes()==second.read_bytes()
+ if sys.platform!='win32':
+  physical=root/'physical';physical.mkdir();alias=root/'alias';alias.symlink_to(physical,target_is_directory=True)
+  r=subprocess.run([*program,'g3m-package',str(original),str(candidate),xdelta,str(alias/'mod.zip'),'Synthetic','test',str(assets)],capture_output=True,text=True)
+  assert r.returncode!=0 and 'Linked' in r.stderr and not list(physical.iterdir()),'G3M followed output ancestor link'
+ else:print('NOT_RUN G3M ancestor links: native link permission required')
  profile['Status']='InspectedOnly';registry.write_text(json.dumps([profile]), encoding='utf-8', newline='\n');refused=root/'refused.zip'
  r=subprocess.run([*program,'g3m-package',str(original),str(candidate),'missing-xdelta',str(refused),'Synthetic','test',str(assets)],capture_output=True);assert r.returncode!=0 and not refused.exists()
  assert original.read_bytes()==form(payload);assert not list(root.glob('.routekeeper-g3m-*'))

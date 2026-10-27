@@ -133,6 +133,17 @@ foreach(bool sold in new[]{false,true})foreach(int choice in new[]{1,2}) {
     var g=EndingReachability.Genocide(false,sold);
     Check(RouteEvaluator.Evaluate(sold?RouteId.SoullessGenocide:RouteId.Genocide,g.FinalState!).Status==RouteStatus.ON_TRACK,"Ordered Genocide witness missing prerequisites");
 }
+// A huge count must be rejected before event-loop allocation. Pre-fix execution
+// was intentionally not attempted: unchecked quota addition could wrap and loop.
+var boundedGenocide=new GenocideTransitionModel();boundedGenocide.Ordinary(1);
+bool refusedOverflow=false;try{boundedGenocide.Ordinary(int.MaxValue);}catch(InvalidOperationException){refusedOverflow=true;}
+Check(refusedOverflow&&boundedGenocide.Events.Count==2,"Quota overflow entered an unbounded event loop");
+var boundedNormal=new RunTransitionModel();boundedNormal.KillOrdinary();
+refusedOverflow=false;try{boundedNormal.KillOrdinary(int.MaxValue);}catch(InvalidOperationException){refusedOverflow=true;}
+Check(refusedOverflow&&boundedNormal.Snapshot()["kills"]==1,"Ordinary quota overflow changed state");
+var boundedJerry=new RunTransitionModel();boundedJerry.ResolveBoss(false);boundedJerry.Advance();boundedJerry.KillJerry();
+refusedOverflow=false;try{boundedJerry.KillJerry(int.MaxValue);}catch(InvalidOperationException){refusedOverflow=true;}
+Check(refusedOverflow&&boundedJerry.Snapshot()["kills"]==1,"Jerry quota overflow changed state");
 var late=GenocideTransitionModel.Witness(true);
 Check(late.Flags[205]==40&&late.Flags[27]==1&&late.Stage==15,"NEO settlement must not undo its earlier abandonment decision");
 Check(EndingReachability.Neutral(6,8).Verdict==ReachabilityVerdict.Unknown,"Unproven LV1/high-kill combination falsely proved");

@@ -9,14 +9,18 @@ public static class TextCatalog
 {
     public sealed record Locale(string Tag,string Name,string Font,int? LegacyValue);
     private static readonly System.Reflection.Assembly Assembly=typeof(TextCatalog).Assembly;
-    private static JsonDocument Read(string name)=>JsonDocument.Parse(Assembly.GetManifestResourceStream("RouteKeeper.Locales."+name+".json")??throw new InvalidDataException("Missing locale resource "+name));
+    private static JsonDocument Read(string name)
+    {
+        using var stream=Assembly.GetManifestResourceStream("RouteKeeper.Locales."+name+".json")??throw new InvalidDataException("Missing locale resource "+name);
+        return JsonDocument.Parse(stream);
+    }
     public static IReadOnlyList<Locale> Languages {get;}=LoadRegistry();
     private static readonly IReadOnlyDictionary<string,IReadOnlyDictionary<string,string>> Dictionaries=LoadDictionaries();
     private static IReadOnlyList<Locale> LoadRegistry()
     {
         using var document=Read("languages");
         return document.RootElement.GetProperty("languages").EnumerateArray().Where(x=>x.GetProperty("enabled").GetBoolean())
-            .Select(x=>new Locale(x.GetProperty("tag").GetString()!,x.GetProperty("name").GetString()!,x.GetProperty("font").GetString()!,x.TryGetProperty("legacyValue",out var n)?n.GetInt32():null)).ToArray();
+            .Select(x=>new Locale(x.GetProperty("tag").GetString()!,x.GetProperty("name").GetString()!,x.GetProperty("font").GetString()!,x.TryGetProperty("legacyValue",out var n)?n.GetInt32():null)).ToArray().AsReadOnly();
     }
     private static IReadOnlyDictionary<string,IReadOnlyDictionary<string,string>> LoadDictionaries()
     {

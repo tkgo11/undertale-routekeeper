@@ -3,7 +3,7 @@ using RouteKeeper.Saves;
 if (args is ["--authentic", var inputDirectory])
 {
     var before = SaveInventory.Inspect(inputDirectory);
-    var parsed = before.Where(x => x.Name is "file0" or "file8" or "file9")
+    var parsed = before.Where(x => x.Kind is SaveKind.Playthrough or SaveKind.PersistentEncounter or SaveKind.Recovery)
         .Select(x => SaveInventory.ReadLines(Path.Combine(inputDirectory, x.Name))).ToArray();
     var after = SaveInventory.Inspect(inputDirectory);
     if (!before.SequenceEqual(after)) throw new Exception("Input changed during read-only inspection.");
@@ -34,6 +34,19 @@ try
     File.WriteAllText(Path.Combine(directory, "file0"), "bad\0data");
     try { SaveInventory.ReadLines(Path.Combine(directory, "file0")); throw new Exception("binary accepted"); }
     catch (InvalidDataException) { checks++; }
+    string caseHistory=Path.Combine(directory,"SYSTEM_INFORMATION_963");File.WriteAllText(caseHistory,"synthetic case variant");
+    var withCaseHistory=SaveInventory.Inspect(directory);
+    Check(withCaseHistory.Any(x=>x.Name=="SYSTEM_INFORMATION_963"&&x.Kind==SaveKind.PermanentHistory),"Case-variant history must be conservatively protected");
+    File.Delete(caseHistory);
+    Check(!SaveInventory.PermanentHistoryUnchanged(withCaseHistory,SaveInventory.Inspect(directory)),"Case-variant history deletion must be detected");
+    using(var exact=new MemoryStream(new byte[1024*1024].Select(_=>(byte)'a').ToArray()))
+        Check(SaveInventory.ReadLines(exact).Lines[0].Length==1024*1024,"Exact byte bound must be accepted");
+    using(var growing=new UnderreportedStream(new byte[1024*1024+1].Select(_=>(byte)'a').ToArray())){
+        bool refused=false;try{SaveInventory.ReadLines(growing);}catch(InvalidDataException){refused=true;}
+        Check(refused&&growing.CanRead,"Actual read bound, not reported Length; caller retains ownership");
+    }
     Console.WriteLine($"PASS: {checks} save preservation checks (synthetic)");
 }
 finally { Directory.Delete(directory, true); }
+
+sealed class UnderreportedStream(byte[] bytes):MemoryStream(bytes) { public override long Length=>0; }

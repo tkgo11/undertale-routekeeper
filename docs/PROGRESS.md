@@ -1,5 +1,17 @@
 # Progress and resumption
 
+## Offline audit continuation — 2026-10-27 UTC
+
+Started from latest remote06acf3d; see [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md)
+for phase disposition, A21–A30 findings, commands, repro evidence and remaining limits.
+Fixed strict/portable locale metadata and missing-key validation, preview drift,
+mutable public rule/locale arrays, bounded model/parser inputs, case-variant history,
+builder/G3M ancestor aliases and incomplete runtime archive inventory verification.
+The full contributor workflow now includes preview/coverage. Existing EN/KR237 keys,
+393 glyphs, native hooks and candidate4457dbf4 remain unchanged. InspectedOnly and
+same-account NO-GO remain. No game/Steam launch or hosted CI rerun.
+
+
 ## Multilingual localization continuation (2026-10-27)
 
 See [localization-validation.md](localization-validation.md) for the current scope,

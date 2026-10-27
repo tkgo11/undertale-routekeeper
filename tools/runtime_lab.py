@@ -62,6 +62,19 @@ def inspect(archive,expected_sha=ZIP_SHA,expected_size=ZIP_SIZE,expected_data=DA
   if identity['architecture']!='x86':raise ValueError('Unexpected runner architecture')
   return identity
 
+def verify_original_tree(original,files):
+ assert_no_links(original)
+ expected={f['path'] for f in files};actual=set()
+ if not original.is_dir():raise ValueError('Pristine original directory missing')
+ for path in original.rglob('*'):
+  assert_no_links(path)
+  if path.is_file():actual.add(path.relative_to(original).as_posix())
+  elif not path.is_dir():raise ValueError('Unsupported node in pristine tree')
+ if actual!=expected:raise ValueError('Pristine file set changed (missing or unlisted files)')
+ for f in files:
+  path=original/f['path']
+  if path.stat().st_size!=f['size'] or digest(path)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
+
 def prepare(archive,work):
  work=assert_no_links(work)
  identity=inspect(archive)
@@ -76,6 +89,9 @@ def prepare(archive,work):
     target.parent.mkdir(parents=True,exist_ok=True)
     with z.open(entry) as source,target.open('xb') as dest:shutil.copyfileobj(source,dest)
     target.chmod(0o400)
+  # Revalidate what was actually extracted, including additions, before making
+  # any runnable copy. A checked archive pathname can otherwise change later.
+  verify_original_tree(original,identity['files'])
   for kind in ['original','patched']:
    shutil.copytree(original/'Undertale',work/'runs'/kind)
    for p in (work/'runs'/kind).rglob('*'):
@@ -91,12 +107,7 @@ def verify(work,expected_inventory=INVENTORY_SHA):
  if not (work/MARKER).is_file():raise ValueError('Not a disposable runtime lab')
  identity=json.loads((work/'identity-private.json').read_text(encoding='utf-8'))
  if inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
- for f in identity['files']:
-  p=work/'original'/f['path']
-  # A linked ancestor can redirect a regular-looking file outside the pristine
-  # tree. Reject it before opening/hash-reading any such target.
-  assert_no_links(p)
-  if not p.is_file() or p.stat().st_size!=f['size'] or digest(p)!=f['sha256']:raise ValueError('Pristine input changed: '+f['path'])
+ verify_original_tree(work/'original',identity['files'])
  return identity
 
 def main():

@@ -6,6 +6,7 @@ public static class SourceInstaller
     public static async Task InstallAsync(string target, string compiler, string platform, string architecture, string assetRoot)
     {
         target = Path.GetFullPath(target); assetRoot = Path.GetFullPath(assetRoot);
+        SafeInstaller.RejectLinks(target,target+".routekeeper-original",assetRoot);
         var registry = CompatibilityRegistry.Load(Path.Combine(assetRoot, "profiles", "registry.json"));
         string backup = target + ".routekeeper-original";
         string original = File.Exists(backup) ? backup : target;

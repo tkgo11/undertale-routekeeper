@@ -1,5 +1,11 @@
 # 실행 전 전체 저장소 코드 감사 — 2026-10-26
 
+Latest continuation: [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md)
+records A21–A30 reproductions/fixes and the complete current phase matrix. Current
+tracked paths/hashes are in audit-coverage.json. The older dated counts and candidate
+below are historical; current candidate is4457dbf4, still InspectedOnly/NO-GO.
+
+
 판정: **NO-GO — 현재 Windows 계정에서 비파괴 게임 smoke를 시작하지 않는다.**
 원본 시작 코드의 Steam 영구 기록 처리와 실제 Windows 파일 보호 동작이 검증되지
 않았다(A04/A05). 코드·오프라인 검사는 계속할 수 있다. VerifiedPatch, 엔딩 호환성,
@@ -205,3 +211,12 @@ FORM readers register unique names in a dictionary. Inspection now rejects
 duplicates and more than1024 chunks and reuses one64KiB hash buffer. This is a
 diagnostic resource bound, not a new supported schema/profile or compatibility
 approval. Source/current output identity and all synthetic regressions pass.
+
+## Follow-up A21–A30 (2026-10-27 UTC)
+
+See offline-audit-2026-10-27.md for every reproduction, affected source, classification
+and regression. Ordinary output aliases, unlisted archive files, mutable rules,
+invalid locale metadata and case-variant history omissions were reproduced before
+fixing. The bounded-reader concurrency concern is identified as a credible risk;
+unchecked model overflow is statically established and not executed pre-fix.
+A04–A10 account/native/race/durability/privacy/oracle/service limits remain open.

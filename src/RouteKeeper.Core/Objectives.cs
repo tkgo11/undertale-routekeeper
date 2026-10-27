@@ -6,8 +6,10 @@ public sealed record FactTest(string Fact,Comparison Comparison,int Expected)
     { Comparison.AtLeast=>value>=Expected,Comparison.AtMost=>value<=Expected,_=>value==Expected });
     public string Gml => $"(global.rk_{Fact} >= 0 && global.rk_{Fact} <= {FactDomains.Maximum(Fact)} && global.rk_{Fact} {GmlRuleEmitter.Operator(Comparison)} {Expected})";
 }
-public sealed record ObjectiveCondition(params FactTest[] Tests)
+public sealed record ObjectiveCondition
 {
+    public IReadOnlyList<FactTest> Tests { get; }
+    public ObjectiveCondition(params FactTest[] tests)=>Tests=Array.AsReadOnly((FactTest[])tests.Clone());
     public bool Matches(GameState state)=>Tests.All(t=>t.Matches(state));
     public string Gml=>string.Join(" && ",Tests.Select(t=>t.Gml));
 }
@@ -68,7 +70,8 @@ public static class ObjectiveRules
         O("genocide_final","guidance.continue_to_the_final_encounter","guidance.defeat_sans_then_continue_toward_the_throne_room",Eq("genocide_stage",16),Eq("sans_defeated",0)),
         O("genocide_throne","guidance.continue_to_the_throne_room_and_choose_your_future","guidance.continue_through_the_throne_room_some_choices_outlast_a",Eq("genocide_stage",16),Eq("sans_defeated",1))
     ];
+    private static readonly IReadOnlyList<ObjectiveRule> PacifistView=Array.AsReadOnly(Pacifist),GenocideView=Array.AsReadOnly(Genocide);
     public static IReadOnlyList<ObjectiveRule> For(RouteId route)=>route switch
-    {RouteId.TruePacifist or RouteId.SoullessPacifist=>Pacifist,RouteId.Genocide or RouteId.SoullessGenocide=>Genocide,_=>[]};
+    {RouteId.TruePacifist or RouteId.SoullessPacifist=>PacifistView,RouteId.Genocide or RouteId.SoullessGenocide=>GenocideView,_=>[]};
     public static IEnumerable<string> Facts=>Pacifist.Concat(Genocide).SelectMany(r=>r.Condition.Tests.Select(t=>t.Fact).Concat(r.CountFact is null?[]:new[]{r.CountFact}));
 }

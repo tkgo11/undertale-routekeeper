@@ -1,5 +1,12 @@
 # Non-runtime delivery status — 2026-10-27 KST
 
+Current continuation and superseding results:
+[offline-audit-2026-10-27.md](offline-audit-2026-10-27.md).
+The matrix/counts in this earlier baseline below predate the localization refactor
+and current audit; preserve them as dated evidence, not current operator instructions.
+No game/Steam launch or compatibility approval is authorized.
+
+
 Starting remote HEAD: bf552d788cbf89c4ee79af6a9e5fbd030f85413e.
 Current source is the commit containing this report; obtain its exact SHA with
 `git log -1 --format=%H`. PR1 stays OPEN/READY. No merge/release/profile promotion.

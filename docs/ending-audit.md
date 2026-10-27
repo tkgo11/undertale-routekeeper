@@ -1,5 +1,9 @@
 # Independent ending accuracy audit
 
+Current metadata/provenance is in compatibility.md; the2026-10-25 statement of
+unknown runner provenance below is historical. Offline continuation findings are
+in offline-audit-2026-10-27.md. No ending rule or original hook changed.
+
 2026-10-25; exact authorized input b718f822…81c7, bytecode16. Nominal release/Steam
 provenance is unknown. No runner execution or runtime-supported profile exists.
 
@@ -173,3 +177,14 @@ Own-event closure does not exclude every external with/instance reference,
 scripted room return, reward transfer or encounter replay. No full type6/goal8
 reachable/impossible verdict follows; it remains UNKNOWN. Existing advisory-only
 protection is retained. These source facts are not native runtime evidence.
+
+## Offline reinspection (2026-10-27 UTC)
+
+The authentic EX death branch awards800EXP, matching the existing witness model.
+Quiz/second Create set takedamage0; their low-HP hurt branches can set killed1,
+while third Destroy lacks the same collector. Those are own-event facts, not a
+closed proof excluding external damage/instance writes or scripted returns.
+Neutral6/goal8 remains UNKNOWN with the existing cross-instance/reward/backtracking
+proof obligation. No new abstract witness or impossible classification was invented.
+Witness quota additions now widen before comparing int.MaxValue counts so an
+overflow cannot expand an unbounded event loop; normal source traces are unchanged.

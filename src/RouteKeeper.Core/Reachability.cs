@@ -32,7 +32,7 @@ public sealed class RunTransitionModel
         if(location!=region)throw new InvalidOperationException("Backtracking encounters outside the verified witness subset.");
         if(count<1||pending!=0||region>3||resolved[region])throw new InvalidOperationException("No modeled encounter available.");
         int capacity=new[]{20,16,18,40}[region];
-        if(regional[region]+count>capacity)throw new InvalidOperationException("Population exhausted.");
+        if((long)regional[region]+count>capacity)throw new InvalidOperationException("Population exhausted.");
         // Source-pinned Loox basic reward7; Hotland Vulkin reward70. These
         // witnesses need no manipulated reward, optional encounter or backtracking.
         if(region is 1 or 2)throw new InvalidOperationException("This witness subset does not certify these ordinary encounter rewards.");
@@ -43,7 +43,7 @@ public sealed class RunTransitionModel
     {
         // Original Jerry encounterer can remain on backtracking only if this
         // region was seeded before plot100; Bandage makes ordinary FLEE succeed.
-        if(location!=1||region<1||pending!=0||count<1||regional[1]+count>16||
+        if(location!=1||region<1||pending!=0||count<1||(long)regional[1]+count>16||
             (region>1&&regional[1]==0)||facts["barrier_broken"]==1||facts["neutral_alphys_friendship"]>=10)
             throw new InvalidOperationException("No source-bounded Jerry encounter path.");
         if(!jerryUnlocked){events.Add("spare-initial-Snowdrake;Jerry-group-available");jerryUnlocked=true;}

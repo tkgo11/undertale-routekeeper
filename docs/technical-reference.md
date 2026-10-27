@@ -81,3 +81,14 @@ zero-EXP actor death/cross-instance dispatch, reward settlement and return path
 while satisfying high-kill Exile plus LV1/Bandage/no-healing. Ordinary reward minima,
 Jerry/So Sorry1EXP and own-event armored/bomb evidence are insufficient. No further
 speculative transitions or invented impossibility/availability claims were added.
+
+## Offline validation contracts (2026-10-27 UTC)
+
+[Win32 naming](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
+establishes reserved device basenames/extensions and forbidden/trailing filename
+characters. Locale/font metadata now enforces portable components even on Linux.
+[Stream.Read](https://learn.microsoft.com/en-us/dotnet/api/system.io.stream.read)
+returns the actual byte count; save parsing now bounds consumed bytes rather than
+trusting a separate pre-read length. These are offline input/portability contracts,
+not native NTFS/Steam observations. Original rules, fixed source hashes and gameplay
+hooks are unchanged; read-only wrappers prevent accidental shared-rule mutation.

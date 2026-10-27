@@ -12,6 +12,7 @@ public static class ModBuilder
     public static async Task<BuildReceipt> BuildAsync(string source, string output, string compiler, string assetRoot, string? profileId = null)
     {
         source = Path.GetFullPath(source); output = Path.GetFullPath(output); assetRoot = Path.GetFullPath(assetRoot);
+        SafeInstaller.RejectLinks(source,output,assetRoot);
         if (File.Exists(compiler)) compiler = Path.GetFullPath(compiler);
         if (string.Equals(source, output, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
             throw new InvalidOperationException("Build output must be distinct from the original.");
@@ -47,6 +48,7 @@ public static class ModBuilder
             var result = BuildInspector.Inspect(candidate);
             if (result.BytecodeVersion != original.BytecodeVersion) throw new InvalidDataException("Candidate bytecode differs.");
             RequireOriginal(source, original.Sha256);
+            SafeInstaller.RejectLinks(source,output,candidate,workspace);
             File.Move(candidate, output); // Never overwrite a concurrent or existing output.
             // Approval belongs to the exact output too, never just its input.
             string status = matching[0].Status == "VerifiedPatch" && CompatibilityRegistry.Equal(matching[0].PatchedSha256, result.Sha256)

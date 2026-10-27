@@ -1,5 +1,16 @@
 # Verification evidence
 
+## Latest offline audit — 2026-10-27 UTC
+
+Current evidence: [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md).
+Release0 warnings/errors;279 standard C# checks and9317 source-golden/bounded
+assertions;36 localization/full developer-workflow tests,22 UI groups,393 glyphs,
+696 emitted UI comparisons, archive12 and PowerShell101 synthetic checks. Authentic
+compile/reload/preservation and four-RID packaging pass; candidate4457dbf4 is unchanged.
+These are OFFLINE_PASS only. Runtime/native-platform results remain NOT_RUN; hosted
+Actions budget and qlty login remain BLOCKED. Older dated totals below are historical.
+
+
 ## Localization validation (2026-10-27)
 
 See [localization-validation.md](localization-validation.md) for the current scope,

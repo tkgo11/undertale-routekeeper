@@ -72,6 +72,46 @@ class LocalizationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'2048'):loc.unicode_check('a'*2049,'test')
         self.reject('locales/languages.json',lambda x:x['languages'][1].update(tag='en-'+('x-'*40)+'x'),'locale tag')
 
+    def test_legacy_metadata_requires_reserved_integer_values(self):
+        registry=loc.registry(self.root)
+        for value in [True,None,'1',1.0]:
+            data=copy.deepcopy(registry);data['languages'][1]['legacyValue']=value
+            loc.write(self.root/'locales/languages.json',data)
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'Legacy'):loc.validate(self.root)
+
+    def test_font_permission_requires_boolean_review(self):
+        self.reject('locales/fonts.json',lambda x:x['galmuri14'].update(reviewed='false'),'redistribution')
+
+    def test_portable_locale_and_font_names(self):
+        for name in ['bad\nfont','bad\tfont','CON.gz','aux.ttf','font.','font ']:self.assertFalse(loc.portable_component(name))
+        registry=loc.registry(self.root);fonts=loc.load(self.root/'locales/fonts.json')
+        for tag in ['con','aux','nul','prn']:
+            data=copy.deepcopy(registry);data['languages'][1]['tag']=tag;data['languages'][1].pop('legacyValue')
+            loc.write(self.root/f'locales/{tag}.json',loc.load(self.root/'locales/ko.json'))
+            loc.write(self.root/'locales/languages.json',data)
+            with self.subTest(tag=tag),self.assertRaisesRegex(ValueError,'portable'):loc.validate(self.root)
+        loc.write(self.root/'locales/languages.json',registry)
+        fonts['con']=dict(fonts['galmuri14'],resource='fnt_routekeeper_con');loc.write(self.root/'locales/fonts.json',fonts)
+        with self.assertRaisesRegex(ValueError,'portable'):loc.validate(self.root)
+
+    def test_removing_canonical_key_cannot_hide_native_reference(self):
+        folder=self.root/'integration/gml';folder.mkdir(parents=True)
+        (folder/'controller_draw.gml').write_text('return scr_routekeeper_ui_catalog("title",0);\n',encoding='utf-8',newline='\n')
+        for name in ['en','ko','context']:self.change('locales/'+name+'.json',lambda x:x.pop('ui.title'))
+        with self.assertRaisesRegex(ValueError,'Unregistered text reference.*ui.title'):loc.validate(self.root)
+
+    def test_reference_scan_ignores_comments_without_hiding_code(self):
+        folder=self.root/'integration/gml';folder.mkdir(parents=True)
+        source='// "guidance.comment_example"\nreturn scr_routekeeper_ui_catalog("title",0); /* guidance.another_example */\n'
+        (folder/'controller_draw.gml').write_text(source,encoding='utf-8',newline='\n')
+        loc.validate(self.root)
+        for name in ['en','ko','context']:self.change('locales/'+name+'.json',lambda x:x.pop('ui.title'))
+        with self.assertRaisesRegex(ValueError,'Unregistered text reference.*ui.title'):loc.validate(self.root)
+
+    def test_non_object_catalog_fails_validation(self):
+        loc.write(self.root/'locales/en.json',[])
+        with self.assertRaisesRegex(ValueError,'Expected JSON object'):loc.validate(self.root)
+
     def test_unicode_limits(self):
         for value in ['e\u0301','\u200b','\u202e','\U0001f600','\u0627','\u0915','\u1100','a\nb','a#b','a\t','\ua800','\u1820']:
             with self.subTest(value=repr(value)),self.assertRaises(ValueError):loc.unicode_check(value,'test')
@@ -178,14 +218,19 @@ class LocalizationTests(unittest.TestCase):
         def run(*args):
             result=subprocess.run(args,cwd=self.root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',timeout=240)
             self.assertEqual(result.returncode,0,result.stdout[-4000:])
+            return result.stdout
         run('python','tools/localization.py','add','--locale','en-x-demo','--name','English demo','--font','native-en')
         draft=loc.load(self.root/'locales/en-x-demo.json');self.assertTrue(all(v=='' for v in draft.values()))
         self.assertEqual(set(draft),set(loc.load(self.root/'locales/en.json')))
         demo=loc.load(self.root/'locales/en.json');demo['ui.title']='English \"demo\"'
         loc.write(self.root/'locales/en-x-demo.json',demo)
+        run('python','tools/localization.py','validate','--locale','en-x-demo')
         def enable(data):data['languages'][-1].update(enabled=True,status='complete')
         self.change('locales/languages.json',enable)
         run('python','tools/localization.py','build')
+        run('python','tools/localization.py','preview','--locale','en-x-demo')
+        self.assertTrue((self.root/'artifacts/locale-preview-en-x-demo/menu.png').is_file())
+        self.assertIn(f'en-x-demo {len(draft)} / {len(draft)} enabled=True',run('python','tools/localization.py','coverage'))
         run('python','tools/localization.py','build','--verify')
         run('dotnet','run','--project','tests/RouteKeeper.Core.Tests','-c','Release','--no-build','--','--verify-locales')
         self.assertIn('English demo',(self.root/'integration/gml/locale_name.gml').read_text(encoding='utf-8'))

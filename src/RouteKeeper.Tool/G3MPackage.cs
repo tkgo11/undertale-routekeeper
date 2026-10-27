@@ -30,6 +30,7 @@ public static class G3MPackage
         IEnumerable<CompatibilityProfile> profiles, string platform, string architecture)
     {
         original = Path.GetFullPath(original); candidate = Path.GetFullPath(candidate); output = Path.GetFullPath(output);
+        SafeInstaller.RejectLinks(original,candidate,output);
         if (Path.Exists(output)) throw new IOException("Package output must be new.");
         var identity = BuildInspector.Inspect(original);
         var profile = CompatibilityRegistry.RequireVerified(identity, profiles, platform, architecture);
@@ -65,6 +66,7 @@ public static class G3MPackage
                 var entry = zip.CreateEntry("payload/routekeeper.xdelta", CompressionLevel.Optimal); entry.LastWriteTime = Epoch;
                 using var input = File.OpenRead(patch); using var destination = entry.Open(); input.CopyTo(destination);
             }
+            SafeInstaller.RejectLinks(original,candidate,output,work,archive);
             File.Move(archive, output); // No overwrite, even when another process races.
         }
         finally { if (Directory.Exists(work)) Directory.Delete(work, true); }

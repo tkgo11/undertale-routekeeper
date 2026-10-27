@@ -1,6 +1,6 @@
-import hashlib,io,json,stat,struct,tempfile,unittest,zipfile
+import hashlib,io,json,os,stat,struct,tempfile,unittest,zipfile
 from pathlib import Path
-from runtime_lab import safe_entries,inspect,verify,MARKER,inventory_digest,assert_no_links
+from runtime_lab import safe_entries,inspect,verify,prepare,MARKER,inventory_digest,assert_no_links
 class ArchiveTests(unittest.TestCase):
  def archive(self,names):
   f=io.BytesIO()
@@ -32,6 +32,30 @@ class ArchiveTests(unittest.TestCase):
    self.assertEqual(len(verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files']))['files']),1)
    (game/'data.win').write_bytes(b'MUTATED SOURCE')
    with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files']))
+ def test_unlisted_files_cannot_hide_in_pristine_tree(self):
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();game=self.fixture(root)
+   expected=inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files'])
+   (game/'extra.dll').write_bytes(b'SYNTHETIC ADDITION')
+   with self.assertRaisesRegex(ValueError,'file set'):verify(root,expected)
+ def test_unlisted_special_node_is_not_an_ordinary_directory(self):
+  if not hasattr(os,'mkfifo'):self.skipTest('POSIX special-node fixture unavailable')
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();game=self.fixture(root)
+   expected=inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files'])
+   os.mkfifo(game/'extra-pipe')
+   with self.assertRaisesRegex(ValueError,'Unsupported node'):verify(root,expected)
+ def test_archive_change_after_identity_check_is_not_staged(self):
+  from unittest.mock import patch
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory).resolve();archive=root/'input.zip';work=root/'lab'
+   original=b'SYNTHETIC BEFORE';identity={'files':[dict(path='Undertale/data.win',size=len(original),sha256=hashlib.sha256(original).hexdigest())]}
+   def swap_after_inspection(_):
+    with zipfile.ZipFile(archive,'w') as z:z.writestr('Undertale/data.win',b'SYNTHETIC AFTER!')
+    return identity
+   archive.write_bytes(b'synthetic inspection control')
+   with patch('runtime_lab.inspect',side_effect=swap_after_inspection),self.assertRaisesRegex(ValueError,'Pristine input changed'):prepare(archive,work)
+   self.assertFalse(work.exists())
  def test_linked_original_parent(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();game=self.fixture(root);outside=root/'moved-game'

@@ -2,9 +2,14 @@ using System.Text;
 
 namespace RouteKeeper.Core;
 
-public sealed record GreetingRequirement(ObjectiveCondition[] Alternatives, string TextKey,
-    bool Permanent = false, string? Deadline = null)
+public sealed record GreetingRequirement
 {
+    public IReadOnlyList<ObjectiveCondition> Alternatives {get;}
+    public string TextKey {get;}
+    public bool Permanent {get;}
+    public string? Deadline {get;}
+    public GreetingRequirement(ObjectiveCondition[] alternatives,string textKey,bool permanent=false,string? deadline=null)
+    {Alternatives=Array.AsReadOnly((ObjectiveCondition[])alternatives.Clone());TextKey=textKey;Permanent=permanent;Deadline=deadline;}
     public string English=>TextCatalog.Get(TextKey,0);
     public string Korean=>TextCatalog.Get(TextKey,"ko");
     public string Text(Language language)=>TextCatalog.Get(TextKey,language);
@@ -20,8 +25,14 @@ public sealed record GreetingRequirement(ObjectiveCondition[] Alternatives, stri
         return unknown?null:false;
     }
 }
-public sealed record NeutralGreetingGoal(int Id,string TextKey,int[] CompatibleTargets,GreetingRequirement[] Requirements)
+public sealed record NeutralGreetingGoal
 {
+    public int Id {get;}
+    public string TextKey {get;}
+    public IReadOnlyList<int> CompatibleTargets {get;}
+    public IReadOnlyList<GreetingRequirement> Requirements {get;}
+    public NeutralGreetingGoal(int id,string textKey,int[] compatibleTargets,GreetingRequirement[] requirements)
+    {Id=id;TextKey=textKey;CompatibleTargets=Array.AsReadOnly((int[])compatibleTargets.Clone());Requirements=Array.AsReadOnly((GreetingRequirement[])requirements.Clone());}
     public string English=>TextCatalog.Get(TextKey,0);
     public string Korean=>TextCatalog.Get(TextKey,"ko");
     public string Label(Language language)=>TextCatalog.Get(TextKey,language);

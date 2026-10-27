@@ -76,7 +76,7 @@ class Renderer:
         return [localization.text(key,self.lang) for key in keys]
     def call_goals(self):return self.source_labels('greeting_label.gml')
     def menu(self,selection=0,options=None,neutral=False,neutral_settings=False,goal=0):
-        self.box(L['menu_left'],L['menu_top'],L['menu_right'],L['menu_bottom']);self.line(28,24,'ROUTEKEEPER',264)
+        self.box(L['menu_left'],L['menu_top'],L['menu_right'],L['menu_bottom']);self.line(28,24,self.text('title'),264)
         labels=['goal','ending_type' if neutral else 'epilogue','guidance','spoilers','language','journal','back']
         values=[self.text('pacifist'),self.text('either'),self.text('active'),self.text('minimal'),self.locale['name'],'','']
         if neutral:
@@ -104,7 +104,8 @@ class Renderer:
             row.line(L['row_x'],y,row.locale['name'],252,YELLOW if index==selection else WHITE)
             self.runs.extend(row.runs)
         self.line(28,L['footer_y'],self.text('navigation'),264)
-    def hud(self,objective,progress='7/17'):
+    def hud(self,objective,progress=None):
+        if progress is None:progress=self.text('progress_compact').replace('{met}','7').replace('{total}','17')
         self.box(16,L['hud_top'],304,L['hud_bottom']);self.line(L['hud_x'],L['hud_y'],'* '+objective,L['hud_width']);self.line(L['hud_progress_x'],L['hud_y'],progress,L['hud_progress_width'])
     def save(self,path):
         im=self.image.resize((640,480),Image.Resampling.NEAREST)

@@ -49,6 +49,13 @@ class UiTests(unittest.TestCase):
                 r.runs=[];r.languages(selected)
                 for x,y,w,h,text in r.runs:self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,217)
                 for locale in localization.enabled():self.assertIn(locale['name'],[run[4] for run in r.runs])
+    def test_preview_uses_translated_title_and_progress_template(self):
+        from unittest.mock import patch
+        from generate import CAT
+        for r in self.renderers:
+            with patch.dict(CAT['text'],{'title':['Translated title']*len(self.renderers),'progress_compact':['{total}:{met}']*len(self.renderers)}):
+                r.runs=[];r.menu();self.assertIn('Translated title',[run[4] for run in r.runs])
+                r.runs=[];r.hud(r.text('no_objective'));self.assertIn('17:7',[run[4] for run in r.runs])
     def test_hud_clip_and_coverage(self):
         for r in self.renderers:
             for message in [localization.text('ui.no_objective',r.lang)*50]:

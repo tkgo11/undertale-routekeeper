@@ -227,6 +227,16 @@ Check("Generated objectives and progress match C# in both languages and spoiler 
         Assert(interpreter.Integer("progress_met")==expected.MetRequirements && interpreter.Integer("progress_total")==expected.TotalRequirements,"Progress mismatch");
     }
 });
+Check("Published localization and rule collections reject mutation",()=>{
+    bool Frozen<T>(IReadOnlyList<T> values){if(values is not IList<T> list)return true;try{list[0]=list[0];return false;}catch(NotSupportedException){return true;}}
+    Assert(Frozen(TextCatalog.Languages));
+    var rule=ObjectiveRules.For(RouteId.TruePacifist)[0];Assert(Frozen(ObjectiveRules.For(RouteId.TruePacifist))&&Frozen(rule.Condition.Tests));
+    var goal=NeutralGoals.Get(1);Assert(Frozen(goal.CompatibleTargets)&&Frozen(goal.Requirements)&&Frozen(goal.Requirements[0].Alternatives));
+    var tests=new[]{new FactTest("kills",Comparison.Equal,0)};var condition=new ObjectiveCondition(tests);tests[0]=new("kills",Comparison.AtLeast,10);
+    Assert(condition.Matches(GameState.From(("kills",0))));
+    var model=GenocideTransitionModel.Witness(true);bool immutable=false;
+    try{((IDictionary<int,int>)model.Flags)[205]=40;}catch(NotSupportedException){immutable=true;}Assert(immutable);
+});
 Console.WriteLine($"{count - failures.Count}/{count} PASS; authentic runtime: NOT_RUN");
 foreach (var failure in failures) Console.Error.WriteLine(failure);
 Environment.ExitCode = failures.Count == 0 ? 0 : 1;
