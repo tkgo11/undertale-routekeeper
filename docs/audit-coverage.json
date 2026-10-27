@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "audit_date": "2026-10-27",
+  "audit_date": "2026-10-28",
   "baseline_head": "818fabab978a465d2ae07ff7d054f6dcb1a667fb",
   "snapshot": "Source tree committed with this inventory; git log -1 identifies the resulting HEAD.",
   "decision": "NO-GO for current-account game smoke; see docs/code-audit.md",
@@ -605,9 +605,9 @@
     },
     {
       "path": "integration/generate_font.py",
-      "bytes": 7004,
-      "lines": 124,
-      "sha256": "7990042eecd15b243c0dfb948b48c8e49a7bd58f0d8e88db6724a28f7f4a162d",
+      "bytes": 7576,
+      "lines": 156,
+      "sha256": "37e83939b99f0dd4bc6834a71e76922559af95139671f5b0133f819adc3d63ca",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -616,7 +616,7 @@
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+      "reviewed_against_head": "a80c32dfc4293dda860cfcfddfcef5f531263da0"
     },
     {
       "path": "integration/gml/controller_create.gml",
@@ -1354,9 +1354,9 @@
     },
     {
       "path": "integration/ui/generate.py",
-      "bytes": 1580,
-      "lines": 23,
-      "sha256": "e6d409efa5a885ee90d62f48de30066ef9eb148bc7b22b69558f81444f27d234",
+      "bytes": 1647,
+      "lines": 25,
+      "sha256": "13c05bc08866392f7e52ff37a16fd26fcfcdabc15a77043bea40826bc76dd25d",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -1365,13 +1365,13 @@
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "05695725a76ad019402eba66d119e21640733899"
+      "reviewed_against_head": "a80c32dfc4293dda860cfcfddfcef5f531263da0"
     },
     {
       "path": "integration/ui/preview.py",
-      "bytes": 9654,
-      "lines": 143,
-      "sha256": "26139fc0a61eed7ffb910157a1a0872c50c1d22e6fbe2a8024464b2c8c214380",
+      "bytes": 9772,
+      "lines": 154,
+      "sha256": "d29e09139883e8c5e1118c5761a6ee541b342568e76c89e2fe6846c226aa8c23",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -1381,7 +1381,7 @@
         "A19",
         "A24"
       ],
-      "reviewed_against_head": "06acf3ded1ce360ed8fa0bd632e5bb5ec434622e"
+      "reviewed_against_head": "a80c32dfc4293dda860cfcfddfcef5f531263da0"
     },
     {
       "path": "integration/ui/test_ui.py",
