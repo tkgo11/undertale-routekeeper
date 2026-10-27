@@ -20,25 +20,25 @@ class ArchiveTests(unittest.TestCase):
   f.seek(0)
   with zipfile.ZipFile(f) as z,self.assertRaises(ValueError):list(safe_entries(z))
  def fixture(self,root):
-  (root/MARKER).write_text('synthetic lab')
+  (root/MARKER).write_text('synthetic lab', encoding='utf-8', newline='\n')
   game=root/'original'/'Game';game.mkdir(parents=True)
   (game/'data.win').write_bytes(b'SYNTHETIC ONLY')
   identity={'files':[{'path':'Game/data.win','size':14,'sha256':hashlib.sha256(b'SYNTHETIC ONLY').hexdigest()}]}
-  (root/'identity-private.json').write_text(json.dumps(identity))
+  (root/'identity-private.json').write_text(json.dumps(identity), encoding='utf-8', newline='\n')
   return game
  def test_original_mutation(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();game=self.fixture(root)
-   self.assertEqual(len(verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))['files']),1)
+   self.assertEqual(len(verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files']))['files']),1)
    (game/'data.win').write_bytes(b'MUTATED SOURCE')
-   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
+   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files']))
  def test_linked_original_parent(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();game=self.fixture(root);outside=root/'moved-game'
    game.rename(outside)
    try:game.symlink_to(outside,target_is_directory=True)
    except OSError as error:self.skipTest('Symlink creation unavailable: '+str(error))
-   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text())['files']))
+   with self.assertRaises(ValueError):verify(root,inventory_digest(json.loads((root/'identity-private.json').read_text(encoding='utf-8'))['files']))
  def test_linked_lab_ancestor(self):
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory).resolve();real=root/'real';real.mkdir();lab=real/'lab';lab.mkdir();self.fixture(lab)

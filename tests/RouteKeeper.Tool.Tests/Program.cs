@@ -5,7 +5,11 @@ using RouteKeeper.Tool;
 // Explicit synthetic compiler subprocess; no actual GML/game execution here.
 var mockFixture=Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER");
 if(mockFixture is not null && args.FirstOrDefault() is "--version" or "load") {
-    if(args[0]=="--version"){Console.WriteLine("0.9.2.0");return 0;}
+    if(args[0]=="--version"){Console.WriteLine(Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION")??"0.9.2.0");return 0;}
+    if(Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_DIAGNOSTICS")=="1"){
+        string diagnostic=new('x',8192);
+        for(int n=0;n<256;n++){Console.Error.Write(diagnostic);Console.Out.Write(diagnostic);}
+    }
     int outputIndex=Array.IndexOf(args,"-o");
     if(outputIndex>=0)File.Copy(mockFixture,args[outputIndex+1],false);
     return 0;
@@ -37,6 +41,15 @@ try
     void Check(string name, Action action) { action(); passed++; Console.WriteLine("PASS " + name); }
     void Assert(bool ok) { if (!ok) throw new Exception("Assertion failed"); }
     void Reject(Action action) { try { action(); } catch (Exception ex) when (ex is InvalidOperationException or InvalidDataException or IOException) { return; } throw new Exception("Expected rejection"); }
+    Check("Child output is fully drained with a bounded prefix at adjacent boundaries",()=>{
+        foreach(int size in new[]{0,1,4095,4096,8191,8192,8193,65537}){
+            using var reader=new StringReader(new string('x',size));
+            var result=ProcessOutput.DrainAsync(reader,8192).GetAwaiter().GetResult();
+            Assert(result.Prefix==new string('x',Math.Min(size,8192))&&result.Truncated==(size>8192)&&reader.Read()==-1);
+        }
+        using var discarded=new StringReader(new string('y',100000));
+        Assert(ProcessOutput.DrainAsync(discarded).GetAwaiter().GetResult()==new ProcessOutput.Result("",true)&&discarded.Read()==-1);
+    });
     Check("FORM identity, bytecode, hashes", () => Assert(identity.Size == 26 && identity.BytecodeVersion == 16 && identity.Chunks.Count == 2 && identity.Sha256.Length == 64 && identity.Md5.Length == 32));
     Check("chunk diff sees modified data", () => Assert(BuildInspector.Diff(identity, BuildInspector.Inspect(candidate)).Count == 1));
     Check("unknown build denied", () => Reject(() => CompatibilityRegistry.RequireVerified(identity, [], "Synthetic", "test")));
@@ -148,6 +161,17 @@ try
         Assert(config.RootElement.GetProperty("config_version").GetString()=="2.0.0" && item.GetProperty("target").GetString()=="${game_path}/data.win" && item.GetProperty("target_hash").GetString()=="sha256:"+identity.Sha256 && item.GetProperty("source_hash").GetString()=="sha256:"+new string('a',64));
     });
     Check("G3M malformed hashes rejected",()=>{try{G3MPackage.Config("../data.win",new string('a',64),"data.win");throw new Exception("Expected refusal");}catch(ArgumentException){}});
+    Check("G3M rejects trailing newlines and Windows path aliases",()=>{
+        foreach(string path in new[]{"data.win\n","CON/data.win","a./game.unx","a /game.ios","NUL.txt/data.win","com1/data.win","a/LPT9.any/data.win"}){
+            bool refused=false;try{G3MPackage.Config(identity.Sha256,new string('a',64),path);}catch(ArgumentException){refused=true;}
+            Assert(refused);
+        }
+        foreach(string hash in new[]{identity.Sha256+"\n",new string('A',64),new string('a',63)}){
+            bool refused=false;try{G3MPackage.Config(hash,new string('a',64),"data.win");}catch(ArgumentException){refused=true;}
+            Assert(refused);
+        }
+        _=G3MPackage.Config(identity.Sha256,new string('a',64),"Undertale.app/Contents/Resources/game.ios");
+    });
     Check("G3M rejects traversal paths",()=>{try{G3MPackage.Config(identity.Sha256,new string('a',64),"../data.win");throw new Exception("Expected refusal");}catch(ArgumentException){}});
     Check("G3M refuses an unverified game before starting external tools",()=>{
         var output=Path.Combine(root,"not-created","mod.zip");
@@ -194,6 +218,22 @@ try
             var approved=ModBuilder.BuildAsync(input,output+".approved",compiler,assets).GetAwaiter().GetResult();Assert(approved.CompatibilityStatus=="VerifiedPatch");
             File.WriteAllText(Path.Combine(assets,"profiles","registry.json"),JsonSerializer.Serialize(new[]{profile with {Status="InspectedOnly",PatchedSha256=SafeInstaller.Hash(fixture)}}));
             var inspected=ModBuilder.BuildAsync(input,output+".inspected",compiler,assets).GetAwaiter().GetResult();Assert(inspected.CompatibilityStatus=="InspectedOnly");
+            string? previousVersion=Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION");
+            string? previousDiagnostics=Environment.GetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_DIAGNOSTICS");
+            try {
+                foreach(string unsupported in new[]{"0.9.2.01","0.9.2.0evil","0.9.2.0\nextra",new string('a',8193)}){
+                    Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION",unsupported);
+                    Reject(()=>ModBuilder.BuildAsync(input,output+".bad-version",compiler,assets).GetAwaiter().GetResult());
+                    Assert(!File.Exists(output+".bad-version"));
+                }
+                Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION","0.9.2.0+03c7048");
+                Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_DIAGNOSTICS","1");
+                var noisy=ModBuilder.BuildAsync(input,output+".noisy",compiler,assets).GetAwaiter().GetResult();
+                Assert(noisy.OutputSha256==SafeInstaller.Hash(fixture));
+            } finally {
+                Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_VERSION",previousVersion);
+                Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_DIAGNOSTICS",previousDiagnostics);
+            }
             Assert(SafeInstaller.Hash(input)==identity.Sha256);
         } finally {Environment.SetEnvironmentVariable("ROUTEKEEPER_SYNTHETIC_COMPILER",previousFixture);}
     });

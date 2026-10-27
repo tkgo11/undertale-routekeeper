@@ -3,7 +3,7 @@
 import json,argparse
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-CAT=json.loads((ROOT/'ui/catalog.json').read_text())
+CAT=json.loads((ROOT/'ui/catalog.json').read_text(encoding='utf-8'))
 def sources():
     text='// Generated from ui/catalog.json.\n'
     for key,values in CAT['text'].items():
@@ -18,6 +18,6 @@ if __name__=='__main__':
     for name,data in sources().items():
         path=ROOT/'gml'/name
         if args.verify:
-            if path.read_text()!=data:raise SystemExit('Stale UI source '+name)
-        else:path.write_text(data)
+            if path.read_text(encoding='utf-8')!=data:raise SystemExit('Stale UI source '+name)
+        else:path.write_text(data, encoding='utf-8', newline='\n')
     print('PASS shared UI source '+('verified' if args.verify else 'generated'))

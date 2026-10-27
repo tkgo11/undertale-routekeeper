@@ -151,6 +151,12 @@ try {
  Refuses {Assert-RkProcessIdentity @($process) 123 'registered.exe' $started.Ticks} 'registered game redirect blocked'
  Refuses {Assert-RkProcessIdentity @($process) 123 'game.exe' ($started.Ticks-1)} 'recycled PID blocked by start time'
  $scriptText=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'run-current-account.ps1') -Raw
+ foreach($caseName in @('original','patched')){
+  $denied=$false
+  try { & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action Run -Case $caseName -AcceptSteamAccountRisk -CloudDisabledAndOffline -Lab 'must-not-touch' }
+  catch { $denied=$_.Exception.Message -like 'NO-GO:*' }
+  Check $denied 'Run fails closed before platform/helper/filesystem access despite operator flags'
+ }
  $scriptText=[regex]::Replace($scriptText,'(?m)^\s*#.*$','')
  Check (!$scriptText.Contains('Start-RkDisposableInstall') -and !$scriptText.Contains('-applaunch')) 'registered game swap and Steam redirect fallback removed'
  Check ($scriptText.Contains("'observation.lock'") -and $scriptText.Contains("'session.lock'")) 'observation cannot deadlock on active run lock'

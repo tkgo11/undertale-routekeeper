@@ -2,7 +2,7 @@
 """Offline layout/raster invariants using pinned metrics, never a runtime claim."""
 import json,re,unittest,tempfile
 from pathlib import Path
-from preview import Renderer,ROOT,CAT,L
+from preview import Renderer,ROOT,L
 import sys
 sys.path.insert(0,str(ROOT))
 from generate_font import generate
@@ -41,7 +41,8 @@ class UiTests(unittest.TestCase):
                     options=[('Variant ' if r.lang==0 else '변형 ')+str(i) for i in range(size)]
                     r.runs=[];r.menu(selected,options)
                     self.assertLessEqual(len(r.runs),L['visible_rows']+2)
-                    first=selected//L['visible_rows']*L['visible_rows'];self.assertIn(options[selected],[run[4] for run in r.runs])
+                    first=selected//L['visible_rows']*L['visible_rows']
+                    self.assertEqual([run[4] for run in r.runs if run[4] in options],options[first:first+L['visible_rows']])
     def test_hud_clip_and_coverage(self):
         for r in self.renderers:
             for message in ['Long objective '*50,'남은 필수 조우를 마치세요. '*50]:
@@ -50,13 +51,13 @@ class UiTests(unittest.TestCase):
                     self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,L['hud_bottom']-3)
         self.assertLessEqual((L['hud_bottom']-L['hud_top'])/240,0.12)
     def test_labels_do_not_hide_distinctions(self):
-        source=(ROOT/'gml/neutral_label.gml').read_text()
+        source=(ROOT/'gml/neutral_label.gml').read_text(encoding='utf-8')
         for literal in re.findall(r'return ("[^"\n]*")',source):
             text=json.loads(literal);language=int(any(ord(c)>126 for c in text));r=self.renderers[language]
             self.assertLessEqual(r.width(text),252,text)
     def test_full_objectives_fit_progress_page(self):
         for path in [ROOT/'gml/route_objective.gml',ROOT/'gml/neutral_evaluate.gml',ROOT/'gml/greeting_evaluate.gml']:
-            for literal in re.findall(r'"(?:[^"\\]|\\.)*"',path.read_text()):
+            for literal in re.findall(r'"(?:[^"\\]|\\.)*"',path.read_text(encoding='utf-8')):
                 text=json.loads(literal)
                 if len(text)<30:continue
                 language=int(any(ord(c)>126 for c in text));r=self.renderers[language]
@@ -70,14 +71,14 @@ class UiTests(unittest.TestCase):
         self.assertEqual(L['border'],3);self.assertEqual(L['warning_left'],16);self.assertEqual(L['warning_right'],304)
         self.assertEqual(L['scale'],2)
     def test_native_source_safety_contract(self):
-        draw=(ROOT/'gml/controller_draw.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
+        draw=(ROOT/'gml/controller_draw.gml').read_text(encoding='utf-8');step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertIn('draw_set_font(fnt_maintext)',draw);self.assertNotIn('display_set_gui_size',draw)
         self.assertNotIn('gameplay tests pending',draw);self.assertIn('control_check_pressed(0)',step);self.assertIn('control_check_pressed(1)',step)
         self.assertGreater(step.index('control_clear(0); control_clear(1); control_clear(2);',step.index('accept = control_check_pressed(0)')),step.index('cancel = control_check_pressed(1)'))
-        self.assertIn('obj_routekeeper.rk_menu',(ROOT/'hooks.csx').read_text())
-        self.assertIn('string_pos("한국어",argument2)',(ROOT/'gml/ui_line.gml').read_text())
+        self.assertIn('obj_routekeeper.rk_menu',(ROOT/'hooks.csx').read_text(encoding='utf-8'))
+        self.assertIn('string_pos("한국어",argument2)',(ROOT/'gml/ui_line.gml').read_text(encoding='utf-8'))
     def test_small_controller_and_disconnect_contract(self):
-        step=(ROOT/'gml/controller_step.gml').read_text()
+        step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertIn('rk_pad_ready = count > 0;',step)
         self.assertIn('if (rk_pad_ready && j < count)',step)
         self.assertIn('rk_pad_button[j] = -1;',step)
@@ -111,45 +112,45 @@ class UiTests(unittest.TestCase):
             self.assertNotIn('All',[run[4] for run in r.runs])
             self.assertNotIn('Variant',[run[4] for run in r.runs])
     def test_readiness_and_input_event_order_contract(self):
-        state=(ROOT/'gml/state_read.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
+        state=(ROOT/'gml/state_read.gml').read_text(encoding='utf-8');step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertLess(state.index('return 0;'),state.index('global.flag['))
         self.assertIn('if (global.rk_state_ready && instance_exists(obj_mainchara)',step)
         self.assertLess(step.index('rk_menu_fence = rk_menu;'),step.index('scr_routekeeper_read_state();'))
         self.assertLess(step.index('rk_direction_up = held_up;'),step.index('if (global.rk_warning_pending) {',step.index('rk_direction_up = held_up;')))
-        self.assertIn('obj_routekeeper.rk_menu_fence',(ROOT/'hooks.csx').read_text())
+        self.assertIn('obj_routekeeper.rk_menu_fence',(ROOT/'hooks.csx').read_text(encoding='utf-8'))
         self.assertIn('!global.rk_state_ready || global.rk_warning_room != room',step)
     def test_pre_effect_save_item_and_lab_hooks(self):
-        hooks=(ROOT/'hooks.csx').read_text();guard=(ROOT/'gml/decision_guard.gml').read_text()
+        hooks=(ROOT/'hooks.csx').read_text(encoding='utf-8');guard=(ROOT/'gml/decision_guard.gml').read_text(encoding='utf-8')
         for action in [8,9,10]:self.assertIn('scr_routekeeper_decision_guard('+str(action)+',',hooks)
         self.assertIn('room == room_fire_lab1',guard)
         self.assertIn('scr_routekeeper_warning_session(1, risk, context, enforceable)',guard)
         self.assertIn('string(global.rk_mode)',guard)
         self.assertLess(guard.index('!global.rk_state_ready'),guard.index('global.flag[26]'))
     def test_unproven_compound_forced_combination_fails_safely(self):
-        guard=(ROOT/'gml/decision_guard.gml').read_text()
+        guard=(ROOT/'gml/decision_guard.gml').read_text(encoding='utf-8')
         self.assertIn('scr_routekeeper_decision_enforceable(risk, action, family',guard)
-        scope=(ROOT/'gml/decision_enforceable.gml').read_text()
+        scope=(ROOT/'gml/decision_enforceable.gml').read_text(encoding='utf-8')
         self.assertIn('argument0 == 17',scope);self.assertIn('argument4 == 8',scope)
         self.assertIn('return 0;',scope)
-        create=(ROOT/'gml/controller_create.gml').read_text();step=(ROOT/'gml/controller_step.gml').read_text()
+        create=(ROOT/'gml/controller_create.gml').read_text(encoding='utf-8');step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertIn('global.rk_warning_pending = 0;',create);self.assertIn('global.rk_warning_ack = 0;',create)
         self.assertNotIn('ini_write_real("Guidance", "warning',step)
     def test_reload_and_pre_effect_refresh(self):
-        hooks=(ROOT/'hooks.csx').read_text();guard=(ROOT/'gml/decision_guard.gml').read_text()
+        hooks=(ROOT/'hooks.csx').read_text(encoding='utf-8');guard=(ROOT/'gml/decision_guard.gml').read_text(encoding='utf-8')
         self.assertIn('["gml_Script_scr_load"]',hooks)
         self.assertIn('global.rk_history_refresh = 0;',hooks)
         self.assertIn('obj_routekeeper.rk_menu_fence = 0;',hooks)
         self.assertLess(guard.index('scr_routekeeper_read_state();'),guard.index('obj_routekeeper.rk_status == 3'))
-        pending=(ROOT/'gml/greeting_pending_risk.gml').read_text()
+        pending=(ROOT/'gml/greeting_pending_risk.gml').read_text(encoding='utf-8')
         self.assertEqual(pending.count('global.xpreward[3]'),2)
     def test_pending_snowdrake_counter_contract(self):
-        guard=(ROOT/'gml/decision_guard.gml').read_text();hooks=(ROOT/'hooks.csx').read_text()
+        guard=(ROOT/'gml/decision_guard.gml').read_text(encoding='utf-8');hooks=(ROOT/'hooks.csx').read_text(encoding='utf-8')
         self.assertIn('enemy, action, effective_snowdin,',guard)
         self.assertIn('effective_snowdin >= 16',guard)
         self.assertIn('effective_snowdin == 15',guard)
         self.assertIn('scr_routekeeper_decision_regional(global.flag[203], global.kills, global.flag[201], global.flag[200], 203, global.inbattle == 1) >= 16',hooks)
     def test_baseline_cell_bounds(self):
-        rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text().splitlines()]
+        rows=[list(map(int,row.split())) for row in (ROOT/'assets/ui-font.tsv').read_text(encoding='utf-8').splitlines()]
         im=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')
         for code,x,y,advance,offset in rows:
             self.assertIsNone(im.crop((x,y+18,x+24,y+24)).getbbox(),f'Ink clipped below U+{code:04X}')

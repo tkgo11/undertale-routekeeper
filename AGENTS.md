@@ -89,8 +89,10 @@ in a public repository or a fork.
 
 ## Current-account native smoke (experimental, Windows NOT_RUN)
 
-Primary command: tools/runtime/run-current-account.ps1. No new OS user, Sandbox,
-VM or elevation is required. It launches a pinned side-by-side official runner;
+Primary command: tools/runtime/run-current-account.ps1. Run is now code-disabled
+(NO-GO), even with operator risk flags; see docs/steam-safety.md. No new OS user,
+Sandbox, VM or elevation is required for Preflight/synthetic checks. The retained
+experimental launch design uses a pinned side-by-side official runner;
 the registered Steam installation is READ ONLY, even in Program Files/other libraries.
 Read docs/runtime-validation.md for exact preparation/recovery/evidence commands.
 Never introduce a registered-install swap fallback or fake Steam SDK ownership.
@@ -136,3 +138,35 @@ operator Run examples are experimental procedures, not permission or approval.
   protection; never claim race-free path handling or proven NTFS power-loss recovery.
 - Reconcile every tracked path and content hash with the audit inventory after
   source changes. Its COMPLETE means inspection coverage, not runtime approval.
+
+## Non-runtime continuation (2026-10-27 KST)
+
+Current evidence is docs/non-runtime-status.md; older totals are historical.
+Never launch Steam/game or use the retained legacy launchers to bypass NO-GO.
+
+- `python tools/test_private_validation.py` uses synthetic inputs/mocked compiler.
+- `python tools/test-patch-paths.py --input private-data/data.win --cli /path/to/UndertaleModCli`
+  verifies exact CLI output/scratch refusal on disposable authentic copies.
+- `python tools/test_audit_inventory.py` / `python tools/audit_inventory.py`.
+- Refresh audit digests only AFTER full review of each changed/new file:
+  `python tools/audit_inventory.py --refresh --reviewed PATH [PATH ...]`.
+  Stage new sources first; missing/extra/unreviewed paths refuse refresh. A digest
+  refresh is not test evidence or approval. Review tests and update status docs.
+- Private validator work is constrained below repository .research; every run
+  creates WORK/run-*/summary.json/logs and preserves earlier evidence. Never upload.
+- Default text checkout is LF; binary font inputs remain binary. Source changes
+  need fresh authentic compilation and four-RID packaging when affected.
+
+The private structural validator now includes an accepted unmodified candidate
+control and7 in-memory metadata corruption/refusal cases. Do not replace this with
+payload/count parity or let compiler/script parse failures masquerade as rejection.
+Metadata guards are typed and bytecode16 legacy-specific, including original
+room/object/event/action fields. Do not claim arbitrary reflection, GMS2 schema
+coverage, runtime behavior or a formal equality proof.
+
+All maintained Python Path text IO specifies UTF-8; writes specify LF.
+`python tools/test_source_encoding.py` simulates a non-UTF8 locale and checks the
+tracked AST policy. Preserve this even on UTF-8 Linux; native Windows is NOT_RUN.
+
+Optional local Python lint: install pyflakes3.4.0 alongside Pillow11.3.0, then
+`python -m pyflakes integration tools`. CI pins both; do not rerun hosted jobs.

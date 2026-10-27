@@ -28,13 +28,19 @@ if (string.Equals(outputPath,Path.GetFullPath(FilePath),StringComparison.Ordinal
     throw new InvalidOperationException("Output must be a new file distinct from the pristine original.");
 void RejectLinks(string path) {
     for (string current = Path.GetFullPath(path); current != null; current = Path.GetDirectoryName(current)) {
-        if ((File.Exists(current) || Directory.Exists(current))
-            && (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
+        FileSystemInfo info = Directory.Exists(current) ? new DirectoryInfo(current) : new FileInfo(current);
+        if (info.LinkTarget != null || (info.Exists && (info.Attributes & FileAttributes.ReparsePoint) != 0))
             throw new InvalidOperationException("Symbolic links are not accepted for patch generation paths.");
     }
 }
 RejectLinks(FilePath);
 RejectLinks(outputPath);
+// Pinned CLI SaveDataFile uses FileMode.Create on outputPath + "temp", then
+// overwrites outputPath by rename. Protect that host-owned scratch path too.
+string scratchPath = outputPath + "temp";
+RejectLinks(scratchPath);
+if (Path.Exists(scratchPath))
+    throw new InvalidOperationException("Compiler scratch output must be new; existing evidence is retained.");
 const string expected = "b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7";
 string actual;
 using (var input = File.OpenRead(FilePath)) actual = Convert.ToHexString(SHA256.HashData(input)).ToLowerInvariant();

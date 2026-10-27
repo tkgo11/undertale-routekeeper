@@ -9,7 +9,7 @@ from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--verify',action='store_true');a=p.parse_args()
 sources={}
 def read(name):
- s=(a.source/(name+'.gml')).read_text();sources[name]=hashlib.sha256(s.encode()).hexdigest();return s
+ s=(a.source/(name+'.gml')).read_text(encoding='utf-8');sources[name]=hashlib.sha256(s.encode()).hexdigest();return s
 
 def body(source,anchor):
  start=source.index('{',source.index(anchor));depth=1;end=start+1
@@ -211,7 +211,7 @@ for won,writer,halt in itertools.product(range(2),repeat=3):
 # every actor's death or nonstandard script return is reachable or reward-safe.
 killSites=[]
 for sourcePath in sorted(a.source.glob('*.gml')):
- text=sourcePath.read_text()
+ text=sourcePath.read_text(encoding='utf-8')
  if re.search(r'global\.kills\s*(?:\+=|-=|=(?!=)|\+\+)',text):
   read(sourcePath.stem);killSites.append(sourcePath.stem)
 for name in ['gml_Object_obj_mettatonb_quiz_Step_0','gml_Object_obj_mettatonb_second_Step_0','gml_Object_obj_mettatonb_third_Step_0','gml_Object_obj_battlebomb_Step_0','gml_Object_obj_heart_Step_0','gml_Object_obj_woshbody_Step_0']:read(name)
@@ -235,6 +235,6 @@ a.output.parent.mkdir(parents=True,exist_ok=True)
 result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits,'standardReturns':standardReturns,'killWriteSites':killSites,'zeroExpActors':zeroExpActors}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
 if a.verify:
- if a.output.read_text()!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')
-else:a.output.write_text(serialized)
+ if a.output.read_text(encoding='utf-8')!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')
+else:a.output.write_text(serialized, encoding='utf-8', newline='\n')
 print(f'PASS original-derived fixtures: Neutral={len(rows)}, murder={len(murderrows)}, ratings={len(ratingrows)}; no dialogue text exported')

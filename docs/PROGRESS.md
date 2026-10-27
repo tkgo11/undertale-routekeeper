@@ -1,7 +1,37 @@
 # Progress and resumption
 
-Updated 2026-10-26. Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
+Updated 2026-10-27 (KST). Continue PR #1, branch feat/routekeeper-foundation. PRIVATE;
 no merge, public release, profile promotion or original save/history mutation.
+
+## Current non-runtime continuation (2026-10-27 KST)
+
+Starting/fetched remote HEADbf552d788cbf89c4ee79af6a9e5fbd030f85413e.
+PR1 remains OPEN/READY. See non-runtime-status.md for the current matrix, exact
+commands, source/tool provenance and remaining limits; previous totals below are
+historical. All173 tracked paths are covered by the refreshed audit inventory.
+
+Implemented/fixed: unconditional pre-effect NO-GO Run gate; exact CLI scratch-path
+collision/dangling-output refusals; private structural work boundary and per-run
+exclusive logs/summary; bounded/cancellable process output and strict version
+response; G3M whole-string/portable aliases; commit-pinned Actions; resource metadata corruption guards; LF text
+checkout; explicit-reviewed-path audit refresh/verification. Synthetic input
+overwrite and authentic scratch-collision failures were reproduced before fixes.
+
+Current local PASS: build0 warnings/errors,270 standard checks plus9314 bounded/
+source-golden assertions;101 PowerShell synthetic checks; private-validator5,
+inventory3, workflow2, archive9, UI20 groups;381 glyphs/686 emitted UI comparisons.
+Authentic compile/serialize/reload/preservation, all27 hook links/all115 golden
+source hashes/127 binding signatures,4-RID single-file publish and actual xdelta/
+upstream G3M synthetic roundtrip pass. Candidate9abd0729 remains identical and
+InspectedOnly. Source/technical references now distinguish SOURCE/CORROBORATED/
+MODEL/HYPOTHESIS/RUNTIME. No unsupported interception or guessed reachability added.
+
+Same-account game launch stays NO-GO and is now actually disabled in code.
+Valve FileDelete/Cloud documentation does not prove same-account isolation.
+Preflight and guarded existing-session recovery remain available. Native game,
+Steam, Win32 APIs, PS5.1 and foreign OS execution are NOT_RUN. No hosted CI rerun.
+Qlty95 detail remains login-BLOCKED. Neutral6/goal8 remains UNKNOWN; exact missing
+zero-EXP cross-instance death/reward/return graph closure is documented.
 
 ## Pre-runtime whole-repository audit (2026-10-26)
 

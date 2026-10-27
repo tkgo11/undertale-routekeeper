@@ -12,7 +12,7 @@ PR1은 OPEN/READY로 유지한다.
   수정 후 상태는 이 문서와 함께 커밋된 파일 및 `git log -1 --format=%H`로 식별한다.
 - [audit-coverage.json](audit-coverage.json): 전체 추적 파일의 경로·바이트·줄 수·
   SHA-256·검사 방법·검증 범위·관련 지적을 명시한다. 최초159개와 감사 중 추가4개,
-  총163개다. 누락 검사는 `git ls-files`와 항목 집합을 정확히 비교한다.
+  당시 총163개다. 최신 파일 집합·해시는 audit-coverage.json과 non-runtime-status.md를 따른다. 누락 검사는 `git ls-files`와 항목 집합을 정확히 비교한다.
 - 직접 유지하는 코드·테스트·설정·문서는 전체 내용을 읽었다. 생성 GML33개는 생성기
   전체 코드 검토와 모든 출력의 바이트 비교로 검사했다. 손작성 GML12개는 전체 코드
   검토 대상이다. 데이터는 전체 레코드/원본 해시 검사, 바이너리 폰트는 전체 디코딩/
@@ -59,7 +59,7 @@ PR1은 OPEN/READY로 유지한다.
 | Pacifist | prior Neutral/EXP/우정 순서/물·편지·lab 선행 조건/deadline 검토. 상태·objective·refusal 및 원본 골든 **PASS**. | 실제 대사·방 이동·reload·엔딩 NOT_RUN. |
 | Genocide | scr_murderlv 지역·필수 적·plot, pending kill/overworld settlement/보스 deadline/late abandonment 검토. 원본 murder fixture53행 **PASS**. | runtime encounter/RNG·전투·모든 abandon 조합 NOT_RUN. Toriel19 경계는 kill/Destroy/settlement 근거가 있어 임의로20으로 바꾸지 않았다. |
 | Soulless/RESET | local/Steam962/963, erase/restoration/history와 엔딩 분기 검토. pure history17검사 **PASS**. | 실제 Steam SDK/RESET/TRUE RESET NOT_RUN, 현재 계정 비파괴 smoke 범위에서도 제외. |
-| Forced/자동 종료 | EX rating10000/limbs12000·turn·Alarm/재자격/ack·mode·pending reward, ACT/FLEE/item·우정/물·optional/script 종료 anchor 검토. ratings24행·제한 scheduler 회귀 **PASS**. | 실제 Step/Alarm/Draw/Collision 순서·재시도 진행·입력/reload softlock NOT_RUN. 미증명 개입은 advisory/unsupported 유지. universal guarantee 없음. |
+| Forced/자동 종료 | EX rating10000/12000(turn19 경계)·turn·Alarm/재자격/ack·mode·pending reward, ACT/FLEE/item·우정/물·optional/script 종료 anchor 검토. ratings24행·제한 scheduler 회귀 **PASS**. | 실제 Step/Alarm/Draw/Collision 순서·재시도 진행·입력/reload softlock NOT_RUN. 미증명 개입은 advisory/unsupported 유지. universal guarantee 없음. |
 | UI/lifecycle | persistent controller·중복 instance·safe context·settings clamp·draw state/font 복원·key/pad edge/repeat/warning replay 전체 검토. UI20그룹/686 생성 비교/381 glyph **PASS**. | 실제 baseline/클리핑·DPI·overlay·물리 pad·cutscene/battle 입력 격리 NOT_RUN. 픽셀 UI/Galmuri14 보존. |
 
 원본 골든도 제한 conditional slice와 수동 numeric branch mapping을 사용한다.
@@ -166,3 +166,35 @@ PY
    BLOCKED이며 우회하지 않는다.
 5. 실제 UI/입력/전투/event order/softlock·엔딩별 경로와 native macOS/Linux exact-build
    profile/실행 검증은 남아 있다. 현재 호환 승인·병합·출시도 차단한다.
+
+## 2026-10-27 follow-up (KST)
+
+Latest scope/results are in non-runtime-status.md; original2026-10-26 totals above
+are historical. The inventory now covers the current tracked tree.
+
+| ID | Severity / evidence | Fix and regression | Status |
+|---|---|---|---|
+| A13 | HIGH: exact CLI03c7048 SaveDataFile writes OUTPUT+temp with Create; direct patch guards omitted this path. Authentic disposable-copy regression accepted/overwrote an existing scratch file before the fix. | patch.csx rejects existing/link/reparse scratch and dangling output; test-patch-paths.py exercises all3 cases without touching pristine data. | PASS offline; hostile TOCTOU remains A06 |
+| A14 | HIGH: validate-authentic.py overwrote summary.json through a symlink after its final original check. Synthetic reproduction changed the input hash. Public work paths and linked ancestors also passed. | Actual .research boundary, lexical ancestor guards, fresh per-run directories, exclusive logs/summary, final hash recheck. test_private_validation.py5 regressions. | PASS offline |
+| A15 | HIGH: NO-GO was documentation only; operator flags still reached Run platform/launch logic. | Unconditional Run refusal before helpers/OS/files/processes. Both cases tested despite risk flags. Preflight/recovery gates retained. | PASS offline; account safety still BLOCKED A04 |
+| A16 | MEDIUM: compiler/xdelta output accumulated without bound; version prefix accepted other versions. | Concurrent bounded/cancellable pipe drain; strict version/metadata response limit; boundary tests and noisy subprocess. | PASS offline |
+| A17 | LOW: G3M config accepted newline-suffixed hashes/paths and Windows reserved/aliased directory names. Failing C# regression before fix. | Whole-string anchors and portable component validation; valid macOS path retained. | PASS offline |
+
+A11 mutable Action tags are now pinned to independently fetched commit IDs and
+checked by local workflow tests. contents:write for private Draft input remains
+scoped/gated; CI billing is still BLOCKED. A12 private work/memory/path defects
+listed above were corrected; operator compiler/profile trust remains explicit.
+No gameplay, Steam, native Windows APIs, compatibility promotion, merge or release.
+
+A18 HIGH: sound Volume changes passed the old payload/count preservation checker
+(reproduced in memory against the authentic candidate). Explicit legacy sound,
+sprite/collision, font and texture-page metadata comparisons now reject7 independent
+corruptions after a positive control; pristine/candidate files remain unchanged.
+The bytecode16 policy now also compares original room/view/instance/tile and
+object/event/action links. It is not a generalized GMS2 schema or engine behavior
+proof. See test-resource-preservation.py.
+
+A19 HIGH: default-encoding Python reads failed on the Hangul catalog in a CP1252
+locale simulation. All tracked Path text IO now explicitly selects UTF-8 and
+LF writes. Locale and whole-tree AST policy regressions pass; generated GML/font
+bytes and the candidate hash remain unchanged. This is not native Windows evidence.

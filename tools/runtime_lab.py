@@ -66,7 +66,7 @@ def prepare(archive,work):
  work=assert_no_links(work)
  identity=inspect(archive)
  if work.exists():raise ValueError('Lab must be a new directory; never reuse a personal profile')
- work.mkdir(mode=0o700,parents=True);(work/MARKER).write_text('Disposable lab. Contains proprietary inputs; never publish.\n')
+ work.mkdir(mode=0o700,parents=True);(work/MARKER).write_text('Disposable lab. Contains proprietary inputs; never publish.\n', encoding='utf-8', newline='\n')
  try:
   original=work/'original';original.mkdir()
   with zipfile.ZipFile(archive) as z:
@@ -80,7 +80,7 @@ def prepare(archive,work):
    shutil.copytree(original/'Undertale',work/'runs'/kind)
    for p in (work/'runs'/kind).rglob('*'):
     if p.is_file():p.chmod(0o600)
-  (work/'evidence').mkdir();(work/'identity-private.json').write_text(json.dumps(identity,indent=2)+'\n')
+  (work/'evidence').mkdir();(work/'identity-private.json').write_text(json.dumps(identity,indent=2)+'\n', encoding='utf-8', newline='\n')
  except BaseException:
   shutil.rmtree(work);raise
  return identity
@@ -89,7 +89,7 @@ def verify(work,expected_inventory=INVENTORY_SHA):
  work=assert_no_links(work)
  assert_no_links(work/MARKER);assert_no_links(work/'identity-private.json')
  if not (work/MARKER).is_file():raise ValueError('Not a disposable runtime lab')
- identity=json.loads((work/'identity-private.json').read_text())
+ identity=json.loads((work/'identity-private.json').read_text(encoding='utf-8'))
  if inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
  for f in identity['files']:
   p=work/'original'/f['path']

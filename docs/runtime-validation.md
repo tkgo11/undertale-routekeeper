@@ -87,7 +87,9 @@ PASS; results require scenario assertions and screenshot/log review.
 
 ## Same-account side-by-side native smoke (experimental; NOT_RUN)
 
-No new Windows account, Sandbox, VM or administrator is required. Use unelevated
+Run is code-disabled; no account-risk acknowledgement can override it.
+No new Windows account, Sandbox, VM or administrator is required for read-only
+Preflight and synthetic checks. Use unelevated
 Windows PowerShell5.1 or PowerShell7. **Native behavior has not been executed.**
 Synthetic filesystem passes do not validate Windows APIs/SDK/permissions. The
 registered Steam installation is read only; Program Files write permission is not
@@ -118,7 +120,7 @@ The pinned official UndertaleModCli version is0.9.2.0; source/tool SDK is.NET10.
 $rkLab = "$env:USERPROFILE\private\rk-lab"
 $rkCandidate = "$env:USERPROFILE\private\candidate.win"
 python tools/runtime_lab.py prepare --zip "$env:USERPROFILE\private\runtime.zip" --work $rkLab
-dotnet run --project src/RouteKeeper.Tool -c Release -- build "$rkLab\original\Undertale\data.win" $rkCandidate "C:\tools\UndertaleModCli.exe" .
+dotnet run --project src/RouteKeeper.Tool -c Release -- build "$rkLab\original\Undertale\data.win" $rkCandidate "$env:USERPROFILE\tools\UndertaleModCli.exe" .
 python tools/runtime_lab.py verify --work $rkLab
 $rkPaths = @{Lab=$rkLab; PatchedData=$rkCandidate; SteamExe="C:\Program Files (x86)\Steam\steam.exe"; GameInstall="C:\Program Files (x86)\Steam\steamapps\common\Undertale"}
 & .\tools\runtime\run-current-account.ps1 @rkPaths -Action Preflight
@@ -126,7 +128,7 @@ $rkPaths = @{Lab=$rkLab; PatchedData=$rkCandidate; SteamExe="C:\Program Files (x
 
 Replace only the genuine client/library paths. Preflight is read only and can run
 before disconnecting so Windows can validate the Valve signature/chain. It does
-not establish ownership/SDK readiness; the official runner will test that. Do not
+not establish ownership/SDK readiness; game execution is currently disabled. Do not
 disable signature/OS policy checks if they fail. Linked ancestors and NTFS reparse points in the Python lab paths are refused;
 use physical paths rather than aliases. Windows reserved/aliased relative names
 (including superscript COM/LPT devices) are refused by both staging tools.
@@ -134,78 +136,25 @@ Case-sensitive mutable paths,
 hardlinks, reparse points, unsupported file streams/inspection and unavailable
 ordinary-user permissions fail closed. These Windows API gates are NOT_RUN.
 
-### Execute original, then patched
+### Game launch is disabled (NO-GO)
 
-Manually disconnect Wi-Fi/Ethernet/VPN/adapters. The tool never changes networking
-or elevates. Keep Cloud off and the network disconnected through recovery/reboots.
-Steam/game/helpers must be completely exited before each Run/Recover/Archive.
+`-Action Run` refuses unconditionally, before helper/platform/filesystem/process
+operations. Risk/Cloud acknowledgement flags cannot enable it. No original or
+patched game launch is currently authorized. See [steam-safety.md](steam-safety.md)
+for the original startup branch, Valve references and minimal additional evidence.
 
-```powershell
-& .\tools\runtime\run-current-account.ps1 @rkPaths -Action Run -Case original -AcceptSteamAccountRisk -CloudDisabledAndOffline -Minutes 10
-```
+The future operator protocol remains defined by smoke-scenarios.json: original
+startup/English/keyboard/normal battle first, then patched settings/EN/KR/menu/input/
+warning/nonlethal Forced observations with exact expected/actual fields. F10 opens
+settings in a free overworld; F8 acknowledges warnings, with native confirm/cancel
+and an unused controller button. These are proposed observations, not executed
+results or current launch instructions. No SAVE/RESET/TRUE RESET/endings/history
+scenarios are permitted under same-account smoke assumptions. Hardware input,
+actual font rendering and event timing remain NOT_RUN.
 
-The tool independently hashes a snapshot of `%LOCALAPPDATA%\UNDERTALE`, durably
-journals a same-volume quarantine, atomically publishes an allowlisted side copy,
-starts the legitimate Steam client offline, then directly starts that official EXE
-with its own working directory. No app-id shim, SDK injection or registered-install
-swap is used. A quick exit/redirect is BLOCKED; do not fall back to replacing the
-registered game. Steam/game PID, executable path, process start time, concurrent/redirected runners
-and adapter state are checked during observation and after game exit. These
-checks observe periodically; they do not prove all transient process/SDK activity.
-A process/window/zero exit code never becomes gameplay PASS automatically.
-
-Patched smoke controls: open settings with F10 only in safe overworld context;
-use the game's configured directions/confirm/cancel, or F5/F6/F7/F9 direction
-shortcuts. Select English/Korean and inspect every submenu, bounded HUD and warning;
-F8 acknowledges a warning (or the selected unused gamepad button). Set target True
-Pacifist, then compare Off/Passive/Active/Forced on an early EXP-producing FIGHT:
-acknowledge/retry only if safe, and leave ACT/MERCY usable. Do not actually kill an
-enemy to test a warning or consume an item you need. Check closing menus does not
-also confirm a vanilla action, HP/EXP/inventory remain coherent, and only mod
-settings persist on the optional second launch. These are expected observations,
-not evidence that the behavior has run. Physical gamepad needs a separate result.
-
-From a SECOND unelevated PowerShell, record observations (original: startup,
-English, keyboard and ordinary battle; patched: all eight protocol scenarios):
-
-```powershell
-& .\tools\runtime\run-current-account.ps1 -Action Observe -Scenario startup -Outcome PASS -Actual "Observed title and fresh room; transitions and clean exit checked."
-# Focus the GAME within three seconds for optional foreground client-area capture:
-& .\tools\runtime\run-current-account.ps1 -Action Observe -Scenario korean -Outcome NOT_RUN -Actual "Capture for manual typography review" -Capture
-```
-
-Fields are expected/actual/status/method=OPERATOR_REPORTED; these are operator
-assertions, not automated approval. The scenario definitions are smoke-scenarios.json.
-Reports, images, trial saves and independent snapshots stay privately under
-`%LOCALAPPDATA%\RoutekeeperSmoke\active`; the parent ACL is restricted to the
-owner/SYSTEM. Do not upload it to PR/CI. Capture/ACL/native APIs remain NOT_RUN.
-
-Close the game, then EXIT Steam fully when the final prompt appears. The script
-waits for Steam/webhelpers/game to stop before restoring local content. It checks
-the local tree, registered installation fingerprint and observed app/account Cloud
-cache fingerprints. A changed cache blocks comparison/archive/cleanup; no cache is
-rewound and no account-safe result is inferred. If any gate blocks, stop, retain
-all evidence and keep Cloud disabled; do not delete caches to force the next case.
-
-Record concrete PASS observations for original startup, English, keyboard and ordinary battle.
-A patched trial refuses to start without these archived original observations and
-identical runtime-tool tree, Steam client, registered install, local-save and observed
-cache baselines. Operator reports remain assertions, not automated gameplay approval.
-Only when local restoration AND observed baseline checks succeed:
-
-```powershell
-& .\tools\runtime\run-current-account.ps1 -Action Archive
-& .\tools\runtime\run-current-account.ps1 @rkPaths -Action Run -Case patched -AcceptSteamAccountRisk -CloudDisabledAndOffline -RestartForSettings -Minutes 10
-```
-
-RestartForSettings launches the same patched trial twice (keep Steam open between
-them), allowing actual mod settings persistence to be inspected. Personal saves
-remain quarantined until both finish. Original/patched episodes use fresh trial
-folders; this is NOT proven independent Steam history. Repeat ordinary controls,
-ACT/MERCY/FLEE, warning acknowledgement and Pacifist EXP refusal while retaining a
-nonlethal action. Do not use this protocol for ending or permanent-history testing.
-Hardware gamepad requires its own real observation; synthetic input parity is not
-hardware evidence. Native macOS/Linux still need separate exact builds/runners.
+Observe applies only to a valid preexisting private session. It cannot grant launch
+approval. Optional CopyFromScreen capture is best-effort: overlays/focus/DPI races
+can expose other pixels. Do not claim window-only privacy; keep evidence private.
 
 ### Interrupted sessions, recovery and cleanup
 

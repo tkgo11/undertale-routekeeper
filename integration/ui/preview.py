@@ -12,13 +12,13 @@ class Renderer:
         self.lang=language; self.line_height=18 if language else 16; self.image=Image.new('RGBA',(320,240),BLACK);self.draw=ImageDraw.Draw(self.image);self.runs=[]
         self.glyphs={}
         atlas=Image.open(ROOT/'assets/ui-font.png').convert('RGBA')
-        for line in (ROOT/'assets/ui-font.tsv').read_text().splitlines():
+        for line in (ROOT/'assets/ui-font.tsv').read_text(encoding='utf-8').splitlines():
             code,x,y,advance,offset=map(int,line.split())
             self.glyphs[code]=(advance,atlas.crop((x,y,x+24,y+18)),offset)
-        self.metrics=json.loads((ROOT/'ui/english-metrics.json').read_text())['metrics']
+        self.metrics=json.loads((ROOT/'ui/english-metrics.json').read_text(encoding='utf-8'))['metrics']
         if language==0 and native:
-            metadata=json.loads((native/'glyphs.json').read_text())
-            expected=json.loads((ROOT/'ui/english-metrics.json').read_text())['sourceHash']
+            metadata=json.loads((native/'glyphs.json').read_text(encoding='utf-8'))
+            expected=json.loads((ROOT/'ui/english-metrics.json').read_text(encoding='utf-8'))['sourceHash']
             if metadata.get('SourceHash')!=expected:raise ValueError('Unverified native preview font source')
             page=Image.open(native/'page.png').convert('RGBA')
             for g in metadata['Glyphs']:
@@ -70,7 +70,7 @@ class Renderer:
         self.paragraph(L['warning_x'],L['warning_y'],'* '+self.text('warn_'+str(code)),L['warning_width'],L['warning_lines'])
         self.line(L['warning_x'],L['warning_footer'],self.text('close_warning' if enforced else 'retry_warning'),264)
     def call_goals(self):
-        source=(ROOT/'gml/greeting_label.gml').read_text()
+        source=(ROOT/'gml/greeting_label.gml').read_text(encoding='utf-8')
         rows=re.findall(r'if \(argument0 == \d+\) \{ if \(argument1 == 1\) return ("[^"\n]*"); return ("[^"\n]*"); \}',source)
         return [json.loads(row[0 if self.lang else 1]) for row in rows]
     def menu(self,selection=0,options=None,neutral=False,neutral_settings=False,goal=0):
@@ -78,7 +78,7 @@ class Renderer:
         labels=['goal','ending_type' if neutral else 'epilogue','guidance','spoilers','language','journal','back']
         values=[self.text('pacifist'),self.text('either'),self.text('active'),self.text('minimal'),'한국어' if self.lang else 'English','','']
         if neutral:
-            source=(ROOT/'gml/neutral_label.gml').read_text()
+            source=(ROOT/'gml/neutral_label.gml').read_text(encoding='utf-8')
             literals=re.findall(r'return ("[^"\n]*");',source)
             values[0]=self.text('neutral');values[1]=json.loads(literals[0 if self.lang else 1])
         if neutral_settings:
@@ -125,6 +125,6 @@ def main():
             else:r.hud('Explore the next area.' if not lang else '다음 지역을 탐험하세요.')
             r.save(args.output/f'{kind}-{lang}.png')
     manifest={'pillowVersion':pillow_version,'kind':'OFFLINE_PREVIEW','gameplay':'NOT_RUN','nativeEnglishOutlines':bool(args.native_font),'layoutSha256':hashlib.sha256((ROOT/'ui/catalog.json').read_bytes()).hexdigest(),'fontAtlasSha256':hashlib.sha256((ROOT/'assets/ui-font.png').read_bytes()).hexdigest()}
-    (args.output/'evidence.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    (args.output/'evidence.json').write_text(json.dumps(manifest,indent=2)+'\n', encoding='utf-8', newline='\n')
     print('PASS offline previews generated; native English outlines='+str(bool(args.native_font))+'; gameplay NOT_RUN')
 if __name__=='__main__':main()

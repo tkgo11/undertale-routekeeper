@@ -4,7 +4,8 @@ Private development of native UNDERTALE route guidance. The implementation now
 includes five ending families, 18 specific Neutral targets plus Any, Pacifist
 Stay/Leave variants, live state bindings, objectives/progress, bilingual settings
 and scoped pre-decision protections. The pixel UI now uses native-style submenus,
-a compact HUD and a licensed Korean bitmap font. **Runtime-unverified; not release-ready.**
+a compact HUD and a licensed Korean bitmap font. **Runtime-unverified; not release-ready.** Same-account game launch is code-disabled
+(NO-GO), including the original runner; read-only Preflight remains available.
 
 Game data compiles with a persistent GML controller, original-style EN/KR UI and
 Off/Passive/Active/Forced modes. It uses the original runner without a runtime
@@ -55,6 +56,8 @@ gated on runtime-verified profiles. [UI/font evidence and offline previews](docs
 See [progress](docs/PROGRESS.md), [test evidence](docs/test-results.md),
 [route rules](docs/route-rules.md), [state/hook evidence](docs/state-bindings.md),
 [compatibility](docs/compatibility.md), [runtime needs](docs/runtime-validation.md),
+[Steam safety](docs/steam-safety.md), [technical reference](docs/technical-reference.md),
+[current non-runtime status](docs/non-runtime-status.md),
 and [private input cleanup](docs/private-data.md). Repository privacy and data
 exposure must be audited before any public release. No game binaries, substantial
 original resources or personal saves belong in commits or ordinary CI artifacts.

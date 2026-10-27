@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Authentic read-only exporter regressions. Uses disposable input copies; no game runner."""
-import argparse,hashlib,json,os,shutil,subprocess,tempfile
+import argparse,hashlib,os,shutil,subprocess,tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 EXPECTED='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'

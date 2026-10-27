@@ -66,3 +66,21 @@ Source contract: y114git/G3M commit87ece8a61e55b6208b374bc6ea15f795b565c61c,
 utils/mod/config.py, services/mod_operation_executor.py and
 workers/modpack_create_worker.py. The actual parser and synthetic real-xdelta
 roundtrip were exercised locally. No upstream implementation was copied.
+
+## Build/path and process boundaries
+
+Development outputs remain InspectedOnly unless the exact output AND input are
+already approved; a successful compiler or receipt cannot promote a profile.
+The pinned CLI writes a host scratch file named OUTPUT+"temp"; direct patch scripts
+reject existing scratch/output paths, including dangling links and ancestors.
+ModBuilder uses a fresh private workspace and no-overwrite publication.
+Ancestor validation is best-effort, not a race-free directory-handle capability;
+use user-owned paths without concurrent writers. No actual installed game was
+modified in the offline suite; native power-loss/ACL/filesystem tests are NOT_RUN.
+
+Compiler/xdelta pipes are drained concurrently with bounded retained text. Only
+the version probe retains up to8192 characters; other diagnostics are discarded
+from normal output. Compiler version accepts exactly0.9.2.0 with optional build
+metadata. Private structural validation streams logs to new per-run directories
+below repository .research; never publish those logs. Third-party executables and
+engineering profiles are trusted inputs, not sandboxed untrusted programs.

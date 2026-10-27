@@ -26,7 +26,8 @@ public static class ModBuilder
         string verification = Path.Combine(assetRoot, "integration", "verify.csx");
         if (!File.Exists(patch) || !File.Exists(verification)) throw new IOException("Packaged patch scripts are missing.");
         var version = await RunAsync(compiler, ["--version"], assetRoot);
-        if (!version.Trim().StartsWith("0.9.2.0", StringComparison.Ordinal)) throw new InvalidOperationException("Compiler must be UndertaleModCli 0.9.2.0.");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(version.Trim(), @"\A0\.9\.2\.0(?:\+[0-9A-Za-z.-]+)?\z"))
+            throw new InvalidOperationException("Compiler must be UndertaleModCli 0.9.2.0.");
         string parent = Path.GetDirectoryName(output)!;
         Directory.CreateDirectory(parent);
         string workspace = Path.Combine(parent, ".routekeeper-build-" + Guid.NewGuid().ToString("N"));
@@ -73,19 +74,22 @@ public static class ModBuilder
         using var process = new Process { StartInfo = start };
         try { process.Start(); }
         catch (Win32Exception) { throw new IOException("Cannot start the specified UndertaleModCli executable."); }
-        var stdout = process.StandardOutput.ReadToEndAsync();
-        var stderr = process.StandardError.ReadToEndAsync();
+        // Only the version probe needs text. Drain compile diagnostics without
+        // storing them, including a child that fills stderr before stdout.
         using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-        try { await process.WaitForExitAsync(timeout.Token); }
+        var stdout = ProcessOutput.DrainAsync(process.StandardOutput, arguments is ["--version"] ? 8192 : 0, timeout.Token);
+        var stderr = ProcessOutput.DrainAsync(process.StandardError, cancellation: timeout.Token);
+        try { await Task.WhenAll(process.WaitForExitAsync(timeout.Token), stdout, stderr); }
         catch (OperationCanceledException)
         {
             if (!process.HasExited) process.Kill(entireProcessTree: true);
             throw new IOException("UndertaleModCli exceeded the five-minute build limit.");
         }
-        await Task.WhenAll(stdout, stderr);
         // Compiler diagnostics can contain proprietary source. Do not echo them to
         // ordinary logs; the private structural harness supports detailed debugging.
         if (process.ExitCode != 0) throw new InvalidOperationException($"UndertaleModCli failed with exit {process.ExitCode}; use the private validation harness for diagnostics.");
-        return stdout.Result;
+        if (arguments is ["--version"] && stdout.Result.Truncated)
+            throw new InvalidOperationException("Compiler version response exceeded its limit.");
+        return stdout.Result.Prefix;
     }
 }

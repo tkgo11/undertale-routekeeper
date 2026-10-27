@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parent
 @lru_cache(maxsize=1)
 def glyph_source():
     raw = gzip.decompress((ROOT / 'assets/font-source/routekeeper-korean.bdf.gz').read_bytes())
-    meta = json.loads((ROOT / 'assets/font-source/provenance.json').read_text())
+    meta = json.loads((ROOT / 'assets/font-source/provenance.json').read_text(encoding='utf-8'))
     if hashlib.sha256(raw).hexdigest() != meta['sha256']:
         raise ValueError('Pinned bitmap source checksum mismatch')
     result = {}
@@ -26,7 +26,7 @@ def glyph_source():
     return result
 
 def required_chars():
-    text = ''.join(p.read_text() for p in sorted((ROOT/'gml').glob('*.gml')))
+    text = ''.join(p.read_text(encoding='utf-8') for p in sorted((ROOT/'gml').glob('*.gml')))
     codes=sorted(set(range(32,127)) | {ord(c) for c in text if ord(c)>126 and c.isprintable()})
     if any(code>65535 for code in codes):raise ValueError('GameMaker1 font metadata requires BMP code points')
     return codes

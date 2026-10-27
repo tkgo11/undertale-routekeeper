@@ -11,6 +11,12 @@ param(
  [ValidateSet('NOT_RUN','PASS','FAIL','BLOCKED')][string]$Outcome='NOT_RUN',[string]$Actual='',[switch]$Capture,[switch]$RestartForSettings,[ValidateRange(0,10)][int]$CaptureDelaySeconds=3
 )
 $ErrorActionPreference='Stop'
+# Source-backed NO-GO is an architectural gate, not an operator risk waiver.
+# Refuse before dot-sourcing helpers, platform checks, filesystem writes or Steam.
+# Only a reviewed source change backed by new safety evidence may reopen Run.
+if($Action -eq 'Run'){
+ throw 'NO-GO: same-account game startup can modify Steam permanent history. No launch approval exists. Risk/Cloud flags cannot override this gate. Use read-only Preflight or existing-session Recover; see docs/steam-safety.md.'
+}
 . (Join-Path $PSScriptRoot 'safety.ps1')
 . (Join-Path $PSScriptRoot 'current-account-state.ps1')
 . (Join-Path $PSScriptRoot 'current-account-windows.ps1')

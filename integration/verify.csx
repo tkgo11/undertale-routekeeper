@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using UndertaleModLib;
 using System.Security.Cryptography;
+using System.Text.Json;
+using UndertaleModLib.Models;
 using UndertaleModLib.Decompiler;
 EnsureDataLoaded();
 var folder = Path.GetDirectoryName(ScriptPath);
@@ -96,6 +98,61 @@ if(!string.IsNullOrEmpty(originalPath)) {
         Check(Data.Rooms.Count==pristine.Rooms.Count && Data.Sprites.Count==pristine.Sprites.Count && Data.Sounds.Count==pristine.Sounds.Count,"original room/sprite/sound resource counts");
         Check(Data.GameObjects.Count==pristine.GameObjects.Count+1 && Data.Fonts.Count==pristine.Fonts.Count+1
             && Data.EmbeddedTextures.Count==pristine.EmbeddedTextures.Count+1 && Data.TexturePageItems.Count==pristine.TexturePageItems.Count+1,"additive controller/font footprint");
+        // Payload equality alone misses muted sounds, shifted texture rectangles,
+        // font sampling changes and collision geometry. Compare the serialized
+        // legacy fields explicitly; never reflect over arbitrary model getters.
+        string ObjectMetadata(UndertaleGameObject o,UndertaleData owner) => JsonSerializer.Serialize(new {
+            Name=o.Name?.Content,Sprite=owner.Sprites.IndexOf(o.Sprite),o.Visible,o.Managed,o.Solid,o.Depth,o.Persistent,
+            Parent=owner.GameObjects.IndexOf(o.ParentId),Mask=owner.Sprites.IndexOf(o.TextureMaskId),
+            o.UsesPhysics,o.IsSensor,o.CollisionShape,o.Density,o.Restitution,o.Group,o.LinearDamping,o.AngularDamping,
+            o.Friction,o.Awake,o.Kinematic,Vertices=o.PhysicsVertices.Select(v=>new{v.X,v.Y}).ToArray(),
+            Events=o.Events.Select(group=>group.Select(e=>new{e.EventSubtype,Actions=e.Actions.Select(a=>new{
+                a.LibID,a.ID,a.Kind,a.UseRelative,a.IsQuestion,a.UseApplyTo,a.ExeType,Name=a.ActionName?.Content,
+                Code=owner.Code.IndexOf(a.CodeId),a.ArgumentCount,a.Who,a.Relative,a.IsNot,a.UnknownAlwaysZero}).ToArray()}).ToArray()).ToArray() });
+        for(int index=0;index<pristine.GameObjects.Count;index++) {
+            if(ObjectMetadata(pristine.GameObjects[index],pristine)!=ObjectMetadata(Data.GameObjects[index],Data))
+                throw new Exception("original object metadata or event linkage changed at index "+index);
+        }
+        Check(true,"all original object metadata/event linkage unchanged");
+        string RoomMetadata(UndertaleRoom r,UndertaleData owner) => JsonSerializer.Serialize(new {
+            Name=r.Name?.Content,Caption=r.Caption?.Content,r.Width,r.Height,r.Speed,r.Persistent,r.BackgroundColor,r.DrawBackgroundColor,
+            Code=owner.Code.IndexOf(r.CreationCodeId),r.Flags,r.World,r.Top,r.Left,r.Right,r.Bottom,r.GravityX,r.GravityY,r.MetersPerPixel,
+            Backgrounds=r.Backgrounds.Select(b=>new{b.Enabled,b.Foreground,Definition=owner.Backgrounds.IndexOf(b.BackgroundDefinition),
+                b.X,b.Y,b.SpeedX,b.SpeedY,b.Stretch,b.TiledHorizontally,b.TiledVertically}).ToArray(),
+            Views=r.Views.Select(v=>new{v.Enabled,v.ViewX,v.ViewY,v.ViewWidth,v.ViewHeight,v.PortX,v.PortY,v.PortWidth,v.PortHeight,
+                v.BorderX,v.BorderY,v.SpeedX,v.SpeedY,Object=owner.GameObjects.IndexOf(v.ObjectId)}).ToArray(),
+            Instances=r.GameObjects.Select(i=>new{i.X,i.Y,Object=owner.GameObjects.IndexOf(i.ObjectDefinition),i.InstanceID,
+                Code=owner.Code.IndexOf(i.CreationCode),i.ScaleX,i.ScaleY,i.Color,i.Rotation,PreCode=owner.Code.IndexOf(i.PreCreateCode)}).ToArray(),
+            Tiles=r.Tiles.Select(t=>new{t.X,t.Y,Background=owner.Backgrounds.IndexOf(t.BackgroundDefinition),
+                t.SourceX,t.SourceY,t.Width,t.Height,t.TileDepth,t.InstanceID,t.ScaleX,t.ScaleY,t.Color}).ToArray() });
+        for(int index=0;index<pristine.Rooms.Count;index++) {
+            if(RoomMetadata(pristine.Rooms[index],pristine)!=RoomMetadata(Data.Rooms[index],Data))
+                throw new Exception("original room metadata or instance linkage changed at index "+index);
+        }
+        Check(true,"all original legacy room/view/background/instance/tile metadata unchanged");
+        string SoundMetadata(UndertaleSound s) => JsonSerializer.Serialize(new {
+            Name=s.Name?.Content,Type=s.Type?.Content,File=s.File?.Content,s.Flags,s.Effects,s.Volume,s.Pitch,s.Preload,s.AudioID,s.GroupID });
+        for(int index=0;index<pristine.Sounds.Count;index++)
+            Check(SoundMetadata(pristine.Sounds[index])==SoundMetadata(Data.Sounds[index]),"original sound metadata "+index);
+        string TextureMetadata(UndertaleTexturePageItem t,UndertaleData owner) => JsonSerializer.Serialize(new {
+            t.SourceX,t.SourceY,t.SourceWidth,t.SourceHeight,t.TargetX,t.TargetY,t.TargetWidth,t.TargetHeight,
+            t.BoundingWidth,t.BoundingHeight,Page=owner.EmbeddedTextures.IndexOf(t.TexturePage) });
+        for(int index=0;index<pristine.TexturePageItems.Count;index++) {
+            if(TextureMetadata(pristine.TexturePageItems[index],pristine)!=TextureMetadata(Data.TexturePageItems[index],Data))
+                throw new Exception("original texture-page metadata changed at index "+index);
+        }
+        Check(true,"all original texture-page metadata unchanged");
+        string SpriteMetadata(UndertaleSprite s,UndertaleData owner) => JsonSerializer.Serialize(new {
+            Name=s.Name?.Content,s.Width,s.Height,s.MarginLeft,s.MarginRight,s.MarginTop,s.MarginBottom,
+            s.Transparent,s.Smooth,s.Preload,s.BBoxMode,s.SepMasks,s.OriginX,s.OriginY,s.IsSpecialType,
+            Textures=s.Textures.Select(t=>owner.TexturePageItems.IndexOf(t.Texture)).ToArray() });
+        for(int index=0;index<pristine.Sprites.Count;index++) {
+            var a=pristine.Sprites[index];var b=Data.Sprites[index];
+            if(SpriteMetadata(a,pristine)!=SpriteMetadata(b,Data)||a.CollisionMasks.Count!=b.CollisionMasks.Count ||
+                a.CollisionMasks.Where((mask,i)=>!mask.Data.SequenceEqual(b.CollisionMasks[i].Data)).Any())
+                throw new Exception("original sprite metadata or collision mask changed at index "+index);
+        }
+        Check(true,"all original sprite metadata and collision masks unchanged");
         for(int index=0;index<pristine.EmbeddedTextures.Count;index++) {
             var oldImage=pristine.EmbeddedTextures[index].TextureData.Image;
             var newImage=Data.EmbeddedTextures[index].TextureData.Image;
@@ -108,12 +165,18 @@ if(!string.IsNullOrEmpty(originalPath)) {
             audio.Data.SequenceEqual(Data.EmbeddedAudio[index].Data)).All(equal=>equal),"all original embedded audio unchanged");
         for(int index=0;index<pristine.Fonts.Count;index++) {
             var before=pristine.Fonts[index]; var after=Data.Fonts[index];
+            string FontMetadata(UndertaleFont f,UndertaleData owner) => JsonSerializer.Serialize(new {
+                Name=f.Name?.Content,Display=f.DisplayName?.Content,f.EmSizeIsFloat,f.EmSize,f.Bold,f.Italic,
+                f.RangeStart,f.RangeEnd,f.Charset,f.AntiAliasing,f.ScaleX,f.ScaleY,Texture=owner.TexturePageItems.IndexOf(f.Texture) });
+            if(FontMetadata(before,pristine)!=FontMetadata(after,Data))
+                throw new Exception("original font metadata changed at index "+index);
             if(before.Name.Content!=after.Name.Content || before.EmSize!=after.EmSize || before.Glyphs.Count!=after.Glyphs.Count)
                 throw new Exception("Original font changed at index "+index);
             for(int glyph=0;glyph<before.Glyphs.Count;glyph++) {
                 var a=before.Glyphs[glyph]; var b=after.Glyphs[glyph];
                 if(a.Character!=b.Character || a.SourceX!=b.SourceX || a.SourceY!=b.SourceY || a.SourceWidth!=b.SourceWidth
-                    || a.SourceHeight!=b.SourceHeight || a.Shift!=b.Shift || a.Offset!=b.Offset)
+                    || a.SourceHeight!=b.SourceHeight || a.Shift!=b.Shift || a.Offset!=b.Offset
+                    || !a.Kerning.Select(k=>(k.Character,k.ShiftModifier)).SequenceEqual(b.Kerning.Select(k=>(k.Character,k.ShiftModifier))))
                     throw new Exception("Original font glyph changed.");
             }
         }

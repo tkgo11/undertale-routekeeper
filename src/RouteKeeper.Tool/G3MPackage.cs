@@ -10,10 +10,12 @@ public static class G3MPackage
 {
     public static string Config(string originalHash, string patchHash, string relativeDataPath)
     {
-        if (!Regex.IsMatch(originalHash, "^[0-9a-f]{64}$") || !Regex.IsMatch(patchHash, "^[0-9a-f]{64}$"))
+        if (!Regex.IsMatch(originalHash, @"\A[0-9a-f]{64}\z") || !Regex.IsMatch(patchHash, @"\A[0-9a-f]{64}\z"))
             throw new ArgumentException("G3M hashes must be lowercase SHA-256.");
-        if (!Regex.IsMatch(relativeDataPath, @"^(?:[A-Za-z0-9_. -]+/)*(?:data\.win|game\.unx|game\.ios)$") ||
-            relativeDataPath.Split('/').Any(p => p is "." or "..")) throw new ArgumentException("G3M requires a verified relative game-data path.");
+        if (!Regex.IsMatch(relativeDataPath, @"\A(?:[A-Za-z0-9_. -]+/)*(?:data\.win|game\.unx|game\.ios)\z") ||
+            relativeDataPath.Split('/').Any(p => p is "." or ".." || p.EndsWith('.') || p.EndsWith(' ') ||
+                Regex.IsMatch(p, @"\A(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|\z)", RegexOptions.IgnoreCase)))
+            throw new ArgumentException("G3M requires a verified portable relative game-data path.");
         return JsonSerializer.Serialize(new
         {
             config_version = "2.0.0", id = "routekeeper", name = "ROUTEKEEPER", version = "0.2.0",
@@ -77,11 +79,11 @@ public static class G3MPackage
         using var process = new Process { StartInfo = start };
         try { process.Start(); }
         catch (System.ComponentModel.Win32Exception) { throw new IOException("Cannot start xdelta3."); }
-        var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
         using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-        try { await process.WaitForExitAsync(timeout.Token); }
+        var stdout = ProcessOutput.DrainAsync(process.StandardOutput, cancellation: timeout.Token);
+        var stderr = ProcessOutput.DrainAsync(process.StandardError, cancellation: timeout.Token);
+        try { await Task.WhenAll(process.WaitForExitAsync(timeout.Token), stdout, stderr); }
         catch (OperationCanceledException) { if (!process.HasExited) process.Kill(true); throw new IOException("Delta generation timed out."); }
-        await Task.WhenAll(stdout, stderr);
         if (process.ExitCode != 0) throw new InvalidOperationException("xdelta3 failed; no package was installed.");
     }
 }
