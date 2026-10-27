@@ -43,12 +43,13 @@ key or background inference. An AI's response must be deliberately recorded by a
 operator and may concern only visual scope. No machine-readable AI response is
 automatically trusted. Re-evaluate improved/recaptured evidence as a **new run**;
 never modify prior files to make a review apply. A repeated identical request ID
-is idempotent; inconsistent reuse or unacknowledged replacement refuses. Decisions
+is idempotent; inconsistent reuse (including a changed supersedes binding), nonexistent predecessors
+or unacknowledged replacement refuses. Decisions
 are new immutable numbered files with previous-record and summary hashes. Stale
 writer locks, torn records, changed evidence and unexpected files fail closed.
 
 Commands returning0 mean processing succeeded, **not** scenario PASS. Read the
-JSON `result`, `scenarios`, individual `result`/`automaticResult`, and scope.
+JSON `result`, `scenarios`, individual `result`/`automaticResult`/`automaticReason`, and scope.
 `verify --require-pass` returns1 if the aggregate is not PASS (2 for invalid input).
 HTML embeds images and escaped JSON; no server, JavaScript, CDN, remote font or
 network is needed. Create reports outside the sealed run tree, to a new filename.
@@ -99,7 +100,8 @@ The working `demo` writes a complete `input.json`; use it as an executable schem
 example. Required top-level fields are `schema:1`, `kind:synthetic|native-import`,
 `runId` (portable token), and1..256 assertions with unique portable IDs and one of
 the eight registered scenario IDs. All referenced files are relative to the
-manifest directory. All image/capture/config observations require SHA256 pins.
+manifest directory. All image/capture/config observations require lowercase64-character SHA256 string
+pins. Numeric coercion is rejected in reference provenance, capture and build identities.
 Optional `identities` accepts only sourceSha256/candidateSha256/runnerSha256/
 generatedSha256. The private manifest may also carry original input receipts and
 observation notes; they are not independent evidence and are not exported.
@@ -113,9 +115,11 @@ reference remains a credible source of false positives; pair it with independent
 structural constraints. A mismatch never silently substitutes another reference.
 Missing metadata yields INVALID_EVIDENCE, not fallback success.
 
+Deterministic assertions execute before visual processing, regardless of input order.
 Each scenario has mandatory named assertions. Omitting them creates explicit
 NOT_RUN rows; renaming a visual row to impersonate a required gameplay assertion,
-changing its kind or marking it optional refuses. Contracts intentionally keep
+changing its kind, borrowing another scenario's reserved ID, supplying a reserved
+safety ID, or marking it optional refuses. Contracts intentionally keep
 unobservable gameplay explicit; they are not evidence that a complete scenario can
 currently pass. Settings persistence can establish file values, not account isolation.
 A title frame cannot prove Steam history preservation. A Forced warning cannot
@@ -150,7 +154,8 @@ crop. No automatic cropping, occlusion removal or ignored-region inference occur
   match scenario/version and contain2..16 `samples` with file/sha256/classification
   positive|negative. Actual pinned fixture images are decoded and measured with
   the same reference/mask/tolerance; max positive must be<=threshold<min negative.
-  Both classifications are required. This proves fixture separation only; it does
+  Both classifications are required. Calibration JSON and all fixture PNGs are
+  preserved and sealed in the private case folder. This proves fixture separation only; it does
   not prove all real capture distributions. No perceptual/neural dependency added.
 - **temporal:**2..64 pinned frames with strictly increasing elapsedMs, timeoutMs
   1..60000 and stableFrames2..32. Final consecutive in-bound frames must equal the
@@ -191,7 +196,8 @@ upgrade either a proxy or a manually tagged reference to independently proven tr
 ## Windows integration without a new launcher
 
 Existing capture requires a previously authorized valid session; it cannot start
-Steam/game or bypass NO-GO. The helper pins the supplied official runner hash,
+Steam/game or bypass NO-GO. The helper pins both the expected executable and selected process path on disk
+against the supplied official runner hash,
 selects exactly one process at its expected path, checks window ownership/PID,
 foreground before/after, stable client geometry/origin, process start identity and
 DPI before/after. It writes an explicit PNG and adjacent `IMAGE.png.json` with
@@ -266,7 +272,7 @@ visual evidence, never authority to change route logic, protections or profiles.
 
 ## Actual verification and limitations
 
-45 synthetic tests exercise equality,1-pixel differences, cursor/glyph/layout/
+48 synthetic tests exercise equality,1-pixel differences, cursor/glyph/layout/
 background/locale/obstruction cases, exact/masked/calibrated/structural/temporal
 methods, proxy English, missing references/frames, scale/aspect/bars/blur, corrupt/
 truncated/transparent/oversized/fake-type images, metadata/focus/identity/timing,

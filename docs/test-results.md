@@ -2,6 +2,14 @@
 
 ## Deterministic screen verification — 2026-10-27 UTC
 
+Continuation hardening: SHA pins must be strings (numeric coercion refused),
+review requests bind their actual predecessor, reserved assertion IDs cannot be
+borrowed across scenarios, and deterministic observers execute before visual work.
+The capture helper hashes the selected process path as well as the expected path;
+this is on-disk identity, not memory/loader proof. Live GitHub refresh found Codex
+review usage exhausted (issue6440703383), with no additional inline code finding;
+old two threads remain outdated/unresolved. Qlty success/92 blocking is not approval.
+
 Continued from remote e48be94259c423661b0cc4e71312714d5ed53314. Implemented
 [screen-verification.md](screen-verification.md): offline deterministic/file/config
 checks, integer-scale normalization, masked exact/calibrated/structural/temporal
@@ -11,7 +19,7 @@ have versioned required/missing-evidence contracts. Windows capture now writes
 hash-bound geometry/focus/PID/DPI sidecars and reuses one interop implementation.
 Capture/launch is not exercised; same-account NO-GO and InspectedOnly unchanged.
 
-OFFLINE_PASS:45 new synthetic tests, Release build0 warnings/errors,279 standard
+OFFLINE_PASS:48 new synthetic tests, Release build0 warnings/errors,279 standard
 C# checks plus9317 audit assertions,22 UI groups, archive12, generated locale/
 GML freshness, source/workflow/lint checks and101 PowerShell synthetic checks with
 AST/interop compilation only. Real CLI demo:1-pixel review -> visual accepted ->

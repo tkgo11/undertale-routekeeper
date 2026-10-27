@@ -201,6 +201,7 @@ class ScreenTests(unittest.TestCase):
         self.assertEqual(data['result'],'FAIL')
         self.assertEqual(self.visual(data)['result'],'PASS')
         self.assertEqual(self.visual(data)['automaticResult'],'NEEDS_REVIEW')
+        self.assertIn('Unexpected layout',self.visual(data)['automaticReason'])
         self.assertEqual(data['nativeGameplay'],'NOT_RUN')
 
     def test_unknown_gameplay_not_visual_approval(self):
@@ -243,6 +244,7 @@ class ScreenTests(unittest.TestCase):
         packet=(self.root/'export/packet.json').read_text(encoding='utf-8')
         self.assertNotIn('secret',packet);self.assertNotIn('Users',packet)
         self.assertEqual(json.loads(packet)['cases'][0]['comparisonScope'][0]['method'],'exact')
+        self.assertIn('Unexpected layout',json.loads(packet)['cases'][0]['automaticReasons'][0])
         self.assertEqual(json.loads(packet)['cases'][0]['referenceSourceHashes'],[['a'*64]])
         self.assertEqual(json.loads(packet)['cases'][0]['files']['actual.png'],v.digest(v.read(self.root/'export'/case/'actual.png')))
         v.record_review(run,case,'uncertain','ai','offline-reader','ai1')
@@ -266,6 +268,10 @@ class ScreenTests(unittest.TestCase):
         self.assertEqual(set(v.contracts()),{r['id'] for r in smoke})
         self.a['mandatory']=False
         with self.assertRaises(v.EvidenceError):self.run_case()
+        self.a['mandatory']=True
+        for reserved in ('english-font','korean-safety'):
+            self.manifest['assertions']=[self.a,dict(id=reserved,scenario='korean',kind='unobservable')]
+            with self.assertRaises(v.EvidenceError):self.run_case(output=reserved)
 
     def test_configuration_only_and_self_claims(self):
         (self.root/'settings.json').write_bytes(b'{"locale":"ko"}')
@@ -305,6 +311,9 @@ class ScreenTests(unittest.TestCase):
         data=self.run_case()
         self.assertEqual(self.visual(data)['result'],'PASS')
         self.assertEqual(self.visual(data)['calibration']['positiveRatios'],[0])
+        folder=self.root/'run/review'/self.visual(data)['reviewId']
+        self.assertEqual(v.read(folder/'calibration-01.png'),v.read(self.root/'negative.png'))
+        self.assertEqual(v.load_json(folder/'calibration-private.json'),calibration)
         self.a['policy']['maxRatio']=1
         self.assertEqual(self.visual(self.run_case(output='badcal'))['result'],'INVALID_EVIDENCE')
 
@@ -324,7 +333,7 @@ class ScreenTests(unittest.TestCase):
 
     def test_capture_constraints(self):
         base=dict(schema=1,method='CopyFromScreen',imageSha256=self.sha('actual.png'),clientSize=[320,240],foregroundBefore=True,foregroundAfter=True,ownerPid=1,pid=1,runnerSha256='a'*64,expectedRunnerSha256='a'*64,startedUtc='2026-01-01T00:00:00Z',finishedUtc='2026-01-01T00:00:01Z',dpi=96)
-        for change in [dict(clientSize=[640,480]),dict(finishedUtc='2025-01-01T00:00:00Z'),dict(finishedUtc='2026-01-01T00:01:00Z'),dict(dpi=0),dict(expectedRunnerSha256='b'*64),dict(pid=True)]:
+        for change in [dict(clientSize=[640,480]),dict(finishedUtc='2025-01-01T00:00:00Z'),dict(finishedUtc='2026-01-01T00:01:00Z'),dict(dpi=0),dict(expectedRunnerSha256='b'*64),dict(pid=True),dict(clientSize=[320.0,240]),dict(imageSha256=int('1'*64)),dict(runnerSha256=int('1'*64),expectedRunnerSha256=int('1'*64))]:
             with self.subTest(change=change),self.assertRaises(v.EvidenceError):v.capture_status(dict(base,**change),self.image)
         (self.root/'actual.png.json').write_bytes(v.canonical(base))
         v.generate_reference(self.root/'ref','ko','menu',0)
@@ -344,6 +353,7 @@ class ScreenTests(unittest.TestCase):
         source=(v.ROOT/'tools/runtime/capture-client.ps1').read_text(encoding='utf-8')
         for value in ('GetWindowThreadProcessId','GetDpiForWindow','foregroundBefore','foregroundAfter','ImageFormat]::Png','Assert-RkHash $Executable $ExpectedRunnerSha256','overlayIsolation='):
             self.assertIn(value,source)
+        self.assertEqual(source.count('Assert-RkHash $process.Path $ExpectedRunnerSha256'),2)
         source=(v.ROOT/'tools/runtime/run-current-account.ps1').read_text(encoding='utf-8')
         self.assertIn('NO-GO',source)
 
@@ -416,7 +426,8 @@ class ScreenTests(unittest.TestCase):
         import io
         from PIL.PngImagePlugin import PngInfo
         stream=io.BytesIO();metadata=PngInfo();metadata.add_text('private','private-account-label')
-        self.image.save(stream,format='PNG',pnginfo=metadata,icc_profile=b'private-account-profile')
+        exif=Image.Exif();exif[0x010e]='private-account-exif'
+        self.image.save(stream,format='PNG',pnginfo=metadata,icc_profile=b'private-account-profile',exif=exif)
         (self.root/'actual.png').write_bytes(stream.getvalue());self.a['actualSha256']=self.sha('actual.png')
         data=self.run_case();case=self.visual(data)['reviewId']
         v.export_review(self.root/'run',self.root/'export',True)
@@ -425,8 +436,10 @@ class ScreenTests(unittest.TestCase):
             with Image.open(io.BytesIO(raw)) as image:
                 self.assertNotIn('icc_profile',image.info)
                 self.assertNotIn('private',image.info)
+                self.assertNotIn('exif',image.info)
         with Image.open(self.root/'run/review'/case/'actual.png') as original:
             self.assertIn('icc_profile',original.info)
+            self.assertIn('exif',original.info)
 
 
 
@@ -437,6 +450,45 @@ class ScreenTests(unittest.TestCase):
         self.assertTrue((self.root/'run/summary.json').exists())
         self.assertFalse(list(self.root.glob('.screen-*')))
         self.assertEqual(v.summarize(self.root/'run')['nativeGameplay'],'NOT_RUN')
+
+
+
+    def test_hash_metadata_requires_strings_not_numeric_coercion(self):
+        number=int('1'*64)
+        self.assertFalse(v.valid_sha(number))
+        self.assertFalse(v.valid_sha(None))
+        self.assertFalse(v.valid_sha(True))
+        self.assertTrue(v.valid_sha('1'*64))
+        self.a['reference']['provenance']['sourceHashes']={'numeric':number,'string':'a'*64}
+        self.assertEqual(self.visual(self.run_case())['result'],'INVALID_EVIDENCE')
+        self.a['reference']['provenance']['sourceHashes']={'valid':'a'*64}
+        self.manifest['identities']={'candidateSha256':number}
+        with self.assertRaises(v.EvidenceError):self.run_case(output='bad-identity')
+        self.assertFalse((self.root/'bad-identity').exists())
+
+    def test_review_cannot_supersede_nonexistent_or_change_request_binding(self):
+        data=self.run_case();case=self.visual(data)['reviewId'];run=self.root/'run'
+        with self.assertRaises(v.EvidenceError):v.record_review(run,case,'accepted','human','r','id1','nonexistent')
+        self.assertEqual(list((run/'decisions').iterdir()),[])
+        v.record_review(run,case,'accepted','human','r','id1')
+        with self.assertRaises(v.EvidenceError):v.record_review(run,case,'accepted','human','r','id1','nonexistent')
+        v.record_review(run,case,'uncertain','human','r','id2','id1')
+        repeated=v.record_review(run,case,'uncertain','human','r','id2','id1')
+        self.assertEqual(repeated['decisions'],2)
+
+
+
+    def test_deterministic_assertions_execute_before_visual_analysis(self):
+        self.manifest['assertions'].append(dict(id='original',scenario='korean',kind='file-sha256',file='actual.png',expected='0'*64))
+        observed=[];original_deterministic=v.deterministic;original_visual=v.visual
+        def deterministic(*args,**kwargs):
+            observed.append('deterministic');return original_deterministic(*args,**kwargs)
+        def visual(*args,**kwargs):
+            observed.append('visual');return original_visual(*args,**kwargs)
+        with patch.object(v,'deterministic',side_effect=deterministic),patch.object(v,'visual',side_effect=visual):
+            data=self.run_case()
+        self.assertEqual(observed,['deterministic','visual'])
+        self.assertEqual(data['result'],'FAIL')
 
 
 if __name__=='__main__':unittest.main()

@@ -10,6 +10,7 @@ function Save-RkClientCapture([string]$Executable,[string]$Destination,
  $gameCandidates=@(Get-Process UNDERTALE -ErrorAction Stop | Where-Object {$_.Path -and $_.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)})
  if($gameCandidates.Count -ne 1){throw 'One exact side-copy runner must be active.'}
  $process=$gameCandidates[0]
+ Assert-RkHash $process.Path $ExpectedRunnerSha256
  $processStarted=$process.StartTime.ToUniversalTime().ToString('o')
  Add-Type -AssemblyName System.Drawing
  if (!('RoutekeeperCapture' -as [type])) {
@@ -57,6 +58,7 @@ public static class RoutekeeperCapture {
   if($process.HasExited -or $process.MainWindowHandle -ne $window -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
   if(![RoutekeeperCapture]::GetClientRect($window,[ref]$after) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$afterPoint) -or $after.Right -ne $rect.Right -or $after.Bottom -ne $rect.Bottom -or $point.X -ne $afterPoint.X -or $point.Y -ne $afterPoint.Y -or [RoutekeeperCapture]::GetDpiForWindow($window) -ne $dpi){throw 'Capture client geometry/DPI changed.'}
   Assert-RkHash $Executable $ExpectedRunnerSha256
+  Assert-RkHash $process.Path $ExpectedRunnerSha256
   $imageStream=New-Object IO.FileStream($temp,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
   try{$bitmap.Save($imageStream,[Drawing.Imaging.ImageFormat]::Png);$imageStream.Flush($true)}finally{$imageStream.Dispose()}
   $imageHash=(Get-FileHash -LiteralPath $temp -Algorithm SHA256).Hash.ToLowerInvariant()

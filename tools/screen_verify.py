@@ -46,6 +46,10 @@ def token(value):
     return value
 
 
+def valid_sha(value):
+    return isinstance(value, str) and HEX.fullmatch(value) is not None
+
+
 def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
@@ -198,7 +202,7 @@ def png(path, expected_hash):
 
 
 def decode_png(raw, expected_hash):
-    if not isinstance(expected_hash, str) or not HEX.fullmatch(expected_hash):
+    if not valid_sha(expected_hash):
         raise EvidenceError('Missing evidence SHA-256')
     if digest(raw) != expected_hash:
         raise EvidenceError('Evidence hash mismatch')
@@ -338,7 +342,7 @@ def deterministic(assertion, root):
     try:
         if kind == 'file-sha256':
             expected = assertion['expected']
-            if not isinstance(expected, str) or not HEX.fullmatch(expected):
+            if not valid_sha(expected):
                 raise EvidenceError('Invalid expected hash')
             actual = hash_file(child(root, assertion['file']))
             row = result(identifier, 'file-integrity', 'PASS' if actual == expected else 'FAIL',
@@ -375,11 +379,11 @@ def capture_status(metadata, image):
                 'ownerPid', 'pid', 'runnerSha256', 'expectedRunnerSha256', 'startedUtc', 'finishedUtc', 'dpi')
     if not isinstance(metadata, dict) or any(k not in metadata for k in required):
         raise EvidenceError('Missing capture metadata')
-    if type(metadata['schema']) is not int or metadata['schema'] != 1 or metadata['clientSize'] != list(image.size):
+    if type(metadata['schema']) is not int or metadata['schema'] != 1 or not isinstance(metadata['clientSize'], list) or any(type(x) is not int for x in metadata['clientSize']) or metadata['clientSize'] != list(image.size):
         raise EvidenceError('Mismatched capture dimensions/schema')
     if metadata['foregroundBefore'] is not True or metadata['foregroundAfter'] is not True or type(metadata['pid']) is not int or metadata['pid'] <= 0 or type(metadata['ownerPid']) is not int or metadata['ownerPid'] != metadata['pid']:
         raise EvidenceError('Focus/window ownership not established')
-    if not HEX.fullmatch(str(metadata['runnerSha256'])) or metadata['runnerSha256'] != metadata['expectedRunnerSha256']:
+    if not valid_sha(metadata['imageSha256']) or not valid_sha(metadata['runnerSha256']) or metadata['runnerSha256'] != metadata['expectedRunnerSha256']:
         raise EvidenceError('Unverified executable identity')
     try:
         start = datetime.fromisoformat(metadata['startedUtc'].replace('Z', '+00:00'))
@@ -421,7 +425,7 @@ def reference_provenance(meta):
         raise EvidenceError('Unsupported reference authority')
     for field in ('locale', 'font', 'scene'):
         token(meta[field])
-    if not isinstance(meta['sourceHashes'], dict) or not meta['sourceHashes'] or any(not HEX.fullmatch(str(v)) for v in meta['sourceHashes'].values()):
+    if not isinstance(meta['sourceHashes'], dict) or not meta['sourceHashes'] or any(not valid_sha(v) for v in meta['sourceHashes'].values()):
         raise EvidenceError('Invalid reference source hashes')
     return meta
 
@@ -456,6 +460,7 @@ def visual(assertion, root, kind, folder):
                 token(policy['version'])
                 calibration_raw = read(child(root, policy['calibration']), MAX_JSON)
                 calibration = decode_json(calibration_raw)
+                put(folder/'calibration-private.json', calibration_raw)
                 if digest(calibration_raw) != policy['calibrationSha256'] or calibration.get('scenario') != assertion['scenario'] or calibration.get('version') != policy['version']:
                     raise EvidenceError('Calibration identity mismatch')
                 # Require measured positive/negative score separation, not probability.
@@ -464,8 +469,9 @@ def visual(assertion, root, kind, folder):
                 if not isinstance(samples, list) or not 2 <= len(samples) <= 16:
                     raise EvidenceError('Calibration requires bounded positive/negative fixtures')
                 tolerance = policy.get('channelTolerance', 0)
-                for sample in samples:
-                    sample_image, _ = png(child(root, sample['file']), sample['sha256'])
+                for sample_index, sample in enumerate(samples):
+                    sample_image, sample_raw = png(child(root, sample['file']), sample['sha256'])
+                    put(folder/f'calibration-{sample_index:02}.png', sample_raw)
                     sample_image, _ = normalize(sample_image, sample.get('geometry'))
                     score, _ = compare(sample_image, expected, assertion.get('regions'), assertion.get('ignore'), tolerance)
                     if sample.get('classification') not in ('positive', 'negative'):
@@ -579,9 +585,13 @@ def verify(manifest_path, output):
     if len(ids) != len(set(ids)):
         raise EvidenceError('Duplicate assertion ID')
     scenario_map = contracts()
+    reserved = {identifier: scenario for scenario, contract in scenario_map.items() for identifier in contract['requiredAssertions']}
+    safety_ids = {scenario+'-safety' for scenario in scenario_map}
     for a in assertions:
         if a.get('scenario') not in scenario_map:
             raise EvidenceError('Unknown smoke scenario')
+        if a['id'] in safety_ids or (a['id'] in reserved and reserved[a['id']] != a['scenario']):
+            raise EvidenceError('Reserved scenario assertion identity/safety scope mismatch')
     output = no_links(output)
     if output.exists():
         raise EvidenceError('Run output must be new')
@@ -594,7 +604,9 @@ def verify(manifest_path, output):
         (stage/'decisions').mkdir(mode=0o700)
         rows = []
         seen = {}
-        for a in assertions:
+        # Deterministic observations run first, regardless of caller ordering.
+        ordered = [a for a in assertions if a.get('kind') != 'visual'] + [a for a in assertions if a.get('kind') == 'visual']
+        for a in ordered:
             if a.get('kind') == 'visual':
                 # Equivalent contract+actual evidence groups deterministically;
                 # all assertion identities remain recorded, no frames discarded.
@@ -632,7 +644,7 @@ def verify(manifest_path, output):
                 inventories[file.relative_to(stage).as_posix()] = digest(read(file))
         # Original manifest stays private; exports never copy its free-form fields.
         identities = manifest.get('identities', {})
-        if not isinstance(identities, dict) or set(identities) - {'sourceSha256', 'candidateSha256', 'runnerSha256', 'generatedSha256'} or any(not HEX.fullmatch(str(v)) for v in identities.values()):
+        if not isinstance(identities, dict) or set(identities) - {'sourceSha256', 'candidateSha256', 'runnerSha256', 'generatedSha256'} or any(not valid_sha(v) for v in identities.values()):
             raise EvidenceError('Invalid build identity hashes')
         record = dict(schema=1, runId=run_id, kind=manifest['kind'], manifestSha256=digest(manifest_raw), identities=identities,
                       contractsSha256=digest(read(ROOT/'tools/runtime/screen-contracts.json')),
@@ -702,7 +714,7 @@ def summarize(run):
     history = decisions(run, data)
     rows = []
     for source in data['assertions']:
-        row = dict(source, automaticResult=source['result'])
+        row = dict(source, automaticResult=source['result'], automaticReason=source['reason'])
         matching = [r for r in history if r['reviewId'] == row.get('reviewId')]
         if matching and row['scope'] == 'visual' and row['result'] in ('PASS', 'NEEDS_REVIEW'):
             latest = matching[-1]
@@ -718,6 +730,8 @@ def summarize(run):
 
 def record_review(run, review_id, decision, reviewer_type, reviewer, request_id, supersedes=None):
     token(review_id); token(reviewer); token(request_id)
+    if supersedes is not None:
+        token(supersedes)
     if decision not in DECISIONS or reviewer_type not in ('human', 'ai'):
         raise EvidenceError('Unsupported review conclusion/provenance')
     run = no_links(run)
@@ -729,14 +743,14 @@ def record_review(run, review_id, decision, reviewer_type, reviewer, request_id,
         history = decisions(run, data)
         for old in history:
             if old['requestId'] == request_id:
-                if (old['reviewId'], old['decision'], old['reviewerType'], old['reviewer']) != (review_id, decision, reviewer_type, reviewer):
+                if (old['reviewId'], old['decision'], old['reviewerType'], old['reviewer'], old['supersedes']) != (review_id, decision, reviewer_type, reviewer, supersedes):
                     raise EvidenceError('Request ID conflict')
                 return summarize(run)
         targets = [r for r in data['assertions'] if r.get('reviewId') == review_id]
         if not targets or any(r['scope'] != 'visual' or r['result'] in ('INVALID_EVIDENCE', 'BLOCKED', 'FAIL', 'NOT_RUN') for r in targets):
             raise EvidenceError('Review cannot override invalid, failed or nonvisual evidence; recapture into a new run')
         prior = [r for r in history if r['reviewId'] == review_id]
-        if prior and supersedes != prior[-1]['requestId']:
+        if (prior and supersedes != prior[-1]['requestId']) or (not prior and supersedes is not None):
             raise EvidenceError('Existing decision needs explicit --supersedes request ID')
         previous = digest(read(run/'decisions'/f'{len(history):06}.json')) if history else None
         row = dict(sequence=len(history)+1, previous=previous, reviewId=review_id, decision=decision,
@@ -805,6 +819,7 @@ def export_review(run, output, confirm_private_images=False):
                                                     frameTiming=r.get('timing', [])) for r in rows],
                               referenceSourceHashes=[sorted(r.get('reference', {}).get('sourceHashes', {}).values()) for r in rows],
                               automaticResults=[r['automaticResult'] for r in rows],
+                              automaticReasons=[r['automaticReason'] for r in rows],
                               question='Judge visible clipping, missing glyphs, layout and cursor only. Do not infer internal game state, event timing or Steam history.',
                               limitations=['Pixels are not automatically redacted. Inspect before external sharing.', 'Proxy references are not authoritative native English glyph evidence.']))
         put_json(stage/'packet.json', dict(schema=1, cases=cases, identities=original.get('identities', {}), nativeGameplay='NOT_RUN', uploadPerformed=False))
