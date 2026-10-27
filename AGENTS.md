@@ -182,3 +182,14 @@ Optional local Python lint: install pyflakes3.4.0 alongside Pillow11.3.0, then
   licenses, placeholders and strict enabled-locale completeness. Locale changes
   require fresh authentic offline compilation and candidate evidence; never runtime
   approval. Preserve legacy language0=en/1=ko and tag-based future INI settings.
+
+## Offline screen evidence and scoped review
+
+- `python tools/test_screen_verify.py` (Pillow11.3.0; no game/Steam/API calls).
+- `python tools/screen_verify.py demo --output private-evidence/NEW_DEMO` exercises
+  real private evidence, reports and review; see docs/screen-verification.md.
+- Native CopyFromScreen remains overlay-ambiguous; the sidecar is observation,
+  never gameplay proof. Proxy English cannot certify original glyph pixels.
+- Visual acceptance never upgrades internal-state assertions, NO-GO or profiles.
+- Preserve immutable run/review files; improved evidence belongs in a new run.
+  Exports require explicit private-pixel confirmation and never perform uploads.

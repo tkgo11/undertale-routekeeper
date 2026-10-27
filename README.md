@@ -13,6 +13,10 @@ loader. The current authentic profile is diagnostic-only, so installation is
 refused until legitimate gameplay scenarios establish support. Forced is scoped;
 it does not guarantee every ending or rewrite EXP, survival or permanent history.
 
+Offline screen contracts and deferred human/AI visual review are available without
+launching the game: [screen verification guide](docs/screen-verification.md).
+Visual approval never proves gameplay correctness or removes the startup NO-GO.
+
 ## Build and verify
 
 Install the SDK pinned in global.json. Executable test runners use `dotnet run`:

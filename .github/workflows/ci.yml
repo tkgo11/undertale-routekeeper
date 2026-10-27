@@ -48,6 +48,7 @@ jobs:
       - run: python integration/ui/generate.py --verify
       - run: python integration/generate_font.py --verify
       - run: python integration/ui/test_ui.py
+      - run: python tools/test_screen_verify.py
       - run: python tools/test_runtime_lab.py
       - run: python tools/test_workflow_safety.py
       - run: python tools/test_private_validation.py

@@ -6,3 +6,6 @@ artifacts/
 *.user
 *.tmp
 **/__pycache__/
+
+# Private visual evidence/exports must never become PR artifacts.
+private-evidence/

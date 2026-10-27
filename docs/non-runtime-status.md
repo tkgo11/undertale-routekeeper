@@ -1,5 +1,11 @@
 # Non-runtime delivery status — 2026-10-27 KST
 
+New offline screen/review tooling: [screen-verification.md](screen-verification.md).
+Existing-frame verification, synthetic fixtures and private deferred review are
+available without game execution. Native captures, Win32 APIs and gameplay remain
+NOT_RUN; same-account NO-GO and InspectedOnly are unchanged. Historical counts below
+are not results for this new infrastructure.
+
 Current continuation and superseding results:
 [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md).
 The matrix/counts in this earlier baseline below predate the localization refactor

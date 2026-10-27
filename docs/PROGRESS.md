@@ -1,5 +1,25 @@
 # Progress and resumption
 
+## Deterministic screen verification — 2026-10-27 UTC
+
+Continued from remote e48be94259c423661b0cc4e71312714d5ed53314. Implemented
+[screen-verification.md](screen-verification.md): offline deterministic/file/config
+checks, integer-scale normalization, masked exact/calibrated/structural/temporal
+contracts, immutable evidence, deduplicated scoped review, offline HTML, explicit
+sanitized local AI packets and existing-frame import. All eight smoke scenarios
+have versioned required/missing-evidence contracts. Windows capture now writes
+hash-bound geometry/focus/PID/DPI sidecars and reuses one interop implementation.
+Capture/launch is not exercised; same-account NO-GO and InspectedOnly unchanged.
+
+OFFLINE_PASS:44 new synthetic tests, Release build0 warnings/errors,279 standard
+C# checks plus9317 audit assertions,22 UI groups, archive12, generated locale/
+GML freshness, source/workflow/lint checks and101 PowerShell synthetic checks with
+AST/interop compilation only. Real CLI demo:1-pixel review -> visual accepted ->
+overall NEEDS_REVIEW due to unobservable native-font/gameplay evidence. Full command
+and trust-boundary documentation is in the linked guide. No new gameplay, font,
+locale text, hook, candidate binary or profile change; candidate4457dbf4 unchanged.
+
+
 ## Offline audit continuation — 2026-10-27 UTC
 
 Started from latest remote06acf3d; see [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md)

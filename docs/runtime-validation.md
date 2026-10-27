@@ -1,5 +1,11 @@
 # Authorized Windows runtime validation
 
+New offline screen/review tooling: [screen-verification.md](screen-verification.md).
+Existing-frame verification, synthetic fixtures and private deferred review are
+available without game execution. Native captures, Win32 APIs and gameplay remain
+NOT_RUN; same-account NO-GO and InspectedOnly are unchanged. Historical counts below
+are not results for this new infrastructure.
+
 > PRE-RUNTIME FREEZE, 2026-10-26: same-account GAME smoke is **NO-GO**. Read
 > [code-audit.md](code-audit.md), especially A04/A05. Original SCR_GAMESTART can
 > read/write permanent history and call Steam deletion during startup itself.

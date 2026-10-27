@@ -1,5 +1,11 @@
 # 실행 전 전체 저장소 코드 감사 — 2026-10-26
 
+New offline screen/review tooling: [screen-verification.md](screen-verification.md).
+Existing-frame verification, synthetic fixtures and private deferred review are
+available without game execution. Native captures, Win32 APIs and gameplay remain
+NOT_RUN; same-account NO-GO and InspectedOnly are unchanged. Historical counts below
+are not results for this new infrastructure.
+
 Latest continuation: [offline-audit-2026-10-27.md](offline-audit-2026-10-27.md)
 records A21–A30 reproductions/fixes and the complete current phase matrix. Current
 tracked paths/hashes are in audit-coverage.json. The older dated counts and candidate

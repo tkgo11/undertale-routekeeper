@@ -10,7 +10,7 @@ foreach ($file in Get-ChildItem -LiteralPath $PSScriptRoot -Filter '*.ps1') {
     Check (!$errors) ('AST '+$file.Name)
 }
 # Compile the capture interop declaration without calling any Windows API.
-$capture=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'capture-game.ps1') -Raw
+$capture=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'capture-client.ps1') -Raw
 $declaration=[regex]::Match($capture,"(?s)Add-Type @'\r?\n(.*?)\r?\n'@").Groups[1].Value
 Check ($declaration.Length -gt 0) 'capture interop declaration found'
 Add-Type -TypeDefinition $declaration
