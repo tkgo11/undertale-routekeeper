@@ -2934,10 +2934,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 11906,
-      "lines": 207,
-      "sha256": "fec5f65827ae7b3217ff42f9c742c906aa48135a3eed0c3cf0c957cb173f19ed",
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "bytes": 12675,
+      "lines": 220,
+      "sha256": "49c72eb8df41a426030e9a265a89cd0efeffd04377381e9b4fe019fb0b2c1e55",
+      "reviewed_against_head": "c978ccd58a939369592ca30b09d02a3655457c43"
     },
     {
       "path": "tools/test_workflow_safety.py",
@@ -2978,10 +2978,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 33351,
+      "bytes": 33426,
       "lines": 511,
-      "sha256": "236b75d1125c8dd4a4b711402b7370bfd10571ff0e07aae300c3eb4d6ec97358",
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "sha256": "cabd740fba87afe63c0f99460c16af8b595f8575a0c71f5d27c0115d5d2d76eb",
+      "reviewed_against_head": "c978ccd58a939369592ca30b09d02a3655457c43"
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",
