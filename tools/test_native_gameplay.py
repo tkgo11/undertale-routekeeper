@@ -43,6 +43,24 @@ class NativeContracts(unittest.TestCase):
         self.assertEqual(result['result'],'NEEDS_REVIEW');self.assertEqual(result['metrics']['changed'],1)
         self.assertEqual(n.match(self.path,'original','after',frame)['result'],'MATCH')
 
+    def test_native_client_subgrid_pixels_are_never_silently_downsampled(self):
+        for name in ('before','after'):
+            image=Image.new('RGB',(640,480),'black')
+            image.putpixel((31 if name=='after' else 33,41),(255,255,255))
+            file=self.root/self.plan['scenes'][name]['file'];file.write_bytes(s.png_bytes(image))
+            self.plan['scenes'][name].update(space='client-pixels',sha256=s.hash_file(file))
+            if name=='after':actual=image
+        self.save();frame=self.frame('native-size.png',actual)
+        with self.assertRaises(s.EvidenceError):s.normalize(actual)
+        result=n.match(self.path,'original','after',frame)
+        self.assertEqual(result['result'],'MATCH');self.assertFalse(result['geometry']['resampled'])
+        s.put_json(self.root/'native-plan.json',self.plan)
+        view=n.review_frame(self.root,self.plan,'original',frame.name,'after','english','client-review')
+        self.assertEqual(next(a['result'] for a in view['assertions'] if a['scope']=='visual'),'NEEDS_REVIEW')
+        comparison=next((self.root/'client-review').rglob('comparison.png'))
+        self.assertEqual(s.png(comparison,s.hash_file(comparison))[0].size,(1920,480))
+        with self.assertRaises(s.EvidenceError):s.normalize(actual,dict(space='client-pixels',content=[0,0,640,480]))
+
     def test_wrong_case_build_proxy_action_and_limits(self):
         for change in [lambda p:p.update(case='patched'),lambda p:p.update(runnerSha256='a'*64),
                        lambda p:p['scenes']['before'].update(source='synthetic'),

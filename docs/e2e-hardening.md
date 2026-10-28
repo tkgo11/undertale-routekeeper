@@ -79,7 +79,11 @@ Use UTF-8 JSON with schema=1, id/version tokens, case=original or patched,
 runnerSha256, exact dataSha256, scope=non-destructive-ui, retries=0, scenes and steps.
 Each scene has file=references/NAME.png, sha256, source=privately-authentic,
 reviewer, scope=scene-navigation-only, and optionally locale/font identity. Images
-are logical320x240 PNG, <=16MiB in total. Source/reviewer fields are accountable
+are logical320x240 PNG by default, <=16MiB in total. A scene may explicitly set
+space=client-pixels to compare320x240 integer-multiple native client images without
+resampling, including genuine sub-grid pixels. Both actual/reference sizes must
+agree; client-space cropping is refused. Default logical normalization is unchanged.
+Reference images are decoded one at a time; only pixel fingerprints are retained. Source/reviewer fields are accountable
 local claims, not proof the pixels came from native Windows. Independently review
 and retain the actual capture source; do not use offline proxies as originals.
 
@@ -174,3 +178,28 @@ Qlty status still reported success with92 blocking issues; read-only issue acces
 redirected to login. Its real issue list is BLOCKED, not disproven by local lint.
 No hosted job was manually rerun or billing/security setting changed. Post-push
 status must be read fresh; automated summaries are not formal approval.
+
+## Actual offline verification for this continuation
+
+Starting remote HEAD4de09223acf2550b6a766f41c092ff47e60c3263. Source changes are
+identified by the commits containing this document; use git rev-parse HEAD for the
+final delivery HEAD. Release build0 warnings/errors;279 standard C# checks and9317
+source-derived/bounded assertions passed. E2E20, native-contract11, screen51,
+archive14, locale37 (including contributor E2E), UI22, private-validator6,
+workflow2, encoding2 and inventory3 passed. PowerShell controlled-response/
+filesystem tests cover the new refusal paths; they are not native Win32 calls.
+Real Python children exercised argument quoting, timeout, output-budget and exit
+failure handling. The default Check passed with PYTHONOPTIMIZE=1.
+
+Authenticated ZIP preparation at806377a successfully compiled/serialized/reloaded
+and preserved original resources, verified both220-file copies and sealed exact
+harness identity. Subsequent source changes intentionally invalidate that seal;
+the final evidence entry in test-results.md identifies the fresh replacement.
+Original data SHA256 b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7;
+expected candidate4457dbf421230c596df0d2c27754e8e94293c03c8e1106c6c1b07b9552f2c96c,
+size63,195,750; profile remains InspectedOnly. No game process was launched.
+
+The actual single-entry DryRun and subsequent Report using the *same public Work*
+completed at private-evidence/e2e-hardening-current. Reports remain NEEDS_REVIEW,
+nativeGameplay NOT_RUN; the PS receipt separately verifies synthetic local save
+bytes. This is not Steam account restoration or native game acceptance.

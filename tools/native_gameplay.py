@@ -36,8 +36,10 @@ def load_plan(path, case):
         image,raw=s.png(s.child(path.parent,ref.get('file')),ref.get('sha256'))
         reference_bytes+=len(raw)
         if reference_bytes>s.MAX_FILE:raise e.StopRun('Reference collection exceeds16MiB budget')
-        if image.size!=(320,240):raise e.StopRun('Scene reference must be logical320x240')
-        images[name]=image
+        space=ref.get('space','logical320')
+        if space=='client-pixels':s.normalize(image,{'space':'client-pixels'})
+        elif space!='logical320' or image.size!=(320,240):raise e.StopRun('Scene reference must declare a supported logical/client space')
+        images[name]=(image.size,s.digest(image.tobytes()))
     for step in steps:
         if step.get('scenario') not in ('startup','english','korean','settings','keyboard'):
             raise e.StopRun('Combat/Forced requires independent side-effect observers; no screenshot-only override')
@@ -52,7 +54,7 @@ def load_plan(path, case):
             if case!='patched' or not isinstance(setting,dict) or setting.get('section')!='Guidance' or setting.get('key') not in ('schema','mode','locale','language','spoilers','target_route','target_neutral','target_epilogue','target_greeting') or not isinstance(setting.get('expected'),str) or len(setting['expected'])>32:
                 raise e.StopRun('Unsupported bounded mod-setting observer')
         if step['stableFrames']>step['maxFrames']:raise e.StopRun('Unattainable stabilization bound')
-        if step['action']!='checkpoint' and images[step['before']].tobytes()==images[step['after']].tobytes():
+        if step['action']!='checkpoint' and images[step['before']]==images[step['after']]:
             raise e.StopRun('Input requires a distinct observable response; dispatch is insufficient')
     # Freeze the complete reviewed plan and pixels, not a mutable scene name.
     return data
@@ -79,7 +81,8 @@ def match(path, case, scene, frame, expected_pid=None, expected_start=None):
     if meta['runnerSha256']!=e.lab.RUNNER_SHA:raise e.StopRun('Frame runner mismatch')
     if expected_pid is not None and meta['pid']!=expected_pid:raise e.StopRun('Frame process mismatch')
     if expected_start is not None and meta.get('processStartedUtc')!=expected_start:raise e.StopRun('Frame process start mismatch')
-    actual,geometry=s.normalize(image)
+    client=ref.get('space')=='client-pixels'
+    actual,geometry=s.normalize(image,{'space':'client-pixels'} if client else None)
     expected,_=s.png(s.child(Path(path).parent,ref['file']),ref['sha256'])
     metrics,_=s.compare(actual,expected)
     return dict(result='MATCH' if metrics['changed']==0 else 'NEEDS_REVIEW',scene=scene,
@@ -107,9 +110,11 @@ def review_frame(root,plan,case,frame,scene,scenario,label):
     reference=dict(file=ref['file'],sha256=ref['sha256'],provenance=dict(source='private-reviewed-scene-contract',
                    generatorVersion=plan['version'],sourceHashes={'plan':s.hash_file(root/'native-plan.json'),'pixels':ref['sha256']},
                    locale=ref.get('locale','unknown'),font=ref.get('font','unverified-native-font'),scene=scene,kind='private-authentic'))
+    geometry={'space':'client-pixels'} if ref.get('space')=='client-pixels' else None
+    if geometry:reference['geometry']=geometry
     manifest=dict(schema=1,kind='native-import',runId=label,assertions=[dict(
         id=scenario+'-visual',scenario=scenario,kind='visual',method='exact',reference=reference,
-        actual=frame,actualSha256=sidecar['imageSha256'],capture=frame+'.json',
+        geometry=geometry,actual=frame,actualSha256=sidecar['imageSha256'],capture=frame+'.json',
         captureSha256=s.hash_file(s.child(root,frame+'.json')))])
     s.put_json(root/(label+'.json'),manifest)
     verification=s.verify(root/(label+'.json'),root/label)

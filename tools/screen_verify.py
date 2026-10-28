@@ -238,6 +238,17 @@ def normalize(image, geometry=None):
     geometry = geometry or {}
     if not isinstance(geometry, dict):
         raise EvidenceError('Invalid geometry metadata')
+    if geometry.get('space') == 'client-pixels':
+        if geometry != {'space':'client-pixels'}:
+            raise EvidenceError('Client-pixel comparison cannot crop or ignore geometry')
+        width,height=image.size
+        if width % 320 or height % 240 or width//320 != height//240 or not 1<=width//320<=8:
+            raise EvidenceError('Unsupported client-pixel geometry')
+        # Native original-game text can contain sub-grid pixels. Compare them
+        # directly at the reviewed client size; never downsample to hide them.
+        return image.copy(), {'comparisonSpace':'client-pixels','size':[width,height],'resampled':False}
+    if geometry.get('space') not in (None,'logical320'):
+        raise EvidenceError('Unsupported comparison space')
     crop = geometry.get('content')
     if crop is not None:
         if geometry.get('cropVerified') is not True:
@@ -508,8 +519,8 @@ def visual(assertion, root, kind, folder):
             metrics, overlay = compare(normalized, expected, assertion.get('regions'), assertion.get('ignore'), tolerance)
             row.update(metrics=metrics, method=method, policy=policy, reference=provenance)
             put(folder/'diff.png', png_bytes(overlay))
-            side = Image.new('RGB', (960, 240))
-            for x, image in ((0, expected), (320, normalized), (640, overlay)):
+            side = Image.new('RGB', (expected.width*3, expected.height))
+            for x, image in ((0, expected), (expected.width, normalized), (expected.width*2, overlay)):
                 side.paste(image, (x, 0))
             put(folder/'comparison.png', png_bytes(side))
             match = metrics['changed'] == 0
