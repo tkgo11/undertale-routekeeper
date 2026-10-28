@@ -35,7 +35,7 @@ function Send-RkWindowKey($Process,[IntPtr]$Window,[string]$Executable,[string]$
  $down=[IntPtr]::new([long](1 -bor ($scan -shl 16) -bor $extended))
  $up=[IntPtr]::new([long](3221225473 -bor ($scan -shl 16) -bor $extended))
  Assert-RkInputWindow $Process $Window $Executable $Hash $StartTicks $AbortFile
- $posted=$false
+ $posted=$false;$startedUtc=[DateTime]::UtcNow.ToString('o')
  try {
   if(![RkWindowInput]::PostMessage($Window,256,[IntPtr]::new($code),$down)){throw 'Targeted key-down dispatch refused.'}
   $posted=$true;$watch=[Diagnostics.Stopwatch]::StartNew()
@@ -47,6 +47,9 @@ function Send-RkWindowKey($Process,[IntPtr]$Window,[string]$Executable,[string]$
   # Release targets the original HWND only, even after focus loss. Never send
   # global releases into a newly focused app. No OS keyboard-state mutation.
   if($posted){
+   $Process.Refresh()
+   if($Process.HasExited -or $Process.StartTime.ToUniversalTime().Ticks -ne $StartTicks -or !$Process.Path.Equals($Executable,[StringComparison]::OrdinalIgnoreCase)){throw 'Input process changed during held key; no release to recycled owner.'}
+   Assert-RkHash $Process.Path $Hash
    [uint32]$releaseOwner=0
    $null=[RkWindowInput]::GetWindowThreadProcessId($Window,[ref]$releaseOwner)
    if($releaseOwner -eq $Process.Id){
@@ -54,5 +57,5 @@ function Send-RkWindowKey($Process,[IntPtr]$Window,[string]$Executable,[string]$
    }else{throw 'Original input window vanished/recycled; no release sent to its new owner.'}
   }
  }
- return @{kind='WINDOW_MESSAGE_DISPATCH';key=$Key;requestedHeldMs=$HoldMs;heldMs=$watch.ElapsedMilliseconds;gameAction='UNPROVEN'}
+ return @{kind='WINDOW_MESSAGE_DISPATCH';startedUtc=$startedUtc;finishedUtc=[DateTime]::UtcNow.ToString('o');key=$Key;requestedHeldMs=$HoldMs;heldMs=$watch.ElapsedMilliseconds;gameAction='UNPROVEN'}
 }

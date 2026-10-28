@@ -1,5 +1,17 @@
 # 실행 전 전체 저장소 코드 감사 — 2026-10-26
 
+## Current E2E hardening continuation
+
+See [e2e-hardening.md](e2e-hardening.md) for the corrected Work/report resolver,
+optimization-independent prerequisites, native UI contract adapter and explicit
+scenario/evidence matrix. Owner-authorized policy v2 extends implementation beyond
+the earlier original-only probe; default legacy Run stays NO-GO. Cloud started no
+Steam/game. Native Windows and real gameplay verification remain NOT_RUN; combat,
+Forced and endings remain blocked without independent observers/authentication and
+appropriate safe starting states. Historical original-only descriptions below are
+superseded implementation boundaries, never evidence of native success.
+
+
 Current review/CI follow-up: see the leading section of [test-results.md](test-results.md).
 Fresh review4391165198 and actual automatic-job failures were reproduced and fixed;
 historical billing-only descriptions below do not describe those executed jobs.

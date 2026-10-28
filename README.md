@@ -1,5 +1,11 @@
 # ROUTEKEEPER
 
+Current experimental Windows UI automation and harness fixes: see
+[docs/e2e-hardening.md](docs/e2e-hardening.md). OriginalBaseline/PatchedSmoke/FullE2E
+use private reviewed scene contracts and the real Windows adapter; missing native
+references/observers remain BLOCKED. Cloud has not run Steam/game. Default legacy
+Run remains NO-GO, and no native/gameplay/compatibility approval is implied.
+
 Private development of native UNDERTALE route guidance. The implementation now
 includes five ending families, 18 specific Neutral targets plus Any, Pacifist
 Stay/Leave variants, live state bindings, objectives/progress, bilingual settings

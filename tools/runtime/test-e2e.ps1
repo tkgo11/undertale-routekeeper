@@ -37,6 +37,13 @@ try {
  $receipt=Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort
  Check ($receipt.gameAction -eq 'UNPROVEN') 'dispatch is not gameplay proof'
  Check ([RkWindowInput]::Messages.Count -eq 2 -and [RkWindowInput]::Messages[0] -eq 256 -and [RkWindowInput]::Messages[1] -eq 257) 'targeted press and release'
+ # Reused PID with unchanged numeric window owner must not receive key-up.
+ $script:refreshCount=0
+ $process|Add-Member ScriptMethod Refresh { $script:refreshCount++;if($script:refreshCount -ge 2){$this.StartTime=$this.StartTime.AddSeconds(1)} } -Force
+ [RkWindowInput]::Messages.Clear();$refused=$false
+ try{Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort|Out-Null}catch{$refused=$true}
+ Check ($refused -and [RkWindowInput]::Messages.Count -eq 1) 'recycled process identity never receives targeted release'
+ $process.StartTime=$start;$process|Add-Member ScriptMethod Refresh {} -Force
  [RkWindowInput]::LoseFocus=$true;$refused=$false
  try{Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort|Out-Null}catch{$refused=$true}
  Check $refused 'focus loss interrupts held input'
@@ -123,12 +130,30 @@ try {
  Check ($terminal.phase -eq 'Restored') 'verified returned original resumes across terminal fence gap'
  function Read-Host([string]$Prompt){return $script:answer}
  $session=[guid]::NewGuid().ToString('N');$nonce=[guid]::NewGuid().ToString('N')
+ $s|Add-Member NoteProperty unverifiedChildren $true -Force
+ $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
+ Check $refused 'unverified descendants persistently refuse automatic recovery even after terminal restoration'
  $script:answer='decline';$refused=$false
  try{New-RkExperimentalConsent $session $nonce|Out-Null}catch{$refused=$true}
  Check $refused 'missing explicit session phrase cannot authorize'
  $script:answer='AUTHORIZE EXPERIMENTAL SESSION '+$nonce
  $consent=New-RkExperimentalConsent $session $nonce
  Check ($consent.nonce -ceq $nonce -and $consent.session -ceq $session -and $consent.disclosureSha256 -match '^[a-f0-9]{64}$' -and !$consent.credentialsStored) 'synthetic consent binds session/nonce/disclosure without credentials'
+ . (Join-Path $PSScriptRoot 'native-gameplay.ps1')
+Initialize-RkNativeObserver
+$probe=@('space value','quote"value','trailing\','한글')
+$code='import sys,json;print(json.dumps(sys.argv[1:]))'
+$parts=@('-c',$code)+$probe
+$argsText=(@($parts|ForEach-Object {ConvertTo-RkNativeArgument $_}) -join ' ')
+$result=[RkBoundedObserver]::Run((Get-Command python).Source,$argsText,5000)|ConvertFrom-Json
+if(($result|ConvertTo-Json -Compress) -cne ($probe|ConvertTo-Json -Compress)){throw 'Argument quoting changed values.'}
+$blocked=$false
+try{$null=[RkBoundedObserver]::Run((Get-Command python).Source,'-c "import time;time.sleep(10)"',100)}catch{$blocked=$true}
+if(!$blocked){throw 'Timeout was ignored.'}
+$blocked=$false
+try{$null=[RkBoundedObserver]::Run((Get-Command python).Source,'-c "print(''x''*3000000)"',5000)}catch{$blocked=$true}
+if(!$blocked){throw 'Output budget was ignored.'}
+Check $true 'real Python child quoting/timeout/output budget; no Windows/game APIs'
  $work=Join-Path $root 'dry-run'
  & (Join-Path $PSScriptRoot 'test-windows.ps1') -Mode DryRun -Work $work | Out-Null
  Check ($LASTEXITCODE -eq 0) 'single-entry DryRun completes without launch'

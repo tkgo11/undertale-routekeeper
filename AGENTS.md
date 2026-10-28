@@ -212,3 +212,15 @@ baseline, native compatibility or approval to run patched/progression scenarios.
 - Targeted HWND messages are not physical input or verified GameMaker actions.
 - Capture-only review never becomes PASS. Preserve all private evidence and never
   promote InspectedOnly from receipts, consent or non-game tests.
+
+## Current owner-authorized UI experiment
+
+The latest owner request permits implementing reviewed original and patched UI
+plans; read docs/e2e-hardening.md. test-windows modes OriginalBaseline/PatchedSmoke/
+FullE2E use the real native-gameplay.ps1 adapter and shared sessions, not FakeAdapter.
+Default legacy Run remains NO-GO. Cloud must not launch Steam/game. Combat/Forced/
+ending plans remain refused without independent observers; no profile promotion.
+Run python tools/test_native_gameplay.py plus the existing offline suites. Report
+routing accepts public Work/direct runs and refuses partial/ambiguous/tampered data.
+New prepared seals are required after helper/policy changes. Review private native
+references honestly: a metadata provenance label is not independent authentication.

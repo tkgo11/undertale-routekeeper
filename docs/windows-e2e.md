@@ -1,5 +1,17 @@
 # Windows testing entry point and explicit experimental boundary
 
+## Current E2E hardening continuation
+
+See [e2e-hardening.md](e2e-hardening.md) for the corrected Work/report resolver,
+optimization-independent prerequisites, native UI contract adapter and explicit
+scenario/evidence matrix. Owner-authorized policy v2 extends implementation beyond
+the earlier original-only probe; default legacy Run stays NO-GO. Cloud started no
+Steam/game. Native Windows and real gameplay verification remain NOT_RUN; combat,
+Forced and endings remain blocked without independent observers/authentication and
+appropriate safe starting states. Historical original-only descriptions below are
+superseded implementation boundaries, never evidence of native success.
+
+
 This continuation implements trusted preparation, a bounded scenario scheduler,
 window-targeted input, native non-game tests, existing capture/verifier integration,
 local recovery coordination and private reports. It does **not** finish native

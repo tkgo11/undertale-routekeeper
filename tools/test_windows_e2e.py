@@ -150,6 +150,11 @@ class E2eTests(unittest.TestCase):
         accepted=s.record_review(root/'screen-review',capture['reviewId'],'accepted','ai','synthetic','accept')
         self.assertNotEqual(accepted['result'],'PASS')
         self.assertTrue((root/'complete-report.html').exists())
+        self.assertEqual(e.report(work)[0],e.report(root)[0])
+        integrity=root/'result-integrity.json';original_integrity=integrity.read_bytes()
+        integrity.write_bytes(b'{"sha256":"WRONG"}')
+        with self.assertRaises(e.StopRun):e.report(work)
+        integrity.write_bytes(original_integrity)
         (root/'complete-report.json').write_bytes(b'{}')
         with self.assertRaises(e.StopRun):e.report(root)
 
@@ -157,6 +162,46 @@ class E2eTests(unittest.TestCase):
         e.dry_run(self.root/'sealed')
         (self.root/'sealed/result.json').write_bytes(b'{"result":"PASS"}')
         with self.assertRaises(e.StopRun):e.report(self.root/'sealed')
+
+
+class RoutingAndPrerequisiteTests(unittest.TestCase):
+    setUp = E2eTests.setUp
+    # Independent filesystem layouts; no process creation by the report resolver.
+    def test_public_and_direct_dry_run_paths(self):
+        work=self.root/'public';work.mkdir()
+        e.dry_run(work/'execution')
+        self.assertEqual(e.resolve_report(work),work/'execution')
+        self.assertEqual(e.report(work)[0],e.report(work/'execution')[0])
+        (work/'active-session').mkdir()
+        with self.assertRaises(e.StopRun):e.report(work)
+
+    def test_missing_partial_mixed_and_linked_reports(self):
+        with self.assertRaises(e.StopRun):e.report(self.root)
+        (self.root/'result.sha256').write_text('0'*64,encoding='utf-8',newline='\n')
+        with self.assertRaises((e.StopRun,OSError)):e.report(self.root)
+        (self.root/'result.sha256').unlink()
+        real=self.root/'real';e.dry_run(real)
+        alias=self.root/'alias'
+        try:alias.symlink_to(real,target_is_directory=True)
+        except OSError:self.skipTest('Native link privilege unavailable')
+        with self.assertRaises(s.EvidenceError):e.report(alias)
+
+    def test_probe_public_path_resolution(self):
+        E2eTests.test_native_probe_report_preserves_missing_baseline_and_unknown_state(self)
+        # The preceding test deliberately corrupts the report. Correct routing
+        # must still reject the corruption rather than finding another run.
+        with self.assertRaises(e.StopRun):e.report(self.root/'probe')
+        self.assertEqual(e.resolve_report(self.root/'probe'),self.root/'probe/active-session')
+
+    def test_prerequisites_do_not_disappear_under_optimization(self):
+        import os
+        for flag in ([],['-O']):
+            for expression in ("e.prerequisites((3,11,9),'11.3.0')", "e.prerequisites((3,12,0),'99.0')", "e.prerequisites((True,12,0),'11.3.0')"):
+                code="import sys;sys.path.insert(0,'tools');import windows_e2e as e;"+expression
+                result=subprocess.run([sys.executable,*flag,'-c',code],cwd=e.ROOT,env=dict(os.environ,PYTHONOPTIMIZE='1'),capture_output=True,text=True)
+                self.assertNotEqual(result.returncode,0)
+                self.assertIn('required',result.stderr)
+        self.assertEqual(e.prerequisites()['kind'],'PREREQUISITES_ONLY')
 
 
 if __name__=='__main__':unittest.main()

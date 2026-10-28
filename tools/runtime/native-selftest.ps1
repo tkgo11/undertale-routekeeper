@@ -63,6 +63,17 @@ function Test-RkNativeDesktop([string]$Output) {
   try{Send-RkWindowKey $process $form.Handle $exe $hash $ticks 'down' 50 $abort|Out-Null}catch{if($_.Exception.Message -like '*Emergency abort requested*'){$refused=$true}else{throw}}
   if(!$refused){throw 'Native abort-file guard failed.'}
   [IO.File]::Delete($abort)
+  $form.WindowState=[Windows.Forms.FormWindowState]::Minimized;[Windows.Forms.Application]::DoEvents()
+  $refused=$false
+  try{Save-RkWindowCapture $process $exe (Join-Path $Output 'minimized.png') $hash $form.Handle}catch{$refused=$true}
+  if(!$refused -or (Test-Path -LiteralPath (Join-Path $Output 'minimized.png'))){throw 'Minimized window capture was not refused.'}
+  $form.WindowState=[Windows.Forms.FormWindowState]::Normal;[Windows.Forms.Application]::DoEvents()
+  $locked=[IO.File]::Open($file,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+  try{
+   $refused=$false
+   try{$second=[IO.File]::OpenRead($file);$second.Dispose()}catch{$refused=$true}
+   if(!$refused){throw 'Exclusive lock fixture was not enforced.'}
+  }finally{$locked.Dispose()}
   # Test synthetic local transaction/recovery using existing shared functions.
   $save=Join-Path $Output 'synthetic-save';New-Item -ItemType Directory -Path $save | Out-Null
   [IO.File]::WriteAllText((Join-Path $save 'file0'),'SYNTHETIC ONLY')
@@ -71,7 +82,19 @@ function Test-RkNativeDesktop([string]$Output) {
   Start-RkSaveTransaction $state
   Restore-RkSaveTransaction $state $state.root $save $owner
   if($state.phase -ne 'Restored'){throw 'Synthetic native recovery did not complete.'}
-  $receipt=@{schema=1;kind='NATIVE_NON_GAME_SELFTEST';keyEvents=@($observed);localSyntheticRecovery='VERIFIED';capture='window.png';nativeGameplay='NOT_RUN';filesystemChecks=@('hardlink-refused','stream-refused','junction-refused');focusLossBlocked=$true;abortFileBlocked=$true;processMemoryIdentity='UNPROVEN';sourceSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'native-selftest.ps1')).Hash.ToLowerInvariant();inputSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'input-window.ps1')).Hash.ToLowerInvariant();captureSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'capture-client.ps1')).Hash.ToLowerInvariant()}
+  # Source-derived interrupted Restoring state after trial archival, real NTFS
+  # moves of disposable bytes only, never a personal save or process crash claim.
+  $interruptedSave=Join-Path $Output 'interrupted-save';New-Item -ItemType Directory -Path $interruptedSave|Out-Null
+  [IO.File]::WriteAllText((Join-Path $interruptedSave 'file0'),'INDEPENDENT ORIGINAL')
+  $interrupted=New-RkSaveTransaction (Join-Path $Output 'interrupted-transaction') $interruptedSave $owner 'original'
+  Start-RkSaveTransaction $interrupted
+  New-Item -ItemType Directory -Path $interruptedSave|Out-Null
+  [IO.File]::WriteAllText((Join-Path $interruptedSave 'file0'),'DISPOSABLE TRIAL')
+  $interrupted.phase='Restoring';Save-RkJournal $interrupted
+  [IO.Directory]::Move($interruptedSave,(Join-Path $interrupted.root 'trial-save'))
+  Restore-RkSaveTransaction $interrupted $interrupted.root $interruptedSave $owner
+  if((Get-Content -LiteralPath (Join-Path $interruptedSave 'file0') -Raw) -cne 'INDEPENDENT ORIGINAL'){throw 'Native interrupted synthetic recovery differs.'}
+  $receipt=@{schema=1;kind='NATIVE_NON_GAME_SELFTEST';minimizedCaptureBlocked=$true;exclusiveLockVerified=$true;interruptedSyntheticRecovery='VERIFIED';osVersion=[Environment]::OSVersion.VersionString;powerShellVersion=$PSVersionTable.PSVersion.ToString();keyEvents=@($observed);localSyntheticRecovery='VERIFIED';capture='window.png';nativeGameplay='NOT_RUN';filesystemChecks=@('hardlink-refused','stream-refused','junction-refused');focusLossBlocked=$true;abortFileBlocked=$true;processMemoryIdentity='UNPROVEN';sourceSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'native-selftest.ps1')).Hash.ToLowerInvariant();inputSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'input-window.ps1')).Hash.ToLowerInvariant();captureSha=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'capture-client.ps1')).Hash.ToLowerInvariant()}
   Write-RkAtomicJson (Join-Path $Output 'receipt.json') $receipt
   return $receipt
  } finally {$form.Close();$form.Dispose()}

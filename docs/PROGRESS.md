@@ -1,5 +1,17 @@
 # Progress and resumption
 
+## Current E2E hardening continuation
+
+See [e2e-hardening.md](e2e-hardening.md) for the corrected Work/report resolver,
+optimization-independent prerequisites, native UI contract adapter and explicit
+scenario/evidence matrix. Owner-authorized policy v2 extends implementation beyond
+the earlier original-only probe; default legacy Run stays NO-GO. Cloud started no
+Steam/game. Native Windows and real gameplay verification remain NOT_RUN; combat,
+Forced and endings remain blocked without independent observers/authentication and
+appropriate safe starting states. Historical original-only descriptions below are
+superseded implementation boundaries, never evidence of native success.
+
+
 ## Live-review and actual CI follow-up
 
 Post-push macOS CI additionally exposed the same system-temp alias in the private

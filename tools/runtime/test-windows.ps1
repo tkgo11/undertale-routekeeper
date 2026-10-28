@@ -1,8 +1,9 @@
 #requires -Version 5.1
 # One safe entry point. Default Check never launches Steam/game or changes saves.
 param(
- [ValidateSet('Check','Prepare','Preflight','DryRun','Smoke','NativeTest','Resume','Recover','Report','Cleanup')][string]$Mode='Check',
+ [ValidateSet('Check','Prepare','Preflight','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest','Resume','Recover','Report','Cleanup')][string]$Mode='Check',
  [string]$Work,[string]$Archive,[string]$Cli,[string]$Builder,[string]$SteamExe,[string]$GameInstall,
+ [string]$NativePlan,[string]$OriginalPlan,[string]$PatchedPlan,[string]$Baseline,
  [ValidateSet('focus','identity','abort','crash','unknown-scene','timeout','bad-image')][string]$Failure
 )
 $ErrorActionPreference='Stop'
@@ -13,6 +14,7 @@ $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 . (Join-Path $PSScriptRoot 'capture-client.ps1')
 . (Join-Path $PSScriptRoot 'input-window.ps1')
 . (Join-Path $PSScriptRoot 'native-selftest.ps1')
+. (Join-Path $PSScriptRoot 'native-gameplay.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
 function Invoke-RkPython([string[]]$Arguments) {
  & python (Join-Path $repo 'tools/windows_e2e.py') @Arguments
@@ -31,7 +33,7 @@ function Assert-RkNativeHost {
 }
 
 try {
-if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','NativeTest')){
+if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest')){
  $base=if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'}else{Join-Path $repo 'private-evidence/windows-e2e'}
  Assert-RkNoLinks $base
  New-Item -ItemType Directory -Path $base -Force|Out-Null
@@ -43,9 +45,16 @@ if(!$Archive){$Archive=Join-Path $repo 'private-data/runtime-windows/runtime.zip
 if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($found){$Cli=$found.Source}}
  if($Mode -eq 'Check'){
   $python=Get-Command python -ErrorAction Stop;$dotnet=Get-Command dotnet -ErrorAction Stop
-  & $python.Source -c 'import sys; import PIL; assert sys.version_info >= (3,12); assert PIL.__version__ == "11.3.0"; print("OFFLINE_PASS Python/Pillow versions")'
-  if($LASTEXITCODE -ne 0){throw 'Python3.12+/Pillow11.3.0 required.'}
-  $version=(& $dotnet.Source --version)
+  $probe=@(& $python.Source (Join-Path $repo 'tools/windows_e2e.py') prerequisites)
+  if($LASTEXITCODE -ne 0){throw 'Python prerequisite probe failed.'}
+  try{$requirements=($probe -join "`n")|ConvertFrom-Json}catch{throw 'Invalid Python prerequisite output.'}
+  if($requirements.kind -cne 'PREREQUISITES_ONLY' -or $requirements.pillow -cne '11.3.0' -or $requirements.python.Count -ne 3){throw 'Unexpected Python prerequisite output.'}
+  if(@($requirements.python|Where-Object {($_ -isnot [int] -and $_ -isnot [long]) -or $_ -lt 0}).Count -or $requirements.python[0] -lt 3 -or ($requirements.python[0] -eq 3 -and $requirements.python[1] -lt 12)){throw 'Unsupported Python version in probe output.'}
+  Write-Host 'OFFLINE_PASS explicit Python/Pillow/module prerequisites'
+
+  $versions=@(& $dotnet.Source --version)
+  if($LASTEXITCODE -ne 0 -or $versions.Count -ne 1 -or $versions[0] -isnot [string]){throw 'Invalid SDK probe output.'}
+  $version=$versions[0]
   $pinned=(Get-Content -LiteralPath (Join-Path $repo 'global.json') -Raw|ConvertFrom-Json).sdk.version
   if($LASTEXITCODE -ne 0 -or $version.Trim() -cne $pinned){throw 'Exact SDK pinned in global.json required.'}
   Write-Host ('OFFLINE_PASS .NET SDK '+$version)
@@ -80,17 +89,23 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  }
  if($Mode -eq 'Report'){
   if(!$Work){throw 'Report requires the existing execution run directory.'}
-  Invoke-RkPython -Arguments @('report','--run',$Work,'--output',(Join-Path $Work ('report-'+[guid]::NewGuid().ToString('N')+'.html')))
+  Invoke-RkPython -Arguments @('report','--run',$Work)
   return
  }
  if($Mode -in @('Recover','Resume','Cleanup')){
   # Resume deliberately performs recovery only, never replays stale inputs.
-  if($Work -and (Test-Path -LiteralPath (Join-Path $Work 'active-session/session.json'))){
+  if($Work -and (Test-Path -LiteralPath (Join-Path $Work 'active-session/session.json')) -and (Test-Path -LiteralPath (Join-Path $Work 'original-baseline/session.json'))){
+   $prior=Read-RkJournal (Join-Path $Work 'original-baseline')
+   if($prior.phase -ne 'Restored' -or !(Test-RkCompletionFence $prior)){throw 'Ambiguous interrupted sessions; preserve both and refuse guessed recovery.'}
+  }
+  $sessionName='active-session'
+  if($Work -and !(Test-Path -LiteralPath (Join-Path $Work 'active-session/session.json')) -and (Test-Path -LiteralPath (Join-Path $Work 'original-baseline/session.json'))){$sessionName='original-baseline'}
+  if($Work -and (Test-Path -LiteralPath (Join-Path $Work ($sessionName+'/session.json')))){
    Assert-RkNativeHost
    Assert-RkNoLinks $Work
    $lock=[IO.File]::Open((Join-Path $Work 'experiment.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
    try{
-   $root=Join-Path $Work 'active-session';$s=Read-RkJournal $root
+   $root=Join-Path $Work $sessionName;$s=Read-RkJournal $root
    $local=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
    $save=Join-Path $local 'UNDERTALE';$owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
    Restore-RkE2eSession $s $root $save $owner
@@ -105,7 +120,9 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
   }
   if($Work){throw 'No known experimental session at this Work. Never guess a different recovery target.'}
   $action=if($Mode -eq 'Cleanup'){'Cleanup'}else{'Recover'}
+ $global:LASTEXITCODE=0
   & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action $action
+ if($LASTEXITCODE -ne 0){throw 'Legacy preflight/recovery failed; no later operation authorized.'}
   return
  }
  Assert-RkNativeHost
@@ -115,7 +132,7 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
   Invoke-RkPython -Arguments @('check-native-test','--work',$Work)
   return
  }
- if($Mode -eq 'Smoke' -and !(Test-Path -LiteralPath $Work)){
+ if($Mode -in @('Smoke','OriginalBaseline','PatchedSmoke','FullE2E') -and !(Test-Path -LiteralPath $Work)){
   if(!$Archive -or !$Cli){throw 'New Smoke work needs the supplied Archive and verified Cli for automatic preparation.'}
   if(!$Builder){$Builder=Join-Path $repo 'src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll'}
   Invoke-RkPython -Arguments @('prepare','--archive',$Archive,'--output',$Work,'--cli',$Cli,'--builder',$Builder)
@@ -132,15 +149,28 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  }
  if(!$Work -or !$SteamExe -or !$GameInstall){throw 'Unique Steam client/library not established; supply genuine SteamExe and GameInstall. Discovery hints never approve a build.'}
  Invoke-RkPython -Arguments @('verify-prepared','--work',$Work)
+ $global:LASTEXITCODE=0
  & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action Preflight -Lab $Work -PatchedData (Join-Path $Work 'candidate.win') -SteamExe $SteamExe -GameInstall $GameInstall
+ if($LASTEXITCODE -ne 0){throw 'Legacy preflight/recovery failed; no later operation authorized.'}
  Assert-RkProcessesClosed;Assert-RkNetworkOffline
  Assert-RkNativeSaveTree $Work
  $drive=Get-Item -LiteralPath ([IO.Path]::GetPathRoot([IO.Path]::GetFullPath($Work)))
  $volume=Get-Volume -DriveLetter $drive.PSDrive.Name -ErrorAction Stop
  if($volume.FileSystem -ne 'NTFS' -or $volume.SizeRemaining -lt 2GB){throw 'NTFS and at least2GiB available storage required.'}
  if($Mode -eq 'Preflight'){Write-Output (@{result='NOT_RUN';scope='NON_GAME_PREFLIGHT';accountIsolation='UNPROVEN'}|ConvertTo-Json);return}
- # The separate opt-in experiment is a bounded ORIGINAL startup probe only.
- # It cannot certify/advance the unsupported title-to-room or patched baseline.
+ # Validate the complete supplied private contract before a benign test or launch.
+ if($Mode -eq 'OriginalBaseline'){$OriginalPlan=$NativePlan}
+ if($Mode -eq 'PatchedSmoke'){$PatchedPlan=$NativePlan}
+ if($Mode -in @('OriginalBaseline','FullE2E')){
+  if(!$OriginalPlan){throw 'OriginalPlan/NativePlan required: private reviewed authentic scene contract, no guessed bootstrap.'}
+  $null=Invoke-RkNativeJson -Arguments @('validate','--plan',$OriginalPlan,'--case','original')
+ }
+ if($Mode -in @('PatchedSmoke','FullE2E')){
+  if(!$PatchedPlan){throw 'PatchedPlan/NativePlan required.'}
+  $null=Invoke-RkNativeJson -Arguments @('validate','--plan',$PatchedPlan,'--case','patched')
+ }
+ # Legacy Smoke remains an original-only probe. New UI modes additionally
+ # require private authentic contracts and scoped original-baseline review.
  $nativeBase=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'
  if(!(Test-Path -LiteralPath $nativeBase)){New-Item -ItemType Directory -Path $nativeBase|Out-Null}
  $native=Join-Path $nativeBase ('native-test-'+[guid]::NewGuid().ToString('N'))
@@ -148,9 +178,28 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  Invoke-RkPython -Arguments @('check-native-test','--work',$native)
  $session=[guid]::NewGuid().ToString('N');$nonce=[guid]::NewGuid().ToString('N')
  $consent=New-RkExperimentalConsent $session $nonce
- Write-Host 'Original startup probe only. No automated game input, patched game or baseline PASS is authorized.'
- $null=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native
- Invoke-RkPython -Arguments @('ingest-probe','--work',$Work)
+ if($Mode -eq 'Smoke'){
+  Write-Host 'Original startup probe only; no game input or patched baseline.'
+  $null=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native
+  Invoke-RkPython -Arguments @('ingest-probe','--work',$Work)
+ }else{
+  $originalRoot=Join-Path $Work 'original-baseline'
+  if($Mode -in @('OriginalBaseline','FullE2E') -and !(Test-Path -LiteralPath $originalRoot)){
+   $null=Invoke-RkGameSession $Work $SteamExe $GameInstall $consent $native 'original' $OriginalPlan '' 'original-baseline'
+   Invoke-RkPython -Arguments @('finish-native','--work',$Work,'--session','original-baseline')
+  }
+  if($Mode -eq 'OriginalBaseline'){
+   Invoke-RkPython -Arguments @('report','--run',$originalRoot)
+  }else{
+   if(!$Baseline){$Baseline=$originalRoot}
+   Invoke-RkPython -Arguments @('check-baseline','--baseline',$Baseline,'--work',$Work)
+   # A reviewed original navigation trace is a comparison prerequisite, never
+   # approval of internal gameplay, account isolation or ending compatibility.
+   $null=Invoke-RkGameSession $Work $SteamExe $GameInstall $consent $native 'patched' $PatchedPlan $Baseline
+   Invoke-RkPython -Arguments @('finish-native','--work',$Work)
+  }
+ }
+
 
 } catch {
  Write-Output (@{result='BLOCKED';stage=$Mode;reason=$_.Exception.Message;nativeGameplay='NOT_RUN';accountIsolation='UNPROVEN'}|ConvertTo-Json -Depth 6)

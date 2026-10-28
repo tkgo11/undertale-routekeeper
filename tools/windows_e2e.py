@@ -74,7 +74,7 @@ def plans():
 
 
 def source_pins():
-    files = ['tools/windows_e2e.py','tools/runtime_lab.py','tools/screen_verify.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
+    files = ['tools/native_gameplay.py','tools/runtime/native-gameplay.ps1','tools/windows_e2e.py','tools/runtime_lab.py','tools/screen_verify.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
              'tools/runtime/input-window.ps1','tools/runtime/native-selftest.ps1','tools/runtime/experimental-session.ps1',
              'tools/runtime/capture-client.ps1','tools/runtime/safety.ps1',
              'tools/runtime/current-account-state.ps1','tools/runtime/current-account-windows.ps1',
@@ -293,13 +293,64 @@ class ScenarioRunner:
             self.adapter.stop();self.journal.event('INPUT_RELEASED_PROCESS_STOP_REQUESTED',case=case)
 
 
+def prerequisites(python_version=None, pillow_version=None):
+    import PIL
+    from PIL import Image
+    version = sys.version_info[:3] if python_version is None else python_version
+    pillow = PIL.__version__ if pillow_version is None else pillow_version
+    if not isinstance(version, (tuple, list)) or len(version) != 3 or any(type(n) is not int for n in version) or tuple(version) < (3, 12, 0):
+        raise StopRun('Python3.12+ required')
+    if pillow != '11.3.0' or not callable(Image.open):
+        raise StopRun('Pillow11.3.0 and PNG image module required')
+    Image.init()
+    if 'PNG' not in Image.OPEN or 'PNG' not in Image.SAVE:
+        raise StopRun('Pillow PNG decoder/encoder required')
+    return dict(kind='PREREQUISITES_ONLY', python=list(version), pillow=pillow, nativeGameplay='NOT_RUN')
+
+
+def resolve_report(work):
+    work = screen.no_links(work)
+    candidates = []
+    # A partial/corrupt claim is never ignored in favor of another convenient run.
+    for path in (work, work/'execution', work/'active-session'):
+        screen.no_links(path)
+        claims = [name for name in ('result.json', 'result.sha256', 'result-integrity.json',
+                  'complete-report.json', 'complete-report.sha256', 'events') if (path/name).exists() or (path/name).is_symlink()]
+        if claims:
+            candidates.append(path)
+        elif path != work and path.exists():
+            raise StopRun('Partial report layout; preserve evidence')
+    prior=work/'original-baseline'
+    if candidates and prior.exists():
+        prior_payload,_=report(prior)
+        prior_result=prior_payload.get('observations',{})
+        if prior_result.get('case')!='original' or prior_result.get('localRecovery')!='CONTENT_TREE_VERIFIED':
+            raise StopRun('Ambiguous current and unclosed original-baseline reports')
+    if not candidates and (work/'original-baseline').exists():
+        return resolve_report(work/'original-baseline')
+    if len(candidates) != 1:
+        raise StopRun('Missing or ambiguous report layout; explicit unique run required')
+    run = candidates[0]
+    if (run/'complete-report.json').exists():
+        if (run/'events').exists() or (run/'result.sha256').exists():
+            raise StopRun('Mixed native and scheduler report layout')
+    elif (run/'result-integrity.json').exists():
+        raise StopRun('Native probe incomplete; ingest evidence before reporting')
+    return run
+
+
 def report(run):
-    run=screen.no_links(run)
+    run=resolve_report(run)
     if (run/'complete-report.json').exists():
         raw=screen.read(run/'complete-report.json',screen.MAX_JSON)
         if screen.read(run/'complete-report.sha256',128).decode().strip()!=screen.digest(raw):raise StopRun('Probe report integrity mismatch')
         payload=screen.decode_json(raw);rows=[]
-        payload['currentVisualReview']=screen.summarize(run/'screen-review')
+        observed=screen.read(run/'result.json',screen.MAX_JSON)
+        if screen.load_json(run/'result-integrity.json').get('sha256')!=screen.digest(observed) or payload.get('observations')!=screen.decode_json(observed):
+            raise StopRun('Underlying native result changed or mismatched its report')
+        if payload.get('kind')=='EXPERIMENTAL_ORIGINAL_STARTUP_PROBE':
+            payload['currentVisualReview']=screen.summarize(run/'screen-review')
+        elif payload.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY':raise StopRun('Unknown native report identity')
     else:
         rows=Journal.read(run);raw=screen.read(run/'result.json',screen.MAX_JSON)
         if screen.read(run/'result.sha256',128).decode().strip()!=screen.digest(raw):raise StopRun('Scheduler result integrity mismatch')
@@ -311,6 +362,11 @@ def report(run):
                 name=scenario['visualRun'].removesuffix('/verified')+'/visual-review.html'
                 screen.child(run,name)
                 text+='<p><a href="'+html.escape(name,quote=True)+'">'+html.escape(outcome['case']+' / '+scenario['id'])+'</a></p>'
+    for step in (payload.get('nativeReport') or {}).get('steps',[]):
+        link=step['review']+'.html';screen.child(run,link)
+        text+='<p><a href="'+html.escape(link,quote=True)+'">Native step '+str(step['step'])+'</a></p>'
+    if (payload.get('nativeReport') or {}).get('pendingReview'):
+        text+='<p><a href="pending-review.html">Unrecognized or unstable frame review</a></p>'
     return payload,text
 
 
@@ -339,6 +395,7 @@ def check_native_test(work):
     work=screen.no_links(work);receipt=screen.load_json(work/'receipt.json')
     if sys.platform!='win32':raise StopRun('Native validation cannot be certified on this platform')
     if receipt.get('kind')!='NATIVE_NON_GAME_SELFTEST' or receipt.get('localSyntheticRecovery')!='VERIFIED' or not all(k in receipt.get('keyEvents',[]) for k in ('down:40','up:40')):raise StopRun('Native self-test receipt incomplete')
+    if receipt.get('minimizedCaptureBlocked') is not True or receipt.get('exclusiveLockVerified') is not True or receipt.get('interruptedSyntheticRecovery')!='VERIFIED':raise StopRun('Native capture/lock/interrupted-recovery checks incomplete')
     if receipt.get('focusLossBlocked') is not True or receipt.get('abortFileBlocked') is not True or set(receipt.get('filesystemChecks',[]))!={'hardlink-refused','stream-refused','junction-refused'}:raise StopRun('Native negative/input safety tests incomplete')
     for field,name in [('sourceSha','native-selftest.ps1'),('inputSha','input-window.ps1'),('captureSha','capture-client.ps1')]:
         if receipt.get(field)!=screen.hash_file(ROOT/'tools/runtime'/name):raise StopRun('Native helper changed since test')
@@ -374,22 +431,78 @@ def ingest_probe(work):
     screen.put(root/'complete-report.html',text.encode())
     return summary
 
+def finish_native(work,session='active-session'):
+    import native_gameplay as native
+    root=screen.child(screen.no_links(work),session)
+    raw=screen.read(root/'result.json',screen.MAX_JSON)
+    if screen.load_json(root/'result-integrity.json').get('sha256')!=screen.digest(raw):raise StopRun('Native session seal mismatch')
+    result=screen.decode_json(raw)
+    if result.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY':raise StopRun('Not a native gameplay session')
+    summary=dict(kind=result['kind'],result='BLOCKED',observations=result,nativeReport=None,gameplay='UNVERIFIED',accountHistory='NOT_RESTORED')
+    if (root/'native-observations.json').exists():
+        summary['nativeReport']=native.finalize(root)
+        summary['result']=summary['nativeReport']['result']
+    if result.get('localRecovery')!='CONTENT_TREE_VERIFIED' or not all(result.get(k) is True for k in ('copyStable','cacheStable','registeredStable')):
+        summary['result']='BLOCKED'
+    screen.put_json(root/'complete-report.json',summary)
+    screen.put(root/'complete-report.sha256',(screen.hash_file(root/'complete-report.json')+'\n').encode())
+    _,page=report(root);screen.put(root/'complete-report.html',page.encode())
+    return summary
+
+
+def check_baseline(baseline,work):
+    summary,_=report(baseline);observations=summary.get('observations',{});native=summary.get('nativeReport') or {}
+    if observations.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY' or observations.get('case')!='original' or observations.get('localRecovery')!='CONTENT_TREE_VERIFIED':
+        raise StopRun('Original native navigation baseline with verified local recovery required')
+    if not all(observations.get(k) is True for k in ('copyStable','cacheStable','registeredStable')) or not native.get('allPlannedTransitionsObserved'):
+        raise StopRun('Original baseline incomplete or changed environment')
+    if not {'startup','english','keyboard'} <= {step['scenario'] for step in native['steps']}:
+        raise StopRun('Original baseline lacks startup/English/movement transitions')
+    prepared=verified_preparation(work)
+    if observations.get('harness')!=prepared['harness']:raise StopRun('Baseline harness differs from prepared candidate')
+    root=resolve_report(baseline)
+    import native_gameplay as native_module
+    original_plan=native_module.load_plan(root/'native-plan.json','original')
+    actions=original_plan['steps']
+    if not any(x['scenario']=='startup' and x['action'] in ('confirm','enter') for x in actions) or not {'left','right'}<={x['action'] for x in actions if x['scenario']=='keyboard'}:
+        raise StopRun('Original baseline requires observed startup input and both bounded movement directions')
+    fresh=native_module.finalize(root,write_review=False)
+    if not fresh['allPlannedTransitionsObserved'] or fresh['pendingReview'] is not None:raise StopRun('Original trace is incomplete or ambiguous')
+    for step in native['steps']:
+        view=screen.summarize(screen.child(root,step['review']))
+        visuals=[a for a in view['assertions'] if a['scope']=='visual']
+        if not visuals or any(a.get('reviewDecision')!='accepted' for a in visuals):
+            raise StopRun('Original navigation captures require scoped visual review; no automatic patched launch')
+        if any(a['result'] in ('FAIL','INVALID_EVIDENCE') for a in view['assertions']):raise StopRun('Original evidence contains a confirmed contradiction')
+    return dict(result='SCOPED_NAVIGATION_BASELINE_ACCEPTED',gameplay='UNVERIFIED',accountIsolation='UNPROVEN')
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
     p=sub.add_parser('prepare');p.add_argument('--archive',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--cli',type=Path,required=True);p.add_argument('--builder',type=Path,required=True)
+    p=sub.add_parser('finish-native');p.add_argument('--work',type=Path,required=True);p.add_argument('--session',choices=('active-session','original-baseline'),default='active-session')
+    p=sub.add_parser('check-baseline');p.add_argument('--baseline',type=Path,required=True);p.add_argument('--work',type=Path,required=True)
     p=sub.add_parser('ingest-probe');p.add_argument('--work',type=Path,required=True)
     p=sub.add_parser('check-native-test');p.add_argument('--work',type=Path,required=True)
     p=sub.add_parser('verify-prepared');p.add_argument('--work',type=Path,required=True)
     p=sub.add_parser('dry-run');p.add_argument('--output',type=Path,required=True);p.add_argument('--failure',choices=('focus','identity','abort','crash','unknown-scene','timeout','bad-image'))
-    p=sub.add_parser('report');p.add_argument('--run',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
+    sub.add_parser('prerequisites')
+    p=sub.add_parser('report');p.add_argument('--run',type=Path,required=True);p.add_argument('--output',type=Path)
     args=parser.parse_args()
     try:
-        if args.command=='prepare':data=prepare(args.archive,args.output,args.cli,args.builder)
+        if args.command=='prerequisites':data=prerequisites()
+        elif args.command=='prepare':data=prepare(args.archive,args.output,args.cli,args.builder)
         elif args.command=='verify-prepared':data=verified_preparation(args.work)
         elif args.command=='check-native-test':data=check_native_test(args.work)
+        elif args.command=='finish-native':data=finish_native(args.work,args.session)
+        elif args.command=='check-baseline':data=check_baseline(args.baseline,args.work)
         elif args.command=='ingest-probe':data=ingest_probe(args.work)
         elif args.command=='dry-run':data=dry_run(args.output,args.failure)
-        else:data,page=report(args.run);screen.put(args.output,page.encode())
+        else:
+            run=resolve_report(args.run);data,page=report(run)
+            output=args.output or run/('report-'+uuid.uuid4().hex+'.html')
+            if screen.no_links(output).parent != run:raise StopRun('Report must remain beside its evidence to preserve relative links')
+            screen.put(output,page.encode());data=dict(data,reportFile=output.name)
         print(json.dumps(data,ensure_ascii=False,indent=2));return 0
     except (OSError,ValueError,KeyError,TypeError) as error:
         print(json.dumps(dict(result='BLOCKED',reason=str(error),nativeGameplay='NOT_RUN')),file=sys.stderr);return 2

@@ -8,6 +8,8 @@ public static class RoutekeeperCapture {
     [StructLayout(LayoutKind.Sequential)] public struct Rect { public int Left,Top,Right,Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct Point { public int X,Y; }
     [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr h);
+    [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
     [DllImport("user32.dll")] public static extern uint GetDpiForWindow(IntPtr h);
@@ -47,19 +49,22 @@ function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
  [uint32]$owner=0
  $null=[RoutekeeperCapture]::GetWindowThreadProcessId($window,[ref]$owner)
  if($owner -ne $process.Id){throw 'Window owner mismatch.'}
+ if([RoutekeeperCapture]::IsIconic($window) -or ![RoutekeeperCapture]::IsWindowVisible($window)){throw 'Minimized/invisible window is not capture evidence.'}
  $dpi=[RoutekeeperCapture]::GetDpiForWindow($window)
  if($dpi -le 0){throw 'Window DPI unavailable.'}
  $rect=New-Object RoutekeeperCapture+Rect
  $point=New-Object RoutekeeperCapture+Point
  if(![RoutekeeperCapture]::GetClientRect($window,[ref]$rect) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$point)){throw 'Game client bounds unavailable.'}
  if($rect.Left -ne 0 -or $rect.Top -ne 0 -or $rect.Right % 320 -ne 0 -or $rect.Bottom % 240 -ne 0 -or $rect.Right/320 -ne $rect.Bottom/240 -or $rect.Right -lt 320 -or $rect.Right -gt 2560){throw 'Unsupported client geometry; do not distort evidence.'}
+ Add-Type -AssemblyName System.Windows.Forms
+ $bounds=New-Object Drawing.Rectangle $point.X,$point.Y,$rect.Right,$rect.Bottom
+ if(!@([Windows.Forms.Screen]::AllScreens | Where-Object {$_.Bounds.Contains($bounds)}).Count){throw 'Partially off-monitor or spanning client is unsupported.'}
  $started=[DateTime]::UtcNow.ToString('o')
  $temp=$Destination+'.capture-'+[guid]::NewGuid().ToString('N')+'.tmp'
  $metaTemp=$temp+'.json'
  Assert-RkNoLinks $temp
  $bitmap=New-Object System.Drawing.Bitmap $rect.Right,$rect.Bottom
  $graphics=[Drawing.Graphics]::FromImage($bitmap)
- $published=$false
  try {
   $graphics.CopyFromScreen($point.X,$point.Y,0,0,$bitmap.Size)
   $after=New-Object RoutekeeperCapture+Rect
@@ -67,7 +72,7 @@ function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
   [uint32]$afterOwner=0
   $null=[RoutekeeperCapture]::GetWindowThreadProcessId($window,[ref]$afterOwner)
   $process.Refresh()
-  if($process.HasExited -or ($ExplicitWindow -eq [IntPtr]::Zero -and $process.MainWindowHandle -ne $window) -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
+  if([RoutekeeperCapture]::IsIconic($window) -or ![RoutekeeperCapture]::IsWindowVisible($window) -or $process.HasExited -or ($ExplicitWindow -eq [IntPtr]::Zero -and $process.MainWindowHandle -ne $window) -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
   if(![RoutekeeperCapture]::GetClientRect($window,[ref]$after) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$afterPoint) -or $after.Right -ne $rect.Right -or $after.Bottom -ne $rect.Bottom -or $point.X -ne $afterPoint.X -or $point.Y -ne $afterPoint.Y -or [RoutekeeperCapture]::GetDpiForWindow($window) -ne $dpi){throw 'Capture client geometry/DPI changed.'}
   Assert-RkHash $Executable $ExpectedRunnerSha256
   Assert-RkHash $process.Path $ExpectedRunnerSha256
@@ -82,12 +87,12 @@ function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
   Assert-RkNoLinks $Destination
   Assert-RkNoLinks ($Destination+'.json')
   [IO.File]::Move($temp,$Destination)
-  $published=$true
   [IO.File]::Move($metaTemp,($Destination+'.json'))
  } catch {
   # A power loss between these two new-file moves leaves an image without a
   # sidecar; the verifier rejects it. Never synthesize missing metadata.
-  if($published -and !(Test-Path -LiteralPath ($Destination+'.json'))){Remove-Item -LiteralPath $Destination -Force}
+  # Preserve a published orphan PNG for diagnosis. Missing metadata remains
+  # INVALID_EVIDENCE; failure must not delete already acquired evidence.
   throw
  } finally {
   $graphics.Dispose();$bitmap.Dispose()
