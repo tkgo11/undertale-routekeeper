@@ -2346,10 +2346,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 14683,
+      "bytes": 14703,
       "lines": 204,
-      "sha256": "89e79839027c0b1e1eccb4714632b09f0b001bc3e81c292fad1ee59e8d2f63cd",
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "sha256": "8be614db825263e9c6a9042c7d5c16d4e9cc784ef7af4fbaedd5b8cbc9d87e23",
+      "reviewed_against_head": "806377a6dbc2b81263d6eb9dfda6efa0c44959a5"
     },
     {
       "path": "tools/runtime/Dockerfile",
@@ -2683,10 +2683,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 13290,
-      "lines": 165,
-      "sha256": "8a562ef21ea41566494edc4185823e6678d4229e30cfde3c38c2d3e044bc2abf",
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "bytes": 14588,
+      "lines": 183,
+      "sha256": "589a439f26baf2ea7ee0f35892465d0cf305cacffa4e7b4466772b5bc81d6319",
+      "reviewed_against_head": "806377a6dbc2b81263d6eb9dfda6efa0c44959a5"
     },
     {
       "path": "tools/runtime/test-sandbox.ps1",

@@ -133,6 +133,21 @@ try {
  $s|Add-Member NoteProperty unverifiedChildren $true -Force
  $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
  Check $refused 'unverified descendants persistently refuse automatic recovery even after terminal restoration'
+ $s.unverifiedChildren=$false
+ $launch=Join-Path $s.root 'game-launch.json'
+ Write-RkAtomicJson $launch @{id=$s.id;owner='SYNTHETIC';stage='Pending';pid=0}
+ $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
+ Check $refused 'uncommitted launch cannot authorize recovery of even a terminal session'
+ Write-RkAtomicJson $launch @{id=$s.id;owner='WRONG';stage='Observed';pid=42}
+ $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
+ Check $refused 'launch marker owner mismatch is refused'
+ Write-RkAtomicJson $launch @{id=$s.id;owner='SYNTHETIC';stage='Observed';pid=42}
+ function Get-CimInstance {return [pscustomobject]@{ProcessId=99;ParentProcessId=42}}
+ $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
+ Check $refused 'observed surviving descendant blocks recovery'
+ function Get-CimInstance {return @()}
+ Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'
+ Check ($s.phase -eq 'Restored') 'closed descendant fixture preserves valid terminal idempotency'
  $script:answer='decline';$refused=$false
  try{New-RkExperimentalConsent $session $nonce|Out-Null}catch{$refused=$true}
  Check $refused 'missing explicit session phrase cannot authorize'
@@ -153,6 +168,9 @@ if(!$blocked){throw 'Timeout was ignored.'}
 $blocked=$false
 try{$null=[RkBoundedObserver]::Run((Get-Command python).Source,'-c "print(''x''*3000000)"',5000)}catch{$blocked=$true}
 if(!$blocked){throw 'Output budget was ignored.'}
+$blocked=$false
+try{$null=[RkBoundedObserver]::Run((Get-Command python).Source,'-c "print(''PASS'');raise SystemExit(7)"',5000)}catch{$blocked=$true}
+Check $blocked 'success text cannot override failed observer exit'
 Check $true 'real Python child quoting/timeout/output budget; no Windows/game APIs'
  $work=Join-Path $root 'dry-run'
  & (Join-Path $PSScriptRoot 'test-windows.ps1') -Mode DryRun -Work $work | Out-Null

@@ -176,7 +176,7 @@ def finalize(root, write_review=True):
         if pending.get('scene') not in plan['scenes'] or pending.get('scenario') not in e.plans():raise e.StopRun('Invalid pending scene evidence')
         if write_review:review_frame(root,plan,data['case'],pending['frame'],pending['scene'],pending['scenario'],'pending-review')
         else:s.summarize(root/'pending-review')
-    complete=len(steps)==len(plan['steps']) and data.get('execution')=='OBSERVED_TRANSITIONS'
+    complete=len(steps)==len(plan['steps']) and data.get('execution')=='OBSERVED_TRANSITIONS' and pending is None
     return dict(kind='NATIVE_SCENE_TRANSITIONS',case=data['case'],result='NEEDS_REVIEW' if complete else 'BLOCKED',
                 steps=results,pendingReview='pending-review' if pending else None,allPlannedTransitionsObserved=complete,gameplay='UNVERIFIED',
                 independentInternalState='UNAVAILABLE',windowsNative='OBSERVATIONS_REQUIRE_OPERATOR_PROVENANCE')
