@@ -223,3 +223,32 @@ bytes. This is not Steam account restoration or native game acceptance.
 
 These limitations keep both broad workstreams PARTIAL. They must not be hidden by
 calling a parameterized scene adapter a fully verified game automation system.
+
+## 2026-10-28 native non-game filesystem CI expansion
+
+Before any operator game execution, native Windows filesystem guards must be
+validated independently of Steam, the GUI desktop, and personal saves. The new
+`tools/runtime/test-native-filesystem.ps1` uses a fresh disposable directory
+beneath the process TEMP root. It exercises the **actual native Windows APIs**
+for hardlinks, named streams, junctions, exclusive locks, and local save
+transactions. It checks interruption during the Restoring phase, repeated
+restoration, and refusal to overwrite an unexpected later edit. It does **not**
+run Steam, UNDERTALE, the WinForms GUI test, or read personal save files.
+
+CI invokes this script separately in Windows PowerShell 5.1 and PowerShell 7.
+A passing job proves only the listed **filesystem-only** checks on the Windows
+runner, never desktop input/capture, GameMaker behavior, account isolation, or
+native gameplay. A failing test preserves the synthetic TEMP directory for
+inspection; a passing test removes only its own unlinked disposable directory.
+
+The `Check` entry point now implements `global.json`'s `latestPatch` policy:
+10.0.402 may roll forward to newer 10.0.4xx patch releases, but not backward,
+to a new SDK feature band, or to another major/minor. The pure policy has
+positive and negative tests in `tools/runtime/test-e2e.ps1`. Missing or
+unsupported policies fail closed; this does not change the required game build.
+
+Remaining mandatory boundaries are unchanged: the user's desktop-native GUI
+self-test has not run, a reviewed authentic original navigation contract is
+not bundled, Steam account restoration is unproven, and battle/Forced/ending
+observers remain unavailable. Do not interpret the new CI job as approval to
+run original or patched gameplay.
