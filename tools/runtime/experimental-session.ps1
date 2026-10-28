@@ -1,3 +1,4 @@
+. (Join-Path $PSScriptRoot 'watchdog.ps1')
 function New-RkExperimentalConsent([string]$Session,[string]$Nonce) {
  # Not a bypass for identity, preflight, path, backup or scenario prerequisites.
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -33,6 +34,14 @@ function Write-RkE2eTrialFence($State) {
 }
 function Assert-RkE2eRecoveryReady($State,[string]$Root,[string]$Save,[string]$Owner) {
  Assert-RkJournal $State $Root $Save $Owner
+ $watchdogRoot=Join-Path $Root 'watchdog';Assert-RkNoLinks $watchdogRoot
+ if(Test-Path -LiteralPath $watchdogRoot){
+  foreach($name in @('stop.json','failure.json')){if(Test-Path -LiteralPath (Join-Path $watchdogRoot $name)){throw 'External watchdog intervened/failed; automatic recovery refused. Preserve all copies.'}}
+  $receiptPath=Join-Path $watchdogRoot 'result.json';Assert-RkNoLinks $receiptPath
+  if(!(Test-Path -LiteralPath $receiptPath)){throw 'External watchdog closure unverified; automatic recovery refused.'}
+  $receipt=Get-Content -LiteralPath $receiptPath -Raw -Encoding UTF8|ConvertFrom-Json
+  if($receipt.result -cne 'OWNED_PROCESS_EXITED'){throw 'External watchdog intervention requires manual recovery review.'}
+ }
  $launch=Join-Path $Root 'game-launch.json';Assert-RkNoLinks $launch
  if(Test-Path -LiteralPath $launch){
   $record=Get-Content -LiteralPath $launch -Raw -Encoding UTF8|ConvertFrom-Json
@@ -175,10 +184,12 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
    Write-RkAtomicJson (Join-Path $root 'game-launch.json') @{id=$state.id;owner=$owner;stage='Pending';pid=0}
    $gameProcess=Start-Process -FilePath $runner -WorkingDirectory $game -PassThru
    $gameTicks=$gameProcess.StartTime.ToUniversalTime().Ticks
+   Start-RkExternalWatchdog $gameProcess $root $runner 'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
    Write-RkAtomicJson (Join-Path $root 'game-launch.json') @{id=$state.id;owner=$owner;stage='Observed';pid=$gameProcess.Id;startedTicks=$gameTicks}
    $deadline=[DateTime]::UtcNow.AddSeconds(15)
    Initialize-RkWindowInput
    do {
+    Update-RkExternalWatchdog
     Assert-RkNetworkOffline
     if((Test-Path -LiteralPath $abort) -or ([RkWindowInput]::GetAsyncKeyState(19) -band 0x8000)){throw 'Emergency abort requested.'}
     $gameProcess.Refresh()
@@ -201,6 +212,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
   finally {
    try {
     try{if($unknownChildren){$state|Add-Member NoteProperty unverifiedChildren $true -Force;Save-RkJournal $state}}finally{Stop-RkOwnedProbeProcess $gameProcess $runner $gameTicks}
+    Complete-RkExternalWatchdog
     if($gameProcess -and !$unknownChildren){Write-RkE2eGameStopBoundary $state}
     if($steamProcess){
      $steamProcess.Refresh()

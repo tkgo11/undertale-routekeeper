@@ -4,6 +4,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'current-account-state.ps1')
 . (Join-Path $PSScriptRoot 'input-window.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
+. (Join-Path $PSScriptRoot 'test-workspace.ps1')
 function Check([bool]$Value,[string]$Message){if(!$Value){throw $Message};Write-Host ('OFFLINE_PASS '+$Message)}
 . (Join-Path $PSScriptRoot 'sdk-policy.ps1')
 Check (Test-RkSdkAllowed '10.0.402' '10.0.402' 'latestPatch') 'SDK exact pin accepted'
@@ -41,8 +42,9 @@ public static class RkWindowInput {
  public static bool PostMessage(IntPtr w,uint m,IntPtr key,IntPtr detail){Messages.Add(m);if(m==256&&LoseFocus)Focus=new IntPtr(20);return true;}
 }
 '@
-$root=Join-Path ([IO.Path]::GetTempPath()) ('rk-e2e-'+[guid]::NewGuid().ToString('N'))
-New-Item -ItemType Directory -Path $root | Out-Null
+$workspace=New-RkTestWorkspace
+$root=$workspace.root
+$verified=$false
 try {
  $exe=Join-Path $root 'synthetic.exe';[IO.File]::WriteAllText($exe,'OWNED SYNTHETIC FIXTURE')
  $hash=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();$start=[DateTime]::UtcNow
@@ -194,4 +196,14 @@ Check $true 'real Python child quoting/timeout/output budget; no Windows/game AP
  Check ((Get-Content -LiteralPath (Join-Path $work 'synthetic-save/file0') -Raw) -ceq 'SYNTHETIC E2E SAVE') 'independent synthetic save bytes preserved'
  $result=Get-Content -LiteralPath (Join-Path $work 'execution/result.json') -Raw|ConvertFrom-Json
  Check ($result.nativeGameplay -eq 'NOT_RUN' -and $result.result -eq 'NEEDS_REVIEW') 'DryRun cannot certify native gameplay'
-} finally {Remove-Item -LiteralPath $root -Recurse -Force}
+ Complete-RkTestWorkspace $workspace
+ $verified=$true
+} finally {
+ if($verified){
+  try{Remove-RkTestWorkspace $workspace}
+  catch{Write-Warning ('Cleanup failed; synthetic evidence retained: '+$root);throw}
+ }else{
+  # Keep the original assertion/child-process exception and its fixture evidence.
+  Write-Warning ('Failed test workspace retained: '+$root)
+ }
+}

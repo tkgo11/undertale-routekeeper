@@ -1,5 +1,27 @@
 # Verification evidence
 
+## Native Windows continuation — 2026-10-29 KST
+
+Current scope and reproduction: [windows-native-2026-10-29.md](windows-native-2026-10-29.md).
+Starting HEADce5b52b; final delivery is the commit containing this section. Fresh
+per-command logs/JSON/HTML are private at `.research/windows-20261029/verified-suite/`.
+Final eligible command totals:63 PASS/0 FAIL/0 BLOCKED; Python221 PASS/0 FAIL/2
+platform skips; standard C#274 checks plus9317 separately counted source/model
+assertions. Both PS7 and PS5.1 generated fresh verified native non-game GUI receipts.
+Read-only authentic Preflight is separately BLOCKED while Steam runs. The initial
+combined54 PASS/7 FAIL/2 BLOCKED record is retained. Source hashes match the tested
+staged code; final documentation/audit updates receive a separate validation.
+The earlier focus-loss NativeTest refusal was preserved; the later fresh native
+receipt passed at actual DPI192 with real key-down/up, capture, NTFS guards and
+interrupted synthetic recovery. No official original/patched game was launched,
+no personal save was used, and Steam account restoration remains UNVERIFIED.
+Original golden byte drift on Windows was reproduced and fixed without changing
+golden values. Historical TEMP/cleanup failures did not reproduce; controlled TEMP
+failure/recovery and strict owned-cleanup regressions were executed separately.
+The enabled localization contributor E2E exposed a bare-python child selecting
+base Conda without Pillow; absolute sys.executable child commands repair this.
+Prior totals/native NOT_RUN statements below describe earlier environments.
+
 ## Final offline evidence for the harness continuation
 
 Starting remote4de09223acf2550b6a766f41c092ff47e60c3263. Fresh authenticated

@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 import localization as loc
@@ -234,19 +235,19 @@ class LocalizationTests(unittest.TestCase):
             result=subprocess.run(args,cwd=self.root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',timeout=240)
             self.assertEqual(result.returncode,0,result.stdout[-4000:])
             return result.stdout
-        run('python','tools/localization.py','add','--locale','en-x-demo','--name','English demo','--font','native-en')
+        run(sys.executable,'tools/localization.py','add','--locale','en-x-demo','--name','English demo','--font','native-en')
         draft=loc.load(self.root/'locales/en-x-demo.json');self.assertTrue(all(v=='' for v in draft.values()))
         self.assertEqual(set(draft),set(loc.load(self.root/'locales/en.json')))
         demo=loc.load(self.root/'locales/en.json');demo['ui.title']='English \"demo\"'
         loc.write(self.root/'locales/en-x-demo.json',demo)
-        run('python','tools/localization.py','validate','--locale','en-x-demo')
+        run(sys.executable,'tools/localization.py','validate','--locale','en-x-demo')
         def enable(data):data['languages'][-1].update(enabled=True,status='complete')
         self.change('locales/languages.json',enable)
-        run('python','tools/localization.py','build')
-        run('python','tools/localization.py','preview','--locale','en-x-demo')
+        run(sys.executable,'tools/localization.py','build')
+        run(sys.executable,'tools/localization.py','preview','--locale','en-x-demo')
         self.assertTrue((self.root/'artifacts/locale-preview-en-x-demo/menu.png').is_file())
-        self.assertIn(f'en-x-demo {len(draft)} / {len(draft)} enabled=True',run('python','tools/localization.py','coverage'))
-        run('python','tools/localization.py','build','--verify')
+        self.assertIn(f'en-x-demo {len(draft)} / {len(draft)} enabled=True',run(sys.executable,'tools/localization.py','coverage'))
+        run(sys.executable,'tools/localization.py','build','--verify')
         run('dotnet','run','--project','tests/RouteKeeper.Core.Tests','-c','Release','--no-build','--','--verify-locales')
         self.assertIn('English demo',(self.root/'integration/gml/locale_name.gml').read_text(encoding='utf-8'))
         self.assertTrue((self.root/'integration/gml/text_2.gml').is_file())
@@ -258,10 +259,10 @@ class LocalizationTests(unittest.TestCase):
             self.assertEqual(before,'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7')
             fonts=loc.load(self.root/'locales/fonts.json');fonts['test-galmuri']=dict(fonts['galmuri14'],resource='fnt_routekeeper_demo')
             loc.write(self.root/'locales/fonts.json',fonts)
-            run('python','tools/localization.py','add','--locale','ko-x-demo','--name','한국어 시험','--font','test-galmuri')
+            run(sys.executable,'tools/localization.py','add','--locale','ko-x-demo','--name','한국어 시험','--font','test-galmuri')
             loc.write(self.root/'locales/ko-x-demo.json',loc.load(self.root/'locales/ko.json'))
             self.change('locales/languages.json',enable)
-            run('python','tools/localization.py','build')
+            run(sys.executable,'tools/localization.py','build')
             output=str(self.root/'private-candidate.win')
             run(cli,'load',original,'-s','integration/patch.csx','-o',output)
             environment=dict(os.environ,ROUTEKEEPER_ORIGINAL=original)

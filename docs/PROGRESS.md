@@ -1,5 +1,20 @@
 # Progress and resumption
 
+## Native Windows continuation — 2026-10-29 KST
+
+See [windows-native-2026-10-29.md](windows-native-2026-10-29.md) for the current
+environment, deterministic Windows golden repair, owned cleanup, independent
+watchdog, private capture bootstrap and source-backed saved-state observer.
+The local SDK10.0.403 resolves without changing global.json. Actual DPI192 native
+non-game capture/input/recovery ran; synthetic receipts do not certify GameMaker.
+No original/patched game or Steam was launched. The final eligible suite and its
+per-command exits stay in ignored `.research/windows-20261029/verified-suite/`.
+All older counts and Windows NOT_RUN descriptions below remain historical.
+The final eligible suite completed63/63 commands; Python221 passed with2 platform
+skips; C#274 standard checks plus9317 source/model assertions. Both PowerShell
+editions passed fresh GUI receipts. Read-only game Preflight remained BLOCKED on
+running Steam; original/patched/UI/combat/Forced/ending execution remains NOT_RUN.
+
 ## Final offline evidence for the harness continuation
 
 Starting remote4de09223acf2550b6a766f41c092ff47e60c3263. Fresh authenticated

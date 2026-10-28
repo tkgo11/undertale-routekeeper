@@ -53,6 +53,7 @@ function Invoke-RkNativeJson([string[]]$Arguments) {
 function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
  $watch=[Diagnostics.Stopwatch]::StartNew();$stable=0;$last=$null;$matched=New-Object 'Collections.Generic.List[string]'
  for($frame=0;$frame -lt $Step.maxFrames -and $watch.ElapsedMilliseconds -lt $Step.timeoutMs;$frame++){
+  Update-RkExternalWatchdog
   if($Context.watch.ElapsedMilliseconds -gt 300000 -or $Context.counter -ge 2000 -or $Context.bytes -ge 64MB){throw 'Native global watchdog/frame budget expired.'}
   if((Get-FileHash -LiteralPath (Join-Path $Context.root 'native-plan.json')).Hash.ToLowerInvariant() -cne $Context.planSha){throw 'Frozen native plan changed; stop inputs.'}
   Assert-RkNetworkOffline

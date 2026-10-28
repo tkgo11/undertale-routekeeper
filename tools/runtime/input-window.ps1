@@ -15,6 +15,7 @@ public static class RkWindowInput {
 '@
 }
 function Assert-RkInputWindow($Process,[IntPtr]$Window,[string]$Executable,[string]$Hash,[long]$StartTicks,[string]$AbortFile) {
+ if(Get-Command Assert-RkExternalWatchdog -ErrorAction SilentlyContinue){Assert-RkExternalWatchdog}
  Assert-RkNoLinks $AbortFile
  if(Test-Path -LiteralPath $AbortFile){throw 'Emergency abort requested.'}
  $Process.Refresh()

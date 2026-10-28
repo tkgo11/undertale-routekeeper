@@ -8,6 +8,10 @@ import argparse,ast,hashlib,itertools,json,re
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--verify',action='store_true');a=p.parse_args()
 sources={}
+def source_paths(pattern):
+ # Path ordering is case-insensitive on Windows. Use ordinal resource names
+ # explicitly so source hash insertion order and golden bytes match every host.
+ return sorted(a.source.glob(pattern),key=lambda path:path.name)
 def read(name):
  s=(a.source/(name+'.gml')).read_text(encoding='utf-8');sources[name]=hashlib.sha256(s.encode()).hexdigest();return s
 
@@ -210,7 +214,7 @@ for won,writer,halt in itertools.product(range(2),repeat=3):
 # Syntactic counter-write inventory (all original resources), NOT a proof that
 # every actor's death or nonstandard script return is reachable or reward-safe.
 killSites=[]
-for sourcePath in sorted(a.source.glob('*.gml')):
+for sourcePath in source_paths('*.gml'):
  text=sourcePath.read_text(encoding='utf-8')
  if re.search(r'global\.kills\s*(?:\+=|-=|=(?!=)|\+\+)',text):
   read(sourcePath.stem);killSites.append(sourcePath.stem)
@@ -224,10 +228,10 @@ for match in re.finditer(r'case (\d+):([\s\S]*?)(?=\n    case |\n})',groups):
  enemy=int(re.search(r'global.monstertype\[0\] = (\d+)',section)[1])
  stats=body(setup,f'if (global.monstertype[myself] == {enemy})')
  values=[int(re.search(r'global.'+key+r'\[myself\] = (-?\d+)',stats)[1]) for key in ['monsterhp','monsterdef','xpreward']]
- own=[read(p.stem) for p in sorted(a.source.glob('gml_Object_'+actor[1]+'_*.gml'))]
+ own=[read(p.stem) for p in source_paths('gml_Object_'+actor[1]+'_*.gml')]
  zeroExpActors.append([int(match[1]),enemy,*values,int(any('killed = 1;' in text for text in own)),int('scr_monsterdefeat(' in read('gml_Object_'+actor[1]+'_Destroy_0'))])
 # Own-event closure is narrower than arbitrary cross-instance/global dispatch.
-bombOwn=[read(p.stem) for p in sorted(a.source.glob('gml_Object_obj_battlebomb_*.gml'))]
+bombOwn=[read(p.stem) for p in source_paths('gml_Object_obj_battlebomb_*.gml')]
 assert all(value.strip()=='0' for text in bombOwn for value in re.findall(r'\bkilled\s*=\s*([^;]+);',text))
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)

@@ -80,7 +80,7 @@ function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
   try{$bitmap.Save($imageStream,[Drawing.Imaging.ImageFormat]::Png);$imageStream.Flush($true)}finally{$imageStream.Dispose()}
   $imageHash=(Get-FileHash -LiteralPath $temp -Algorithm SHA256).Hash.ToLowerInvariant()
   # No window title, executable path, desktop origin, username or Steam ID.
-  $metadata=[ordered]@{schema=1;method='CopyFromScreen';imageSha256=$imageHash;clientSize=@($rect.Right,$rect.Bottom);foregroundBefore=$true;foregroundAfter=$true;ownerPid=[int]$owner;pid=$process.Id;runnerSha256=$ExpectedRunnerSha256;expectedRunnerSha256=$ExpectedRunnerSha256;processStartedUtc=$processStarted;startedUtc=$started;finishedUtc=[DateTime]::UtcNow.ToString('o');dpi=[int]$dpi;overlayIsolation='UNPROVEN';gameplay='NOT_RUN'}
+  $metadata=[ordered]@{schema=1;method='CopyFromScreen';imageSha256=$imageHash;clientSize=@($rect.Right,$rect.Bottom);foregroundBefore=$true;foregroundAfter=$true;ownerPid=[int]$owner;pid=$process.Id;windowHandle=$window.ToInt64();runnerSha256=$ExpectedRunnerSha256;expectedRunnerSha256=$ExpectedRunnerSha256;processStartedUtc=$processStarted;startedUtc=$started;finishedUtc=[DateTime]::UtcNow.ToString('o');dpi=[int]$dpi;overlayIsolation='UNPROVEN';gameplay='NOT_RUN'}
   $bytes=[Text.Encoding]::UTF8.GetBytes(($metadata|ConvertTo-Json -Depth 8)+"`n")
   $stream=New-Object IO.FileStream($metaTemp,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
   try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}

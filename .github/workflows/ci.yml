@@ -51,6 +51,14 @@ jobs:
       - run: python tools/test_screen_verify.py
       - run: python tools/test_windows_e2e.py
       - run: python tools/test_native_gameplay.py
+      - run: python tools/test_native_bootstrap.py
+      - run: python tools/test_save_observer.py
+      - run: python tools/test_native_capture_contract.py
+      - run: python tools/test_audit_source_order.py
+      - run: python tools/test_windows_test_suite.py
+      - name: Verify independent watchdog using harmless owned Windows processes
+        if: runner.os == 'Windows'
+        run: python tools/runtime/test-watchdog.py
       - run: python tools/test_runtime_lab.py
       - run: python tools/test_workflow_safety.py
       - run: python tools/test_private_validation.py
@@ -65,6 +73,20 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./tools/runtime/test-e2e.ps1
+      - name: Verify owned cleanup and legacy compiler TEMP fixtures
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./tools/runtime/test-workspace-cleanup.ps1
+          ./tools/runtime/test-addtype-temp.ps1
+          ./tools/runtime/test-watchdog.ps1
+      - name: Verify watchdog and owned cleanup under Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ./tools/runtime/test-workspace-cleanup.ps1
+          ./tools/runtime/test-addtype-temp.ps1
+          ./tools/runtime/test-watchdog.ps1
       - name: Verify filesystem protocol under Windows PowerShell 5.1 only
         if: runner.os == 'Windows'
         shell: powershell
