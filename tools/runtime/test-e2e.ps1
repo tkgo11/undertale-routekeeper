@@ -5,6 +5,20 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'input-window.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
 function Check([bool]$Value,[string]$Message){if(!$Value){throw $Message};Write-Host ('OFFLINE_PASS '+$Message)}
+. (Join-Path $PSScriptRoot 'sdk-policy.ps1')
+Check (Test-RkSdkAllowed '10.0.402' '10.0.402' 'latestPatch') 'SDK exact pin accepted'
+Check (Test-RkSdkAllowed '10.0.403' '10.0.402' 'latestPatch') 'SDK newer same feature-band patch accepted'
+Check (!(Test-RkSdkAllowed '10.0.401' '10.0.402' 'latestPatch')) 'SDK older patch rejected'
+Check (!(Test-RkSdkAllowed '10.0.500' '10.0.402' 'latestPatch')) 'SDK different feature band rejected'
+Check (!(Test-RkSdkAllowed '10.1.402' '10.0.402' 'latestPatch')) 'SDK different minor rejected'
+Check (Test-RkSdkAllowed '10.0.402' '10.0.402' 'disable') 'SDK exact-only policy accepted'
+Check (!(Test-RkSdkAllowed '10.0.403' '10.0.402' 'disable')) 'SDK exact-only policy rejects later patch'
+$policyRefused=$false
+try{$null=Test-RkSdkAllowed '10.0.403' '10.0.402' 'unsupported'}catch{$policyRefused=$true}
+Check $policyRefused 'SDK unsupported rollForward policy refused'
+$policyRefused=$false
+try{$null=Test-RkSdkAllowed '10.0.403-prerelease' '10.0.402' 'latestPatch'}catch{$policyRefused=$true}
+Check $policyRefused 'SDK malformed/prerelease value refused'
 foreach($file in Get-ChildItem -LiteralPath $PSScriptRoot -Filter '*.ps1'){
  $tokens=$null;$errors=$null;$null=[Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors)
  Check (!$errors) ('AST '+$file.Name)
