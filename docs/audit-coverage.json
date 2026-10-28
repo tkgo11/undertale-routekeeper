@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "audit_date": "2026-10-28",
+  "audit_date": "2026-10-29",
   "baseline_head": "818fabab978a465d2ae07ff7d054f6dcb1a667fb",
   "snapshot": "Source tree committed with this inventory; git log -1 identifies the resulting HEAD.",
   "decision": "NO-GO for current-account game smoke; see docs/code-audit.md",
@@ -3004,10 +3004,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 33426,
-      "lines": 511,
-      "sha256": "cabd740fba87afe63c0f99460c16af8b595f8575a0c71f5d27c0115d5d2d76eb",
-      "reviewed_against_head": "c978ccd58a939369592ca30b09d02a3655457c43"
+      "bytes": 33797,
+      "lines": 516,
+      "sha256": "f82755720e882f93c406a7fb779ed139b3ad948ce85af6069871ddfc54e1d2b1",
+      "reviewed_against_head": "2ccce429980b249bdf2263fa3ae90508ad8616d1"
     }
   ],
   "continuation_start_head": "bf552d788cbf89c4ee79af6a9e5fbd030f85413e",
