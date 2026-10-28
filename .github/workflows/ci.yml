@@ -69,6 +69,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: powershell
         run: ./tools/runtime/test-current-account.ps1
+      - name: Verify genuine disposable NTFS guards and interrupted recovery (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/runtime/test-native-filesystem.ps1
+      - name: Verify genuine disposable NTFS guards and interrupted recovery (PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./tools/runtime/test-native-filesystem.ps1
       - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-ui integration
       - name: Verify real delta packaging on synthetic data
         if: runner.os == 'Linux'
