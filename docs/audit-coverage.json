@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 38881,
-      "lines": 598,
-      "sha256": "a3102f8587c2973acf45e9cc278802ebc99ba42c019602a1425a0e18ddfd3f46",
+      "bytes": 41323,
+      "lines": 635,
+      "sha256": "6a2e33df9312e79ec0a967e6acd480972003aa9d351befb240db338e386eaddd",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "reviewed_against_head": "1300512eeecbe8bf3a8473b250cb268cfa08fbab"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -195,10 +195,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 14913,
-      "lines": 205,
-      "sha256": "805bdbecfe7751522c1a740ba0dece7888ce808a9dd6d2ad35c525b4aee04ae1",
-      "reviewed_against_head": "42d4164a9482c09d72f4e553649fb65b02c80685"
+      "bytes": 16275,
+      "lines": 225,
+      "sha256": "2ebc8457ce3c1bc3c565b4658548782bc07a145bfd3f063244f52ae7f7088d02",
+      "reviewed_against_head": "1300512eeecbe8bf3a8473b250cb268cfa08fbab"
     },
     {
       "path": "docs/ending-audit.md",
@@ -367,16 +367,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 34700,
-      "lines": 482,
-      "sha256": "50e82d717347e2deda6603534990e45967d4dee35484d6f94e0508e55d25c01d",
+      "bytes": 37142,
+      "lines": 519,
+      "sha256": "1ee609d22eaafdfd82c5343755e10a7c3cde3e792f3ce1479d5b6343f15f88f8",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "4de09223acf2550b6a766f41c092ff47e60c3263"
+      "reviewed_against_head": "1300512eeecbe8bf3a8473b250cb268cfa08fbab"
     },
     {
       "path": "docs/ui-fonts.md",

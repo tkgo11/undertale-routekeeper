@@ -1,5 +1,42 @@
 # Progress and resumption
 
+## Final offline evidence for the harness continuation
+
+Starting remote4de09223acf2550b6a766f41c092ff47e60c3263. Fresh authenticated
+Prepare at1300512 (after mandatory-contract pinning) passed the existing
+compiler/serialization/reload/original-preservation pipeline and both exact220-file
+copy inventories. verify-prepared passed again. Candidate remains63,195,750 bytes,
+SHA2564457dbf421230c596df0d2c27754e8e94293c03c8e1106c6c1b07b9552f2c96c;
+original b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7.
+No original/patched executable or Steam was launched.
+
+OFFLINE_PASS: Release0 warnings/errors;279 C# checks plus9317 source-derived/
+bounded assertions; E2E21; native-contract11; screen51; archive14; localization37;
+UI22; PowerShell52 synthetic/control/AST checks plus shared101 filesystem/recovery
+checks; workflow2, private-validator6, encoding2, audit-inventory3 and Python lint.
+Original golden generation and27 dispatch/115 original-source hashes passed.
+The actual optimized Check, single-entry DryRun and public-Work Report commands
+also passed. Synthetic local bytes were restored through the shared transaction;
+reports honestly retain NEEDS_REVIEW and nativeGameplay NOT_RUN.
+
+Evidence: ignored .research/e2e-hardening/{authentic-delivery,prepared-delivery-verified,
+e2e-final,native-final,screen-final,ps-final,check-optimized-final}.log and
+prepared-delivery/build-private.log. Private end-to-end reports are below
+private-evidence/e2e-hardening-delivery. Earlier prepared-* directories are historical
+and fail current control pins after source changes; never refresh old seals in place.
+
+WORKSTREAM_A: PARTIAL for the full requested audit/failure matrix, despite the
+confirmed routing/prerequisite/recovery/input defects being fixed. Native platform
+faults, the complete cross-product of interruption/permission/disk-full/locking
+conditions and abrupt-controller-death protection are not independently established.
+WORKSTREAM_B: PARTIAL: real original/patched UI adapter and feedback pipeline exist,
+but authentic reviewed bootstrap/movement contracts, GameMaker acceptance, loaded
+bytecode identity and independent combat observers are absent. The original baseline
+must be scoped-reviewed before patched comparison; missing evidence blocks it.
+WINDOWS_NATIVE: NOT_RUN for the new native suite. GAMEPLAY_E2E: BLOCKED/NOT_RUN.
+No compatibility promotion, account-isolation claim, merge or release approval.
+
+
 ## Current E2E hardening continuation
 
 See [e2e-hardening.md](e2e-hardening.md) for the corrected Work/report resolver,

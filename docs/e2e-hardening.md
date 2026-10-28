@@ -184,7 +184,7 @@ status must be read fresh; automated summaries are not formal approval.
 Starting remote HEAD4de09223acf2550b6a766f41c092ff47e60c3263. Source changes are
 identified by the commits containing this document; use git rev-parse HEAD for the
 final delivery HEAD. Release build0 warnings/errors;279 standard C# checks and9317
-source-derived/bounded assertions passed. E2E20, native-contract11, screen51,
+source-derived/bounded assertions passed. E2E21, native-contract11, screen51,
 archive14, locale37 (including contributor E2E), UI22, private-validator6,
 workflow2, encoding2 and inventory3 passed. PowerShell controlled-response/
 filesystem tests cover the new refusal paths; they are not native Win32 calls.
@@ -203,3 +203,23 @@ The actual single-entry DryRun and subsequent Report using the *same public Work
 completed at private-evidence/e2e-hardening-current. Reports remain NEEDS_REVIEW,
 nativeGameplay NOT_RUN; the PS receipt separately verifies synthetic local save
 bytes. This is not Steam account restoration or native game acceptance.
+
+## Remaining verification and implementation gaps
+
+- No out-of-process guardian currently guarantees release/owned-game termination
+  after the controller host is forcibly killed. Finally blocks cannot survive that
+  event. Recovery records refuse unknown states, but this is not prevention proof.
+- Full NTFS power-loss durability, PS5.1/7 native API behavior, DPI125/150,
+  multi-monitor/fullscreen/focus races and same-process HWND reuse need actual native
+  tests. Client-space comparisons preserve pixels; they do not establish capture
+  ownership against overlays or authenticate a claimed private reference.
+- Authentic title/bootstrap/movement captures and checked non-destructive action
+  traces are unavailable here. FullE2E therefore has no bundled executable genuine
+  gameplay plan; it refuses missing plans instead of sending guessed confirmations.
+- Read-only loaded-bytecode identity and HP/enemyHP/EXP/LV/kill/vanilla-flag observers
+  are not implemented. Combat, Forced, save/load and high-risk endings remain blocked.
+- No complete proof of Neutral6/call8 is supplied. Qlty issue details require an
+  authorized report/session not available here; local lint is not a replacement.
+
+These limitations keep both broad workstreams PARTIAL. They must not be hidden by
+calling a parameterized scene adapter a fully verified game automation system.
