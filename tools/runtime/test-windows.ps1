@@ -16,6 +16,7 @@ $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 . (Join-Path $PSScriptRoot 'native-selftest.ps1')
 . (Join-Path $PSScriptRoot 'native-gameplay.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
+. (Join-Path $PSScriptRoot 'sdk-policy.ps1')
 function Invoke-RkPython([string[]]$Arguments) {
  & python (Join-Path $repo 'tools/windows_e2e.py') @Arguments
  if($LASTEXITCODE -ne 0){throw 'E2E command failed closed; inspect private diagnostics. No launch or restore is inferred.'}
@@ -55,8 +56,10 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
   $versions=@(& $dotnet.Source --version)
   if($LASTEXITCODE -ne 0 -or $versions.Count -ne 1 -or $versions[0] -isnot [string]){throw 'Invalid SDK probe output.'}
   $version=$versions[0]
-  $pinned=(Get-Content -LiteralPath (Join-Path $repo 'global.json') -Raw|ConvertFrom-Json).sdk.version
-  if($LASTEXITCODE -ne 0 -or $version.Trim() -cne $pinned){throw 'Exact SDK pinned in global.json required.'}
+  $sdk=(Get-Content -LiteralPath (Join-Path $repo 'global.json') -Raw|ConvertFrom-Json).sdk
+  if(!(Test-RkSdkAllowed $version.Trim() $sdk.version $sdk.rollForward)){
+   throw 'Installed .NET SDK is incompatible with global.json rollForward policy.'
+  }
   Write-Host ('OFFLINE_PASS .NET SDK '+$version)
   Write-Output (@{kind='CHECK_ONLY';nativeWindows=([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT);nativeGameplay='NOT_RUN';defaultRun='NO-GO'}|ConvertTo-Json)
   return
