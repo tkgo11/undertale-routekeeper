@@ -401,10 +401,15 @@ def check_native_test(work):
         if receipt.get(field)!=screen.hash_file(ROOT/'tools/runtime'/name):raise StopRun('Native helper changed since test')
     sidecar=screen.load_json(work/'window.png.json')
     image,_=screen.png(work/'window.png',sidecar['imageSha256']);screen.capture_status(sidecar,image)
-    logical,_=screen.normalize(image)
-    features=[dict(id='white-bar',kind='solid',rect=[16,16,304,19],color=[255,255,255]),
-              dict(id='black-field',kind='solid',rect=[40,50,280,200],color=[0,0,0])]
-    if not all(r['matches'] for r in screen.structure(logical,features)):raise StopRun('Native test window capture geometry/obstruction mismatch')
+    # This WinForms fixture paints native client pixels directly. Unlike the
+    # actual 320x240 GameMaker game, it is not guaranteed to have identical 2x2
+    # blocks (DPI scaling and GDI edges are allowed). Do not normalize it as a game.
+    if image.size != (640,480) or sidecar.get('clientSize') != [640,480]:
+        raise StopRun('Native test window must capture the expected 640x480 client')
+    features=[dict(id='white-bar',kind='solid',rect=[32,32,608,38],color=[255,255,255]),
+              dict(id='black-field',kind='solid',rect=[80,100,560,400],color=[0,0,0])]
+    if not all(r['matches'] for r in screen.structure(image,features)):
+        raise StopRun('Native test window capture geometry/obstruction mismatch')
     return dict(result='PASS',scope='NATIVE_NON_GAME_CAPTURE_AND_MESSAGES_ONLY',nativeGameplay='NOT_RUN',overlayIsolation='UNPROVEN')
 
 
