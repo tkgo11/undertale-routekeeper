@@ -107,9 +107,12 @@ python tools/native_gameplay.py validate --plan "$env:LOCALAPPDATA\RoutekeeperE2
 
 No new OS account, VM, Sandbox or admin is required. Python/Pillow/pinned SDK/CLI
 and legitimate already-authenticated Steam are prerequisites. Cloud-off, offline
-Steam preparation and network disconnection remain operator prerequisites, not
+Steam preparation and physical network disconnection remain operator prerequisites, not
 automated changes or proof of RemoteStorage isolation. Existing app-cache/history
-files still block; never delete them to get past a gate.
+files still block; never delete them to get past a gate. Virtual adapters need not
+be disabled. The shared guard checks classified hardware-link states and Windows
+NLM Internet connectivity, and refuses unknown classifications/query failures.
+Local-only virtual links are permitted; this observation is not account isolation.
 
 Safe, executable now without Steam/game:
 

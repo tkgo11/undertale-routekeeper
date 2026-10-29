@@ -98,7 +98,10 @@ Read docs/runtime-validation.md for exact preparation/recovery/evidence commands
 Never introduce a registered-install swap fallback or fake Steam SDK ownership.
 
 Cloud must be disabled globally/per game before testing, Steam authenticated then
-prepared offline and exited, and adapters manually disconnected. Known permanent
+prepared offline and exited, and physical network connections manually disconnected.
+Virtual adapters may remain enabled: the shared guard checks hardware-link state
+and Windows NLM Internet connectivity, refusing missing/ambiguous observations.
+This is an observed-offline gate, not proof of account isolation. Known permanent
 history or preexisting app391540 cache FILES block Run: never delete personal data
 just to pass a gate. SDK/server/opaque account metadata remain UNPROVEN regardless
 of local restoration. No SAVE, RESET, TRUE RESET, Genocide/Soulless/ending testing.

@@ -49,8 +49,39 @@ function Assert-RkNativeSaveTree([string]$Path){
 function Assert-RkProcessesClosed {
  if(@(Get-Process steam,steamwebhelper,UNDERTALE -ErrorAction SilentlyContinue).Count){throw 'Exit Steam and UNDERTALE completely; no personal files are changed until both stop.'}
 }
+function Get-RkNetworkObservation {
+ # Read-only local observations; no probes, setting changes or adapter-name exemptions.
+ $adapters=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | ForEach-Object {
+  @{hardware=$_.HardwareInterface;status=[string]$_.Status}
+ })
+ $manager=$null
+ try {
+  $kind=[type]::GetTypeFromCLSID([guid]'DCB00C01-570F-4A9B-8D69-199FDBA5723B')
+  $manager=[Activator]::CreateInstance($kind)
+  return @{adapters=$adapters;internet=$manager.IsConnectedToInternet;connectivity=[int]$manager.GetConnectivity()}
+ } finally {
+  if($null -ne $manager){$null=[Runtime.InteropServices.Marshal]::ReleaseComObject($manager)}
+ }
+}
+function Assert-RkOfflineObservation($Observation) {
+ if($null -eq $Observation -or $Observation.internet -isnot [bool] -or $Observation.connectivity -isnot [int]){throw 'Internet connectivity observation unavailable; no execution.'}
+ $flags=$Observation.connectivity
+ # NLM IPv4/IPv6 Internet flags are 0x40/0x400. Unknown flags fail closed.
+ if($flags -lt 0 -or ($flags -band (-bnot 0x773)) -ne 0 -or $Observation.internet -or ($flags -band 0x440)){
+  throw 'Windows reports Internet connectivity or an unknown connectivity state. Disconnect Wi-Fi/unplug Ethernet after Steam Go Offline; virtual adapters need not be disabled.'
+ }
+ $physical=0
+ foreach($adapter in @($Observation.adapters)){
+  if($null -eq $adapter -or $adapter.hardware -isnot [bool] -or [string]::IsNullOrWhiteSpace($adapter.status)){throw 'Adapter classification/status unavailable; no execution.'}
+  if($adapter.hardware){
+   $physical++
+   if($adapter.status -cnotin @('Disconnected','Disabled','Not Present')){throw 'Physical network connection remains active or uncertain. Disconnect Wi-Fi/unplug Ethernet; leave virtual adapters unchanged.'}
+  }
+ }
+ if(!$physical){throw 'Physical adapter inventory unavailable; offline state cannot be verified.'}
+}
 function Assert-RkNetworkOffline {
- if(@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | Where-Object Status -eq 'Up').Count){throw 'Disconnect all adapters manually after Steam Go Offline. This tool never changes host networking.'}
+ Assert-RkOfflineObservation (Get-RkNetworkObservation)
 }
 function Assert-RkSteamClient([string]$Exe) {
  Assert-RkNoLinks $Exe

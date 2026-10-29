@@ -109,7 +109,12 @@ credentials/account identifiers. The probe verifies current/fresh policy binding
 
 Before an authorized native experiment, legitimately authenticate owned UNDERTALE,
 prepare Steam Offline Mode, disable Cloud globally/per game, exit Steam/helpers,
-and disconnect adapters manually. The tool never performs those configuration
+and disconnect physical network connections manually (disconnect Wi-Fi/unplug
+Ethernet). Virtual adapters may remain enabled. The shared gate requires explicit
+disconnected/disabled/not-present hardware links and no Windows NLM Internet
+connectivity; missing/ambiguous observations refuse execution. It makes no external
+probe or network setting change and does not prove account isolation.
+The tool never performs those configuration
 changes. Cloud-off is not an account-history sandbox. Existing local permanent
 history or app391540 cache files still block; never delete them to pass.
 

@@ -539,3 +539,21 @@ The optional private host-stage mock initially refused an already populated old
 lab, as designed. A fresh-lab run then exposed a test-only relative-vs-absolute
 mapping comparison; both test inputs now resolve before invoking the launcher.
 The final fresh-lab run is recorded in resume-host-staging-final.log; no Sandbox/Steam/game execution occurred. Original inventory remained intact.
+
+# 2026-10-30 offline-gate correction (gameplay remains unverified)
+
+Regression coverage separates physically disconnected links with active virtual
+interfaces from active/unknown physical links, IPv4/IPv6 Internet flags, malformed
+classification/connectivity values, missing physical inventory and query failure.
+The actual connected host must refuse; a fixture acceptance is not an executed
+offline game or proof of account isolation. The earlier real refused console
+attempt is retained privately; no original/patched game execution follows from it.
+
+Fresh Windows checks passed in PowerShell 7 and Windows PowerShell 5.1:
+27 network-policy fixtures, the existing 101 current-account checks and the E2E
+offline suite. The Python Windows-E2E suite passed 21 tests (one skipped).
+The actual connected host was correctly refused by the new read-only gate.
+Initial sandbox TEMP/authorization errors and an E2E invocation without the
+project Python/Pillow PATH were environment failures; corrected runs passed.
+Private logs are under `.research/gameplay-20261030-network/`. None of these
+checks launches UNDERTALE or certifies disconnected-host gameplay.

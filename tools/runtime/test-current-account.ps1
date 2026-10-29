@@ -1,5 +1,6 @@
 # Executable filesystem/failure tests. No actual profile, Steam or native API use.
 $ErrorActionPreference='Stop'
+& (Join-Path $PSScriptRoot 'test-network-offline.ps1')
 . (Join-Path $PSScriptRoot 'safety.ps1')
 . (Join-Path $PSScriptRoot 'current-account-state.ps1')
 $count=0

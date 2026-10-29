@@ -648,3 +648,20 @@ optional alternatives. The PR stays Ready for review, open and unmerged.
 These are source modifications with static audit assertions, **not**
 Windows-native test results: native startup, save safety and gameplay
 remain NOT_RUN; compatibility remains InspectedOnly.
+
+# 2026-10-30 Windows offline-gate correction
+
+The owner requested physical Internet disconnection without disabling VMware,
+VirtualBox, Tailscale or hidden miniports. A real refused attempt retained under
+ignored `.research/gameplay-20261029-session2/` showed the old any-adapter-Up gate
+blocking after Wi-Fi was disconnected. No game was launched by that attempt.
+
+The shared read-only gate now requires a nonempty, Boolean-classified hardware
+inventory with explicitly disconnected/disabled/not-present physical links and
+Windows NLM reporting no IPv4/IPv6 Internet connectivity. Virtual links may remain
+Up. Unknown states/query failures still refuse. It never changes adapters, VPNs,
+firewall rules or Steam settings, and sends no external probes. NLM is advisory;
+this combined observation is not a Steam account sandbox or a guarantee against
+reconnection/deferred synchronization. Existing repeated checks, Steam/Cloud,
+fresh consent, save transactions and watchdog remain mandatory. Shared-helper
+changes invalidate earlier prepared seals; a fresh preparation is required.

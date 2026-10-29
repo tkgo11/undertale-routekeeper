@@ -32,7 +32,7 @@ $legacy=Join-Path $local 'RoutekeeperCurrentSession'
 if(Test-Path -LiteralPath $legacy){throw 'Legacy swap/quarantine session exists. Do not run a new test or delete backups. See the legacy recovery section in runtime-validation.md; this protocol does not trust legacy restore paths.'}
 if($Action -eq 'Preflight'){
  Write-Host 'EXPERIMENTAL, native execution NOT_RUN. Same account, side-by-side copies; registered Steam installation is read-only.'
- Write-Host 'Disable Cloud BEFORE setup; Go Offline and exit Steam; disconnect adapters manually. Never SAVE/RESET/TRUE RESET/complete endings.'
+ Write-Host 'Disable Cloud BEFORE setup; Go Offline and exit Steam; disconnect Wi-Fi/unplug Ethernet manually. Virtual adapters may remain enabled. Never SAVE/RESET/TRUE RESET/complete endings.'
  Write-Host 'Local-save restoration cannot undo Steam account-level history. Known persistent files block Run; account isolation is NOT guaranteed.'
  if(!$SteamExe -or !$GameInstall -or !$Lab -or !$PatchedData){Write-Host 'Supply Lab, PatchedData, SteamExe and GameInstall for read-only readiness checks.';return}
 }
