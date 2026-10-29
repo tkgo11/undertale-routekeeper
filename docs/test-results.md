@@ -557,3 +557,17 @@ Initial sandbox TEMP/authorization errors and an E2E invocation without the
 project Python/Pillow PATH were environment failures; corrected runs passed.
 Private logs are under `.research/gameplay-20261030-network/`. None of these
 checks launches UNDERTALE or certifies disconnected-host gameplay.
+
+## 2026-10-30 protected-directory retry failure
+
+A subsequent real operator attempt passed network/native non-game checks and
+fresh human consent, then failed before any game launch: reapplying the prepared
+root ACL through `Set-Acl` required `SeSecurityPrivilege`. An ordinary-user empty
+directory reproduced first-initialization success followed by repeat failure.
+The fix persists only a fresh private DACL through the .NET directory API and
+verifies owner/group preservation plus the exact protected user/SYSTEM rules.
+Unelevated PowerShell 7 and 5.1 native filesystem regressions passed repeated
+initialization, wrong-owner refusal and child inheritance. NativeTest now includes
+the repeat/wrong-owner regression. A separate full NativeTest attempt stopped on
+focus/window ownership; it is retained as BLOCKED, not a gameplay PASS. Original
+and patched game execution remain NOT_RUN for this failure investigation.

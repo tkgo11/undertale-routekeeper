@@ -9,6 +9,14 @@ function Test-RkNativeDesktop([string]$Output) {
  Assert-RkNativeSaveTree $Output
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  Initialize-RkPrivateRoot $Output $owner
+ # Real NTFS regression: a second initialization of an already protected root
+ # must retain the exact private DACL without requiring SeSecurityPrivilege.
+ $privateBefore=(Get-Acl -LiteralPath $Output).Sddl
+ Initialize-RkPrivateRoot $Output $owner
+ if((Get-Acl -LiteralPath $Output).Sddl -cne $privateBefore){throw 'Repeated private-root initialization changed its security descriptor.'}
+ $wrongOwnerRefused=$false
+ try{Initialize-RkPrivateRoot $Output 'S-1-5-18'}catch{if($_.Exception.Message -like '*not owned*'){$wrongOwnerRefused=$true}else{throw}}
+ if(!$wrongOwnerRefused -or (Get-Acl -LiteralPath $Output).Sddl -cne $privateBefore){throw 'Foreign-owner initialization did not refuse without changes.'}
  # Ordinary-user NTFS negative probes, only in the owned private directory.
  $file=Join-Path $Output 'native-file.txt';[IO.File]::WriteAllText($file,'SYNTHETIC ONLY')
  $alias=Join-Path $Output 'native-hardlink.txt'

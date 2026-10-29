@@ -94,11 +94,31 @@ function Initialize-RkPrivateRoot([string]$Path,[string]$Owner){
  if(!(Test-Path -LiteralPath $Path)){New-Item -ItemType Directory -Path $Path | Out-Null}
  $acl=Get-Acl -LiteralPath $Path
  if($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -ne $Owner){throw 'Runtime workspace is not owned by the current user.'}
- $acl.SetAccessRuleProtection($true,$false)
- foreach($oldRule in @($acl.Access)){$acl.RemoveAccessRuleSpecific($oldRule)}
+ # Persist only a fresh DACL. The PowerShell provider can request audit/owner
+ # privileges when reapplying a protected descriptor, even without audit edits.
+ $access=[Security.AccessControl.DirectorySecurity]::new()
+ $access.SetAccessRuleProtection($true,$false)
  foreach($sid in @($Owner,'S-1-5-18')){
   $rule=[Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($sid),'FullControl','ContainerInherit,ObjectInherit','None','Allow')
-  $acl.AddAccessRule($rule)
+  $access.AddAccessRule($rule)
  }
- Set-Acl -LiteralPath $Path -AclObject $acl
+ $directory=[IO.DirectoryInfo]::new([IO.Path]::GetFullPath($Path))
+ if($PSVersionTable.PSEdition -eq 'Core'){
+  [IO.FileSystemAclExtensions]::SetAccessControl($directory,$access)
+ }else{$directory.SetAccessControl($access)}
+ $actual=Get-Acl -LiteralPath $Path
+ $rules=@($actual.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
+ $invalid=@($rules | Where-Object {
+  $_.IdentityReference.Value -notin @($Owner,'S-1-5-18') -or $_.IsInherited -or
+  $_.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow -or
+  $_.FileSystemRights -ne [Security.AccessControl.FileSystemRights]::FullControl -or
+  $_.InheritanceFlags -ne ([Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [Security.AccessControl.InheritanceFlags]::ObjectInherit) -or
+  $_.PropagationFlags -ne [Security.AccessControl.PropagationFlags]::None
+ })
+ if($actual.GetOwner([Security.Principal.SecurityIdentifier]).Value -cne $Owner -or
+    $actual.GetGroup([Security.Principal.SecurityIdentifier]).Value -cne $acl.GetGroup([Security.Principal.SecurityIdentifier]).Value -or
+    !$actual.AreAccessRulesProtected -or $rules.Count -ne 2 -or $invalid.Count -or
+    @($rules.IdentityReference.Value | Select-Object -Unique).Count -ne 2){
+  throw 'Private DACL/owner/group verification failed; no execution.'
+ }
 }
