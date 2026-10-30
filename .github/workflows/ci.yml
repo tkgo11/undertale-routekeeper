@@ -1,0 +1,120 @@
+name: build-and-test
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  synthetic:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+          - os: macos-15-intel
+            rid: osx-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          global-json-file: global.json
+      - run: dotnet build RouteKeeper.slnx -c Release
+      - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Tool.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Saves.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build -- --verify-gml integration/gml/route_evaluate.gml
+      - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build -- --verify-gml integration/gml
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-adapters integration/gml
+      - run: dotnet run --project tests/RouteKeeper.History.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Audit.Tests -c Release --no-build
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0 pyflakes==3.4.0
+      - run: python -m pyflakes integration tools
+      - run: python tools/localization.py build --verify
+      - run: python tools/test_localization.py
+        env:
+          ROUTEKEEPER_LOCALE_E2E: '1'
+      - run: python integration/ui/generate.py --verify
+      - run: python integration/generate_font.py --verify
+      - run: python integration/ui/test_ui.py
+      - run: python tools/test_screen_verify.py
+      - run: python tools/test_windows_e2e.py
+      - run: python tools/test_native_gameplay.py
+      - run: python tools/test_native_bootstrap.py
+      - run: python tools/test_save_observer.py
+      - run: python tools/test_native_capture_contract.py
+      - run: python tools/test_audit_source_order.py
+      - run: python tools/test_windows_test_suite.py
+      - name: Verify independent watchdog using harmless owned Windows processes
+        if: runner.os == 'Windows'
+        run: python tools/runtime/test-watchdog.py
+      - run: python tools/test_runtime_lab.py
+      - run: python tools/test_workflow_safety.py
+      - run: python tools/test_private_validation.py
+      - run: python tools/test_audit_inventory.py
+      - run: python tools/test_source_encoding.py
+      - run: python tools/audit_inventory.py
+      - name: Verify Windows harness source and filesystem guards only
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/runtime/test-sandbox.ps1
+      - name: Verify E2E synthetic adapters and recovery only
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/runtime/test-e2e.ps1
+      - name: Verify owned cleanup and legacy compiler TEMP fixtures
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./tools/runtime/test-workspace-cleanup.ps1
+          ./tools/runtime/test-addtype-temp.ps1
+          ./tools/runtime/test-watchdog.ps1
+      - name: Verify watchdog and owned cleanup under Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ./tools/runtime/test-workspace-cleanup.ps1
+          ./tools/runtime/test-addtype-temp.ps1
+          ./tools/runtime/test-watchdog.ps1
+      - name: Verify filesystem protocol under Windows PowerShell 5.1 only
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./tools/runtime/test-current-account.ps1
+      - name: Verify genuine disposable NTFS guards and interrupted recovery (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/runtime/test-native-filesystem.ps1
+      - name: Verify genuine disposable NTFS guards and interrupted recovery (PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./tools/runtime/test-native-filesystem.ps1
+      - run: dotnet run --project tests/RouteKeeper.Decisions.Tests -c Release --no-build -- --verify-ui integration
+      - name: Verify real delta packaging on synthetic data
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xdelta3
+          python tools/test-g3m.py --tool src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll --xdelta /usr/bin/xdelta3
+      - name: Package standalone tool for this host
+        run: dotnet publish src/RouteKeeper.Tool -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o artifacts/tool
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: routekeeper-tool-${{ matrix.rid }}
+          path: artifacts/tool/
+          retention-days: 7
+  authentic-structural:
+    if: github.event_name == 'push' && github.event.repository.private == true && github.repository == 'tkgo11/undertale-routekeeper'
+    uses: ./.github/workflows/authentic.yml
+    permissions:
+      contents: write

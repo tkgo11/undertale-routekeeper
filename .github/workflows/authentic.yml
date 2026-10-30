@@ -1,0 +1,70 @@
+name: authentic-structural-integration
+on:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  # Draft release visibility requires push access; this job only reads assets.
+  contents: write
+jobs:
+  private-structural:
+    if: github.repository == 'tkgo11/undertale-routekeeper' && github.event.repository.private == true && github.event.repository.fork == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Fetch private original and checksum-pinned official compiler
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force private-data | Out-Null
+          $fetch = gh release download dev-game-data --repo $env:GITHUB_REPOSITORY --pattern data.win --dir private-data 2>&1 | Out-String
+          $fetchExit = $LASTEXITCODE
+          if ($fetchExit -ne 0) {
+            $http = [regex]::Match($fetch, 'HTTP [0-9]{3}').Value
+            Write-Output "::error title=Private input access failed::Cannot download draft dev-game-data/data.win ($http). No private response or signed URL is logged."
+            exit $fetchExit
+          }
+          python tools/install-utmt.py --directory .research/utmt-ci
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile, reload, compare original code and reject unsafe patch attempts
+        shell: pwsh
+        run: |
+          $cli = if ($IsWindows) { '.research/utmt-ci/UndertaleModCli.exe' } else { '.research/utmt-ci/UndertaleModCli' }
+          dotnet build src/RouteKeeper.Tool -c Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/validate-authentic.py --input private-data/data.win --cli $cli --builder src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $cli load private-data/data.win -s tools/audit-hooks.csx
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/test-preview-export.py --input private-data/data.win --cli $cli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/test-patch-paths.py --input private-data/data.win --cli $cli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Remove temporary proprietary inputs and outputs
+        if: always()
+        shell: pwsh
+        run: |
+          foreach ($path in @('private-data', '.research')) {
+            if (!(Test-Path $path)) { continue }
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              try { Remove-Item -Recurse -Force $path -ErrorAction Stop; break }
+              catch {
+                if ($attempt -eq 3) { throw 'Private working directory cleanup failed.' }
+                Start-Sleep -Seconds 1
+              }
+            }
+          }
+      # Deliberately no artifact upload: game data and decompilation stay private.

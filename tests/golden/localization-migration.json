@@ -1,0 +1,1137 @@
+[
+  {
+    "id": "guidance.this_neutral_outcome_is_blocked_in_this_run",
+    "en": "This Neutral outcome is blocked in this run.",
+    "ko": "이번 회차에서 선택한 뉴트럴 결과가 막혔습니다."
+  },
+  {
+    "id": "guidance.observe_the_remaining_encounters_before_selecting_an_outcome",
+    "en": "Observe the remaining encounters before selecting an outcome.",
+    "ko": "남은 조우 상태를 확인하세요."
+  },
+  {
+    "id": "guidance.continue_while_preserving_the_selected_encounter_outcomes",
+    "en": "Continue while preserving the selected encounter outcomes.",
+    "ko": "선택한 조우 결과를 유지하며 진행하세요."
+  },
+  {
+    "id": "guidance.befriend_the_warrior_without_gaining_exp",
+    "en": "Befriend the warrior without gaining EXP.",
+    "ko": "EXP 없이 전사와 우정을 쌓으세요."
+  },
+  {
+    "id": "guidance.start_the_warrior_s_friendship_before_additional_kills",
+    "en": "Start the warrior's friendship before additional kills.",
+    "ko": "추가 처치 전에 전사와 우정을 시작하세요."
+  },
+  {
+    "id": "guidance.maintain_the_regional_route_through_waterfall",
+    "en": "Maintain the regional route through Waterfall.",
+    "ko": "워터폴까지 지역 경로 조건을 지키세요."
+  },
+  {
+    "id": "guidance.your_next_step_is_not_clear_yet",
+    "en": "Your next step is not clear yet.",
+    "ko": "다음 목표를 아직 알 수 없습니다."
+  },
+  {
+    "id": "guidance.help_the_collapsed_person_before_leaving",
+    "en": "Help the collapsed person before leaving.",
+    "ko": "떠나기 전에 쓰러진 상대를 도와주세요."
+  },
+  {
+    "id": "guidance.take_water_from_the_cooler_and_give_it_to",
+    "en": "Take water from the cooler and give it to Undyne before leaving.",
+    "ko": "떠나기 전에 정수기의 물을 언다인에게 주세요."
+  },
+  {
+    "id": "guidance.visit_your_new_friend_s_home",
+    "en": "Visit your new friend's home.",
+    "ko": "새 친구의 집을 방문하세요."
+  },
+  {
+    "id": "guidance.go_to_papyrus_s_house_and_finish_his_date",
+    "en": "Go to Papyrus's house and finish his date or hangout.",
+    "ko": "파피루스의 집에서 데이트 또는 어울리기를 마치세요."
+  },
+  {
+    "id": "guidance.meet_your_friends_at_their_home",
+    "en": "Meet your friends at their home.",
+    "ko": "친구의 집에서 함께 시간을 보내세요."
+  },
+  {
+    "id": "guidance.meet_papyrus_outside_undyne_s_house_and_finish_her",
+    "en": "Meet Papyrus outside Undyne's house and finish her hangout.",
+    "ko": "언다인의 집 앞에서 파피루스를 만나 어울리기를 마치세요."
+  },
+  {
+    "id": "guidance.finish_the_journey_then_continue_from_your_save",
+    "en": "Finish the journey, then continue from your SAVE.",
+    "ko": "여정을 마친 뒤 SAVE에서 계속하세요."
+  },
+  {
+    "id": "guidance.defeat_asgore_and_omega_flowey_then_reload_your_save",
+    "en": "Defeat Asgore and Omega Flowey, then reload your SAVE.",
+    "ko": "아스고어와 오메가 플라위를 물리친 뒤 SAVE를 불러오세요."
+  },
+  {
+    "id": "guidance.deliver_your_friend_s_message",
+    "en": "Deliver your friend's message.",
+    "ko": "친구의 편지를 전해 주세요."
+  },
+  {
+    "id": "guidance.get_undyne_s_letter_deliver_it_to_alphys_and",
+    "en": "Get Undyne's letter, deliver it to Alphys, and finish the date.",
+    "ko": "언다인의 편지를 알피스에게 전하고 데이트를 마치세요."
+  },
+  {
+    "id": "guidance.explore_the_path_your_friends_opened",
+    "en": "Explore the path your friends opened.",
+    "ko": "친구들이 열어 준 길을 탐험하세요."
+  },
+  {
+    "id": "guidance.enter_the_bathroom_in_alphys_s_lab_and_complete",
+    "en": "Enter the bathroom in Alphys's lab and complete the True Lab.",
+    "ko": "알피스의 연구실 화장실로 들어가 진실의 연구소를 완료하세요."
+  },
+  {
+    "id": "guidance.your_selected_path_is_complete",
+    "en": "Your selected path is complete.",
+    "ko": "선택한 경로를 마쳤습니다."
+  },
+  {
+    "id": "guidance.the_barrier_is_open_and_your_final_choice_matches",
+    "en": "The barrier is open, and your final choice matches your goal.",
+    "ko": "결계가 열렸고 마지막 선택도 목표와 맞습니다."
+  },
+  {
+    "id": "guidance.finish_your_farewells_and_choose_your_future",
+    "en": "Finish your farewells and choose your future.",
+    "ko": "친구들에게 인사하고 앞날을 선택하세요."
+  },
+  {
+    "id": "guidance.speak_with_your_friends_leave_the_underground_then_keep",
+    "en": "Speak with your friends, leave the Underground, then keep your selected Stay/Leave choice.",
+    "ko": "친구들과 이야기한 뒤 지하를 떠나 함께 살기 또는 떠나기 선택을 지키세요."
+  },
+  {
+    "id": "guidance.return_to_the_barrier_and_help_your_friends",
+    "en": "Return to the barrier and help your friends.",
+    "ko": "결계로 돌아가 친구들을 도와주세요."
+  },
+  {
+    "id": "guidance.return_to_the_barrier_and_complete_the_asriel_encounter",
+    "en": "Return to the barrier and complete the Asriel encounter without RESET.",
+    "ko": "결계로 돌아가 리셋하지 않고 아스리엘 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.explore_the_ruins_without_gaining_exp",
+    "en": "Explore the Ruins without gaining EXP.",
+    "ko": "EXP를 얻지 않고 폐허를 탐험하세요."
+  },
+  {
+    "id": "guidance.spare_toriel_and_continue_out_of_the_ruins_without",
+    "en": "Spare Toriel and continue out of the Ruins without gaining EXP.",
+    "ko": "토리엘을 살리고 EXP를 얻지 않은 채 폐허를 나가세요."
+  },
+  {
+    "id": "guidance.continue_through_the_forest_and_make_a_friend",
+    "en": "Continue through the forest and make a friend.",
+    "ko": "숲을 지나며 새 친구를 만드세요."
+  },
+  {
+    "id": "guidance.spare_papyrus_then_visit_his_house_for_a_date",
+    "en": "Spare Papyrus, then visit his house for a date or hangout.",
+    "ko": "파피루스를 살린 뒤 집을 방문해 데이트 또는 어울리기를 하세요."
+  },
+  {
+    "id": "guidance.continue_through_the_caverns_and_help_those_in_need",
+    "en": "Continue through the caverns and help those in need.",
+    "ko": "동굴을 지나며 도움이 필요한 상대를 도와주세요."
+  },
+  {
+    "id": "guidance.flee_from_undyne_to_hotland_then_give_her_water",
+    "en": "Flee from Undyne to Hotland, then give her water when she collapses.",
+    "ko": "언다인에게서 핫랜드까지 도망친 뒤 쓰러진 언다인에게 물을 주세요."
+  },
+  {
+    "id": "guidance.continue_toward_the_castle_without_gaining_exp",
+    "en": "Continue toward the castle without gaining EXP.",
+    "ko": "EXP를 얻지 않고 성을 향해 계속 가세요."
+  },
+  {
+    "id": "guidance.spare_mettaton_ex_and_continue_toward_asgore_without_gaining",
+    "en": "Spare Mettaton EX and continue toward Asgore without gaining EXP.",
+    "ko": "메타톤 EX를 살리고 EXP를 얻지 않은 채 아스고어에게 가세요."
+  },
+  {
+    "id": "guidance.complete_the_region_s_final_encounter",
+    "en": "Complete the region's final encounter.",
+    "ko": "지역의 마지막 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.kill_toriel_then_enter_snowdin",
+    "en": "Kill Toriel, then enter Snowdin.",
+    "ko": "토리엘을 처치한 뒤 스노우딘으로 가세요."
+  },
+  {
+    "id": "guidance.complete_the_next_required_encounter",
+    "en": "Complete the next required encounter.",
+    "ko": "다음 필수 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.kill_doggo_do_not_spare_required_enemies",
+    "en": "Kill Doggo; do not spare required enemies.",
+    "ko": "도고를 처치하세요. 필수 적을 살려 주지 마세요."
+  },
+  {
+    "id": "guidance.kill_dogamy_and_dogaressa",
+    "en": "Kill Dogamy and Dogaressa.",
+    "ko": "도가미와 도가레사를 처치하세요."
+  },
+  {
+    "id": "guidance.kill_greater_dog_kill_lesser_dog_if_encountered",
+    "en": "Kill Greater Dog; kill Lesser Dog if encountered.",
+    "ko": "그레이터 도그를 처치하세요. 레서 도그와 조우했다면 처치하세요."
+  },
+  {
+    "id": "guidance.find_the_missing_required_enemy_before_exhausting_the_area",
+    "en": "Find the missing required enemy before exhausting the area.",
+    "ko": "지역의 적이 사라지기 전에 필수 적을 찾으세요."
+  },
+  {
+    "id": "guidance.kill_snowdrake_before_the_snowdin_encounter_quota_is_exhausted",
+    "en": "Kill Snowdrake before the Snowdin encounter quota is exhausted.",
+    "ko": "스노우딘 조우 수가 소진되기 전에 스노우드레이크를 처치하세요."
+  },
+  {
+    "id": "guidance.kill_papyrus_after_completing_the_snowdin_quota",
+    "en": "Kill Papyrus after completing the Snowdin quota.",
+    "ko": "스노우딘의 처치 수를 채운 뒤 파피루스를 처치하세요."
+  },
+  {
+    "id": "guidance.kill_shyren",
+    "en": "Kill Shyren.",
+    "ko": "샤이렌을 처치하세요."
+  },
+  {
+    "id": "guidance.kill_glad_dummy",
+    "en": "Kill Glad Dummy.",
+    "ko": "글래드 더미를 처치하세요."
+  },
+  {
+    "id": "guidance.complete_the_region_s_decisive_encounter",
+    "en": "Complete the region's decisive encounter.",
+    "ko": "지역의 결정적인 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.attack_monster_kid_then_defeat_undyne_the_undying",
+    "en": "Attack Monster Kid, then defeat Undyne the Undying.",
+    "ko": "몬스터 키드를 공격한 뒤 불사의 언다인을 처치하세요."
+  },
+  {
+    "id": "guidance.kill_the_royal_guards",
+    "en": "Kill the Royal Guards.",
+    "ko": "왕실 근위병을 처치하세요."
+  },
+  {
+    "id": "guidance.kill_muffet",
+    "en": "Kill Muffet.",
+    "ko": "머펫을 처치하세요."
+  },
+  {
+    "id": "guidance.kill_mettaton_neo_after_exhausting_the_hotland_core_quota",
+    "en": "Kill Mettaton NEO after exhausting the Hotland/CORE quota.",
+    "ko": "핫랜드와 코어의 처치 수를 채운 뒤 메타톤 NEO를 처치하세요."
+  },
+  {
+    "id": "guidance.continue_to_the_final_encounter",
+    "en": "Continue to the final encounter.",
+    "ko": "마지막 조우로 가세요."
+  },
+  {
+    "id": "guidance.defeat_sans_then_continue_toward_the_throne_room",
+    "en": "Defeat Sans, then continue toward the throne room.",
+    "ko": "샌즈를 물리친 뒤 왕좌의 방으로 가세요."
+  },
+  {
+    "id": "guidance.continue_to_the_throne_room_and_choose_your_future",
+    "en": "Continue to the throne room and choose your future.",
+    "ko": "왕좌의 방으로 가서 앞날을 선택하세요."
+  },
+  {
+    "id": "guidance.continue_through_the_throne_room_some_choices_outlast_a",
+    "en": "Continue through the throne room. Some choices outlast a RESET.",
+    "ko": "왕좌의 방을 지나세요. 어떤 선택은 RESET 뒤에도 남습니다."
+  },
+  {
+    "id": "guidance.defeat_remaining_more_enemies_in_the_ruins_before_leaving",
+    "en": "Defeat {remaining} more enemies in the Ruins before leaving.",
+    "ko": "폐허를 떠나기 전에 적 {remaining}명을 더 처치하세요."
+  },
+  {
+    "id": "guidance.defeat_remaining_more_enemies_in_snowdin_before_papyrus",
+    "en": "Defeat {remaining} more enemies in Snowdin before Papyrus.",
+    "ko": "파피루스를 만나기 전에 스노우딘의 적 {remaining}명을 더 처치하세요."
+  },
+  {
+    "id": "guidance.defeat_remaining_more_enemies_in_waterfall_before_undyne",
+    "en": "Defeat {remaining} more enemies in Waterfall before Undyne.",
+    "ko": "언다인을 만나기 전에 워터폴의 적 {remaining}명을 더 처치하세요."
+  },
+  {
+    "id": "guidance.defeat_remaining_more_enemies_in_hotland_core_before_mettaton",
+    "en": "Defeat {remaining} more enemies in Hotland/CORE before Mettaton NEO.",
+    "ko": "메타톤 NEO를 만나기 전에 핫랜드와 코어의 적 {remaining}명을 더 처치하세요."
+  },
+  {
+    "id": "guidance.keep_the_required_characters_alive",
+    "en": "Keep the required characters alive.",
+    "ko": "필요한 인물을 살려 주세요."
+  },
+  {
+    "id": "guidance.no_extra_goal",
+    "en": "No extra goal",
+    "ko": "추가 목표 없음"
+  },
+  {
+    "id": "guidance.friend_s_call",
+    "en": "Friend's call",
+    "ko": "친구의 전화"
+  },
+  {
+    "id": "guidance.help_the_fallen_warrior_before_leaving",
+    "en": "Help the fallen warrior before leaving.",
+    "ko": "떠나기 전에 쓰러진 전사를 도와주세요."
+  },
+  {
+    "id": "guidance.do_not_defeat_any_monsters",
+    "en": "Do not defeat any monsters.",
+    "ko": "몬스터를 죽이지 마세요."
+  },
+  {
+    "id": "guidance.finish_the_warrior_s_friendship",
+    "en": "Finish the warrior's friendship.",
+    "ko": "전사와 우정을 쌓으세요."
+  },
+  {
+    "id": "guidance.finish_the_letter_and_date_but_do_not_enter",
+    "en": "Finish the letter and date, but do not enter the hidden lab.",
+    "ko": "편지와 데이트를 마치되 숨겨진 연구소에는 들어가지 마세요."
+  },
+  {
+    "id": "guidance.exile_robot_spared",
+    "en": "Exile / robot spared",
+    "ko": "추방 / 로봇 생존"
+  },
+  {
+    "id": "guidance.reach_the_chosen_exile_outcome",
+    "en": "Reach the chosen exile outcome.",
+    "ko": "선택한 추방 결말의 조건을 채우세요."
+  },
+  {
+    "id": "guidance.exile_robot_defeated",
+    "en": "Exile / robot defeated",
+    "ko": "추방 / 로봇 처치"
+  },
+  {
+    "id": "guidance.keep_the_earlier_regional_route",
+    "en": "Keep the earlier regional route.",
+    "ko": "앞선 지역 경로를 유지하세요."
+  },
+  {
+    "id": "guidance.defeat_the_robot_before_the_last_battle",
+    "en": "Defeat the robot before the last battle.",
+    "ko": "마지막 전투 전에 로봇을 쓰러뜨리세요."
+  },
+  {
+    "id": "guidance.carry_a_keepsake",
+    "en": "Carry a keepsake",
+    "ko": "기념품 소지"
+  },
+  {
+    "id": "guidance.carry_a_snowy_keepsake_in_your_inventory_for_the",
+    "en": "Carry a snowy keepsake in your inventory for the call.",
+    "ko": "통화할 때 눈으로 된 기념품을 소지하세요."
+  },
+  {
+    "id": "guidance.no_carried_stored_or_obtainable_keepsake_remains_in_this",
+    "en": "No carried, stored or obtainable keepsake remains in this run.",
+    "ko": "이번 회차에 소지·보관·획득 가능한 기념품이 남아 있지 않습니다."
+  },
+  {
+    "id": "guidance.never_save",
+    "en": "Never SAVE",
+    "ko": "SAVE 없이 진행"
+  },
+  {
+    "id": "guidance.continue_without_writing_a_save",
+    "en": "Continue without writing a SAVE.",
+    "ko": "SAVE를 하지 않고 진행하세요."
+  },
+  {
+    "id": "guidance.keep_starting_armor",
+    "en": "Keep starting armor",
+    "ko": "처음 방어구 유지"
+  },
+  {
+    "id": "guidance.keep_your_starting_armor_equipped",
+    "en": "Keep your starting armor equipped.",
+    "ko": "처음 방어구를 계속 착용하세요."
+  },
+  {
+    "id": "guidance.no_healing_items",
+    "en": "No healing items",
+    "ko": "회복 아이템 없이"
+  },
+  {
+    "id": "guidance.avoid_healing_items_even_at_full_hp",
+    "en": "Avoid healing items, even at full HP.",
+    "ko": "HP가 가득 차 있어도 회복 아이템을 쓰지 마세요."
+  },
+  {
+    "id": "guidance.lv_1_no_healing_armor",
+    "en": "LV 1 / no healing / armor",
+    "ko": "LV 1 / 회복 없음 / 방어구"
+  },
+  {
+    "id": "guidance.keep_lv_1_until_the_call",
+    "en": "Keep LV 1 until the call.",
+    "ko": "통화할 때까지 LV 1을 유지하세요."
+  },
+  {
+    "id": "guidance.choose_a_compatible_ending_type_for_this_call_condition",
+    "en": "Choose a compatible ending type for this call condition.",
+    "ko": "이 통화 조건과 맞는 결말 유형을 선택하세요."
+  },
+  {
+    "id": "guidance.this_call_condition_may_not_be_attainable_with_this",
+    "en": "This call condition may not be attainable with this ending type.",
+    "ko": "이 결말 유형에서는 이 통화 조건에 도달하지 못할 수 있습니다."
+  },
+  {
+    "id": "guidance.the_call_condition_is_not_clear_yet",
+    "en": "The call condition is not clear yet.",
+    "ko": "아직 통화 조건을 확인할 수 없습니다."
+  },
+  {
+    "id": "ending.any_neutral_type",
+    "en": "Any Neutral type",
+    "ko": "유형 무관"
+  },
+  {
+    "id": "ending.family",
+    "en": "Family",
+    "ko": "가족"
+  },
+  {
+    "id": "ending.betrayed_no_friendship_robot_spared",
+    "en": "Betrayed: no friendship, robot spared",
+    "ko": "배신: 우정 없음, 로봇 생존"
+  },
+  {
+    "id": "ending.betrayed_no_friendship_robot_killed",
+    "en": "Betrayed: no friendship, robot killed",
+    "ko": "배신: 우정 없음, 로봇 사망"
+  },
+  {
+    "id": "ending.betrayed_friendship_robot_spared",
+    "en": "Betrayed: friendship, robot spared",
+    "ko": "배신: 우정 후, 로봇 생존"
+  },
+  {
+    "id": "ending.betrayed_friendship_robot_killed",
+    "en": "Betrayed: friendship, robot killed",
+    "ko": "배신: 우정 후, 로봇 사망"
+  },
+  {
+    "id": "ending.exiled_warrior_and_skeleton_alive",
+    "en": "Exiled: warrior and skeleton alive",
+    "ko": "추방: 전사와 해골 생존"
+  },
+  {
+    "id": "ending.exiled_warrior_alive_skeleton_dead",
+    "en": "Exiled: warrior alive, skeleton dead",
+    "ko": "추방: 전사 생존, 해골 사망"
+  },
+  {
+    "id": "ending.exiled_warrior_dead_skeleton_alive",
+    "en": "Exiled: warrior dead, skeleton alive",
+    "ko": "추방: 전사 사망, 해골 생존"
+  },
+  {
+    "id": "ending.exiled_warrior_and_skeleton_dead",
+    "en": "Exiled: warrior and skeleton dead",
+    "ko": "추방: 전사와 해골 사망"
+  },
+  {
+    "id": "ending.undyne_papyrus_alive",
+    "en": "Undyne: Papyrus alive",
+    "ko": "언다인: 파피루스 생존"
+  },
+  {
+    "id": "ending.undyne_papyrus_dead",
+    "en": "Undyne: Papyrus dead",
+    "ko": "언다인: 파피루스 사망"
+  },
+  {
+    "id": "ending.mettaton_papyrus_alive",
+    "en": "Mettaton: Papyrus alive",
+    "ko": "메타톤: 파피루스 생존"
+  },
+  {
+    "id": "ending.mettaton_papyrus_dead",
+    "en": "Mettaton: Papyrus dead",
+    "ko": "메타톤: 파피루스 사망"
+  },
+  {
+    "id": "ending.papyrus",
+    "en": "Papyrus",
+    "ko": "파피루스"
+  },
+  {
+    "id": "ending.dog_only_four_bosses_killed",
+    "en": "Dog: only four bosses killed",
+    "ko": "개: 보스 네 명만 처치"
+  },
+  {
+    "id": "ending.leaderless_total_below_20",
+    "en": "Leaderless: total below 20",
+    "ko": "지도자 없음: 총 20킬 미만"
+  },
+  {
+    "id": "ending.leaderless_total_20",
+    "en": "Leaderless: total 20+",
+    "ko": "지도자 없음: 총 20킬 이상"
+  },
+  {
+    "id": "ending.alphys_aborted_late_genocide",
+    "en": "Alphys: aborted late Genocide",
+    "ko": "알피스: 후반 몰살 중단"
+  },
+  {
+    "id": "guidance.hard_mode_cannot_reach_a_neutral_ending",
+    "en": "Hard Mode cannot reach a Neutral ending.",
+    "ko": "하드 모드에서는 뉴트럴 엔딩에 도달할 수 없습니다."
+  },
+  {
+    "id": "guidance.the_world_is_erased_permanent_history_choices_remain_yours",
+    "en": "The world is erased; permanent-history choices remain yours.",
+    "ko": "세계가 지워졌습니다. 영구 기록은 직접 결정해야 합니다."
+  },
+  {
+    "id": "guidance.the_genocide_conclusion_is_already_committed",
+    "en": "The Genocide conclusion is already committed.",
+    "ko": "몰살 결말이 이미 확정되었습니다."
+  },
+  {
+    "id": "guidance.the_true_pacifist_finale_is_already_unlocked",
+    "en": "The True Pacifist finale is already unlocked.",
+    "ko": "진정한 불살의 최종 분기가 이미 열렸습니다."
+  },
+  {
+    "id": "guidance.preserve_the_selected_encounter_outcomes",
+    "en": "Preserve the selected encounter outcomes.",
+    "ko": "선택한 조우 결과를 지켜 주세요."
+  },
+  {
+    "id": "guidance.the_selected_kill_limit_has_been_exceeded",
+    "en": "The selected kill limit has been exceeded.",
+    "ko": "선택한 처치 수 제한을 초과했습니다."
+  },
+  {
+    "id": "guidance.follow_the_selected_encounters_before_the_final_battle",
+    "en": "Follow the selected encounters before the final battle.",
+    "ko": "최종 전투 전에 선택한 조우 조건을 충족하세요."
+  },
+  {
+    "id": "guidance.too_few_kills_remain_for_the_required_boss_outcomes",
+    "en": "Too few kills remain for the required boss outcomes.",
+    "ko": "필수 보스 결과를 위한 처치 수가 남아 있지 않습니다."
+  },
+  {
+    "id": "guidance.complete_the_warrior_s_friendship_without_gaining_exp",
+    "en": "Complete the warrior's friendship without gaining EXP.",
+    "ko": "EXP를 얻지 않고 전사와 우정을 쌓으세요."
+  },
+  {
+    "id": "guidance.the_friendship_betrayal_changes_this_variant",
+    "en": "The friendship betrayal changes this variant.",
+    "ko": "우정 배신 기록이 이 변형을 바꿉니다."
+  },
+  {
+    "id": "guidance.this_friendship_no_longer_matches_the_selected_variant",
+    "en": "This friendship no longer matches the selected variant.",
+    "ko": "이 우정은 선택한 변형과 맞지 않습니다."
+  },
+  {
+    "id": "guidance.start_the_warrior_s_friendship_before_any_additional_kills",
+    "en": "Start the warrior's friendship before any additional kills.",
+    "ko": "추가 처치 전에 전사와 우정을 시작하세요."
+  },
+  {
+    "id": "guidance.follow_genocide_through_waterfall_then_abandon_it_in_hotland",
+    "en": "Follow Genocide through Waterfall, then abandon it in Hotland.",
+    "ko": "워터폴까지 몰살 조건을 지킨 뒤 핫랜드에서 중단하세요."
+  },
+  {
+    "id": "guidance.the_late_genocide_history_overrides_this_neutral_outcome",
+    "en": "The late Genocide history overrides this Neutral outcome.",
+    "ko": "후반 몰살 기록이 이 뉴트럴 결과를 바꿉니다."
+  },
+  {
+    "id": "guidance.continue_while_preserving_the_selected_outcomes",
+    "en": "Continue while preserving the selected outcomes.",
+    "ko": "선택한 결과를 유지하며 여정을 계속하세요."
+  },
+  {
+    "id": "guidance.make_room_in_your_inventory_for_the_keepsake",
+    "en": "Make room in your inventory for the keepsake.",
+    "ko": "기념품을 넣을 가방 공간을 비우세요."
+  },
+  {
+    "id": "guidance.retrieve_the_snowy_keepsake_from_a_storage_box",
+    "en": "Retrieve the snowy keepsake from a storage box.",
+    "ko": "보관함에서 눈으로 된 기념품을 꺼내세요."
+  },
+  {
+    "id": "guidance.return_to_the_snow_figure_in_the_forest_and",
+    "en": "Return to the snow figure in the forest and ask for a piece.",
+    "ko": "숲의 눈으로 된 친구에게 돌아가 조각을 부탁하세요."
+  },
+  {
+    "id": "guidance.the_world_is_erased_permanent_history_decisions_remain_yours",
+    "en": "The world is erased. Permanent-history decisions remain yours.",
+    "ko": "세계가 지워졌습니다. 영구 기록에 관한 결정은 직접 해야 합니다."
+  },
+  {
+    "id": "guidance.the_world_must_be_restored_before_continuing_some_choices",
+    "en": "The world must be restored before continuing. Some choices outlast a RESET.",
+    "ko": "계속하려면 세계가 복원되어 있어야 합니다. 어떤 선택은 RESET 뒤에도 남습니다."
+  },
+  {
+    "id": "guidance.this_challenge_cannot_reach_the_selected_ending",
+    "en": "This challenge cannot reach the selected ending.",
+    "ko": "이 도전에서는 선택한 엔딩에 도달할 수 없습니다."
+  },
+  {
+    "id": "guidance.hard_mode_ends_in_the_ruins_and_cannot_reach",
+    "en": "Hard Mode ends in the Ruins and cannot reach a normal ending.",
+    "ko": "하드 모드는 폐허에서 끝나므로 일반 엔딩에 도달할 수 없습니다."
+  },
+  {
+    "id": "guidance.avoid_gaining_exp",
+    "en": "Avoid gaining EXP.",
+    "ko": "EXP 획득을 피하세요."
+  },
+  {
+    "id": "guidance.do_not_kill_enemies_or_gain_exp",
+    "en": "Do not kill enemies or gain EXP.",
+    "ko": "적을 죽이거나 EXP를 얻지 마세요."
+  },
+  {
+    "id": "guidance.keep_everyone_safe",
+    "en": "Keep everyone safe.",
+    "ko": "모두를 지켜 주세요."
+  },
+  {
+    "id": "guidance.do_not_kill_any_monsters_the_letter_event_checks",
+    "en": "Do not kill any monsters; the letter event checks the kill count separately from EXP.",
+    "ko": "아무 몬스터도 죽이지 마세요. 편지 이벤트는 EXP와 별도로 처치 수를 확인합니다."
+  },
+  {
+    "id": "guidance.keep_your_new_friends_safe",
+    "en": "Keep your new friends safe.",
+    "ko": "새 친구들을 지켜 주세요."
+  },
+  {
+    "id": "guidance.spare_papyrus",
+    "en": "Spare Papyrus.",
+    "ko": "파피루스를 살려 주세요."
+  },
+  {
+    "id": "guidance.spare_undyne",
+    "en": "Spare Undyne.",
+    "ko": "언다인을 살려 주세요."
+  },
+  {
+    "id": "guidance.help_anyone_who_needs_immediate_aid",
+    "en": "Help anyone who needs immediate aid.",
+    "ko": "즉시 도움이 필요한 상대를 도와주세요."
+  },
+  {
+    "id": "guidance.give_undyne_water_when_she_collapses_in_hotland",
+    "en": "Give Undyne water when she collapses in Hotland.",
+    "ko": "핫랜드에서 쓰러진 언다인에게 물을 주세요."
+  },
+  {
+    "id": "guidance.spend_time_with_your_new_friend",
+    "en": "Spend time with your new friend.",
+    "ko": "새 친구와 시간을 보내세요."
+  },
+  {
+    "id": "guidance.complete_papyrus_s_date_or_hangout_at_his_house",
+    "en": "Complete Papyrus's date or hangout at his house.",
+    "ko": "파피루스의 집에서 데이트 또는 어울리기를 완료하세요."
+  },
+  {
+    "id": "guidance.visit_the_friend_who_needs_a_hand",
+    "en": "Visit the friend who needs a hand.",
+    "ko": "도움이 필요한 친구를 찾아가세요."
+  },
+  {
+    "id": "guidance.complete_undyne_s_hangout_with_papyrus_at_her_house",
+    "en": "Complete Undyne's hangout with Papyrus at her house.",
+    "ko": "파피루스와 함께 언다인의 집에서 어울리기를 완료하세요."
+  },
+  {
+    "id": "guidance.defeat_omega_flowey_in_a_neutral_ending_then_reload",
+    "en": "Defeat Omega Flowey in a Neutral ending, then reload your SAVE.",
+    "ko": "뉴트럴 엔딩에서 오메가 플라위를 물리친 뒤 SAVE를 불러오세요."
+  },
+  {
+    "id": "guidance.deliver_undyne_s_letter_and_complete_alphys_s_date",
+    "en": "Deliver Undyne's letter and complete Alphys's date.",
+    "ko": "언다인의 편지를 전하고 알피스와의 데이트를 완료하세요."
+  },
+  {
+    "id": "guidance.complete_the_true_lab_then_return_to_the_barrier",
+    "en": "Complete the True Lab, then return to the barrier.",
+    "ko": "진실의 연구소를 완료한 뒤 결계로 돌아가세요."
+  },
+  {
+    "id": "guidance.complete_the_asriel_encounter_and_break_the_barrier",
+    "en": "Complete the Asriel encounter and break the barrier.",
+    "ko": "아스리엘 조우를 완료하고 결계를 부수세요."
+  },
+  {
+    "id": "guidance.the_final_choice_differs_from_your_selected_outcome",
+    "en": "The final choice differs from your selected outcome.",
+    "ko": "마지막 선택이 목표한 결과와 다릅니다."
+  },
+  {
+    "id": "guidance.keep_the_selected_stay_or_leave_epilogue_choice_existing",
+    "en": "Keep the selected Stay or Leave epilogue choice; existing SOUL history determines its normal or altered form.",
+    "ko": "함께 살기 또는 떠나기 선택을 지켜 주세요. 기존 영혼 기록에 따라 일반 또는 변형 결말이 됩니다."
+  },
+  {
+    "id": "guidance.existing_permanent_history_does_not_match_this_ending",
+    "en": "Existing permanent history does not match this ending.",
+    "ko": "기존 영구 기록이 이 엔딩과 맞지 않습니다."
+  },
+  {
+    "id": "guidance.an_earlier_soul_sale_determines_this_ending_reset_does",
+    "en": "An earlier SOUL sale determines this ending. RESET does not erase that choice.",
+    "ko": "이 엔딩은 이전의 영혼 판매 선택에 따라 달라집니다. RESET으로도 지워지지 않는 선택입니다."
+  },
+  {
+    "id": "guidance.hard_mode_cannot_reach_a_genocide_ending",
+    "en": "Hard Mode cannot reach a Genocide ending.",
+    "ko": "하드 모드에서는 몰살 엔딩에 도달할 수 없습니다."
+  },
+  {
+    "id": "guidance.a_required_encounter_was_missed",
+    "en": "A required encounter was missed.",
+    "ko": "필수 조우를 놓쳤습니다."
+  },
+  {
+    "id": "guidance.a_required_enemy_was_spared_or_a_required_encounter",
+    "en": "A required enemy was spared or a required encounter was lost.",
+    "ko": "필수 적을 살렸거나 꼭 필요한 조우를 놓쳤습니다."
+  },
+  {
+    "id": "guidance.a_required_enemy_can_no_longer_be_found",
+    "en": "A required enemy can no longer be found.",
+    "ko": "필수 적을 더는 찾을 수 없습니다."
+  },
+  {
+    "id": "guidance.snowdrake_must_be_killed_before_no_further_encounters_or",
+    "en": "Snowdrake must be killed before no further encounters or live Snowdrake remain.",
+    "ko": "새 조우나 살아 있는 스노우드레이크가 남아 있을 때 처치해야 합니다."
+  },
+  {
+    "id": "guidance.the_first_region_s_requirements_were_missed",
+    "en": "The first region's requirements were missed.",
+    "ko": "첫 지역의 조건을 놓쳤습니다."
+  },
+  {
+    "id": "guidance.complete_the_ruins_kill_quota_and_kill_toriel_before",
+    "en": "Complete the Ruins kill quota and kill Toriel before leaving the Ruins.",
+    "ko": "폐허를 떠나기 전에 지역 처치 수를 채우고 토리엘을 처치하세요."
+  },
+  {
+    "id": "guidance.the_forest_s_requirements_were_missed",
+    "en": "The forest's requirements were missed.",
+    "ko": "숲 지역의 조건을 놓쳤습니다."
+  },
+  {
+    "id": "guidance.complete_snowdin_s_quota_and_unique_encounters_before_killing",
+    "en": "Complete Snowdin's quota and unique encounters before killing Papyrus.",
+    "ko": "파피루스를 처치하기 전에 스노우딘의 처치 수와 필수 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.the_cavern_s_requirements_were_missed",
+    "en": "The cavern's requirements were missed.",
+    "ko": "동굴 지역의 조건을 놓쳤습니다."
+  },
+  {
+    "id": "guidance.complete_waterfall_s_quota_shyren_and_glad_dummy_then",
+    "en": "Complete Waterfall's quota, Shyren and Glad Dummy, then defeat Undyne the Undying.",
+    "ko": "워터폴의 처치 수와 샤이렌, 글래드 더미를 완료한 뒤 불사의 언다인을 처치하세요."
+  },
+  {
+    "id": "guidance.the_final_region_s_requirements_were_missed",
+    "en": "The final region's requirements were missed.",
+    "ko": "마지막 지역의 조건을 놓쳤습니다."
+  },
+  {
+    "id": "guidance.complete_hotland_core_s_quota_and_required_encounters_before",
+    "en": "Complete Hotland/CORE's quota and required encounters before defeating Mettaton NEO.",
+    "ko": "메타톤 NEO를 처치하기 전에 핫랜드와 코어의 처치 수와 필수 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.complete_the_area_s_remaining_encounters",
+    "en": "Complete the area's remaining encounters.",
+    "ko": "현재 지역에 남은 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.complete_the_required_genocide_encounters_in_order",
+    "en": "Complete the required Genocide encounters in order.",
+    "ko": "몰살의 필수 조우를 순서에 맞게 완료하세요."
+  },
+  {
+    "id": "guidance.complete_the_final_encounter",
+    "en": "Complete the final encounter.",
+    "ko": "마지막 조우를 완료하세요."
+  },
+  {
+    "id": "guidance.defeat_sans_then_continue_to_the_throne_room",
+    "en": "Defeat Sans, then continue to the throne room.",
+    "ko": "샌즈를 물리친 뒤 왕좌의 방으로 계속 가세요."
+  },
+  {
+    "id": "guidance.this_choice_may_block_your_selected_route",
+    "en": "This choice may block your selected route.",
+    "ko": "이 선택은 선택한 경로를 막을 수 있습니다."
+  },
+  {
+    "id": "ui.title",
+    "en": "ROUTEKEEPER",
+    "ko": "ROUTEKEEPER"
+  },
+  {
+    "id": "ui.goal",
+    "en": "Ending",
+    "ko": "엔딩"
+  },
+  {
+    "id": "ui.variant",
+    "en": "Variant",
+    "ko": "변형"
+  },
+  {
+    "id": "ui.guidance",
+    "en": "Guidance",
+    "ko": "안내"
+  },
+  {
+    "id": "ui.spoilers",
+    "en": "Spoilers",
+    "ko": "스포일러"
+  },
+  {
+    "id": "ui.language",
+    "en": "Language",
+    "ko": "언어"
+  },
+  {
+    "id": "ui.journal",
+    "en": "Progress",
+    "ko": "진행 상황"
+  },
+  {
+    "id": "ui.back",
+    "en": "Back",
+    "ko": "돌아가기"
+  },
+  {
+    "id": "ui.minimal",
+    "en": "Minimal",
+    "ko": "최소"
+  },
+  {
+    "id": "ui.detailed",
+    "en": "Detailed",
+    "ko": "상세"
+  },
+  {
+    "id": "ui.either",
+    "en": "No preference",
+    "ko": "선택 무관"
+  },
+  {
+    "id": "ui.stay",
+    "en": "Stay",
+    "ko": "함께 살기"
+  },
+  {
+    "id": "ui.leave",
+    "en": "Leave",
+    "ko": "떠나기"
+  },
+  {
+    "id": "ui.off",
+    "en": "Off",
+    "ko": "끄기"
+  },
+  {
+    "id": "ui.passive",
+    "en": "Passive",
+    "ko": "조용한 안내"
+  },
+  {
+    "id": "ui.active",
+    "en": "Active",
+    "ko": "목표 안내"
+  },
+  {
+    "id": "ui.forced",
+    "en": "Forced",
+    "ko": "경로 보호"
+  },
+  {
+    "id": "ui.pacifist",
+    "en": "True Pacifist",
+    "ko": "진정한 불살"
+  },
+  {
+    "id": "ui.soulless_pacifist",
+    "en": "Soulless Pacifist",
+    "ko": "영혼 없는 불살"
+  },
+  {
+    "id": "ui.genocide",
+    "en": "Genocide",
+    "ko": "몰살"
+  },
+  {
+    "id": "ui.neutral",
+    "en": "Neutral",
+    "ko": "뉴트럴"
+  },
+  {
+    "id": "ui.soulless_genocide",
+    "en": "Soulless Genocide",
+    "ko": "영혼 없는 몰살"
+  },
+  {
+    "id": "ui.on_track",
+    "en": "On track",
+    "ko": "진행 가능"
+  },
+  {
+    "id": "ui.action_required",
+    "en": "Next step",
+    "ko": "다음 목표"
+  },
+  {
+    "id": "ui.at_risk",
+    "en": "Be careful",
+    "ko": "조심하세요"
+  },
+  {
+    "id": "ui.blocked",
+    "en": "Ending unavailable",
+    "ko": "엔딩에 도달할 수 없습니다"
+  },
+  {
+    "id": "ui.unknown",
+    "en": "Keep exploring",
+    "ko": "계속 탐험하세요"
+  },
+  {
+    "id": "ui.navigation",
+    "en": "Arrows: move   Z: choose   X: back",
+    "ko": "방향키 이동  Z 선택  X 뒤로"
+  },
+  {
+    "id": "ui.pad_navigation",
+    "en": "Directions: move   Confirm / Cancel",
+    "ko": "방향키: 이동   확인 / 취소"
+  },
+  {
+    "id": "ui.close_warning",
+    "en": "F8: close",
+    "ko": "F8: 닫기"
+  },
+  {
+    "id": "ui.retry_warning",
+    "en": "F8: continue, then try again",
+    "ko": "F8: 확인 후 다시 선택"
+  },
+  {
+    "id": "ui.guard_hint",
+    "en": "Choose another action.",
+    "ko": "다른 행동을 선택하세요."
+  },
+  {
+    "id": "ui.no_objective",
+    "en": "Keep exploring.",
+    "ko": "계속 탐험하세요."
+  },
+  {
+    "id": "ui.warn_1",
+    "en": "This attack may defeat an enemy and change your ending.",
+    "ko": "이 공격으로 적을 쓰러뜨리면 엔딩이 달라질 수 있습니다."
+  },
+  {
+    "id": "ui.warn_2",
+    "en": "Give water before leaving this room.",
+    "ko": "방을 떠나기 전에 물을 건네세요."
+  },
+  {
+    "id": "ui.warn_3",
+    "en": "Finish the area's encounters before this boss.",
+    "ko": "이 보스와 싸우기 전에 지역의 조우를 마치세요."
+  },
+  {
+    "id": "ui.warn_4",
+    "en": "This encounter must be defeated for your ending.",
+    "ko": "목표한 엔딩을 위해 이 상대를 쓰러뜨려야 합니다."
+  },
+  {
+    "id": "ui.warn_5",
+    "en": "Your ending requires this character to survive.",
+    "ko": "목표한 엔딩을 위해 이 인물을 살려야 합니다."
+  },
+  {
+    "id": "ui.warn_6",
+    "en": "Your ending requires defeating this character.",
+    "ko": "목표한 엔딩을 위해 이 인물을 쓰러뜨려야 합니다."
+  },
+  {
+    "id": "ui.warn_7",
+    "en": "More kills can change your ending.",
+    "ko": "더 죽이면 목표한 엔딩이 달라질 수 있습니다."
+  },
+  {
+    "id": "ui.warn_8",
+    "en": "Finish the required encounters before proceeding.",
+    "ko": "진행하기 전에 필수 조우를 마치세요."
+  },
+  {
+    "id": "ui.warn_9",
+    "en": "This choice differs from your chosen epilogue.",
+    "ko": "이 선택은 목표한 마지막 선택과 다릅니다."
+  },
+  {
+    "id": "ui.warn_10",
+    "en": "Make the required friends before gaining EXP.",
+    "ko": "EXP를 얻기 전에 필요한 우정을 쌓으세요."
+  },
+  {
+    "id": "ui.warn_11",
+    "en": "Flee and find the missing enemy before the area's last kill.",
+    "ko": "도망친 뒤 지역의 마지막 처치 전에 남은 필수 적을 찾으세요."
+  },
+  {
+    "id": "ui.warn_12",
+    "en": "This friendship would change your chosen ending.",
+    "ko": "이 우정을 쌓으면 목표한 엔딩이 달라집니다."
+  },
+  {
+    "id": "ui.pad_close_warning",
+    "en": "Close",
+    "ko": "닫기"
+  },
+  {
+    "id": "ui.pad_retry_warning",
+    "en": "Continue, then try again",
+    "ko": "확인 후 다시 선택"
+  },
+  {
+    "id": "ui.ending_type",
+    "en": "Ending type",
+    "ko": "결말 유형"
+  },
+  {
+    "id": "ui.epilogue",
+    "en": "Epilogue",
+    "ko": "마지막 선택"
+  },
+  {
+    "id": "ui.call_goal",
+    "en": "Call goal",
+    "ko": "통화 조건"
+  },
+  {
+    "id": "ui.warn_13",
+    "en": "Writing this SAVE would break your call condition.",
+    "ko": "SAVE를 하면 선택한 통화 조건이 깨집니다."
+  },
+  {
+    "id": "ui.warn_14",
+    "en": "This item counts as healing, even at full HP.",
+    "ko": "HP가 가득 차 있어도 이 아이템은 회복으로 기록됩니다."
+  },
+  {
+    "id": "ui.warn_15",
+    "en": "Keep a piece of your keepsake for the call.",
+    "ko": "통화를 위해 기념품을 하나 남겨 두세요."
+  },
+  {
+    "id": "ui.warn_16",
+    "en": "Your starting armor cannot be equipped again.",
+    "ko": "처음 방어구는 벗으면 다시 착용할 수 없습니다."
+  },
+  {
+    "id": "ui.warn_17",
+    "en": "This battle outcome may raise LV above 1.",
+    "ko": "이 전투 결과로 LV가 1을 넘을 수 있습니다."
+  },
+  {
+    "id": "ui.warn_18",
+    "en": "This call requires defeating no monsters.",
+    "ko": "이 통화 조건에서는 몬스터를 죽이면 안 됩니다."
+  },
+  {
+    "id": "ui.warn_19",
+    "en": "This path leads away from your Neutral ending.",
+    "ko": "이 길로 가면 목표한 뉴트럴 엔딩에서 멀어집니다."
+  },
+  {
+    "id": "ui.warn_20",
+    "en": "The next scripted outcome spares a required opponent.",
+    "ko": "다음 자동 결과는 처치해야 할 상대를 살려 줍니다."
+  },
+  {
+    "id": "ui.language_name",
+    "en": "English",
+    "ko": "한국어"
+  },
+  {
+    "id": "ui.type_number",
+    "en": "Type {index}",
+    "ko": "유형 {index}"
+  },
+  {
+    "id": "ui.variant_number",
+    "en": "Variant {index}",
+    "ko": "변형 {index}"
+  },
+  {
+    "id": "ui.progress",
+    "en": "{met} / {total}",
+    "ko": "{met} / {total}"
+  },
+  {
+    "id": "ui.progress_compact",
+    "en": "{met}/{total}",
+    "ko": "{met}/{total}"
+  },
+  {
+    "id": "guidance.resolve_character_s_encounter_with_the_selected_outcome",
+    "en": "Resolve {character}'s encounter with the selected outcome.",
+    "ko": "선택한 조우 결과를 지켜 주세요."
+  }
+]

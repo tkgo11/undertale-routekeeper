@@ -1,0 +1,1105 @@
+{
+  "ExpectedInputSha256": "b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7",
+  "BytecodeVersion": 16,
+  "Bindings": [
+    {
+      "Fact": "experience",
+      "Expression": "global.xp",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "level",
+      "Expression": "global.lv",
+      "Domain": "1..20",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "kills_total",
+      "Expression": "global.kills",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "plot10",
+      "Expression": "round(global.plot * 10)",
+      "Domain": "nonnegative integer tenths",
+      "EvidenceResource": "gml_Script_scr_load"
+    },
+    {
+      "Fact": "toriel_alive",
+      "Expression": "(global.flag[45] != 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_torielboss_Alarm_10"
+    },
+    {
+      "Fact": "papyrus_alive",
+      "Expression": "(global.flag[67] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papyrusboss_Other_12"
+    },
+    {
+      "Fact": "undyne_alive",
+      "Expression": "(global.flag[350] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undyneboss_Step_0"
+    },
+    {
+      "Fact": "mettaton_alive",
+      "Expression": "(global.flag[425] != 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_mettatonex_Step_0"
+    },
+    {
+      "Fact": "toriel_resolved",
+      "Expression": "(global.flag[45] >= 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_torielboss_Step_0"
+    },
+    {
+      "Fact": "papyrus_resolved",
+      "Expression": "(global.flag[67] == 1 || global.plot >= 101)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papyrus8_Step_0"
+    },
+    {
+      "Fact": "undyne_resolved",
+      "Expression": "(global.flag[350] == 1 || global.plot >= 122)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynetrigger_boss2_Step_0"
+    },
+    {
+      "Fact": "mettaton_resolved",
+      "Expression": "(global.flag[425] == 1 || global.plot >= 193)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_mettdestroyed_event_Step_0"
+    },
+    {
+      "Fact": "water_opportunity_missed",
+      "Expression": "(global.flag[350] == 2)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynetrigger_dry_Step_0"
+    },
+    {
+      "Fact": "papyrus_friendship",
+      "Expression": "(global.flag[88] >= 4)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_papdate_Step_0"
+    },
+    {
+      "Fact": "undyne_friendship",
+      "Expression": "(global.flag[389] >= 3)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_undynebattle2_Step_0"
+    },
+    {
+      "Fact": "alphys_friendship",
+      "Expression": "(global.flag[493] >= 10)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_adate_Step_0"
+    },
+    {
+      "Fact": "true_lab_completed",
+      "Expression": "(global.flag[493] >= 12)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_lab_powerswitch_Step_1"
+    },
+    {
+      "Fact": "kills_ruins",
+      "Expression": "global.flag[202]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_snowdin",
+      "Expression": "global.flag[203]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_waterfall",
+      "Expression": "global.flag[204]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "kills_hotland_core",
+      "Expression": "global.flag[205]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "genocide_stage",
+      "Expression": "scr_murderlv()",
+      "Domain": "0..16; debug override becomes -1",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    },
+    {
+      "Fact": "genocide_aborted",
+      "Expression": "(global.flag[27] != 0)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_lesserdoge_Destroy_0"
+    },
+    {
+      "Fact": "prior_neutral_completion",
+      "Expression": "(ini_read_real(\"General\", \"Won\", 0) > 0)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_credits_short_Create_0"
+    },
+    {
+      "Fact": "soul_sold",
+      "Expression": "ossafe_file_exists(\"system_information_963\")",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_endmyroom_Create_0"
+    },
+    {
+      "Fact": "world_erased",
+      "Expression": "(ossafe_file_exists(\"system_information_962\") && !global.rk_soul_sold)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_gameshake_Create_0"
+    },
+    {
+      "Fact": "barrier_broken",
+      "Expression": "(global.flag[7] == 1)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_asriel_overworldanim_Step_0"
+    },
+    {
+      "Fact": "lesser_dog_state",
+      "Expression": "global.flag[55]",
+      "Domain": "0 not killed,1 killed,2 extended interaction",
+      "EvidenceResource": "gml_Object_obj_lesserdoge_Destroy_0"
+    },
+    {
+      "Fact": "water_opportunity_active",
+      "Expression": "(obj_undynefall.waterthing == 0)",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_undynefall_Create_0"
+    },
+    {
+      "Fact": "equipped_armor",
+      "Expression": "global.armor",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "healing_items_used",
+      "Expression": "global.flag[260]",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "save_exists",
+      "Expression": "ossafe_file_exists(\"file0\")",
+      "Domain": "nonnegative int",
+      "EvidenceResource": "gml_Object_obj_mainend_Step_0"
+    },
+    {
+      "Fact": "sans_defeated",
+      "Expression": "(global.rk_genocide_stage == 16 && global.xp >= 99999)",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Object_obj_sansb_body_Draw_0"
+    },
+    {
+      "Fact": "snowdrake_lost",
+      "Expression": "(global.flag[203] >= 16 && global.flag[57] != 2 && !instance_exists(obj_snowdrake))",
+      "Domain": "boolean",
+      "EvidenceResource": "gml_Script_scr_murderlv"
+    }
+  ],
+  "Evidence": [
+    {
+      "Resource": "gml_Script_scr_load",
+      "DecompilerSha256": "869541a6a50f630969ff9c01ea4a88b38e9c7dbab7e50f4a81b86c7d8cb7fe56",
+      "Markers": [
+        "global.xp",
+        "global.plot",
+        "global.lv",
+        "global.kills"
+      ]
+    },
+    {
+      "Resource": "gml_Script_SCR_GAMESTART",
+      "DecompilerSha256": "3ec1747684eb4dc288f465a458977333979a9480023f4ca2e8c41efd5d01e931",
+      "Markers": [
+        "global.flag[i] = 0"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_murderlv",
+      "DecompilerSha256": "8ad7bca7520fe3e5b8632e493b92c48106e3df5ea6910dd7c73faa337041c068",
+      "Markers": [
+        "global.flag[202] >= 20",
+        "global.flag[203] >= 16",
+        "global.flag[204] >= 18",
+        "global.flag[205] >= 40"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Alarm_10",
+      "DecompilerSha256": "cd1a3a71456bfc8655b23f9c70034104b9dc42fa0ec5de0787711466d3174193",
+      "Markers": [
+        "global.flag[45] = 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Step_0",
+      "DecompilerSha256": "c7d482077963244ab32a7325b5677163e26d332567f52b9506e0684f6a045eb9",
+      "Markers": [
+        "global.flag[45] = 5"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papyrusboss_Other_12",
+      "DecompilerSha256": "ba8307ddf30989c2c62f2a645b954ef607cfa9763275b4be0df3d3e3d5df3588",
+      "Markers": [
+        "global.flag[67] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papyrus8_Step_0",
+      "DecompilerSha256": "7b22dfadd156264e335d89054fdf0d9b0f4dd7360cf32ac7c9176592f6d4657f",
+      "Markers": [
+        "global.plot = 101"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undyneboss_Step_0",
+      "DecompilerSha256": "868d9ee30509f796a5ae1ceb0c17f6ff02ad41eca082aea22a87e6dbc12401bd",
+      "Markers": [
+        "global.flag[350] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynetrigger_dry_Step_0",
+      "DecompilerSha256": "fd3dae1fc3a03c8840ed7c062aec9864449875bf156cd6dbcbaabcba8fb320f7",
+      "Markers": [
+        "global.flag[350] = 2",
+        "global.plot = 122"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynetrigger_boss2_Step_0",
+      "DecompilerSha256": "6d4d38b48f35ca35fcadb718dce2c84d2a17329f58bcafb7ca2a1fb29f5eeb1d",
+      "Markers": [
+        "global.plot = 122"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Step_0",
+      "DecompilerSha256": "843f6dd4a31890def173acbde96217a42e230cfec089a0530664097f960df754",
+      "Markers": [
+        "global.flag[425] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mettdestroyed_event_Step_0",
+      "DecompilerSha256": "997e8f0bd45d92a59fa95c20b54603d203f8c0f31f51ad770d355aabc9255c52",
+      "Markers": [
+        "global.plot = 193"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_papdate_Step_0",
+      "DecompilerSha256": "4a081bb253a0289abf258892713d7ba78a4c6c04b94487a22ae62cbba777ba4f",
+      "Markers": [
+        "global.flag[88] = 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynebattle2_Step_0",
+      "DecompilerSha256": "bb88ed05f788c7da0f7e3c3a8002c108ea861f7742a511b7847092a1edaf904f",
+      "Markers": [
+        "global.flag[389] = 3"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_adate_Step_0",
+      "DecompilerSha256": "46b9110af27f6af0534facec22adf7c0dfb5f72b269d4014b0ba83caf85689f7",
+      "Markers": [
+        "global.flag[493] = 10"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_lab_powerswitch_Step_1",
+      "DecompilerSha256": "d4c41b47765f85ad36152815ff28e369e71f381cac50bf2252ac52b0e32da28e",
+      "Markers": [
+        "global.flag[493] = 12"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynedate_outside_Create_0",
+      "DecompilerSha256": "691dbdcf28d058b7f915fa63ac2bc51ebd748e8dbbb02dd72e798ed10cf8ebf3",
+      "Markers": [
+        "global.plot < 122",
+        "global.kills > 0",
+        "global.flag[354] < 2",
+        "global.flag[88] < 4"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undyne_lettercall_Create_0",
+      "DecompilerSha256": "f1809ad0986818d3e8d52f2cb3eb36b07e0c0cd17bc12f0f90375ea38ae894e6",
+      "Markers": [
+        "\"General\", \"Won\"",
+        "global.plot <= 198",
+        "global.flag[389] < 3"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_credits_short_Create_0",
+      "DecompilerSha256": "4e171b81452074fd2055d07a11980c09803e3a99d36b26bf7760b58720e06bb4",
+      "Markers": [
+        "ini_write_real(\"General\", \"Won\", won + 1)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_endmyroom_Create_0",
+      "DecompilerSha256": "0b38d0dcdd8bde48d459b86071e9c97648d05803d5a253bf17e2fe5fe0573f4c",
+      "Markers": [
+        "ossafe_file_exists(\"system_information_963\")"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_nothingness_event_Step_0",
+      "DecompilerSha256": "2345a12d285f3176f64e6b2c4db8c9a716408a4771816e4726c36e548735ff67",
+      "Markers": [
+        "ossafe_file_text_open_write(\"system_information_963\")"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_gameshake_Create_0",
+      "DecompilerSha256": "3d680af67d668060039621abb47f2dad1452e7d73ad09f8bdabb5dc64f473d0a",
+      "Markers": [
+        "ossafe_file_text_open_write(\"system_information_962\")"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_namingscreen",
+      "DecompilerSha256": "bf5601a5663d45bb6bd2751636cf400569498c5f2c7ca4c196cebfef517a01c4",
+      "Markers": [
+        "if (truereset > 0)",
+        "\"General\", \"BW\"",
+        "\"General\", \"BP\"",
+        "\"General\", \"BH\""
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_lesserdoge_Destroy_0",
+      "DecompilerSha256": "20e25263ce878757a940f0bc6f2c2c4a08ea132856a1a70aab330ee699422a61",
+      "Markers": [
+        "global.flag[55] = 1",
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_asriel_overworldanim_Step_0",
+      "DecompilerSha256": "26cfac118f0d3b385cfe5922b13c005ee7a03205958e60825380707fdf731e85",
+      "Markers": [
+        "global.flag[7] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mainend_Create_0",
+      "DecompilerSha256": "903a1ccee9e84060a10ca3483fab7bb26bb944ded2db1aaf31c334177020d797",
+      "Markers": [
+        "global.flag[45]",
+        "global.flag[67]",
+        "global.flag[350]",
+        "global.flag[425]"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mainend_Step_0",
+      "DecompilerSha256": "70d16979bddee1e4a79ec0a04bf14d7d761835dc0cb6857b281356d4bd66683e",
+      "Markers": [
+        "scr_itemcheck(16)",
+        "global.armor == 4",
+        "global.flag[260] == 0"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_undynefall_Create_0",
+      "DecompilerSha256": "89a28fcac9c653cf2a7524c7727d8daa1826286eb5b12b39d290851c39db10ff",
+      "Markers": [
+        "waterthing = 0"
+      ]
+    },
+    {
+      "Resource": "gml_Script_SCR_TEXT",
+      "DecompilerSha256": "f81936770b1a847d84d0bfa760238a8cf2c139db1cffdaa8989a4637091bc924",
+      "Markers": [
+        "obj_outsideworld_event.con = 100",
+        "obj_outsideworld_event.con = 200"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_outsideworld_event_Draw_0",
+      "DecompilerSha256": "4e42270ee1ede919e58201129e466a6c4654ed24647bbc4c4026e707d9da97f4",
+      "Markers": [
+        "global.flag[512] = 0",
+        "global.flag[512] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_the_end_really_Create_0",
+      "DecompilerSha256": "5a8397e194826065cbcce0fdec072d24dbccdac0d06670c217a18fdb3d215a8e",
+      "Markers": [
+        "system_information_963",
+        "global.flag[512] == 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_sansb_body_Draw_0",
+      "DecompilerSha256": "20f7eb769e54c38847d36137c3d2625dd9c285750fd89fc04cc5c91b274a572e",
+      "Markers": [
+        "global.xp = 99999",
+        "\"Sans\", \"SK\""
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_snowdrake_Destroy_0",
+      "DecompilerSha256": "8025c6b76a160d0beaf3e178d45ce682e9a69f993069a3f624754a099dbbc622",
+      "Markers": [
+        "killed"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_movedoge_Destroy_0",
+      "DecompilerSha256": "722f8ed8f26509cf599f831b4b10cdc726c47982c8f8ce570e32521c93bd98b7",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_mandog_Destroy_0",
+      "DecompilerSha256": "6fce9c779eefda4a85c4cf80a07de5cbf294fe74b508945dfd7c0e3eab3d0731",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_womandog_Destroy_0",
+      "DecompilerSha256": "0ac2328cbafe04744b720f0eccbb0d2b18dcc0640e731b206728ef666f1d33ff",
+      "Markers": [
+        "instance_destroy()"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_greatdog_Destroy_0",
+      "DecompilerSha256": "b4b10b10f02119eed912d7e72ce44e7cf8df6dd2dacff0eddd20ee6bdeebe30e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_gladdummy_Destroy_0",
+      "DecompilerSha256": "55e4349c94cc23dd5c87ab4debca59a7b565736b4c65b93dfb13f3fa3afc51f7",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_bara01_Destroy_0",
+      "DecompilerSha256": "cd4d78d59506422b75b65961c2b00187d14fcd8461499d56cb769d0b565a9c3e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_bara02_Destroy_0",
+      "DecompilerSha256": "cd4d78d59506422b75b65961c2b00187d14fcd8461499d56cb769d0b565a9c3e",
+      "Markers": [
+        "global.flag[27] = 1"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_steps",
+      "DecompilerSha256": "5e6cfd3f612a0c671391489e36aa34b0b53a71b17163498671677ef22104afdf",
+      "Markers": [
+        "argument2 - global.flag[argument3]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_battlegroup",
+      "DecompilerSha256": "4cb00dcf68275e54372540d6f49fb1aa9848ffcfe18e5c92b134504b909a6ed0",
+      "Markers": [
+        "obj_snowdrake"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_itemuseb",
+      "DecompilerSha256": "d3673dcc0589a0e244f79cdec43719611bdc691c79dfc71784fe502b4852fcf3",
+      "Markers": [
+        "case 7:",
+        "case 10:",
+        "event_user(6);"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Other_16",
+      "DecompilerSha256": "9c1b86606f15cb94df2b2a071c9658c21ba0e4debfa69c75b9643382922465a0",
+      "Markers": [
+        "itemuse = 1;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Step_0",
+      "DecompilerSha256": "afff1b4b8df88caf3458eef26ce26c4f659e0bd4eafe4a61f6cb110737bfb6e4",
+      "Markers": [
+        "itemuse == 1",
+        "event_user(5);"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Other_15",
+      "DecompilerSha256": "3a98d8e4258f2881f1a9146ee1889dbb2b692223f6b642228e0b5ba9dec956f0",
+      "Markers": [
+        "global.flag[27] = 1;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_shyren_Step_0",
+      "DecompilerSha256": "1e1e206b3340d0058174ffd77ee2c18c8d44620276cf7c59dccf9f9ff22e0617",
+      "Markers": [
+        "encourage += 1;",
+        "encourage = 6;",
+        "global.flag[81] = 2;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_dialoguer_Draw_0",
+      "DecompilerSha256": "9873d20a59615e239cb33347853c7584627d2d41e8a278375d9e6131e694f86d",
+      "Markers": [
+        "+ 16",
+        "+ 19",
+        "+ 304"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_settingsmenu_Draw_0",
+      "DecompilerSha256": "962af64dd2f20c661c2499dcbce5d111ba2f8221f0ceca77acc9b4f4a1f1994b",
+      "Markers": [
+        "fnt_maintext",
+        "c_yellow"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_update",
+      "DecompilerSha256": "417f8194b7f3b831c57cc56ad7f40b3c493c3f656968c655f377e14755d3145b",
+      "Markers": [
+        "global.button0",
+        "global.control_pressed[i]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_check_pressed",
+      "DecompilerSha256": "691db8fe052e44c155a5c59998d65185f86aff78096dedd6879149f0875df9fb",
+      "Markers": [
+        "global.control_pressed[control]"
+      ]
+    },
+    {
+      "Resource": "gml_Script_control_clear",
+      "DecompilerSha256": "5eec0e9f9d7d227b9a199575fe70088789e51da6499bce43e886e0a4fc241321",
+      "Markers": [
+        "global.control_pressed[control] = 0;"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_armoreq",
+      "DecompilerSha256": "ee0991e748f6042c865c29f73b3d9c87592731f5ff01e4b2e5a3e42f2eac2485",
+      "Markers": [
+        "global.armor = argument1;"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_recoitem",
+      "DecompilerSha256": "e125d905093083f55f1d5c50ee2646910d6f824a3114079c58e5392769c23293",
+      "Markers": [
+        "global.flag[260] = 1;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_instantnoodleitem_Step_0",
+      "DecompilerSha256": "f357fd8b1a78096ee6cf02625d2f04ab5a3a2b6731acaeac1681c1f908ff64c0",
+      "Markers": [
+        "scr_recoitem"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_levelup",
+      "DecompilerSha256": "b875fb5f7e84dd2b8306816b9d9350c7249dc8c22d49943f5bedc97790a8445e",
+      "Markers": [
+        "global.xp >= 10"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_save",
+      "DecompilerSha256": "3112bb1f70d76df7c38e9498766310ba826eabd244ea180b88b15a20f8f2736e",
+      "Markers": [
+        "scr_saveprocess"
+      ]
+    },
+    {
+      "Resource": "gml_Script_scr_saveprocess",
+      "DecompilerSha256": "ee143c6ef7113b6c481ea9380204d6a1c771901140cfcc3bcad1c59f4225993f",
+      "Markers": [
+        "ossafe_file_text_open_write(file)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_snowdrake_Step_0",
+      "DecompilerSha256": "4ef7268e341d575576b911f62d975a474a5ea8a672a31d55a2e8cd1e6eb4fcc3",
+      "Markers": [
+        "mercymod = 222;"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_door_s_musfade_Alarm_2",
+      "DecompilerSha256": "ed37a6d8c0eef29ac901ca9addb52bfec1d3328af5bd5a9a41039fc89f1aa7ea",
+      "Markers": [
+        "room == room_fire_lab1",
+        "room_goto(room_fire_labelevator)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_finalelevatorpanel_Draw_0",
+      "DecompilerSha256": "3f03ba7afa3c48b6d5c073589f933dbbc16a14bd354b1dd9e6c3b12b955def86",
+      "Markers": [
+        "room == room_fire_labelevator"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_labelevator_a_Step_0",
+      "DecompilerSha256": "bb3ca47da550b9ca6d7a4567c1a72795d54e08dfb3ac94066231ff42a5a72afc",
+      "Markers": [
+        "room_goto(room_truelab_elevatorinside)"
+      ]
+    },
+    {
+      "Resource": "gml_Object_obj_nicesnowman_Alarm_0",
+      "DecompilerSha256": "eee2d91850ae266a666a7af4743ecd81eddb5d7a9155c0e5b839580a6dd2d0d0",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_asgore_finalintro_Create_0",
+      "DecompilerSha256": "092699548e23f2eb4e9329914a9335f46c01028b0bafc9258534f0bd073df8f5",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mainchara_Step_0",
+      "DecompilerSha256": "f1acba1402db35f806153bf8d0ecf94908d209258a891291fed55daf648740e5",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_monsterdefeat",
+      "DecompilerSha256": "23751692164870453a16f490e266cb1e746a4145ff94486aa60c8ce1822b73e6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battler_Create_0",
+      "DecompilerSha256": "b087278a594a59f3a28b3cef7886d92328bcee1952b6faccf0b24ffa5144145e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_torielboss_Destroy_0",
+      "DecompilerSha256": "0df185740193f1a5e5090411bb86144024502f80757bb6131f2d7364d7adadf9",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_papyrusboss_Alarm_10",
+      "DecompilerSha256": "d89223d0ff483cc56127557cdf3218c20b370b814a29c82050791fb59b4ce592",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Alarm_6",
+      "DecompilerSha256": "706e1b5d1aa167687b8a25c078763174277b3f7abe972e86a724ca31083c2fa8",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_lesserdoge_Other_5",
+      "DecompilerSha256": "45b6b601c3e4a9f8ca4e8e5374a5b1b9208e12f9d49d40be7d372e2345358825",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_intromenu_Create_0",
+      "DecompilerSha256": "364c7179692eff51a27e955856b9f7c9abfafb9d5dc1b09a739cd72b9c2a1ce0",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_truechara_Step_0",
+      "DecompilerSha256": "99b4561d723a22133f3ce1d5f71b0eeecf5340f9d1a49519983a6a9822c1b11a",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_storagecheck",
+      "DecompilerSha256": "3f6ddbf2165c013f32dc1d034e8680af9cbd4a66b3b4ae44faa7acbf05ac952e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_tundra1_Create_0",
+      "DecompilerSha256": "56adcfdb58f8dcc92ecc36ca7ef8fc8edefda4991b97a5f3a1fa867e4a66493b",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_water1_Create_0",
+      "DecompilerSha256": "b3145372d0e86d4e8fa1be82e06e017610a148a483f89a52059662955ee32d38",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_monstersetup",
+      "DecompilerSha256": "21f35d41c6c1caf217f141353e3c539ea5b60461195989b8ffb50ce02e0bf15e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_loox_Step_0",
+      "DecompilerSha256": "fdaea2fb2368bad2ccf695cbdca013334ef601cf30d3408697e4236b0d72aeaa",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_loox_Create_0",
+      "DecompilerSha256": "b602698e15ab938fdcba986e3ad760c9e498310639c917678d88234a3e8f9cc9",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_vulkin_Create_0",
+      "DecompilerSha256": "117d243ab75495e0770a6c2d41d7785f2c117eadfddc2ca08abbcbd320a9ab0d",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummymonster_Destroy_0",
+      "DecompilerSha256": "000f5f050484ac7b145a1d1c9a04c2ae4c96bda31ec2a1bcb6906cbcc72693cf",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_napstablook_Step_0",
+      "DecompilerSha256": "14a638d6a2d96e1ff55d14c3e7f00047622acbadeb8979119528086a5c99ae18",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Alarm_7",
+      "DecompilerSha256": "a82de855b0bb4afbec9d91632304b1b0a5bfc814053054bea1400446df81dd3e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlebomb_Destroy_0",
+      "DecompilerSha256": "949f8a1a9604ff66efffde2beeb866a0da49290c5afef7ada3bcd3a9989f9d44",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_endflowey_Step_0",
+      "DecompilerSha256": "241cb3574ce46801ba40393e904b128fcdf8c60ad6df1a63f4de3c5079965fdf",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummytrigger_Step_0",
+      "DecompilerSha256": "1fba7793dfbf9d06b92e3d4f6ff89d61a92cba8d64bdb89ff1c73e5d5d350e76",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonex_Other_11",
+      "DecompilerSha256": "417961a835a9e534179a2f1382e8def3cc0088bb7ae531662c1b404193b974d7",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_ratingsmaster_Draw_0",
+      "DecompilerSha256": "ae6b591ab6fbb47e8be8452f834032cab756419546833ab3cfc901909cc6dd4e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Step_0",
+      "DecompilerSha256": "e592b8e6f12fd3ac6c4cec4501a41cf1e4186a11b623fe2a09b0f87fea8240aa",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlecontroller_Step_0",
+      "DecompilerSha256": "684692982516de492c8712401e6940e30a359f8e4ef6c0e62986a03f0d4fd8a2",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doodlebug_Destroy_0",
+      "DecompilerSha256": "e596482f4e1e6a132135a9e4722ffc6a19812493b421161cda4464128464b0af",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Create_0",
+      "DecompilerSha256": "4e847089eb4245c90e44bd81d78400cbb45d94decde6fd6beea46758a05d06c3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_artclass_sign_Alarm_0",
+      "DecompilerSha256": "e1ba725afce76c877249fc47ab65573c34715200a4c6f7769b232d773369e799",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Destroy_0",
+      "DecompilerSha256": "1b28ba59688342d9f429abbceadae0173dce6e30f02a5cbaa8e09ffd679850a1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Step_0",
+      "DecompilerSha256": "a07b2fa6939bd8382bbce66d93b906e9d2b536e5e2a1389ac0800629d73938b4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_jerry_Create_0",
+      "DecompilerSha256": "3ec01f5675379a0c8075afe90467addfc43f10f53694a853d864dafaa70b2dbd",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_jerry_Step_0",
+      "DecompilerSha256": "b3aa50e6531e314a7423ba282f9ccbb301f64d04ccfe62faabd5809baa8d8ac3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_encounterer_glyde_Create_0",
+      "DecompilerSha256": "e039897865bb91e2bb22090e8b8839e2e42c9b5acd9951052c573cf8e9ee2541",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Create_0",
+      "DecompilerSha256": "cbd9bc78e346f3288bfb1a9076f84dafc627f4fb6f5e3e5b690e121a3485a46f",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Other_13",
+      "DecompilerSha256": "5baa8fe253967ba77fbe111b5d0e7518c21d29deb04fd20798f439a721c6f6bb",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_maddummy_Alarm_3",
+      "DecompilerSha256": "8f3d3eb349e9c0461fd22f187d5298032a1a60e3a80f6fae1661bf7832f53cf1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_napstablook_Destroy_0",
+      "DecompilerSha256": "b676ee11587c7e42c36acb11f92b534c6b24588a9d153747af725d5066199be2",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_bara01_Step_0",
+      "DecompilerSha256": "53c8494b331bde3d712158a3b2586516bfe1143b4b204110bf8b5c7854093cfb",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_bara02_Step_0",
+      "DecompilerSha256": "55f60f87fb5c2ebcf98dda2715f11c6edd6cd11ec3d206db30ce03b0ae17c152",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_spiderb_Alarm_6",
+      "DecompilerSha256": "553fbe20be81c3b945dbb1e9960ee67604f47fa082f3f2fb6be7a1811b34dfda",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doorA_Alarm_2",
+      "DecompilerSha256": "6629b39151eab083009a24bf6a73cd3d41ba20d52f9a7c8fe55f7d9e12b8d128",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_doorB_Alarm_2",
+      "DecompilerSha256": "cedf9b82368da681074a9968c8de856deb8420f3710e210bb58774764aef5fc1",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_runaway",
+      "DecompilerSha256": "86ae4689b882138afacff25285d41a30723d640c1c8acf83663d7278208beb24",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Alarm_6",
+      "DecompilerSha256": "7f1b6787725f7359e0de78a71629db69a3e4fa8115a286cc813f4854430cc457",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Create_0",
+      "DecompilerSha256": "f428a80f6a4fd39cc26b32853e5abba8be3955c37dd43f54d666d8843ef6b4c6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Alarm_10",
+      "DecompilerSha256": "9027d79655130d17a8773937af623059920817495e17719c5a700faae43eb476",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_sosorry_Other_12",
+      "DecompilerSha256": "90289cd759acee8c59db7cd51cd399f53be3f78f6067492160dd37606006b9e4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_attackcalc",
+      "DecompilerSha256": "0035c16390933e9167d7a5a98c15acf114ec39be2cab1ad0cafe331b480015f3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_targetchoice_Step_0",
+      "DecompilerSha256": "0c42cfa37d1ca0d60a31e3499f02aafc7276600124137e1bb83a976facf7b1a3",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_dummytrigger_Create_0",
+      "DecompilerSha256": "2e4d4ccfcfc7a7476661f0ddce43b7ccc048f79d4aa52fd9961112664a310a2c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_woshbody_Step_0",
+      "DecompilerSha256": "9a496edce701dcfaa6d37824b33ebf72ae902f1205f523e431d82d7085a9923e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mainchara_Other_10",
+      "DecompilerSha256": "8278b23b49366231d5d6d6cfed50cbcd622390ef026011775759103dc9e1d252",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Script_scr_interact",
+      "DecompilerSha256": "b2f806df8020fcfec67f3dda71b812606410c740ee15602cf284beba4228d3ca",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlecontroller_Other_10",
+      "DecompilerSha256": "ef94fb547ea3ef1c62e49963da690e259fc2afcf1109b02afc070a80a0fd92e6",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettaton_neo_Step_0",
+      "DecompilerSha256": "cba956189175e3162cde2802dd4d6e9f6ded1f12a12292cc4d1f5ae8d1bc7280",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_tsunderplane_Destroy_0",
+      "DecompilerSha256": "9366b00d7a03a16e9629aa5a7e9794b79ed46e5a37c2d9281fb2b5aefe6cbce4",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_undyne_ex_Step_0",
+      "DecompilerSha256": "4853a6c6da25d0b8221d6d7bd0251d7387e44260abdab735f480c611298e207c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_quiz_Step_0",
+      "DecompilerSha256": "a623f24dcf0f57c948cbf14918cfbd0283fa1be0e2ea62a4e1f68ccdc98cb42e",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_second_Step_0",
+      "DecompilerSha256": "62528bdab578989ba6f3e187c4f7f40a28ffbf94375d1c08d6ea1b184727409c",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_mettatonb_third_Step_0",
+      "DecompilerSha256": "ca20829889547ff0b57fc157e8649eaf80bd8186c397d8e37d5772695f329278",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_battlebomb_Step_0",
+      "DecompilerSha256": "def2332e0ec947a2866b7b8e4a6ca7011db4622eb6c9f378961a0e27d71ce612",
+      "Markers": []
+    },
+    {
+      "Resource": "gml_Object_obj_heart_Step_0",
+      "DecompilerSha256": "80dc2968648d589d0dc67b9a4de6b3a40e1fd7ecb9b9a30d2954129fab1dc9ae",
+      "Markers": []
+    }
+  ],
+  "RequiredRooms": [
+    {
+      "Resource": "room_tundra1",
+      "Index": 44
+    },
+    {
+      "Resource": "room_water1",
+      "Index": 82
+    },
+    {
+      "Resource": "room_fire1",
+      "Index": 137
+    },
+    {
+      "Resource": "room_castle_front",
+      "Index": 219
+    },
+    {
+      "Resource": "room_castle_trueexit",
+      "Index": 240
+    },
+    {
+      "Resource": "room_fire_walkandbranch",
+      "Index": 159
+    },
+    {
+      "Resource": "room_fire_sorry",
+      "Index": 160
+    }
+  ],
+  "RequiredObjectParents": [
+    {
+      "Object": "obj_artclass_sign",
+      "Parent": "obj_interactable"
+    },
+    {
+      "Object": "obj_doorAmusicfade",
+      "Parent": "obj_doorA"
+    },
+    {
+      "Object": "obj_doorBmusicfade",
+      "Parent": "obj_doorB"
+    },
+    {
+      "Object": "obj_mettatonb_quiz",
+      "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_mettatonb_second",
+      "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_mettatonb_third",
+      "Parent": "obj_monsterparent"
+    },
+    {
+      "Object": "obj_battlebomb",
+      "Parent": "obj_monsterparent"
+    }
+  ],
+  "RequiredObjectEvents": [
+    {
+      "Object": "obj_artclass_sign",
+      "Code": "gml_Object_obj_artclass_sign_Step_0"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Step_0"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Alarm_6"
+    },
+    {
+      "Object": "obj_sosorry",
+      "Code": "gml_Object_obj_sosorry_Destroy_0"
+    },
+    {
+      "Object": "obj_mainchara",
+      "Code": "gml_Object_obj_mainchara_Other_10"
+    }
+  ],
+  "RequiredRoomObjects": [
+    {
+      "Room": "room_fire_walkandbranch",
+      "Object": "obj_doorAmusicfade"
+    },
+    {
+      "Room": "room_fire_sorry",
+      "Object": "obj_doorBmusicfade"
+    },
+    {
+      "Room": "room_fire_sorry",
+      "Object": "obj_artclass_sign"
+    }
+  ],
+  "RequiredEmptyEventObjects": [
+    "obj_monsterparent"
+  ]
+}

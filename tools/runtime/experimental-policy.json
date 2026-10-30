@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "id": "experimental-e2e-v5",
+  "scope": "non-destructive-smoke",
+  "disclosure": "Experimental same-account execution using a verified separate game copy with Valve-documented steam_appid.txt containing the exact UNDERTALE AppID 391540. The original runner and Steam API DLL remain unchanged; legitimate same-user Steam authentication and an owned license are required. Startup itself may read/write Steam permanent history or queue deletions. Cloud-off, Offline Mode and local restoration do not isolate or restore RemoteStorage/account state. No SAVE/RESET/ending/history tests, cache deletion, ownership bypass or registered-install replacement. Native behavior is unverified. Keep Cloud disabled and Steam prepared in Offline Mode. Network disconnection is the default; a separately acknowledged connected-network exception can be selected for this controller only, without account isolation. A current explicit owner chat delegation may replace direct terminal input for the original no-input startup probe and original-copy manual recovery only. Such records identify OWNER_CHAT_DELEGATION, preserve the supplied statement, and never claim a human typed a nonce. Patched execution and gameplay input are excluded from delegated scope.",
+  "hardRequirements": [
+    "exact-build-and-harness",
+    "native-non-game-validation",
+    "verified-local-backups",
+    "recognized-starting-state",
+    "legitimate-Steam-authentication",
+    "current-session-consent",
+    "scoped-reviewed-original-baseline-before-patched"
+  ],
+  "forbidden": [
+    "history-or-cache-cleanup",
+    "Cloud-setting-changes",
+    "Steam-shims",
+    "registered-install-writes",
+    "save-injection",
+    "unverified-state-input",
+    "screenshot-only-combat-or-Forced-certification"
+  ],
+  "launchStatus": "OPT_IN_REVIEWED_UI_PLANS_OR_ORIGINAL_PROBE",
+  "defaultRun": "NO-GO",
+  "fullGameplayStatus": "PARTIAL_NATIVE_UI_ADAPTER_INTERNAL_COMBAT_OBSERVERS_UNAVAILABLE",
+  "connectedNetworkDisclosure": "CONNECTED NETWORK EXPERIMENT: Internet may remain connected during the test or local recovery. Steam Offline Mode and disabled Cloud do not prevent all server communication, RemoteStorage updates, achievements, permanent account-history changes or later synchronization. Local backups restore local content only; account state cannot be restored. This consent changes only the offline-network requirement. Steam/game shutdown, verified backups, file/process identity, Cloud/Offline preparation and separate fresh game-launch consent remain required. No SAVE, RESET, ending or new gameplay scope is authorized."
+}

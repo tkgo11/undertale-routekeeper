@@ -1,0 +1,1467 @@
+{
+  "ending.alphys_aborted_late_genocide": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.any_neutral_type": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.betrayed_friendship_robot_killed": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.betrayed_friendship_robot_spared": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.betrayed_no_friendship_robot_killed": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.betrayed_no_friendship_robot_spared": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.dog_only_four_bosses_killed": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.exiled_warrior_alive_skeleton_dead": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.exiled_warrior_and_skeleton_alive": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.exiled_warrior_and_skeleton_dead": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.exiled_warrior_dead_skeleton_alive": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.family": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.leaderless_total_20": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.leaderless_total_below_20": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.mettaton_papyrus_alive": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.mettaton_papyrus_dead": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.papyrus": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.undyne_papyrus_alive": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "ending.undyne_papyrus_dead": {
+    "context": "ending",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.a_required_encounter_was_missed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.a_required_enemy_can_no_longer_be_found": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.a_required_enemy_was_spared_or_a_required_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.an_earlier_soul_sale_determines_this_ending_reset_does": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.attack_monster_kid_then_defeat_undyne_the_undying": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.avoid_gaining_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.avoid_healing_items_even_at_full_hp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.befriend_the_warrior_without_gaining_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.carry_a_keepsake": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.carry_a_snowy_keepsake_in_your_inventory_for_the": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.choose_a_compatible_ending_type_for_this_call_condition": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_hotland_core_s_quota_and_required_encounters_before": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_papyrus_s_date_or_hangout_at_his_house": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_snowdin_s_quota_and_unique_encounters_before_killing": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_area_s_remaining_encounters": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_asriel_encounter_and_break_the_barrier": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.complete_the_final_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_next_required_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_region_s_decisive_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_region_s_final_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_required_genocide_encounters_in_order": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_ruins_kill_quota_and_kill_toriel_before": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_the_true_lab_then_return_to_the_barrier": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.complete_the_warrior_s_friendship_without_gaining_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_undyne_s_hangout_with_papyrus_at_her_house": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.complete_waterfall_s_quota_shyren_and_glad_dummy_then": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_through_the_caverns_and_help_those_in_need": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_through_the_forest_and_make_a_friend": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_through_the_throne_room_some_choices_outlast_a": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_to_the_final_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_to_the_throne_room_and_choose_your_future": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_toward_the_castle_without_gaining_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_while_preserving_the_selected_encounter_outcomes": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_while_preserving_the_selected_outcomes": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.continue_without_writing_a_save": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.defeat_asgore_and_omega_flowey_then_reload_your_save": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.defeat_omega_flowey_in_a_neutral_ending_then_reload": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.defeat_remaining_more_enemies_before_moving_on": {
+    "context": "Regional remaining kill quota; critical quantity",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "remaining"
+    ],
+    "spoilers": "minimal"
+  },
+  "guidance.defeat_remaining_more_enemies_in_hotland_core_before_mettaton": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "remaining"
+    ],
+    "spoilers": "contextual"
+  },
+  "guidance.defeat_remaining_more_enemies_in_snowdin_before_papyrus": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "remaining"
+    ],
+    "spoilers": "contextual"
+  },
+  "guidance.defeat_remaining_more_enemies_in_the_ruins_before_leaving": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "remaining"
+    ],
+    "spoilers": "contextual"
+  },
+  "guidance.defeat_remaining_more_enemies_in_waterfall_before_undyne": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "remaining"
+    ],
+    "spoilers": "contextual"
+  },
+  "guidance.defeat_sans_then_continue_to_the_throne_room": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.defeat_sans_then_continue_toward_the_throne_room": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.defeat_the_robot_before_the_last_battle": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.deliver_undyne_s_letter_and_complete_alphys_s_date": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.deliver_your_friend_s_message": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.do_not_defeat_any_monsters": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.do_not_kill_any_monsters_the_letter_event_checks": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.do_not_kill_enemies_or_gain_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.enter_the_bathroom_in_alphys_s_lab_and_complete": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.exile_robot_defeated": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.exile_robot_spared": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.existing_permanent_history_does_not_match_this_ending": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.explore_the_path_your_friends_opened": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.explore_the_ruins_without_gaining_exp": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.find_the_missing_required_enemy_before_exhausting_the_area": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.finish_the_journey_then_continue_from_your_save": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.finish_the_letter_and_date_but_do_not_enter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.finish_the_warrior_s_friendship": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.finish_your_farewells_and_choose_your_future": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.flee_from_undyne_to_hotland_then_give_her_water": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.follow_genocide_through_waterfall_then_abandon_it_in_hotland": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.follow_the_selected_encounters_before_the_final_battle": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.friend_s_call": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.get_undyne_s_letter_deliver_it_to_alphys_and": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.give_undyne_water_when_she_collapses_in_hotland": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.go_to_papyrus_s_house_and_finish_his_date": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.hard_mode_cannot_reach_a_genocide_ending": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.hard_mode_cannot_reach_a_neutral_ending": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.hard_mode_ends_in_the_ruins_and_cannot_reach": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.help_anyone_who_needs_immediate_aid": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.help_the_collapsed_person_before_leaving": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.help_the_fallen_warrior_before_leaving": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_everyone_safe": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_lv_1_until_the_call": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_starting_armor": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_the_earlier_regional_route": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_the_required_characters_alive": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_the_selected_stay_or_leave_epilogue_choice_existing": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_your_new_friends_safe": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.keep_your_starting_armor_equipped": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_dogamy_and_dogaressa": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_doggo_do_not_spare_required_enemies": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_glad_dummy": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_greater_dog_kill_lesser_dog_if_encountered": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_mettaton_neo_after_exhausting_the_hotland_core_quota": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_muffet": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_papyrus_after_completing_the_snowdin_quota": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_shyren": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_snowdrake_before_the_snowdin_encounter_quota_is_exhausted": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_the_royal_guards": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.kill_toriel_then_enter_snowdin": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.lv_1_no_healing_armor": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.maintain_the_regional_route_through_waterfall": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.make_room_in_your_inventory_for_the_keepsake": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.meet_papyrus_outside_undyne_s_house_and_finish_her": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.meet_your_friends_at_their_home": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.never_save": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.no_carried_stored_or_obtainable_keepsake_remains_in_this": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.no_extra_goal": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.no_healing_items": {
+    "context": "guidance",
+    "layout": "menu_option",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.observe_the_remaining_encounters_before_selecting_an_outcome": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.preserve_the_selected_encounter_outcomes": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.reach_the_chosen_exile_outcome": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.resolve_character_s_encounter_with_the_selected_outcome": {
+    "context": "guidance",
+    "optionalPlaceholders": [
+      "character"
+    ],
+    "placeholders": [
+      "character"
+    ],
+    "spoilers": "contextual"
+  },
+  "guidance.retrieve_the_snowy_keepsake_from_a_storage_box": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.return_to_the_barrier_and_complete_the_asriel_encounter": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "detailed"
+  },
+  "guidance.return_to_the_barrier_and_help_your_friends": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.return_to_the_snow_figure_in_the_forest_and": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.snowdrake_must_be_killed_before_no_further_encounters_or": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spare_mettaton_ex_and_continue_toward_asgore_without_gaining": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spare_papyrus": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spare_papyrus_then_visit_his_house_for_a_date": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spare_toriel_and_continue_out_of_the_ruins_without": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spare_undyne": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.speak_with_your_friends_leave_the_underground_then_keep": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.spend_time_with_your_new_friend": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.start_the_warrior_s_friendship_before_additional_kills": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.start_the_warrior_s_friendship_before_any_additional_kills": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.take_water_from_the_cooler_and_give_it_to": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_barrier_is_open_and_your_final_choice_matches": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_call_condition_is_not_clear_yet": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_cavern_s_requirements_were_missed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_final_choice_differs_from_your_selected_outcome": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_final_region_s_requirements_were_missed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_first_region_s_requirements_were_missed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_forest_s_requirements_were_missed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_friendship_betrayal_changes_this_variant": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_genocide_conclusion_is_already_committed": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_late_genocide_history_overrides_this_neutral_outcome": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_selected_kill_limit_has_been_exceeded": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_true_pacifist_finale_is_already_unlocked": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_world_is_erased_permanent_history_choices_remain_yours": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_world_is_erased_permanent_history_decisions_remain_yours": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.the_world_must_be_restored_before_continuing_some_choices": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.this_call_condition_may_not_be_attainable_with_this": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.this_challenge_cannot_reach_the_selected_ending": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.this_choice_may_block_your_selected_route": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.this_friendship_no_longer_matches_the_selected_variant": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.this_neutral_outcome_is_blocked_in_this_run": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.too_few_kills_remain_for_the_required_boss_outcomes": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.visit_the_friend_who_needs_a_hand": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.visit_your_new_friend_s_home": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.your_next_step_is_not_clear_yet": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "guidance.your_selected_path_is_complete": {
+    "context": "guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "contextual"
+  },
+  "input.joystick_button": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [
+      "button"
+    ],
+    "spoilers": "none"
+  },
+  "input.pad_l1": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_l2": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_l3": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_r1": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_r2": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_r3": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_select": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "input.pad_start": {
+    "context": "Physical controller button label; existing English/Korean both use the printed button name. Keep short enough for warning footer.",
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.action_required": {
+    "context": "UI action_required",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.active": {
+    "context": "UI active",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.at_risk": {
+    "context": "UI at_risk",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.back": {
+    "context": "UI back",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.blocked": {
+    "context": "UI blocked",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.call_goal": {
+    "context": "UI call_goal",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.close_warning": {
+    "context": "UI close_warning",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.detailed": {
+    "context": "UI detailed",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.either": {
+    "context": "UI either",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.ending_type": {
+    "context": "UI ending_type",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.epilogue": {
+    "context": "UI epilogue",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.forced": {
+    "context": "UI forced",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.genocide": {
+    "context": "UI genocide",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.goal": {
+    "context": "UI goal",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.guard_hint": {
+    "context": "UI guard_hint",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.guidance": {
+    "context": "UI guidance",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.journal": {
+    "context": "UI journal",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.language": {
+    "context": "UI language",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.language_name": {
+    "context": "UI dynamic text",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.leave": {
+    "context": "UI leave",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.minimal": {
+    "context": "UI minimal",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.navigation": {
+    "context": "UI navigation",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.neutral": {
+    "context": "UI neutral",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.no_objective": {
+    "context": "UI no_objective",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.off": {
+    "context": "UI off",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.on_track": {
+    "context": "UI on_track",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.pacifist": {
+    "context": "UI pacifist",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.pad_close_warning": {
+    "context": "UI pad_close_warning",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.pad_navigation": {
+    "context": "UI pad_navigation",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.pad_retry_warning": {
+    "context": "UI pad_retry_warning",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.passive": {
+    "context": "UI passive",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.progress": {
+    "context": "UI dynamic text",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "met",
+      "total"
+    ],
+    "spoilers": "none"
+  },
+  "ui.progress_compact": {
+    "context": "UI dynamic text",
+    "optionalPlaceholders": [],
+    "placeholders": [
+      "met",
+      "total"
+    ],
+    "spoilers": "none"
+  },
+  "ui.retry_warning": {
+    "context": "UI retry_warning",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.soulless_genocide": {
+    "context": "UI soulless_genocide",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.soulless_pacifist": {
+    "context": "UI soulless_pacifist",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.spoilers": {
+    "context": "UI spoilers",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.stay": {
+    "context": "UI stay",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.title": {
+    "context": "UI title",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.type_number": {
+    "context": "Native menu numeric label or route progress. Preserve all placeholders.",
+    "placeholders": [
+      "index"
+    ],
+    "spoilers": "minimal"
+  },
+  "ui.unknown": {
+    "context": "UI unknown",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.variant": {
+    "context": "UI variant",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "none"
+  },
+  "ui.variant_number": {
+    "context": "Native menu numeric label or route progress. Preserve all placeholders.",
+    "placeholders": [
+      "index"
+    ],
+    "spoilers": "minimal"
+  },
+  "ui.warn_1": {
+    "context": "UI warn_1",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_10": {
+    "context": "UI warn_10",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_11": {
+    "context": "UI warn_11",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_12": {
+    "context": "UI warn_12",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_13": {
+    "context": "UI warn_13",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_14": {
+    "context": "UI warn_14",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_15": {
+    "context": "UI warn_15",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_16": {
+    "context": "UI warn_16",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_17": {
+    "context": "UI warn_17",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_18": {
+    "context": "UI warn_18",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_19": {
+    "context": "UI warn_19",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_2": {
+    "context": "UI warn_2",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_20": {
+    "context": "UI warn_20",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_3": {
+    "context": "UI warn_3",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_4": {
+    "context": "UI warn_4",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_5": {
+    "context": "UI warn_5",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_6": {
+    "context": "UI warn_6",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_7": {
+    "context": "UI warn_7",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_8": {
+    "context": "UI warn_8",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  },
+  "ui.warn_9": {
+    "context": "UI warn_9",
+    "optionalPlaceholders": [],
+    "placeholders": [],
+    "spoilers": "warning"
+  }
+}

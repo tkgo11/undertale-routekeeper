@@ -1,0 +1,74 @@
+[
+  {
+    "id": "startup",
+    "expected": "Exact official side-copy runner reaches title and a fresh room; registered install unchanged.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:startup"
+  },
+  {
+    "id": "english",
+    "expected": "English menu/HUD use original pixel font with no clipping.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:english"
+  },
+  {
+    "id": "korean",
+    "expected": "Korean menu/HUD glyphs render clearly; no missing glyphs or layout changes.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:korean"
+  },
+  {
+    "id": "settings",
+    "expected": "Mod-only settings persist in trial state, with no personal-save/account-isolation claim.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:settings"
+  },
+  {
+    "id": "keyboard",
+    "expected": "Navigation, confirm/cancel and menu-close input do not leak into gameplay.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:keyboard"
+  },
+  {
+    "id": "battle",
+    "expected": "Early ordinary battle: ACT/item/MERCY/FLEE operate normally; no SAVE, RESET or ending.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:battle"
+  },
+  {
+    "id": "warnings",
+    "expected": "Passive/Active risk warning acknowledges exactly one matching action; mode/action changes invalidate it.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:warnings"
+  },
+  {
+    "id": "forced",
+    "expected": "Verified early EXP-producing FIGHT is refused for Pacifist; ACT/MERCY remain usable, no stat/item corruption.",
+    "actual": "",
+    "status": "NOT_RUN",
+    "method": "UNOBSERVED",
+    "recordedUtc": "",
+    "verificationContract": "screen-contracts-v1:forced"
+  }
+]
