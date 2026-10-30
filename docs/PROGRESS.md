@@ -681,3 +681,13 @@ Authentic filesystem preparation passed without changing the registered install;
 native retry remains unverified. Owner-approved manual save restoration is still
 pending physical disconnection. Both independent ten-file backups match the
 original journal. No game retry is permitted until recovery is verified.
+
+# 2026-10-30 connected-network policy option
+
+The owner explicitly accepted connected-network risk. Experimental execution and
+recovery now offer -AllowConnectedNetwork with a fresh direct risk nonce, separate
+from fresh game-launch consent. Default offline and legacy guards remain intact.
+Consent/journal/result/recovery records identify the accepted connection risk;
+they never claim account isolation or account restoration. No game retry or save
+restoration follows from implementing this option. Existing manual recovery is
+still pending; its private script now supports the same reviewed opt-in.

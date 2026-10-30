@@ -601,3 +601,21 @@ with the production timeout unchanged. Inventory and encoding checks also passed
 Two ten-file original-save backups independently match the existing journal.
 Manual recovery is authorized but deferred by the owner; LOCAL_RECOVERY remains
 BLOCKED until the absent destination is restored and independently verified.
+
+## 2026-10-30 explicit connected-network exception
+
+The owner authorized accepting connected-network risk. The opt-in flag requires
+a directly typed fresh risk nonce in the controller, remains separately bound
+to game-launch consent, and is recorded as CONNECTED_RISK_ACCEPTED. Offline is
+still the default; legacy Run and all identity/watchdog/recovery refusals remain.
+The private original-copy manual recovery script supports the same flag, without
+changing the interrupted journal or asserting account restoration.
+
+PowerShell 7 and Windows PowerShell 5.1 each passed 18 new policy checks, including
+declined consent, default offline refusal, tampered controller/nonce/disclosure,
+independent launch consent and cross-mode refusal. The existing default-network
+suite passed 27 checks; cleanup/completion passed 61; native-gameplay offline
+tests passed 11. No Steam/game launch, network reconfiguration or personal save
+mutation was performed for these tests. Connected gameplay and save restoration
+remain unverified; policy acceptance cannot establish either result.
+The Python E2E suite also passed 21 tests (one skipped) with the new policy.

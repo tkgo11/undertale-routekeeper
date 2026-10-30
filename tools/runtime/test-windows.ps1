@@ -4,7 +4,8 @@ param(
  [ValidateSet('Check','Prepare','Preflight','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest','Resume','Recover','Report','Cleanup')][string]$Mode='Check',
  [string]$Work,[string]$Archive,[string]$Cli,[string]$Builder,[string]$SteamExe,[string]$GameInstall,
  [string]$NativePlan,[string]$OriginalPlan,[string]$PatchedPlan,[string]$Baseline,
- [ValidateSet('focus','identity','abort','crash','unknown-scene','timeout','bad-image')][string]$Failure
+ [ValidateSet('focus','identity','abort','crash','unknown-scene','timeout','bad-image')][string]$Failure,
+ [switch]$AllowConnectedNetwork
 )
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
@@ -34,6 +35,10 @@ function Assert-RkNativeHost {
 }
 
 try {
+if($AllowConnectedNetwork){
+ if($Mode -notin @('Preflight','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','Recover','Resume','Cleanup')){throw 'Connected-network mode applies only to explicit experimental execution/recovery.'}
+ Initialize-RkExperimentalNetwork -AllowConnectedNetwork
+}
 if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest')){
  $base=if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'}else{Join-Path $repo 'private-evidence/windows-e2e'}
  Assert-RkNoLinks $base
@@ -116,12 +121,13 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
     if(!(Test-RkCacheEqual $s.cacheBefore (Get-RkSteamCacheInventory (Split-Path $s.steamExe))) -or (Get-RkTreeDigest $s.gameInstall) -cne $s.registeredDigest){throw 'Changed cache/registered installation; cleanup refused.'}
     $copy=Join-Path $root 'game';if(Test-Path -LiteralPath $copy){Assert-RkNativeSaveTree $copy;if($s.runDigest -notmatch '^[a-f0-9]{64}$' -or (Get-RkTreeDigest $copy) -cne $s.runDigest){throw 'Disposable copy changed; preserve it as evidence.'};Remove-Item -LiteralPath $copy -Recurse -Force}
    }
-   Write-RkAtomicJson (Join-Path $root 'recovery.json') @{kind='LOCAL_RECOVERY_RECEIPT';localRecovery='CONTENT_TREE_VERIFIED';accountHistory='NOT_RESTORED';phase=$s.phase;originalDigest=$s.originalDigest}
+   Write-RkAtomicJson (Join-Path $root 'recovery.json') @{kind='LOCAL_RECOVERY_RECEIPT';localRecovery='CONTENT_TREE_VERIFIED';accountHistory='NOT_RESTORED';phase=$s.phase;originalDigest=$s.originalDigest;network=(Get-RkExperimentalNetworkRecord)}
    Write-Output (@{localRecovery='CONTENT_TREE_VERIFIED';accountHistory='NOT_RESTORED';gameplay='UNVERIFIED'}|ConvertTo-Json)
    }finally{$lock.Dispose()}
    return
   }
   if($Work){throw 'No known experimental session at this Work. Never guess a different recovery target.'}
+  if($AllowConnectedNetwork){throw 'Connected-network mode cannot be used for legacy recovery; supply an exact experimental Work.'}
   $action=if($Mode -eq 'Cleanup'){'Cleanup'}else{'Recover'}
  $global:LASTEXITCODE=0
   & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action $action
@@ -155,7 +161,7 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  $global:LASTEXITCODE=0
  & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action Preflight -Lab $Work -PatchedData (Join-Path $Work 'candidate.win') -SteamExe $SteamExe -GameInstall $GameInstall
  if($LASTEXITCODE -ne 0){throw 'Legacy preflight/recovery failed; no later operation authorized.'}
- Assert-RkProcessesClosed;Assert-RkNetworkOffline
+ Assert-RkProcessesClosed;Assert-RkExperimentalNetwork
  Assert-RkNativeSaveTree $Work
  $drive=Get-Item -LiteralPath ([IO.Path]::GetPathRoot([IO.Path]::GetFullPath($Work)))
  $volume=Get-Volume -DriveLetter $drive.PSDrive.Name -ErrorAction Stop

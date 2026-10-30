@@ -1,5 +1,40 @@
 . (Join-Path $PSScriptRoot 'watchdog.ps1')
 . (Join-Path $PSScriptRoot 'steam-launch-context.ps1')
+$script:RkConnectedNetworkConsent=$null
+function Get-RkNetworkRiskDisclosure {
+ $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8|ConvertFrom-Json
+ return $policy.connectedNetworkDisclosure
+}
+function Initialize-RkExperimentalNetwork([switch]$AllowConnectedNetwork) {
+ $script:RkConnectedNetworkConsent=$null
+ if(!$AllowConnectedNetwork){return}
+ $disclosure=Get-RkNetworkRiskDisclosure
+ if([string]::IsNullOrWhiteSpace($disclosure)){throw 'Connected-network risk disclosure is missing.'}
+ Write-Host $disclosure -ForegroundColor Yellow
+ $nonce=[guid]::NewGuid().ToString('N')
+ $expected='ACCEPT CONNECTED NETWORK RISK '+$nonce
+ if((Read-Host ('Type exactly: '+$expected)) -cne $expected){throw 'Connected-network consent declined.'}
+ $script:RkConnectedNetworkConsent=@{mode='CONNECTED_RISK_ACCEPTED';nonce=$nonce;controllerPid=$PID;disclosure=$disclosure;recordedUtc=[DateTime]::UtcNow.ToString('o');accountHistory='NOT_RESTORED'}
+}
+function Get-RkExperimentalNetworkRecord {
+ if($null -eq $script:RkConnectedNetworkConsent){return @{mode='OFFLINE_REQUIRED';accountHistory='NOT_RESTORED'}}
+ return $script:RkConnectedNetworkConsent.Clone()
+}
+function Assert-RkExperimentalNetwork {
+ if($null -eq $script:RkConnectedNetworkConsent){Assert-RkNetworkOffline;return}
+ $c=$script:RkConnectedNetworkConsent
+ if($c.mode -cne 'CONNECTED_RISK_ACCEPTED' -or $c.controllerPid -ne $PID -or
+    $c.nonce -cnotmatch '^[a-f0-9]{32}$' -or $c.disclosure -cne (Get-RkNetworkRiskDisclosure)){
+  throw 'Current-controller connected-network consent is invalid; no execution or recovery.'
+ }
+ # This mode accepts possible connectivity, including uncertain observations.
+ # Never label it offline or isolated; no network settings/probes are changed.
+}
+function Assert-RkLaunchNetworkConsent($Consent) {
+ Assert-RkExperimentalNetwork
+ $network=Get-RkExperimentalNetworkRecord
+ if($Consent.network.mode -cne $network.mode -or $Consent.network.nonce -cne $network.nonce){throw 'Launch consent network scope differs from this controller.'}
+}
 function New-RkExperimentalConsent([string]$Session,[string]$Nonce) {
  # Not a bypass for identity, preflight, path, backup or scenario prerequisites.
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -8,7 +43,7 @@ function New-RkExperimentalConsent([string]$Session,[string]$Nonce) {
  if((Read-Host ('Type exactly: '+$expected)) -cne $expected){throw 'Session consent declined.'}
  $hasher=[Security.Cryptography.SHA256]::Create()
  try{$disclosureHash=([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($policy.disclosure)))).Replace('-','').ToLowerInvariant()}finally{$hasher.Dispose()}
- return @{schema=1;policy=$policy.id;session=$Session;nonce=$Nonce;disclosureSha256=$disclosureHash;recordedUtc=[DateTime]::UtcNow.ToString('o');accountIsolation='UNPROVEN';scope='non-destructive-smoke';credentialsStored=$false}
+ return @{schema=1;policy=$policy.id;session=$Session;nonce=$Nonce;disclosureSha256=$disclosureHash;recordedUtc=[DateTime]::UtcNow.ToString('o');accountIsolation='UNPROVEN';scope='non-destructive-smoke';credentialsStored=$false;network=(Get-RkExperimentalNetworkRecord)}
 }
 # Experimental coordinator. Reuses existing save transactions and capture.
 # No cache/history restoration, registered-install writes or global keyboard input.
@@ -22,7 +57,7 @@ function Write-RkE2eGameStopBoundary($State) {
  Write-RkAtomicJson $path @{schema=1;id=$State.id;owner=$State.owner;present=$present;digest=$digest}
 }
 function Write-RkE2eTrialFence($State) {
- Assert-RkProcessesClosed;Assert-RkNetworkOffline;Assert-RkNativeSaveTree $State.savePath
+ Assert-RkProcessesClosed;Assert-RkExperimentalNetwork;Assert-RkNativeSaveTree $State.savePath
  Assert-RkJournal $State $State.root $State.savePath $State.owner
  $present=[bool](Test-Path -LiteralPath $State.savePath)
  $digest=if($present){Get-RkTreeDigest $State.savePath}else{''}
@@ -94,7 +129,7 @@ function Assert-RkE2eRecoveryReady($State,[string]$Root,[string]$Save,[string]$O
 
 }
 function Restore-RkE2eSession($State,[string]$Root,[string]$Save,[string]$Owner) {
- Assert-RkProcessesClosed;Assert-RkNetworkOffline;Assert-RkNativeSaveTree $Save;Assert-RkNativeSaveTree $Root
+ Assert-RkProcessesClosed;Assert-RkExperimentalNetwork;Assert-RkNativeSaveTree $Save;Assert-RkNativeSaveTree $Root
  Assert-RkE2eRecoveryReady $State $Root $Save $Owner
  Restore-RkSaveTransaction $State $Root $Save $Owner
 }
@@ -119,7 +154,7 @@ function Stop-RkOwnedSteamClient($Process,[string]$Path,[long]$Ticks,[string]$Ha
 function Wait-RkProbeProcessesClosed {
  $deadline=[DateTime]::UtcNow.AddSeconds(30)
  while(@(Get-Process steam,steamwebhelper,UNDERTALE -ErrorAction SilentlyContinue).Count -and [DateTime]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 250}
- Assert-RkProcessesClosed;Assert-RkNetworkOffline
+ Assert-RkProcessesClosed;Assert-RkExperimentalNetwork
 }
 function Complete-RkProbeStopBoundary($State,$GameProcess,[string]$Runner,[long]$GameTicks,$SteamProcess,[string]$SteamExe,[long]$SteamTicks,[bool]$UnknownChildren) {
  # Every stop operation is independent. A guardian/boundary failure must never
@@ -208,7 +243,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
  if($Consent.disclosureSha256 -cne $disclosureHash){throw 'Consent disclosure differs from current policy.'}
  $age=([DateTime]::UtcNow-[DateTime]::Parse($Consent.recordedUtc).ToUniversalTime()).TotalSeconds
  if($age -lt 0 -or $age -gt 300){throw 'Consent expired; no launch.'}
- Assert-RkProcessesClosed;Assert-RkNetworkOffline
+ Assert-RkProcessesClosed;Assert-RkExperimentalNetwork
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  $local=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
  if($Plan){
@@ -217,6 +252,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
    Invoke-RkProbeDiagnostic {Invoke-RkPython -Arguments @('check-baseline','--baseline',$Baseline,'--work',$Work)}
   }
  }elseif($Case -ne 'original'){throw 'Patched execution requires an explicit reviewed native plan and original baseline.'}
+ Assert-RkLaunchNetworkConsent $Consent
  $save=Join-Path $local 'UNDERTALE';$root=Join-Path $Work $SessionName
  Assert-RkNativeSaveTree $save
  Initialize-RkPrivateRoot $Work $owner
@@ -225,7 +261,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
   $before=Get-RkSteamCacheInventory (Split-Path $SteamExe)
   if($before.appCacheFilesPresent -or $before.permanentHistoryPresent){throw 'Existing Steam app cache/history blocks probe; never delete it to pass.'}
   $registered=Get-RkTreeDigest $GameInstall
-  $metadata=@{e2eKind=$(if($Plan){'EXPERIMENTAL_GAMEPLAY_SMOKE'}else{'EXPERIMENTAL_ORIGINAL_PROBE'});consentSession=$Consent.session;steamExe=$SteamExe;steamSha=(Get-FileHash -LiteralPath $SteamExe).Hash.ToLowerInvariant();gameInstall=$GameInstall;registeredDigest=$registered;cacheBefore=$before}
+  $metadata=@{e2eKind=$(if($Plan){'EXPERIMENTAL_GAMEPLAY_SMOKE'}else{'EXPERIMENTAL_ORIGINAL_PROBE'});consentSession=$Consent.session;steamExe=$SteamExe;steamSha=(Get-FileHash -LiteralPath $SteamExe).Hash.ToLowerInvariant();gameInstall=$GameInstall;registeredDigest=$registered;cacheBefore=$before;network=(Get-RkExperimentalNetworkRecord)}
   if($Plan -and $Case -eq 'patched'){
    $base=Read-RkJournal $Baseline
    Assert-RkJournal $base $Baseline $save $owner
@@ -247,17 +283,18 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
   $gameProcess=$null;$steamProcess=$null;$gameTicks=0;$steamTicks=0;$unknownChildren=$false
   $prepared=Get-Content -LiteralPath (Join-Path $Work 'prepared.json') -Raw -Encoding UTF8|ConvertFrom-Json
   $result=@{repositoryHead=$prepared.repositoryHead;originalSha256=$prepared.originalSha256;candidateSha256=$prepared.candidateSha256;runnerSha256=$prepared.runnerSha256;schema=1;kind='EXPERIMENTAL_ORIGINAL_STARTUP_PROBE';result='BLOCKED';case='original';patched='NOT_RUN';gameplay='UNVERIFIED';accountHistory='NOT_RESTORED';inputsDispatched=0;reason='No independently verified title-to-room/input baseline; patched execution is not authorized.'}
+  $result.network=Get-RkExperimentalNetworkRecord
   $result.harness=$prepared.harness
   $result.case=$Case
   if($Plan){$result.kind='EXPERIMENTAL_NATIVE_GAMEPLAY';$result.reason='Native observations incomplete; no gameplay PASS.'}
   try {
    Start-RkSaveTransaction $state
-   Assert-RkProcessesClosed;Assert-RkNetworkOffline;Assert-RkHash $SteamExe $state.steamSha
+   Assert-RkProcessesClosed;Assert-RkExperimentalNetwork;Assert-RkHash $SteamExe $state.steamSha
    Start-Process -FilePath $SteamExe -ArgumentList '-offline' | Out-Null
    $deadline=[DateTime]::UtcNow.AddSeconds(30)
    do {
     if(Test-Path -LiteralPath $abort){throw 'Emergency abort requested.'}
-    Assert-RkNetworkOffline
+    Assert-RkExperimentalNetwork
     $clients=@(Get-Process steam -ErrorAction SilentlyContinue)
     if(!$clients.Count){Start-Sleep -Milliseconds 250}
    }while(!$clients.Count -and [DateTime]::UtcNow -lt $deadline)
@@ -276,7 +313,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
    Initialize-RkWindowInput
    do {
     Update-RkExternalWatchdog
-    Assert-RkNetworkOffline
+    Assert-RkExperimentalNetwork
     if((Test-Path -LiteralPath $abort) -or ([RkWindowInput]::GetAsyncKeyState(19) -band 0x8000)){throw 'Emergency abort requested.'}
     $gameProcess.Refresh()
     try{$descendants=@(Get-CimInstance Win32_Process -Filter ('ParentProcessId='+$gameProcess.Id) -OperationTimeoutSec 5 -ErrorAction Stop)}catch{$unknownChildren=$true;throw}

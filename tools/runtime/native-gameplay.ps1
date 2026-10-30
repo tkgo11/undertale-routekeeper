@@ -56,7 +56,7 @@ function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
   Update-RkExternalWatchdog
   if($Context.watch.ElapsedMilliseconds -gt 300000 -or $Context.counter -ge 2000 -or $Context.bytes -ge 64MB){throw 'Native global watchdog/frame budget expired.'}
   if((Get-FileHash -LiteralPath (Join-Path $Context.root 'native-plan.json')).Hash.ToLowerInvariant() -cne $Context.planSha){throw 'Frozen native plan changed; stop inputs.'}
-  Assert-RkNetworkOffline
+  Assert-RkExperimentalNetwork
   Assert-RkInputWindow $Context.process $Context.window $Context.runner $Context.hash $Context.ticks $Context.abort
   Assert-RkProcessIdentity @(Get-Process UNDERTALE -ErrorAction SilentlyContinue) $Context.process.Id $Context.runner $Context.ticks
   try{$children=@(Get-CimInstance Win32_Process -Filter ('ParentProcessId='+$Context.process.Id) -OperationTimeoutSec 5 -ErrorAction Stop)}catch{$Context.unknownChildren.Value=$true;throw}

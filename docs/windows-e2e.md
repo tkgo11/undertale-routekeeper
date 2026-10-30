@@ -32,6 +32,23 @@ confirmations, injected saves, self-reported telemetry, or screenshot approval.
 
 ## Prerequisites and commands
 
+The owner additionally authorized a connected-network exception on 2026-10-30.
+For experimental Preflight/Smoke/UI modes or exact experimental recovery Work,
+pass `-AllowConnectedNetwork` to test-windows.ps1. The operator must type a fresh
+`ACCEPT CONNECTED NETWORK RISK <nonce>` phrase in that process. This permits
+Internet connectivity or uncertain network observations without claiming offline
+status. No adapter, firewall, Cloud or Steam account settings are changed.
+Without the flag, the original physical-link/NLM offline checks still apply.
+
+Cloud-disabled/Steam Offline preparation, closed-process boundaries, exact file
+identity and all save/watchdog refusals remain mandatory. A separate fresh game
+launch nonce is still required. The connection risk receipt is included in launch
+consent, session journals, result reports and experimental recovery receipts.
+Steam may communicate or synchronize account data now or later; local restoration
+cannot undo RemoteStorage, achievements or permanent account history. Legacy Run
+remains NO-GO; the flag does not apply to legacy recovery. Existing pending manual
+recovery must finish before a new game trial. Policy v4 invalidates older seals.
+
 Use the repository root, ordinary current Windows account, 64-bit PowerShell5.1/7
 on Windows10+, Python3.12+/Pillow11.3.0, the exact SDK in global.json, and the pinned
 UndertaleModCli0.9.2.0. No administrator, new account, Sandbox or VM is required.

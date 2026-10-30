@@ -1,5 +1,6 @@
 # Synthetic Win32 responses and real disposable filesystem recovery only.
 $ErrorActionPreference='Stop'
+& (Join-Path $PSScriptRoot 'test-connected-network.ps1')
 & (Join-Path $PSScriptRoot 'test-probe-cleanup.ps1')
 & (Join-Path $PSScriptRoot 'test-steam-launch-context.ps1')
 . (Join-Path $PSScriptRoot 'safety.ps1')

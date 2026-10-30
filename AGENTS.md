@@ -227,3 +227,15 @@ Run python tools/test_native_gameplay.py plus the existing offline suites. Repor
 routing accepts public Work/direct runs and refuses partial/ambiguous/tampered data.
 New prepared seals are required after helper/policy changes. Review private native
 references honestly: a metadata provenance label is not independent authentication.
+
+## Owner-authorized connected-network exception (2026-10-30)
+
+The owner now explicitly permits accepting connected-network account risk. The
+experimental test-windows entry offers -AllowConnectedNetwork with a separate
+fresh, directly typed risk nonce. Default operation still requires offline
+observations; legacy Run/recovery guards are unchanged. The exception changes
+only the offline-network requirement, and is recorded in consent, journals and
+reports as CONNECTED_RISK_ACCEPTED / NOT_RESTORED. Keep Cloud disabled, Steam
+prepared Offline, independent fresh game-launch consent, process/file identity,
+backup/fence/watchdog recovery refusals and all gameplay scope limits. Never
+claim connected operation is account-isolated or restores account state.
