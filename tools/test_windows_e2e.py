@@ -108,16 +108,18 @@ class E2eTests(unittest.TestCase):
 
     def test_required_assertion_contract_changes_invalidate_preparation(self):
         pins=e.source_pins()
-        for name in ('tools/runtime/screen-contracts.json','tools/runtime/smoke-scenarios.json'):
+        for name in ('tools/runtime/screen-contracts.json','tools/runtime/smoke-scenarios.json',
+                     'tools/runtime/run-current-account.ps1'):
             self.assertIn(name,pins)
         for name in pins:
             path=self.root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(name.encode('utf-8'))
         with patch.object(e,'ROOT',self.root):
             original=e.source_pins();e.check_pins(original)
-            file=self.root/'tools/runtime/screen-contracts.json'
-            raw=file.read_bytes();file.write_bytes(b'CHANGED MANDATORY ASSERTIONS')
-            with self.assertRaises(e.StopRun):e.check_pins(original)
-            file.write_bytes(raw);e.check_pins(original)
+            for name in ('tools/runtime/screen-contracts.json','tools/runtime/run-current-account.ps1'):
+                file=self.root/name
+                raw=file.read_bytes();file.write_bytes(b'CHANGED MANDATORY ASSERTIONS')
+                with self.assertRaises(e.StopRun):e.check_pins(original)
+                file.write_bytes(raw);e.check_pins(original)
 
     def test_prepare_refuses_reused_and_unknown_inputs(self):
         existing=self.root/'existing';existing.mkdir()

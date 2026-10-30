@@ -79,6 +79,7 @@ def source_pins():
              'tools/runtime/capture-client.ps1','tools/runtime/safety.ps1',
              'tools/runtime/watchdog.py','tools/runtime/watchdog.ps1','tools/runtime/steam-launch-context.ps1',
              'tools/runtime/current-account-state.ps1','tools/runtime/current-account-windows.ps1',
+             'tools/runtime/run-current-account.ps1',
              'profiles/registry.json']
     return {f:screen.hash_file(ROOT/f) for f in files}
 
