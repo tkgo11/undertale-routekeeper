@@ -49,6 +49,30 @@ cannot undo RemoteStorage, achievements or permanent account history. Legacy Run
 remains NO-GO; the flag does not apply to legacy recovery. Existing pending manual
 recovery must finish before a new game trial. Policy v4 invalidates older seals.
 
+The owner's later explicit request for autonomous testing without personal
+controls permits policy-v5 documentary chat delegation for original startup only.
+Use `-OwnerDelegatedOriginalProbe -ApprovalStatement <exact current owner request>`
+with Smoke; other delegated modes are refused. Consent still records fresh
+session/nonce/disclosure and separately records OWNER_CHAT_DELEGATION with the
+statement. It never claims direct terminal input or independent authentication.
+The same delegation can accompany the fixed original-copy manual recovery.
+Patched execution, navigation plans/input, SAVE/RESET/endings and reference
+approval remain outside this scope. Fresh preparation is required after v5.
+
+`-NativeTestReceipt <private-folder>` may reuse a just-passed non-game receipt;
+the existing validator checks it both before launch and in the coordinator.
+This option adds no expiry guarantee. Omit it to run a new native self-test.
+Execution paths are canonicalized before exact process comparison and journal
+creation. Startup requires repeated observations of the same owned foreground
+window; HWND observations alone are not pixel or navigation evidence. Failed
+capture operands are private diagnostics and never replace an image receipt.
+
+The external guardian tolerates Windows heartbeat read-sharing gaps only while
+the existing stale deadline continues running. Its publisher retries sharing
+violations for at most 250ms. Neither case counts as observed heartbeat progress.
+Invalid sequence/link checks still stop the owned target. No journal recovery
+rules or global transaction publication behavior change.
+
 Use the repository root, ordinary current Windows account, 64-bit PowerShell5.1/7
 on Windows10+, Python3.12+/Pillow11.3.0, the exact SDK in global.json, and the pinned
 UndertaleModCli0.9.2.0. No administrator, new account, Sandbox or VM is required.

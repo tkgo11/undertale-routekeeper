@@ -72,7 +72,12 @@ function Save-RkWindowCapture($Process,[string]$Executable,[string]$Destination,
   [uint32]$afterOwner=0
   $null=[RoutekeeperCapture]::GetWindowThreadProcessId($window,[ref]$afterOwner)
   $process.Refresh()
-  if([RoutekeeperCapture]::IsIconic($window) -or ![RoutekeeperCapture]::IsWindowVisible($window) -or $process.HasExited -or ($ExplicitWindow -eq [IntPtr]::Zero -and $process.MainWindowHandle -ne $window) -or $process.StartTime.ToUniversalTime().ToString('o') -ne $processStarted -or $afterOwner -ne $process.Id -or [RoutekeeperCapture]::GetForegroundWindow() -ne $window){throw 'Capture process/focus changed.'}
+  $identityAfter=[ordered]@{minimized=[RoutekeeperCapture]::IsIconic($window);visible=[RoutekeeperCapture]::IsWindowVisible($window);exited=$process.HasExited;mainWindow=$process.MainWindowHandle.ToInt64();window=$window.ToInt64();explicitWindow=$ExplicitWindow.ToInt64();processStarted=$processStarted;processStartedAfter=$process.StartTime.ToUniversalTime().ToString('o');ownerAfter=[int]$afterOwner;pid=$process.Id;foregroundAfter=[RoutekeeperCapture]::GetForegroundWindow().ToInt64();utc=[DateTime]::UtcNow.ToString('o')}
+  if($identityAfter.minimized -or !$identityAfter.visible -or $identityAfter.exited -or ($ExplicitWindow -eq [IntPtr]::Zero -and $identityAfter.mainWindow -ne $identityAfter.window) -or $identityAfter.processStartedAfter -cne $processStarted -or $afterOwner -ne $process.Id -or $identityAfter.foregroundAfter -ne $identityAfter.window){
+   # Failed pixels remain unpublished. Record operands only; this is not a capture receipt.
+   Write-RkAtomicJson ($Destination+'.failure.json') $identityAfter
+   throw 'Capture process/focus changed; inspect private failure operands.'
+  }
   if(![RoutekeeperCapture]::GetClientRect($window,[ref]$after) -or ![RoutekeeperCapture]::ClientToScreen($window,[ref]$afterPoint) -or $after.Right -ne $rect.Right -or $after.Bottom -ne $rect.Bottom -or $point.X -ne $afterPoint.X -or $point.Y -ne $afterPoint.Y -or [RoutekeeperCapture]::GetDpiForWindow($window) -ne $dpi){throw 'Capture client geometry/DPI changed.'}
   Assert-RkHash $Executable $ExpectedRunnerSha256
   Assert-RkHash $process.Path $ExpectedRunnerSha256

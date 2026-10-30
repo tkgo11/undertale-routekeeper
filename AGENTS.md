@@ -239,3 +239,12 @@ reports as CONNECTED_RISK_ACCEPTED / NOT_RESTORED. Keep Cloud disabled, Steam
 prepared Offline, independent fresh game-launch consent, process/file identity,
 backup/fence/watchdog recovery refusals and all gameplay scope limits. Never
 claim connected operation is account-isolated or restores account state.
+
+The latest owner explicitly requested autonomous connected execution without
+personal controls. Policy v5 permits documentary OWNER_CHAT_DELEGATION instead
+of terminal input for original no-input startup and exact original-copy manual
+recovery only. Preserve the exact supplied statement; never claim it independently
+authenticates a user or that a terminal nonce was typed. The delegated entry is
+Smoke-only, and the coordinator rejects patched cases, plans and other session
+namespaces. Fresh seal, bounded capture, genuine runner, recovery and identity
+checks remain mandatory. This does not authorize AI approval of navigation plans.

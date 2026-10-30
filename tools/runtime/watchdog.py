@@ -162,6 +162,7 @@ def run(config_path):
         user.GetAsyncKeyState.restype = ctypes.c_short
         while target.alive():
             reason = None
+            heartbeat_error = None
             try:
                 observed_descendants = descendants(config['target']['pid'], observed_descendants)
                 if observed_descendants:
@@ -190,19 +191,32 @@ def run(config_path):
                         last_heartbeat = time.monotonic()
                 except (FileNotFoundError, json.JSONDecodeError):
                     pass  # A bounded atomic-publication gap cannot extend the deadline.
-                except (OSError, KeyError, TypeError, ValueError):
-                    reason = 'invalid-heartbeat'
+                except (OSError, KeyError, TypeError, ValueError) as error:
+                    # ReplaceFile can briefly make the published path unreadable
+                    # on Windows. No observed progress means no deadline extension.
+                    # CPython's text open can expose EACCES without winerror.
+                    sharing_gap = (os.name == 'nt' and isinstance(error, PermissionError)
+                                   and (getattr(error, 'winerror', None) in (5, 32)
+                                        or (getattr(error, 'winerror', None) is None and error.errno == 13)))
+                    if not sharing_gap:
+                        reason = 'invalid-heartbeat'
+                        heartbeat_error = {'type': type(error).__name__, 'message': str(error),
+                                           'errno': getattr(error, 'errno', None),
+                                           'winerror': getattr(error, 'winerror', None)}
                 if time.monotonic() - last_heartbeat >= timeout:
                     reason = 'stale-heartbeat'
             if reason:
-                publish(root / 'stop.json', {'schema': 1, 'reason': reason, 'utc': time.time(), 'recovery': 'NOT_ATTEMPTED'})
+                detail = {'heartbeatError': heartbeat_error} if heartbeat_error else {}
+                publish(root / 'stop.json', {'schema': 1, 'reason': reason, 'utc': time.time(),
+                                             'recovery': 'NOT_ATTEMPTED', **detail})
                 # Revalidate file identity and retained process identity immediately before kill.
                 if not matches(target.identity(), config['target']):
                     raise ValueError('Target changed; preserve ambiguous process')
                 target.stop()
                 publish(root / 'result.json', {'schema': 1, 'result': 'OWNED_PROCESS_STOPPED', 'reason': reason,
                                               'descendants': sorted(observed_descendants),
-                                              'descendantPolicy': 'PRESERVED_NOT_TERMINATED', 'saveRecovery': 'NOT_ATTEMPTED'})
+                                              'descendantPolicy': 'PRESERVED_NOT_TERMINATED',
+                                              'saveRecovery': 'NOT_ATTEMPTED', **detail})
                 return
             time.sleep(0.1)
         # Include a final census after natural target exit. A child retains its

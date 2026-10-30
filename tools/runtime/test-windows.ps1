@@ -5,7 +5,7 @@ param(
  [string]$Work,[string]$Archive,[string]$Cli,[string]$Builder,[string]$SteamExe,[string]$GameInstall,
  [string]$NativePlan,[string]$OriginalPlan,[string]$PatchedPlan,[string]$Baseline,
  [ValidateSet('focus','identity','abort','crash','unknown-scene','timeout','bad-image')][string]$Failure,
- [switch]$AllowConnectedNetwork
+ [switch]$AllowConnectedNetwork,[switch]$OwnerDelegatedOriginalProbe,[string]$ApprovalStatement,[string]$NativeTestReceipt
 )
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
@@ -35,9 +35,14 @@ function Assert-RkNativeHost {
 }
 
 try {
+if($Work){$Work=[IO.Path]::GetFullPath($Work)}
+if($OwnerDelegatedOriginalProbe -or $ApprovalStatement){
+ if($Mode -cne 'Smoke'){throw 'Delegated execution is original no-input Smoke only.'}
+ $null=New-RkApprovalRecord -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
+}
 if($AllowConnectedNetwork){
  if($Mode -notin @('Preflight','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','Recover','Resume','Cleanup')){throw 'Connected-network mode applies only to explicit experimental execution/recovery.'}
- Initialize-RkExperimentalNetwork -AllowConnectedNetwork
+ Initialize-RkExperimentalNetwork -AllowConnectedNetwork -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
 }
 if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest')){
  $base=if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'}else{Join-Path $repo 'private-evidence/windows-e2e'}
@@ -181,13 +186,15 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  }
  # Legacy Smoke remains an original-only probe. New UI modes additionally
  # require private authentic contracts and scoped original-baseline review.
- $nativeBase=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'
- if(!(Test-Path -LiteralPath $nativeBase)){New-Item -ItemType Directory -Path $nativeBase|Out-Null}
- $native=Join-Path $nativeBase ('native-test-'+[guid]::NewGuid().ToString('N'))
- $null=Test-RkNativeDesktop $native
+ if($NativeTestReceipt){$native=[IO.Path]::GetFullPath($NativeTestReceipt)}else{
+  $nativeBase=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'
+  if(!(Test-Path -LiteralPath $nativeBase)){New-Item -ItemType Directory -Path $nativeBase|Out-Null}
+  $native=Join-Path $nativeBase ('native-test-'+[guid]::NewGuid().ToString('N'))
+  $null=Test-RkNativeDesktop $native
+ }
  Invoke-RkPython -Arguments @('check-native-test','--work',$native)
  $session=[guid]::NewGuid().ToString('N');$nonce=[guid]::NewGuid().ToString('N')
- $consent=New-RkExperimentalConsent $session $nonce
+ $consent=New-RkExperimentalConsent $session $nonce -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
  if($Mode -eq 'Smoke'){
   Write-Host 'Original startup probe only; no game input or patched baseline.'
   $probe=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native

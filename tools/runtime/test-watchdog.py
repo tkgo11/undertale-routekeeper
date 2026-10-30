@@ -1,5 +1,7 @@
 """Native Windows guardian tests using owned harmless Python sleeper processes."""
 import importlib.util
+import ctypes
+from ctypes import wintypes
 import json
 import os
 from pathlib import Path
@@ -167,6 +169,62 @@ class WatchdogTests(unittest.TestCase):
         self.start()
         self.heartbeat('fabricated')
         self.stopped('invalid-heartbeat')
+        stop = self.wait_file('stop.json')
+        receipt = self.wait_file('result.json')
+        self.assertEqual(stop['heartbeatError'], receipt['heartbeatError'])
+        self.assertEqual(receipt['heartbeatError']['type'], 'ValueError')
+        self.assertEqual(receipt['heartbeatError']['message'], 'Invalid heartbeat sequence')
+
+    def test_hardlinked_heartbeat_stops_with_specific_diagnostic(self):
+        self.config['timeoutSeconds'] = 10
+        self.start()
+        # The replacement is valid JSON but has an unsafe filesystem identity.
+        # Diagnostics must distinguish this from a fabricated sequence without
+        # relaxing the owned-target stop or unrelated-process boundary.
+        source = self.root / 'heartbeat-source.json'
+        source.write_text('{"sequence": 1}', encoding='utf-8', newline='\n')
+        linked = self.root / 'heartbeat.linked'
+        os.link(source, linked)
+        os.replace(linked, self.root / 'heartbeat.json')
+        self.stopped('invalid-heartbeat')
+        stop = self.wait_file('stop.json')
+        receipt = self.wait_file('result.json')
+        self.assertEqual(stop['heartbeatError'], receipt['heartbeatError'])
+        self.assertEqual(receipt['heartbeatError']['type'], 'ValueError')
+        self.assertEqual(receipt['heartbeatError']['message'], 'Hardlinked watchdog file refused')
+        self.assertIsNone(receipt['heartbeatError']['winerror'])
+
+    def lock_heartbeat(self):
+        api = ctypes.WinDLL('kernel32', use_last_error=True)
+        api.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                                   wintypes.LPVOID, wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE]
+        api.CreateFileW.restype = wintypes.HANDLE
+        api.CloseHandle.argtypes = [wintypes.HANDLE]
+        handle = api.CreateFileW(str(self.root / 'heartbeat.json'), 0x80000000, 0, None, 3, 0, None)
+        if handle == wintypes.HANDLE(-1).value:
+            raise ctypes.WinError(ctypes.get_last_error())
+        return api, handle
+
+    def test_short_windows_sharing_gap_does_not_fabricate_progress(self):
+        self.start()
+        api, handle = self.lock_heartbeat()
+        try:
+            time.sleep(.3)
+            self.assertIsNone(self.target.poll())
+        finally:
+            api.CloseHandle(handle)
+        self.heartbeat(1)
+        time.sleep(.3)
+        self.assertIsNone(self.target.poll())
+        self.stopped('stale-heartbeat')
+
+    def test_windows_sharing_gap_cannot_extend_stale_deadline(self):
+        self.start()
+        api, handle = self.lock_heartbeat()
+        try:
+            self.stopped('stale-heartbeat')
+        finally:
+            api.CloseHandle(handle)
 
     def test_wrong_path_refuses_termination(self):
         self.config['target']['path'] = str(self.root / 'other.exe')

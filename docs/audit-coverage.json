@@ -74,16 +74,16 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 15155,
-      "lines": 241,
-      "sha256": "49c80ccc68e36d1b340c358b1da1548d6465998b70c9b9cceba375721bad8482",
+      "bytes": 15794,
+      "lines": 250,
+      "sha256": "37e9d825a03bd3a02a70712077a1130a6ff5d687a1d7f31ff937a745fd9ebcf0",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; applicable localization, rule/golden, layout, authentic offline compilation/preservation and packaging checks; see docs/localization-validation.md.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "Directory.Build.props",
@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 45012,
-      "lines": 693,
-      "sha256": "f4ec4de6a61ed717c1fa9bb4cade236e53e6efb16e2cd69fa747f1bf642acb7d",
+      "bytes": 48116,
+      "lines": 741,
+      "sha256": "0f6390b7ed939e7ba4c8adf977620006a58a27a5ecf69b8c32f40be3391c203f",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -393,16 +393,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 43903,
-      "lines": 621,
-      "sha256": "9daa729a2301a1f47062edac288719954d1d496e10446fb777a54330b8aed3f8",
+      "bytes": 47386,
+      "lines": 674,
+      "sha256": "9705724b4bee2e9c27d4fb0629dc81b390ca0d8082b1027ff1f56a1cea14ac9e",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -449,10 +449,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 19213,
-      "lines": 290,
-      "sha256": "85547fc6fffc8603291039f89a58a5c969c9a20878c86dd9737ff0251a14a75f",
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "bytes": 20834,
+      "lines": 314,
+      "sha256": "1fa3429be9da195c9eae0602d222547ec60df3484dcd8f6d79701529d132f460",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "docs/windows-native-2026-10-29.md",
@@ -2463,9 +2463,9 @@
     },
     {
       "path": "tools/runtime/capture-client.ps1",
-      "bytes": 7537,
-      "lines": 101,
-      "sha256": "caa832bf87b96e7703920ad87cd21a36b3c5edc5f7e667f85e92b4e7d2a077e6",
+      "bytes": 8228,
+      "lines": 106,
+      "sha256": "0643db6df3931f42b506d614a5884fe08375c54dab7433b4826a0e0febef5619",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -2477,7 +2477,7 @@
         "A07",
         "A08"
       ],
-      "reviewed_against_head": "ce5b52b39398a1c11a5b88e92a8609fe00804c57"
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/capture-game.ps1",
@@ -2567,10 +2567,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 2266,
+      "bytes": 2610,
       "lines": 28,
-      "sha256": "352180ffe70bc74ec63e6fee40fc9a73d336f33d3be28e3c6de5f949e5d4e1e8",
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "sha256": "49df97cd11c75f7dee3235c00c135a9e904f084256ef61a78f2149dff93ead80",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/experimental-session.ps1",
@@ -2580,10 +2580,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 27220,
-      "lines": 358,
-      "sha256": "afd004b0db8e356fd71a04680202cd36fa2582281e0eafd7c958737c71be7689",
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "bytes": 30350,
+      "lines": 394,
+      "sha256": "6ab49c914bdf4e6d6d189e0b62d2f2645c8f5565d12f08ff840d6b1f5a0789a6",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/input-window.ps1",
@@ -2796,10 +2796,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 3439,
-      "lines": 43,
-      "sha256": "ad30cf9f3c092fcd8aa1e2749db779ecd31cd8d0485507919ebaef542163293f",
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "bytes": 5387,
+      "lines": 62,
+      "sha256": "29b66205b7d7a46090f0687d04ab105d9e0b9f78767b10894a0f287125d05a8d",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/test-current-account.ps1",
@@ -2922,10 +2922,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 11936,
-      "lines": 262,
-      "sha256": "4b4d721a8e314d684e31b5c1ae7908dced9d84f714e74bfa05424e29874a285e",
-      "reviewed_against_head": "ce5b52b39398a1c11a5b88e92a8609fe00804c57"
+      "bytes": 14673,
+      "lines": 320,
+      "sha256": "4fcdf1d2a3af8ce658eb881a8b8fffe578fbcb2b0b1b8e7f04a29e343f41d579",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/test-windows.ps1",
@@ -2935,10 +2935,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 14985,
-      "lines": 219,
-      "sha256": "e22d6e84a1b8d442e7f2b0f7bd58a4dbaaea83e9d7371390ca0147912aeb3952",
-      "reviewed_against_head": "15b1c60979de5f9c28b206e1bc6d9338026ba2f4"
+      "bytes": 15672,
+      "lines": 226,
+      "sha256": "861648b3af66a0525d5eade1eb1c50a7a93ab5bdd756d474b92965c0ef3408b9",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/test-workspace-cleanup.ps1",
@@ -2974,10 +2974,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 4139,
-      "lines": 66,
-      "sha256": "217e7c6e4acba25eb84d7b52365d4f1f34661277d417e732aa171577990ffd37",
-      "reviewed_against_head": "faa8525d3f22f2d62a8e2a7c7ed658b618b9b107"
+      "bytes": 4730,
+      "lines": 79,
+      "sha256": "bac5b071b01ce7f59dd216479022bbd650fd3e259e22dbf24d4671cf02065367",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/watchdog.py",
@@ -2987,10 +2987,10 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 11225,
-      "lines": 237,
-      "sha256": "7f710743430df0244219243974d266031c46e2a18593ed114a3235f1d1ff8c34",
-      "reviewed_against_head": "ce5b52b39398a1c11a5b88e92a8609fe00804c57"
+      "bytes": 12307,
+      "lines": 251,
+      "sha256": "d32c8fe5799cd5b3735664604efeebc3d01f6c08ef846585cef9ab64c66c6b14",
+      "reviewed_against_head": "6aeb65d0e90f75d884816b863419b4491b31ccdc"
     },
     {
       "path": "tools/runtime/wine-smoke.sh",

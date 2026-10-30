@@ -691,3 +691,51 @@ Consent/journal/result/recovery records identify the accepted connection risk;
 they never claim account isolation or account restoration. No game retry or save
 restoration follows from implementing this option. Existing manual recovery is
 still pending; its private script now supports the same reviewed opt-in.
+
+# 2026-10-30 autonomous original-probe checkpoint
+
+The owner's newer connected-network request explicitly delegates the original
+no-input startup probe and original-copy recovery. Policy v5 records that exact
+statement as OWNER_CHAT_DELEGATION, never as a typed terminal nonce. This narrow
+scope does not approve navigation references, gameplay input or patched execution.
+Cloud-off is owner-reported; Steam account state remains NOT_RESTORED.
+
+Earlier pending manual recovery is now complete: the original ten-file save tree
+was copied only to an absent destination and independently matched its original
+digest. A later watchdog intervention also required a separate pinned manual
+copy recovery; both original backups and the restored ten-file tree verified.
+Failed journals and watchdog evidence remain preserved.
+
+The genuine original runner actually launched in subsequent probes (observed
+process identities retained privately). These attempts retained no accepted native PNG, so
+their ORIGINAL_STARTUP result is FAILED, not VERIFIED. No gameplay input was
+sent, and these launches do not verify navigation, patched UI, combat or Forced.
+A canonical-path correction addresses an earlier refusal before game launch;
+window-stability observations and capture diagnostics preserve remaining failures.
+
+A harmless concurrent reproduction proved a heartbeat publication/read sharing
+race. Heartbeat-only bounded publisher retries and bounded unreadable intervals
+now preserve the unchanged watchdog deadline; invalid data/links still refuse.
+Twenty native watchdog tests passed, including short sharing gaps and stale
+termination under sustained sharing denial. Connected-policy checks passed 26
+assertions in PowerShell 7 and 5.1; cleanup/completion checks passed 61. These
+checks are independent of game-rendering verification. A further focused native
+probe was evaluated separately; see the later result below.
+
+## 2026-10-30 authentic original startup captured
+
+The later focused probe captured the genuine original intro in the owned native
+window, with matching process start time, HWND ownership, official runner hash,
+640x480 client pixels, DPI and image digest. The agent activated only the uniquely
+observed staged game window through the computer-use tool; no game keys were sent.
+Controlled game/Steam shutdown, watchdog natural-exit receipt, registered-install
+and prepared-copy integrity checks passed. Automatic local recovery completed;
+an independent final read verified all ten original save files and their digest.
+
+ORIGINAL_STARTUP is VERIFIED for this bounded no-input scope. Original navigation
+is BLOCKED pending scoped human reference review and missing authentic transition
+captures. Patched startup/UI, combat and Forced remain BLOCKED; endings NOT_RUN.
+The owner deferred intro reference review; no native plan was approved/exported.
+No native gameplay/input baseline or full E2E PASS is claimed. Private JSON/HTML,
+capture, process identities, failed attempts and recovery receipts are retained
+under ignored evidence directories. Steam account state remains NOT_RESTORED.

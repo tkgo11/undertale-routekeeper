@@ -1,5 +1,18 @@
 # Separate process guardian; no personal-save or Steam operations.
 $script:RkWatchdog=$null
+function Write-RkWatchdogHeartbeat([string]$Path,[int]$Sequence) {
+ # Only this disposable liveness hint may retry a Windows read/replace collision.
+ # Each failed publication preserves the old sequence; the guardian deadline is unchanged.
+ $deadline=[DateTime]::UtcNow.AddMilliseconds(250)
+ while($true){
+  try{Write-RkAtomicJson $Path @{sequence=$Sequence};return}
+  catch{
+   $cause=$_.Exception.GetBaseException();$code=$cause.HResult -band 0xffff
+   if($cause -isnot [IO.IOException] -or $code -notin @(32,33) -or [DateTime]::UtcNow -ge $deadline){throw}
+   Start-Sleep -Milliseconds 25
+  }
+ }
+}
 function Resolve-RkWatchdogPython {
  $python=(Get-Command python -ErrorAction Stop).Source
  $pythonOutput=@(& $python -c 'import os,sys;p,e=os.path.splitext(sys._base_executable);print(p+chr(119)+e)')
@@ -15,7 +28,7 @@ function Start-RkExternalWatchdog($Target,[string]$Root,[string]$Runner,[string]
  $controller=Get-Process -Id $PID -ErrorAction Stop
  $config=@{schema=1;timeoutSeconds=30;controller=@{pid=$PID;path=$controller.Path;ticks=$controller.StartTime.ToUniversalTime().Ticks;sha256=(Get-FileHash -LiteralPath $controller.Path).Hash.ToLowerInvariant()};target=@{pid=$Target.Id;path=$Runner;ticks=$Target.StartTime.ToUniversalTime().Ticks;sha256=$Hash}}
  Write-RkAtomicJson (Join-Path $folder 'config.json') $config
- Write-RkAtomicJson (Join-Path $folder 'heartbeat.json') @{sequence=0}
+ Write-RkWatchdogHeartbeat (Join-Path $folder 'heartbeat.json') 0
  $python=Resolve-RkWatchdogPython
  $arguments='"'+(Join-Path $PSScriptRoot 'watchdog.py')+'" --config "'+(Join-Path $folder 'config.json')+'"'
  $guardian=New-Object Diagnostics.Process
@@ -52,7 +65,7 @@ function Update-RkExternalWatchdog {
   throw 'Emergency abort requested; no heartbeat extension.'
  }
  $guard.sequence++
- Write-RkAtomicJson (Join-Path $guard.root 'heartbeat.json') @{sequence=$guard.sequence}
+ Write-RkWatchdogHeartbeat (Join-Path $guard.root 'heartbeat.json') $guard.sequence
 }
 function Complete-RkExternalWatchdog {
  if(!$script:RkWatchdog){return}

@@ -619,3 +619,56 @@ tests passed 11. No Steam/game launch, network reconfiguration or personal save
 mutation was performed for these tests. Connected gameplay and save restoration
 remain unverified; policy acceptance cannot establish either result.
 The Python E2E suite also passed 21 tests (one skipped) with the new policy.
+
+## 2026-10-30 autonomous original-probe checkpoint
+
+Policy v5 records the current owner's exact chat delegation as
+OWNER_CHAT_DELEGATION for original no-input startup and original-copy recovery.
+It does not claim direct terminal entry or approve gameplay/reference review.
+The connected-risk record keeps Steam account state NOT_RESTORED; Cloud-off is
+owner-reported. No network adapters or global environment settings were changed.
+
+The original official runner genuinely launched in separate guarded attempts,
+with exact process identities retained privately. None produced an accepted native PNG at
+this checkpoint. Their ORIGINAL_STARTUP result is FAILED, and no screenshot,
+navigation or patched-rendering PASS is inferred from process creation. Input
+dispatch remained zero. Private evidence retains exact runner/data identity,
+process creation records, failure diagnostics and watchdog/recovery results.
+
+The first outstanding original-save manual recovery was completed and
+independently verified against the original ten-file digest. A subsequent
+watchdog intervention retained its automatic-recovery refusal; a separate,
+session-pinned original-copy recovery again verified both backups and the final
+ten-file destination. Unknown existing files were never overwritten, and failed
+journals remain unchanged. This verifies local content, not Steam account state.
+
+Actual execution exposed path-normalization and capture/heartbeat issues.
+Canonical execution paths now prevent slash/relative-work mismatches. A harmless
+concurrent run reproduced the repository atomic heartbeat publisher failing on
+Windows sharing violations, with transient reader access failures. Heartbeat
+publication now retries only those collisions within a bounded interval;
+unreadable intervals do not advance the guardian sequence or stale deadline.
+Invalid schema, unsafe links, process identity and recovery refusals remain.
+
+Fresh native watchdog tests passed 20/20, including specific invalid-heartbeat
+diagnostics, hardlinked-heartbeat refusal, a short exclusive-read gap and a
+sustained gap that still stops the owned target on the stale deadline. The fixed
+publisher completed a separate 100-update concurrency reproduction. Connected
+policy checks passed 26 assertions in each PowerShell edition; cleanup/completion
+checks passed 61. Those checks do not themselves classify game rendering.
+
+The subsequent focused original probe retained an authentic 640x480 native intro
+capture with matching PID/start/HWND, foreground before/after, pinned runner and
+image hash. Agent window activation used the unique observed staged game path;
+game input dispatch count remained zero. The watchdog observed natural owned
+process exit, cleanup reported no errors, and Steam/game were absent afterward.
+Registered/pristine trees remained unchanged. Local recovery completed and an
+independent read verified the ten-file original save digest.
+
+ORIGINAL_STARTUP: VERIFIED for no-input startup only. WINDOWS_NATIVE: VERIFIED.
+ORIGINAL_NAVIGATION, PATCHED_STARTUP, PATCHED_UI, COMBAT and FORCED: BLOCKED.
+ENDINGS: NOT_RUN. LOCAL_RECOVERY: VERIFIED for local content only.
+STEAM_ACCOUNT_STATE: NOT_RESTORED. HARNESS: PARTIAL. The intro reference awaits
+human meaning/provenance review (owner deferred); no action transition or native plan was invented
+from a single frame. Actual original execution occurred; complete gameplay E2E
+and patched execution did not. Evidence remains in ignored private JSON/HTML.

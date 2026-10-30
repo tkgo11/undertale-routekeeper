@@ -40,4 +40,23 @@ $script:offlineFailure=$false
 Assert-RkExperimentalNetwork
 RefusesNetwork {Assert-RkLaunchNetworkConsent $launch} 'connected launch consent cannot transfer to valid offline controller scope'
 CheckNetwork ((Get-RkExperimentalNetworkRecord).mode -ceq 'OFFLINE_REQUIRED') 'offline default still accepts independently offline host'
+# Documentary chat delegation is explicitly labelled; never fake terminal input.
+function Read-Host {throw 'Delegated mode must not spoof an interactive answer'}
+RefusesNetwork {New-RkApprovalRecord -OwnerDelegatedOriginalProbe} 'delegation without owner statement refused'
+RefusesNetwork {New-RkApprovalRecord -OwnerDelegatedOriginalProbe -ApprovalStatement 'SHORT'} 'short delegated statement refused'
+RefusesNetwork {New-RkApprovalRecord -ApprovalStatement 'A sufficiently long statement without delegated selection'} 'statement alone cannot select delegated execution'
+$statement='SYNTHETIC owner explicitly requests connected original no-input execution without personal controls.'
+Initialize-RkExperimentalNetwork -AllowConnectedNetwork -OwnerDelegatedOriginalProbe -ApprovalStatement $statement
+$delegated=New-RkExperimentalConsent $session $nonce -OwnerDelegatedOriginalProbe -ApprovalStatement $statement
+Assert-RkLaunchNetworkConsent $delegated
+Assert-RkDelegatedOriginalScope $delegated 'original' '' 'active-session'
+CheckNetwork ($delegated.approval.method -ceq 'OWNER_CHAT_DELEGATION' -and $delegated.approval.statement -ceq $statement -and $delegated.network.approval.method -ceq 'OWNER_CHAT_DELEGATION') 'delegated original receipt is honest and separate from terminal input'
+foreach($scope in @(@('patched','','active-session'),@('original','UNREVIEWED_PLAN','active-session'),@('original','','original-baseline'))){
+ RefusesNetwork {Assert-RkDelegatedOriginalScope $delegated $scope[0] $scope[1] $scope[2]} 'delegation cannot authorize patched, gameplay input or navigation baseline'
+}
+Initialize-RkExperimentalNetwork
+if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){
+ $nativePath=[IO.Path]::GetFullPath($PSScriptRoot)
+ CheckNetwork ((Get-RkCanonicalExecutionPath ($nativePath.Replace('\','/')+'/../runtime')) -ceq $nativePath) 'execution path normalizes slash variants before exact process identity comparison'
+}
 Write-Host ('CONNECTED_NETWORK_POLICY '+$checks+' PASS; no native execution')
