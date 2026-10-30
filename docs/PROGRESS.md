@@ -665,3 +665,19 @@ this combined observation is not a Steam account sandbox or a guarantee against
 reconnection/deferred synchronization. Existing repeated checks, Steam/Cloud,
 fresh consent, save transactions and watchdog remain mandatory. Shared-helper
 changes invalidate earlier prepared seals; a fresh preparation is required.
+
+# 2026-10-30 actual original startup interruption
+
+The genuine original side-copy process started but the watchdog stopped it after
+an unexpected descendant appeared. Steam subsequently launched the registered
+original; no owned HWND or authentic screenshot was retained. Original startup
+is FAILED, original navigation and patched tests are BLOCKED. No gameplay PASS
+is implied. See windows-startup-incident-2026-10-30.md for evidence boundaries.
+
+Independent shutdown stages, honest failed-probe exit codes and isolated
+diagnostic output now address observed coordinator defects. Exact-app launch
+metadata is confined to verified disposable copies with fresh policy-v3 consent.
+Authentic filesystem preparation passed without changing the registered install;
+native retry remains unverified. Owner-approved manual save restoration is still
+pending physical disconnection. Both independent ten-file backups match the
+original journal. No game retry is permitted until recovery is verified.

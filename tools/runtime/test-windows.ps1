@@ -161,6 +161,7 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  $volume=Get-Volume -DriveLetter $drive.PSDrive.Name -ErrorAction Stop
  if($volume.FileSystem -ne 'NTFS' -or $volume.SizeRemaining -lt 2GB){throw 'NTFS and at least2GiB available storage required.'}
  if($Mode -eq 'Preflight'){Write-Output (@{result='NOT_RUN';scope='NON_GAME_PREFLIGHT';accountIsolation='UNPROVEN'}|ConvertTo-Json);return}
+ Assert-RkProbeWorkReady $Work $Mode ([Security.Principal.WindowsIdentity]::GetCurrent().User.Value)
  # Validate the complete supplied private contract before a benign test or launch.
  if($Mode -eq 'OriginalBaseline'){$OriginalPlan=$NativePlan}
  if($Mode -eq 'PatchedSmoke'){$PatchedPlan=$NativePlan}
@@ -183,8 +184,10 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  $consent=New-RkExperimentalConsent $session $nonce
  if($Mode -eq 'Smoke'){
   Write-Host 'Original startup probe only; no game input or patched baseline.'
-  $null=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native
+  $probe=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native
   Invoke-RkPython -Arguments @('ingest-probe','--work',$Work)
+  $completion=Assert-RkOriginalProbeCompletion $probe (Join-Path $Work 'active-session')
+  Write-Output (@{execution=$completion;nativeGameplay='UNVERIFIED';accountHistory='NOT_RESTORED'}|ConvertTo-Json)
  }else{
   $originalRoot=Join-Path $Work 'original-baseline'
   if($Mode -in @('OriginalBaseline','FullE2E') -and !(Test-Path -LiteralPath $originalRoot)){

@@ -1,5 +1,12 @@
 # Separate process guardian; no personal-save or Steam operations.
 $script:RkWatchdog=$null
+function Resolve-RkWatchdogPython {
+ $python=(Get-Command python -ErrorAction Stop).Source
+ $pythonOutput=@(& $python -c 'import os,sys;p,e=os.path.splitext(sys._base_executable);print(p+chr(119)+e)')
+ if($LASTEXITCODE -ne 0 -or $pythonOutput.Count -ne 1 -or !(Test-Path -LiteralPath $pythonOutput[0] -PathType Leaf)){throw 'Cannot resolve direct Python guardian executable.'}
+ $python=$pythonOutput[0];Assert-RkNoLinks $python
+ return $python
+}
 function Start-RkExternalWatchdog($Target,[string]$Root,[string]$Runner,[string]$Hash) {
  if($script:RkWatchdog){throw 'An external watchdog is already active.'}
  $folder=Join-Path $Root 'watchdog';Assert-RkNoLinks $folder
@@ -9,10 +16,7 @@ function Start-RkExternalWatchdog($Target,[string]$Root,[string]$Runner,[string]
  $config=@{schema=1;timeoutSeconds=30;controller=@{pid=$PID;path=$controller.Path;ticks=$controller.StartTime.ToUniversalTime().Ticks;sha256=(Get-FileHash -LiteralPath $controller.Path).Hash.ToLowerInvariant()};target=@{pid=$Target.Id;path=$Runner;ticks=$Target.StartTime.ToUniversalTime().Ticks;sha256=$Hash}}
  Write-RkAtomicJson (Join-Path $folder 'config.json') $config
  Write-RkAtomicJson (Join-Path $folder 'heartbeat.json') @{sequence=0}
- $python=(Get-Command python -ErrorAction Stop).Source
- $pythonOutput=@(& $python -c 'import os,sys;p,e=os.path.splitext(sys._base_executable);print(p+chr(119)+e)')
- if($LASTEXITCODE -ne 0 -or $pythonOutput.Count -ne 1 -or !(Test-Path -LiteralPath $pythonOutput[0] -PathType Leaf)){throw 'Cannot resolve direct Python guardian executable.'}
- $python=$pythonOutput[0];Assert-RkNoLinks $python
+ $python=Resolve-RkWatchdogPython
  $arguments='"'+(Join-Path $PSScriptRoot 'watchdog.py')+'" --config "'+(Join-Path $folder 'config.json')+'"'
  $guardian=New-Object Diagnostics.Process
  $guardian.StartInfo=New-Object Diagnostics.ProcessStartInfo

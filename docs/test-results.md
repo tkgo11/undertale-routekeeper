@@ -571,3 +571,33 @@ initialization, wrong-owner refusal and child inheritance. NativeTest now includ
 the repeat/wrong-owner regression. A separate full NativeTest attempt stopped on
 focus/window ownership; it is retained as BLOCKED, not a gameplay PASS. Original
 and patched game execution remain NOT_RUN for this failure investigation.
+
+## 2026-10-30 actual startup incident and coordinator repair
+
+A later original side-copy process really ran. The guardian stopped it on an
+unexpected descendant before a verified HWND/capture, and Steam logs subsequently
+recorded a registered-original launch. Original startup is FAILED; navigation,
+patched UI, combat and Forced remain BLOCKED. Endings were NOT_RUN. No game input
+was dispatched. Steam account state is NOT_RESTORED.
+
+The failure exposed skipped owned-Steam shutdown after guardian failure and a
+misleading zero exit status. Scoped regression fixtures cover independent stop
+stages, preserved recovery refusals, evidence-bound completion and nonzero failed
+probe status. A review also found diagnostic JSON contaminating the structured
+probe return; diagnostics now go to the operator transcript.
+All 61 targeted cleanup/completion checks passed with exit zero in PowerShell 7
+and Windows PowerShell 5.1, including noisy diagnostics and native failure codes.
+
+Launch-context fixtures exercised exact AppID bytes, pinned identities, malformed
+metadata and path/tamper refusals (33 assertions in PowerShell 5.1 and 7). A separate
+authentic filesystem-only test passed with the official runner/data, exact ASCII
+391540 metadata and unchanged pristine/registered tree digests. These are not
+native launch verification. The first Python E2E suite run failed its bounded
+synthetic scenario under load; the isolated unchanged scenario passed on retry.
+The failure is retained privately rather than counted as gameplay evidence.
+The final complete Python E2E rerun passed 21 tests (one skipped) in 89 seconds,
+with the production timeout unchanged. Inventory and encoding checks also passed.
+
+Two ten-file original-save backups independently match the existing journal.
+Manual recovery is authorized but deferred by the owner; LOCAL_RECOVERY remains
+BLOCKED until the absent destination is restored and independently verified.

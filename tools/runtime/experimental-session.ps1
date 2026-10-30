@@ -1,4 +1,5 @@
 . (Join-Path $PSScriptRoot 'watchdog.ps1')
+. (Join-Path $PSScriptRoot 'steam-launch-context.ps1')
 function New-RkExperimentalConsent([string]$Session,[string]$Nonce) {
  # Not a bypass for identity, preflight, path, backup or scenario prerequisites.
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -107,16 +108,98 @@ function Stop-RkOwnedProbeProcess($Process,[string]$Path,[long]$Ticks) {
   $Process.Kill();if(!$Process.WaitForExit(5000)){throw 'Owned game did not terminate; no restoration permitted.'}
  }
 }
+function Stop-RkOwnedSteamClient($Process,[string]$Path,[long]$Ticks,[string]$Hash) {
+ if(!$Process){return}
+ $Process.Refresh()
+ if($Process.HasExited){return}
+ Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $Process.Id $Path $Ticks
+ Assert-RkHash $Path $Hash
+ Start-Process -FilePath $Path -ArgumentList '-shutdown' | Out-Null
+}
+function Wait-RkProbeProcessesClosed {
+ $deadline=[DateTime]::UtcNow.AddSeconds(30)
+ while(@(Get-Process steam,steamwebhelper,UNDERTALE -ErrorAction SilentlyContinue).Count -and [DateTime]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 250}
+ Assert-RkProcessesClosed;Assert-RkNetworkOffline
+}
+function Complete-RkProbeStopBoundary($State,$GameProcess,[string]$Runner,[long]$GameTicks,$SteamProcess,[string]$SteamExe,[long]$SteamTicks,[bool]$UnknownChildren) {
+ # Every stop operation is independent. A guardian/boundary failure must never
+ # skip legitimate owned-client shutdown, but still forbids all save recovery.
+ $failures=@()
+ if($UnknownChildren){
+  try{$State|Add-Member NoteProperty unverifiedChildren $true -Force;Save-RkJournal $State}
+  catch{$failures+=@{stage='child-journal';reason=$_.Exception.Message}}
+ }
+ try{Stop-RkOwnedProbeProcess $GameProcess $Runner $GameTicks}
+ catch{$failures+=@{stage='game-stop';reason=$_.Exception.Message}}
+ try{Complete-RkExternalWatchdog}
+ catch{$failures+=@{stage='watchdog-close';reason=$_.Exception.Message}}
+ if($GameProcess -and !$UnknownChildren -and !$failures.Count){
+  try{Write-RkE2eGameStopBoundary $State}
+  catch{$failures+=@{stage='game-stop-boundary';reason=$_.Exception.Message}}
+ }
+ try{Stop-RkOwnedSteamClient $SteamProcess $SteamExe $SteamTicks $State.steamSha}
+ catch{$failures+=@{stage='steam-shutdown';reason=$_.Exception.Message}}
+ try{Wait-RkProbeProcessesClosed}
+ catch{$failures+=@{stage='process-offline-boundary';reason=$_.Exception.Message}}
+ if($UnknownChildren){$failures+=@{stage='unknown-children';reason='Unexpected child process was observed; automatic restoration is not proven safe.'}}
+ return @{errors=@($failures)}
+}
+function Assert-RkOriginalProbeCompletion($Probe,[string]$Root) {
+ # This certifies completion of capture/recovery only, never navigation or pixels.
+ if(!$Probe -or $Probe.kind -cne 'EXPERIMENTAL_ORIGINAL_STARTUP_PROBE' -or
+    $Probe.result -cne 'NEEDS_REVIEW' -or $Probe.case -cne 'original' -or
+    $Probe.processObserved -isnot [bool] -or !$Probe.processObserved -or
+    $Probe.inputsDispatched -ne 0 -or $Probe.capture -cne 'original.png' -or
+    $Probe.localRecovery -cne 'CONTENT_TREE_VERIFIED' -or $Probe.localPhase -cne 'Restored' -or
+    $Probe.cacheStable -isnot [bool] -or !$Probe.cacheStable -or
+    $Probe.registeredStable -isnot [bool] -or !$Probe.registeredStable -or
+    $Probe.copyStable -isnot [bool] -or !$Probe.copyStable -or @($Probe.cleanupErrors).Count){
+  throw 'Original startup capture/recovery did not complete; preserve the detailed report. No gameplay PASS.'
+ }
+ $image=Join-Path $Root 'original.png';$sidecar=$image+'.json';$launchPath=Join-Path $Root 'game-launch.json'
+ foreach($path in @($image,$sidecar,$launchPath)){Assert-RkNoLinks $path;if(!(Test-Path -LiteralPath $path -PathType Leaf)){throw 'Original startup capture/process evidence is incomplete.'}}
+ $capture=Get-Content -LiteralPath $sidecar -Raw -Encoding UTF8|ConvertFrom-Json
+ $launch=Get-Content -LiteralPath $launchPath -Raw -Encoding UTF8|ConvertFrom-Json
+ $capturedStart=if($capture.processStartedUtc -is [DateTime]){$capture.processStartedUtc.ToUniversalTime()}else{[DateTime]::Parse($capture.processStartedUtc).ToUniversalTime()}
+ if($capture.schema -ne 1 -or $capture.method -cne 'CopyFromScreen' -or
+    $capture.imageSha256 -cne (Get-FileHash -LiteralPath $image).Hash.ToLowerInvariant() -or
+    $Probe.runnerSha256 -cne 'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58' -or
+    $capture.runnerSha256 -cne $Probe.runnerSha256 -or $capture.expectedRunnerSha256 -cne $Probe.runnerSha256 -or
+    $capture.foregroundBefore -isnot [bool] -or !$capture.foregroundBefore -or
+    $capture.foregroundAfter -isnot [bool] -or !$capture.foregroundAfter -or
+    $capture.pid -le 0 -or $capture.ownerPid -ne $capture.pid -or $capture.windowHandle -le 0 -or
+    $launch.stage -cne 'Observed' -or $launch.pid -ne $capture.pid -or
+    $capturedStart.Ticks -ne $launch.startedTicks){
+  throw 'Original startup image does not match the owned launch/window evidence.'
+ }
+ return 'NEEDS_REVIEW'
+}
+function Assert-RkProbeWorkReady([string]$Work,[string]$Mode,[string]$Owner) {
+ # Local preparation only, before asking for fresh launch consent. Execution
+ # repeats its guards; this check never authorizes reusing an earlier probe.
+ if($Mode -eq 'Smoke'){
+  $previous=Join-Path $Work 'active-session';Assert-RkNoLinks $previous
+  if(Test-Path -LiteralPath $previous){throw 'Original probe evidence already exists at this Work. Preserve it and review recovery; never relaunch this session.'}
+ }
+ Initialize-RkPrivateRoot $Work $Owner
+ Initialize-RkPrivateRoot $Work $Owner
+ $path=Join-Path $Work 'experiment.lock';Assert-RkNoLinks $path
+ $lock=[IO.File]::Open($path,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+ try{$null=Resolve-RkWatchdogPython}finally{$lock.Dispose()}
+}
+function Invoke-RkProbeDiagnostic([scriptblock]$Command) {
+ & $Command | Out-Host
+}
 function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInstall,$Consent,[string]$NativeTest,
  [ValidateSet('original','patched')][string]$Case='original',[string]$Plan,[string]$Baseline,[ValidateSet('active-session','original-baseline')][string]$SessionName='active-session') {
  # Called ONLY after native preflight/self-test, explicit per-session consent,
  # pinned preparation and the legacy hard history/cache checks. Registered game untouched.
  if([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT){throw 'Native Windows required; no probe in Cloud/compatibility layers.'}
  Assert-RkNativeHost
- Invoke-RkPython -Arguments @('verify-prepared','--work',$Work)
- Invoke-RkPython -Arguments @('check-native-test','--work',$NativeTest)
+ Invoke-RkProbeDiagnostic {Invoke-RkPython -Arguments @('verify-prepared','--work',$Work)}
+ Invoke-RkProbeDiagnostic {Invoke-RkPython -Arguments @('check-native-test','--work',$NativeTest)}
  $global:LASTEXITCODE=0
- & (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action Preflight -Lab $Work -PatchedData (Join-Path $Work 'candidate.win') -SteamExe $SteamExe -GameInstall $GameInstall
+ Invoke-RkProbeDiagnostic {& (Join-Path $PSScriptRoot 'run-current-account.ps1') -Action Preflight -Lab $Work -PatchedData (Join-Path $Work 'candidate.win') -SteamExe $SteamExe -GameInstall $GameInstall}
  if($LASTEXITCODE -ne 0){throw 'Legacy preflight/recovery failed; no later operation authorized.'}
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8|ConvertFrom-Json
  if(!$Consent -or $Consent.policy -cne $policy.id -or $Consent.scope -cne 'non-destructive-smoke' -or $Consent.nonce -notmatch '^[a-f0-9]{32}$' -or $Consent.session -notmatch '^[a-f0-9]{32}$'){throw 'Explicit current experimental session consent required.'}
@@ -131,7 +214,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
  if($Plan){
   $null=Invoke-RkNativeJson -Arguments @('validate','--plan',$Plan,'--case',$Case)
   if($Case -eq 'patched'){
-   Invoke-RkPython -Arguments @('check-baseline','--baseline',$Baseline,'--work',$Work)
+   Invoke-RkProbeDiagnostic {Invoke-RkPython -Arguments @('check-baseline','--baseline',$Baseline,'--work',$Work)}
   }
  }elseif($Case -ne 'original'){throw 'Patched execution requires an explicit reviewed native plan and original baseline.'}
  $save=Join-Path $local 'UNDERTALE';$root=Join-Path $Work $SessionName
@@ -157,6 +240,8 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
   $files=@($inventory.files|Where-Object {$_.path.StartsWith('Undertale/')}|ForEach-Object {@{path=$_.path.Substring(10);original=$_.sha256;patched=$(if($_.path -ceq 'Undertale/data.win'){$profile.candidateSha256}else{$_.sha256})}})
   $game=Join-Path $root 'game'
   New-RkSideCopy (Join-Path $Work 'original/Undertale') $game $files (Join-Path $Work 'candidate.win') $Case
+  $launchContext=New-RkSteamLaunchContext $Work $GameInstall $Case $SessionName
+  Write-RkAtomicJson (Join-Path $root 'launch-context.json') $launchContext
   $state|Add-Member NoteProperty runDigest (Get-RkTreeDigest $game);Save-RkJournal $state
   $runner=Join-Path $game 'UNDERTALE.exe';$abort=Join-Path $root 'abort.request'
   $gameProcess=$null;$steamProcess=$null;$gameTicks=0;$steamTicks=0;$unknownChildren=$false
@@ -182,6 +267,7 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
    Assert-RkHash $runner 'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
    if(@(Get-Process UNDERTALE -ErrorAction SilentlyContinue).Count){throw 'Unexpected game process before owned launch.'}
    Write-RkAtomicJson (Join-Path $root 'game-launch.json') @{id=$state.id;owner=$owner;stage='Pending';pid=0}
+   $null=Assert-RkSteamLaunchContext $Work $GameInstall $Case $SessionName
    $gameProcess=Start-Process -FilePath $runner -WorkingDirectory $game -PassThru
    $gameTicks=$gameProcess.StartTime.ToUniversalTime().Ticks
    Start-RkExternalWatchdog $gameProcess $root $runner 'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
@@ -203,36 +289,24 @@ function Invoke-RkGameSession([string]$Work,[string]$SteamExe,[string]$GameInsta
    if($gameProcess.MainWindowHandle -eq [IntPtr]::Zero){throw 'Original window timeout.'}
    $initialCapture=$Case+'.png'
    Save-RkClientCapture $runner (Join-Path $root $initialCapture)
-   $result.processObserved=$true;$result.capture=$initialCapture
+   $result.processObserved=$true;$result.capture=$initialCapture;$result.result='NEEDS_REVIEW'
    if($Case -eq 'patched'){$result.patched='PROCESS_AND_DISK_IDENTITY_OBSERVED_NOT_GAMEPLAY_PASS'}
    if($Plan){$result.loadedGameData='UNVERIFIED_DISK_IDENTITY_ONLY';$result.nativeObservations=Invoke-RkNativePlan $gameProcess $runner $root $Case $abort $save ([ref]$unknownChildren)}
    # No keys sent into an unrecognized scene. A window/screenshot is NOT a
    # baseline PASS and cannot authorize the patched runner or any route scenario.
-  } catch {$result.reason=$_.Exception.Message}
+  } catch {$result.result='BLOCKED';$result.reason=$_.Exception.Message}
   finally {
    try {
-    try{if($unknownChildren){$state|Add-Member NoteProperty unverifiedChildren $true -Force;Save-RkJournal $state}}finally{Stop-RkOwnedProbeProcess $gameProcess $runner $gameTicks}
-    Complete-RkExternalWatchdog
-    if($gameProcess -and !$unknownChildren){Write-RkE2eGameStopBoundary $state}
-    if($steamProcess){
-     $steamProcess.Refresh()
-     if(!$steamProcess.HasExited){
-      Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $steamProcess.Id $SteamExe $steamTicks
-      Assert-RkHash $SteamExe $state.steamSha
-      Start-Process -FilePath $SteamExe -ArgumentList '-shutdown' | Out-Null
-     }
-    }
-    $deadline=[DateTime]::UtcNow.AddSeconds(30)
-    while(@(Get-Process steam,steamwebhelper,UNDERTALE -ErrorAction SilentlyContinue).Count -and [DateTime]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 250}
-    Assert-RkProcessesClosed;Assert-RkNetworkOffline
-    if($unknownChildren){throw 'Unexpected child process was observed; automatic restoration is not proven safe.'}
+    $stopped=Complete-RkProbeStopBoundary $state $gameProcess $runner $gameTicks $steamProcess $SteamExe $steamTicks $unknownChildren
+    $result.cleanupErrors=$stopped.errors
+    if($stopped.errors.Count){throw (($stopped.errors|ForEach-Object {$_.stage+': '+$_.reason}) -join '; ')}
     $result.copyStable=(Get-RkTreeDigest $game) -ceq $state.runDigest
     Write-RkE2eTrialFence $state
     Restore-RkE2eSession $state $root $save $owner
     $result.localRecovery='CONTENT_TREE_VERIFIED';$result.localPhase=$state.phase
     $result.cacheStable=Test-RkCacheEqual $state.cacheBefore (Get-RkSteamCacheInventory (Split-Path $SteamExe))
     $result.registeredStable=(Get-RkTreeDigest $GameInstall) -ceq $state.registeredDigest
-   } catch {$result.localRecovery='BLOCKED_PRESERVE_ALL_COPIES';$result.recoveryReason=$_.Exception.Message}
+   } catch {$result.result='BLOCKED';$result.localRecovery='BLOCKED_PRESERVE_ALL_COPIES';$result.recoveryReason=$_.Exception.Message}
    if($Plan){$result.inputsDispatched=@(Get-ChildItem -LiteralPath $root -Filter 'input-dispatch-*.json').Count;$result.inputAttempts=@(Get-ChildItem -LiteralPath $root -Filter 'input-intent-*.json').Count}
    Write-RkAtomicJson (Join-Path $root 'result.json') $result
    Write-RkAtomicJson (Join-Path $root 'result-integrity.json') @{sha256=(Get-FileHash -LiteralPath (Join-Path $root 'result.json')).Hash.ToLowerInvariant()}
