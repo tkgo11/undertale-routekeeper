@@ -151,8 +151,7 @@ def finalize(root, write_review=True):
             if (previous-first).total_seconds()*1000>step['timeoutMs']:raise e.StopRun('Stabilization exceeds timeout')
             frame=s.child(root,row[phase])
             observed=match(plan_path,data['case'],scene,frame,data['pid'],data['processStartedUtc'])
-            metadata=s.load_json(Path(str(frame)+'.json'))
-            times[phase]=[datetime.fromisoformat(metadata[k].replace('Z','+00:00')) for k in ('startedUtc','finishedUtc')]
+            times[phase]=[first,previous]
             if observed['result']!='MATCH':raise e.StopRun('Native recorded transition disagrees with independent pixels')
         if times['after'][0]<times['before'][1] or (previous_end is not None and times['before'][0]<previous_end):raise e.StopRun('Stale/reordered transition frames')
         previous_end=times['after'][1]

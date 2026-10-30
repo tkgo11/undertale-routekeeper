@@ -2424,9 +2424,9 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 15129,
-      "lines": 209,
-      "sha256": "c29ee86b31a3b3fa856d3f89350944fd468c957fb530eee6c6c9c3b46eed4195",
+      "bytes": 14989,
+      "lines": 208,
+      "sha256": "8d9a135e14d6ec95bfa1bae4f358f8733ee2fd5a07ec652549df763f891b71c5",
       "reviewed_against_head": "42d4164a9482c09d72f4e553649fb65b02c80685"
     },
     {
@@ -3189,9 +3189,9 @@
       "verified_scope": "Entire newly maintained source/reference inspected; scoped offline regressions. See docs/non-runtime-status.md.",
       "limitations": "Not native runtime, compatibility approval, or a claim that every gameplay path is proven.",
       "findings": [],
-      "bytes": 12346,
-      "lines": 163,
-      "sha256": "db9c272bc1e83f07d986ab8fd6af56ea8477846e973e3ecb5dd20e8d92ebd69c",
+      "bytes": 12964,
+      "lines": 172,
+      "sha256": "2c04d20342b1f97e9234619dde6bfd43280d9e2aa2e331f84cbc3d4560b971cd",
       "reviewed_against_head": "42d4164a9482c09d72f4e553649fb65b02c80685"
     },
     {

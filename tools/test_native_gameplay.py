@@ -125,6 +125,15 @@ class NativeContracts(unittest.TestCase):
             for file in [p,Path(str(p)+'.json')]:s.put(work/file.name,s.read(file))
         observation=dict(kind='WINDOWS_GAMEPLAY_OBSERVATIONS',case='original',pid=42,processStartedUtc='2026-01-01T00:00:00Z',planSha256=s.hash_file(work/'native-plan.json'),execution='OBSERVED_TRANSITIONS',steps=[dict(index=0,before='before.png',after='after.png',beforeFrames=['before-first.png','before.png'],afterFrames=['after-first.png','after.png'],dispatch=dict(kind='WINDOW_MESSAGE_DISPATCH',key='confirm',startedUtc='2026-01-01T00:00:01.01Z',finishedUtc='2026-01-01T00:00:01.1Z',requestedHeldMs=50))])
         s.put_json(work/'native-observations.json',observation);s.put_json(work/'native-observations-integrity.json',dict(sha256=s.hash_file(work/'native-observations.json')))
+        # The first after frame must not predate completion of the input,
+        # even when the last after frame is correctly timed.
+        first_after=work/'after-first.png.json'
+        original_meta=s.load_json(first_after)
+        early_meta=dict(original_meta,startedUtc='2026-01-01T00:00:01.05Z',finishedUtc='2026-01-01T00:00:01.051Z')
+        first_after.write_text(json.dumps(early_meta),encoding='utf-8',newline='\n')
+        with self.assertRaisesRegex(e.StopRun,'Input/capture timing'):
+            n.finalize(work)
+        first_after.write_text(json.dumps(original_meta),encoding='utf-8',newline='\n')
         result=n.finalize(work)
         self.assertEqual(result['result'],'NEEDS_REVIEW');self.assertEqual(result['gameplay'],'UNVERIFIED')
         self.assertTrue((work/'review-0.html').exists())
