@@ -868,3 +868,11 @@ remains PARTIAL for the full requested scope: restart persistence, all glyphs an
 all layouts were not tested. Combat and Forced remain BLOCKED, endings NOT_RUN,
 and Steam account state NOT_RESTORED. Earlier timeout and loader-failure evidence
 remain preserved. No complete gameplay E2E or profile promotion is claimed.
+
+CI follow-up: the first pushed runtime-fix commit exposed a stale localization
+assertion requiring the removed draw_set_font call. The updated test checks
+locale-atlas selection, current-locale restoration before the footer, and absence
+of global font mutation. All37 localization tests passed (one optional skip).
+Only test/documentation inventory changed; runtime source and genuine evidence
+pins remain unchanged. Hosted rerun status is reported separately.
+

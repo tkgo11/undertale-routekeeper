@@ -221,7 +221,17 @@ class LocalizationTests(unittest.TestCase):
         self.assertIn('ini_write_string("Guidance", "locale"',step)
         self.assertIn('mod scr_routekeeper_locale_count()',step)
         self.assertIn('rk_menu_page == 5) options = scr_routekeeper_locale_count()',step)
-        self.assertIn('rk_menu_page == 5) draw_set_font(scr_routekeeper_locale_font(index))',draw)
+        # Locale choices select their own authenticated atlas, then restore the
+        # current locale before drawing the shared footer. The legacy runner
+        # cannot preserve global font state through unsupported font getters.
+        choice_font=draw.index('if (rk_menu_page == 5) global.rk_ui_font = index;')
+        choice_line=draw.index('scr_routekeeper_ui_option(rk_menu_page,index)',choice_font)
+        restore_font=draw.index('global.rk_ui_font = lang;',choice_line)
+        footer=draw.index('key = "navigation";',restore_font)
+        self.assertLess(choice_font,choice_line)
+        self.assertLess(choice_line,restore_font)
+        self.assertLess(restore_font,footer)
+        self.assertNotIn('draw_set_font(',draw)
         self.assertIn('scr_routekeeper_warning_session(3, 0, "", 0)',step)
 
     @unittest.skipUnless(os.environ.get('ROUTEKEEPER_LOCALE_E2E')=='1','Enable ROUTEKEEPER_LOCALE_E2E=1 for isolated SDK contributor build')
