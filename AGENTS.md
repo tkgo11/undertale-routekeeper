@@ -248,3 +248,15 @@ authenticates a user or that a terminal nonce was typed. The delegated entry is
 Smoke-only, and the coordinator rejects patched cases, plans and other session
 namespaces. Fresh seal, bounded capture, genuine runner, recovery and identity
 checks remain mandatory. This does not authorize AI approval of navigation plans.
+
+## Explicit delegated UI authority (2026-10-31)
+
+The owner now explicitly delegates approval authority for non-destructive original
+and patched gameplay/UI E2E. Record the exact current owner statement separately
+from each scoped AGENT_DELEGATED scene/provenance/action review; never represent
+agent review as a human review or independent authentication. CaptureBootstrap
+may acquire native references through fresh capture-bound requests after actual
+pixel inspection. Unknown screens stop input. Existing identity, watchdog, Steam,
+backup, baseline and recovery requirements remain. SAVE/RESET, combat/Forced and
+endings still require supported independent observations and appropriate separate
+scope; this delegation supplies no invented evidence or gameplay PASS.

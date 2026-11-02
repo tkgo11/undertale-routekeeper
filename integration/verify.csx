@@ -81,8 +81,16 @@ Check(automatic.Contains("global.ratings >= 10000") && automatic.Contains("globa
 Check(step.Contains("global.rk_warning_code == 20"),"scripted turn-boundary warning not cleared as an ordinary battle warning");
 var draw=Get("gml_Object_obj_routekeeper_Draw_64");
 Check(draw.Contains("scr_routekeeper_ui_option") && draw.Contains("global.rk_progress_met"),"localized objectives/progress GUI");
-foreach(var restored in new[]{"draw_set_font(old_font)","draw_set_color(old_color)","draw_set_alpha(old_alpha)","draw_set_halign(old_halign)","draw_set_valign(old_valign)"})
+foreach(var restored in new[]{"draw_set_color(old_color)","draw_set_alpha(old_alpha)"})
     Check(draw.Contains(restored),"draw state restored "+restored.Split('(')[0]);
+var line=Get("gml_Script_scr_routekeeper_ui_line");
+var width=Get("gml_Script_scr_routekeeper_ui_width");
+foreach(var forbidden in new[]{"draw_get_font","draw_get_halign","draw_get_valign"})
+    Check(!Data.Functions.Any(function=>function.Name.Content==forbidden),"unsupported runner function absent "+forbidden);
+foreach(var untouched in new[]{"draw_set_font(","draw_set_halign(","draw_set_valign("})
+    Check(!draw.Contains(untouched) && !line.Contains(untouched) && !width.Contains(untouched),"UI leaves draw state untouched "+untouched);
+Check(line.Contains("draw_sprite_part_ext(") && line.Contains("scr_routekeeper_ui_glyph(")
+    && width.Contains("scr_routekeeper_ui_glyph("),"atlas rendering and measurement share glyph metrics");
 var fontManifest=JsonDocument.Parse(File.ReadAllText(Path.Combine(folder,"assets","fonts","manifest.json")));
 int addedFonts=fontManifest.RootElement.GetArrayLength();
 foreach(var entry in fontManifest.RootElement.EnumerateArray()) {
@@ -95,13 +103,52 @@ foreach(var entry in fontManifest.RootElement.EnumerateArray()) {
         Check(g.Character==e[0] && g.SourceX==e[1] && g.SourceY==e[2] && g.Shift==e[3] && g.Offset==e[4] && g.SourceWidth==24 && g.SourceHeight==18,"registered glyph metrics");
     }
 }
-Check(Data.Code.Count==6272+scripts.Length+3,"expected new code footprint");
+var glyphCode=Data.Code.ByName("gml_Script_scr_routekeeper_ui_glyph");
+Check(glyphCode!=null && Data.Scripts.ByName("scr_routekeeper_ui_glyph")?.Code==glyphCode,"generated glyph script linkage");
+string Compact(string value) => System.Text.RegularExpressions.Regex.Replace(value,@"\s+","");
+var glyphSource=Compact(Get("gml_Script_scr_routekeeper_ui_glyph"));
+var uiFonts=new[]{Data.Fonts.ByName("fnt_maintext")}.Concat(fontManifest.RootElement.EnumerateArray()
+    .Select(entry=>Data.Fonts.ByName(entry.GetProperty("resource").GetString()))).ToArray();
+foreach(var font in uiFonts) {
+    var texture=font.Texture;
+    var sprite=Data.Sprites.ByName("spr_routekeeper_glyphs_"+font.Name.Content);
+    Check(texture!=null && font.ScaleX==1 && font.ScaleY==1 && font.Ascender==0 && font.AscenderOffset==0
+        && texture.TargetX==0 && texture.TargetY==0 && texture.SourceWidth==texture.TargetWidth
+        && texture.SourceHeight==texture.TargetHeight && texture.BoundingWidth==texture.TargetWidth
+        && texture.BoundingHeight==texture.TargetHeight && font.Glyphs.All(g=>g.Kerning.Count==0),"supported UI atlas geometry "+font.Name.Content);
+    Check(sprite!=null && sprite.Width==texture.TargetWidth && sprite.Height==texture.TargetHeight
+        && sprite.OriginX==0 && sprite.OriginY==0 && sprite.MarginLeft==0 && sprite.MarginTop==0
+        && sprite.MarginRight==texture.TargetWidth-1 && sprite.MarginBottom==texture.TargetHeight-1
+        && sprite.Transparent && !sprite.Smooth && sprite.Preload && sprite.Textures.Count==1
+        && sprite.Textures[0].Texture==texture && sprite.CollisionMasks.Count==0,"exact additive font-atlas sprite "+font.Name.Content);
+    // Compare each emitted branch with independently read serialized font metrics.
+    // No inferred default font, kerning, alignment, crop or glyph advance is allowed.
+    var marker="global.rk_glyph_sprite="+sprite.Name.Content+";switch(character){";
+    var numericMarker="global.rk_glyph_sprite="+Data.Sprites.IndexOf(sprite)+";switch(character){";
+    int start=glyphSource.IndexOf(marker,StringComparison.Ordinal);
+    int markerLength=marker.Length;
+    if(start<0){start=glyphSource.IndexOf(numericMarker,StringComparison.Ordinal);markerLength=numericMarker.Length;}
+    Check(start>=0,"glyph sprite selection "+font.Name.Content);
+    var body=glyphSource.Substring(start+markerLength);
+    int end=body.IndexOf("}",StringComparison.Ordinal);
+    Check(end>=0,"bounded glyph switch "+font.Name.Content);body=body.Substring(0,end);
+    string Metrics(UndertaleFont.Glyph glyph) => "global.rk_glyph_x="+glyph.SourceX+";global.rk_glyph_y="+glyph.SourceY
+        +";global.rk_glyph_width="+glyph.SourceWidth+";global.rk_glyph_height="+glyph.SourceHeight
+        +";global.rk_glyph_offset="+glyph.Offset+";return"+glyph.Shift+";";
+    Check(System.Text.RegularExpressions.Regex.Matches(body,@"case\d+:").Count==font.Glyphs.Count,"exact glyph branch count "+font.Name.Content);
+    foreach(var glyph in font.Glyphs)
+        Check(body.Contains("case"+glyph.Character+":"+Metrics(glyph)),"serialized glyph metrics "+font.Name.Content+"/"+glyph.Character);
+    var fallback=font.Glyphs.Single(glyph=>glyph.Character==63);
+    Check(body.Contains("default:"+Metrics(fallback)),"explicit missing-glyph fallback "+font.Name.Content);
+}
+Check(Data.Code.Count==6272+scripts.Length+4,"expected new code footprint");
 var originalPath=Environment.GetEnvironmentVariable("ROUTEKEEPER_ORIGINAL");
 if(!string.IsNullOrEmpty(originalPath)) {
     using(var source=File.OpenRead(originalPath)) {
         var pristine=UndertaleIO.Read(source);
         RoutekeeperBindings.Validate(pristine,folder,originalPath);
-        Check(Data.Rooms.Count==pristine.Rooms.Count && Data.Sprites.Count==pristine.Sprites.Count && Data.Sounds.Count==pristine.Sounds.Count,"original room/sprite/sound resource counts");
+        Check(Data.Rooms.Count==pristine.Rooms.Count && Data.Sprites.Count==pristine.Sprites.Count+uiFonts.Length && Data.Sounds.Count==pristine.Sounds.Count,"exact room/sprite/sound resource counts");
+        Check(Data.Scripts.Count==pristine.Scripts.Count+scripts.Length+1,"exact additive script footprint");
         Check(Data.GameObjects.Count==pristine.GameObjects.Count+1 && Data.Fonts.Count==pristine.Fonts.Count+addedFonts
             && Data.EmbeddedTextures.Count==pristine.EmbeddedTextures.Count+addedFonts && Data.TexturePageItems.Count==pristine.TexturePageItems.Count+addedFonts,"additive controller/font footprint");
         // Payload equality alone misses muted sounds, shifted texture rectangles,

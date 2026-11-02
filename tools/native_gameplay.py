@@ -47,7 +47,8 @@ def load_plan(path, case):
             raise e.StopRun('Original baseline has no mod settings/Korean scenario')
         if step.get('before') not in scenes or step.get('after') not in scenes or step.get('action') not in ('checkpoint',*e.KEYS):
             raise e.StopRun('Unrecognized native step/action')
-        for key,low,high in [('holdMs',50,500),('timeoutMs',100,15000),('maxFrames',2,100),('stableFrames',2,8)]:
+        timeout_limit=60000 if step['action']=='checkpoint' else 15000
+        for key,low,high in [('holdMs',50,500),('timeoutMs',100,timeout_limit),('maxFrames',2,100),('stableFrames',2,8)]:
             if type(step.get(key)) is not int or not low<=step[key]<=high:raise e.StopRun('Invalid bounded step '+key)
         setting=step.get('setting')
         if setting is not None:
@@ -122,6 +123,20 @@ def review_frame(root,plan,case,frame,scene,scenario,label):
     return verification
 
 
+def validate_dispatch_kind(dispatch, action):
+    if dispatch.get('key') != action or dispatch.get('gameAction', 'UNPROVEN') != 'UNPROVEN':
+        raise e.StopRun('Missing corresponding bounded input dispatch')
+    if dispatch.get('kind') == 'WINDOW_MESSAGE_DISPATCH':
+        return
+    if (dispatch.get('kind') != 'OWNED_FOREGROUND_KEY_DISPATCH'
+            or action not in ('up', 'down', 'left', 'right', 'confirm', 'cancel', 'enter', 'settings', 'language', 'acknowledge')
+            or dispatch.get('transport') != ('SendInput-scancode-extended'
+                if action in ('up', 'down', 'left', 'right') else 'SendInput-scancode')
+            or dispatch.get('releaseScope') != 'GLOBAL_OS_KEYUP_FOR_OWN_INJECTED_KEY'
+            or dispatch.get('gameAction') != 'UNPROVEN'):
+        raise e.StopRun('Missing corresponding bounded input dispatch')
+
+
 def finalize(root, write_review=True):
     root=s.no_links(root);raw=s.read(root/'native-observations.json',s.MAX_JSON)
     if s.load_json(root/'native-observations-integrity.json').get('sha256')!=s.digest(raw):raise e.StopRun('Native observations seal mismatch')
@@ -157,8 +172,7 @@ def finalize(root, write_review=True):
         previous_end=times['after'][1]
         if step['action']!='checkpoint':
             dispatch=row.get('dispatch',{})
-            if dispatch.get('kind')!='WINDOW_MESSAGE_DISPATCH' or dispatch.get('key')!=step['action']:
-                raise e.StopRun('Missing corresponding bounded input dispatch')
+            validate_dispatch_kind(dispatch, step['action'])
             try:
                 start=datetime.fromisoformat(dispatch['startedUtc'].replace('Z','+00:00'))
                 end=datetime.fromisoformat(dispatch['finishedUtc'].replace('Z','+00:00'))

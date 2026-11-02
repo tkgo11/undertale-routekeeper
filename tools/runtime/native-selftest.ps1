@@ -44,17 +44,19 @@ function Test-RkNativeDesktop([string]$Output) {
  $form.AutoScaleMode=[Windows.Forms.AutoScaleMode]::None
  $form.Text='ROUTEKEEPER harmless API self-test';$form.ClientSize=New-Object Drawing.Size(640,480);$form.BackColor=[Drawing.Color]::Black;$form.KeyPreview=$true
  $observed=New-Object 'Collections.Generic.List[string]'
- $form.Add_KeyDown({param($sender,$event)$observed.Add('down:'+([int]$event.KeyCode))}.GetNewClosure())
- $form.Add_KeyUp({param($sender,$event)$observed.Add('up:'+([int]$event.KeyCode))}.GetNewClosure())
+ $form.Add_KeyDown({param($sender,$event)$observed.Add('down:'+([int]$event.KeyCode));$event.Handled=$true}.GetNewClosure())
+ $form.Add_KeyUp({param($sender,$event)$observed.Add('up:'+([int]$event.KeyCode));$event.Handled=$true}.GetNewClosure())
  $form.Add_Paint({param($sender,$event)$event.Graphics.FillRectangle([Drawing.Brushes]::White,32,32,576,6)} )
  try {
   $form.Show();$form.Activate();[Windows.Forms.Application]::DoEvents()
   $deadline=[DateTime]::UtcNow.AddSeconds(5)
   while([RkWindowInput]::GetForegroundWindow() -ne $form.Handle -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 20}
   $abort=Join-Path $Output 'abort.request'
-  $null=Send-RkWindowKey $process $form.Handle $exe $hash $ticks 'down' 50 $abort
-  [Windows.Forms.Application]::DoEvents()
-  if(!$observed.Contains('down:40') -or !$observed.Contains('up:40')){throw 'Harmless target did not observe matching key-down/up.'}
+  foreach($keyCase in @(@{name='down';code=40},@{name='enter';code=13},@{name='settings';code=121},@{name='language';code=123})){
+   $null=Send-RkWindowKey $process $form.Handle $exe $hash $ticks $keyCase.name 50 $abort
+   [Windows.Forms.Application]::DoEvents()
+   if(!$observed.Contains('down:'+ $keyCase.code) -or !$observed.Contains('up:'+ $keyCase.code)){throw ('Harmless target did not observe matching key-down/up: '+$keyCase.name)}
+  }
   Save-RkWindowCapture $process $exe (Join-Path $Output 'window.png') $hash $form.Handle
   $other=New-Object Windows.Forms.Form
   try {

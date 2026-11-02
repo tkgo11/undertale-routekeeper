@@ -74,12 +74,12 @@ def plans():
 
 
 def source_pins():
-    files = ['tools/runtime/screen-contracts.json','tools/runtime/smoke-scenarios.json','tools/native_gameplay.py','tools/runtime/native-gameplay.ps1','tools/windows_e2e.py','tools/runtime_lab.py','tools/screen_verify.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
+    files = ['tools/runtime/screen-contracts.json','tools/runtime/smoke-scenarios.json','tools/native_gameplay.py','tools/native_bootstrap.py','tools/native_acquisition.py','tools/runtime/native-gameplay.ps1','tools/windows_e2e.py','tools/runtime_lab.py','tools/screen_verify.py','tools/runtime/experimental-policy.json','tools/runtime/e2e-scenarios.json','tools/runtime/test-windows.ps1',
              'tools/runtime/input-window.ps1','tools/runtime/native-selftest.ps1','tools/runtime/experimental-session.ps1',
              'tools/runtime/capture-client.ps1','tools/runtime/safety.ps1',
              'tools/runtime/watchdog.py','tools/runtime/watchdog.ps1','tools/runtime/steam-launch-context.ps1',
              'tools/runtime/current-account-state.ps1','tools/runtime/current-account-windows.ps1',
-             'tools/runtime/run-current-account.ps1',
+             'tools/runtime/run-current-account.ps1','tools/runtime/native-acquisition.ps1',
              'profiles/registry.json']
     return {f:screen.hash_file(ROOT/f) for f in files}
 
@@ -352,7 +352,26 @@ def report(run):
             raise StopRun('Underlying native result changed or mismatched its report')
         if payload.get('kind')=='EXPERIMENTAL_ORIGINAL_STARTUP_PROBE':
             payload['currentVisualReview']=screen.summarize(run/'screen-review')
-        elif payload.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY':raise StopRun('Unknown native report identity')
+        elif payload.get('kind')=='EXPERIMENTAL_NATIVE_GAMEPLAY':
+            import native_gameplay as native
+            observations=payload['observations']
+            if observations.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY':raise StopRun('Native report/session kind mismatch')
+            # The sealed summary is a historical rendering, never a reusable verdict.
+            # Re-open actual plans, frames, sidecars, dispatches and current reviews.
+            if payload.get('nativeReport') is not None or (run/'native-observations.json').exists():
+                try:
+                    fresh=native.finalize(run,write_review=False)
+                except (OSError,ValueError,TypeError,KeyError) as error:
+                    raise StopRun('Native report evidence or current visual review invalid: '+str(error)) from error
+                if fresh.get('case')!=observations.get('case'):raise StopRun('Native report/session case mismatch')
+                payload['nativeReport']=fresh
+                payload['result']=fresh['result']
+                if any(step['result'] in ('FAIL','INVALID_EVIDENCE','BLOCKED') for step in fresh['steps']):payload['result']='BLOCKED'
+            else:
+                payload['result']='BLOCKED'
+            if observations.get('localRecovery')!='CONTENT_TREE_VERIFIED' or not all(observations.get(k) is True for k in ('copyStable','cacheStable','registeredStable')):
+                payload['result']='BLOCKED'
+        else:raise StopRun('Unknown native report identity')
     else:
         rows=Journal.read(run);raw=screen.read(run/'result.json',screen.MAX_JSON)
         if screen.read(run/'result.sha256',128).decode().strip()!=screen.digest(raw):raise StopRun('Scheduler result integrity mismatch')
@@ -458,6 +477,11 @@ def finish_native(work,session='active-session'):
 
 
 def check_baseline(baseline,work):
+    baseline=screen.no_links(baseline)
+    if baseline.name=='live-baseline-review.json' or (baseline.is_dir() and (baseline/'live-baseline-review.json').exists()):
+        import native_acquisition
+        prepared=verified_preparation(work)
+        return native_acquisition.verify(baseline, prepared['harness'])
     summary,_=report(baseline);observations=summary.get('observations',{});native=summary.get('nativeReport') or {}
     if observations.get('kind')!='EXPERIMENTAL_NATIVE_GAMEPLAY' or observations.get('case')!='original' or observations.get('localRecovery')!='CONTENT_TREE_VERIFIED':
         raise StopRun('Original native navigation baseline with verified local recovery required')

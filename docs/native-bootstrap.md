@@ -6,6 +6,16 @@ launch. Acquire captures only through an authorized session and the existing
 capture helper. Its new `windowHandle` sidecar field records the actual checked
 HWND. Older sidecars without HWND cannot be upgraded by guessing a value.
 
+The native adapter uses foreground `SendInput` scan codes only for directions,
+because the original game also checks direct keyboard state. Other keys retain
+HWND messages. PID/start/path/hash, HWND/foreground, Steam identity and emergency
+guards apply before down and throughout the bounded hold; already held direction
+keys are refused. After an accepted OS down, matching OS key-up always runs in
+cleanup, including after focus/process loss. That release affects global OS key
+state and can reach the new foreground; it is not HWND-targeted. No additional
+down is sent after guard failure. Receipts distinguish this transport and keep
+`gameAction=UNPROVEN`; only observed game response can establish acceptance.
+
 An intake recipe contains `schema:1`, `id`, `version`, `case`, a `captures` object
 mapping scene identifiers to relative PNG paths, `sourceProvenance` and
 `startingState` operator accounts, `actionHistory`, and `steps` in
@@ -17,6 +27,9 @@ Keep the complete observed trace, dispatch receipts and operator observations in
 that private recipe, including additional fields when available.
 These are retained operator claims, not proof that GameMaker accepted input.
 Include starting-state requirements and scene meanings in the recipe for review.
+No-input `checkpoint` steps may wait up to 60000ms for an observed transition,
+such as the original intro reaching the title. Input steps remain limited to
+15000ms, and the native controller's 300s global budget remains unchanged.
 The original build has no Korean/mod settings scenarios. SAVE, RESET, combat,
 Forced and endings remain unsupported. The native validator still owns final
 exported plan acceptance and refuses unsupported actions/limits.
@@ -46,6 +59,19 @@ malicious editor forging the entire bundle. Scene labels alone authenticate
 nothing. Even accepted/exported references leave gameplay and loaded bytecode
 UNVERIFIED and the original baseline NOT_RUN. Native execution gates still apply.
 
+When the owner explicitly delegates review authority, `review` also accepts
+`--delegated-agent-review --delegation-statement "EXACT OWNER STATEMENT"` with
+the actual agent name in `--reviewer`. The exact bounded statement is retained;
+the record says `reviewerType=agent`, `method=AGENT_DELEGATED`, and exports say
+`OWNER_DELEGATED_AGENT_LOCAL_CLAIM`. This is documentary delegated authority,
+not a human review or independent authentication. The reviewer must still inspect
+the actual pixels, provenance, starting state and each proposed action/history,
+then explicitly confirm provenance and non-destructive actions. Metadata passing
+intake never supplies these judgments. Human review remains the default; a
+delegation statement without the explicit agent flag is refused. Review/export
+immutability, exact evidence hashes, native plan validation and all execution
+gates remain unchanged. Delegated review cannot certify combat or endings.
+
 ## Read-only state observations
 
 The existing `native_gameplay.py settings` observer independently reads the mod INI
@@ -65,3 +91,24 @@ sampling and tests rejecting stale/falsified/inconsistent observations.
 `.research/windows-20261029-bootstrap/`. Its tests exercise refusal, immutable
 review/export and native pixel preservation. They never establish authentic game
 provenance, real Windows capture, gameplay, ownership or account restoration.
+
+## Reviewed live acquisition baseline
+
+`python tools/native_acquisition.py inspect --root PRIVATE_SESSION` validates the
+complete stopped original acquisition, every capture-bound request and dispatch,
+process/window provenance, watchdog natural exit and local recovery evidence.
+A separately written post-pixel review and exported authentic bootstrap plan are
+required by `certify --root PRIVATE_SESSION --review PRIVATE_REVIEW --plan
+PRIVATE_PLAN --bootstrap PRIVATE_BOOTSTRAP`. Certification creates a new immutable
+`live-baseline-review.json`; it does not edit the runtime receipt or claim that the
+exported plan was replayed. The certificate records AGENT_DELEGATED authority and
+only the observed startup, English UI and both movement directions. Marker-pixel
+position, unchanged background and later input-free captures corroborate the
+explicit movement review; a dispatched key or arbitrary image difference cannot
+certify movement. Internal game state and Steam account isolation remain unproven.
+
+The patched launch gate recomputes the entire chain and review/export linkage on
+every check. The original and patched preparation must have identical current
+harness pins, including the validator and bootstrap dependency. Historical runtime
+pins are never rewritten; changed code requires a fresh original acquisition.
+The existing static-plan replay path remains separate and retains its checks.

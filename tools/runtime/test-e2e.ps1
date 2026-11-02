@@ -43,11 +43,13 @@ public static class RkWindowInput {
  public static uint MapVirtualKey(uint key,uint type){return key;}
  public static short GetAsyncKeyState(int key){return Abort?(short)-32768:(short)0;}
  public static bool PostMessage(IntPtr w,uint m,IntPtr key,IntPtr detail){Messages.Add(m);if(m==256&&LoseFocus)Focus=new IntPtr(20);return true;}
+ public static uint SendScanKey(ushort scan,bool extended,bool release){Messages.Add(release?257u:256u);if(!release&&LoseFocus)Focus=new IntPtr(20);return 1;}
 }
 '@
 $workspace=New-RkTestWorkspace
 $root=$workspace.root
 $verified=$false
+$productionGameStopBoundary=(Get-Command Write-RkE2eGameStopBoundary).ScriptBlock
 try {
  $exe=Join-Path $root 'synthetic.exe';[IO.File]::WriteAllText($exe,'OWNED SYNTHETIC FIXTURE')
  $hash=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();$start=[DateTime]::UtcNow
@@ -55,13 +57,13 @@ try {
  $abort=Join-Path $root 'abort.request'
  $receipt=Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort
  Check ($receipt.gameAction -eq 'UNPROVEN') 'dispatch is not gameplay proof'
- Check ([RkWindowInput]::Messages.Count -eq 2 -and [RkWindowInput]::Messages[0] -eq 256 -and [RkWindowInput]::Messages[1] -eq 257) 'targeted press and release'
- # Reused PID with unchanged numeric window owner must not receive key-up.
+ Check ([RkWindowInput]::Messages.Count -eq 2 -and [RkWindowInput]::Messages[0] -eq 256 -and [RkWindowInput]::Messages[1] -eq 257) 'owned OS key press and release'
+ # Identity loss after injection permits only global release of our own key.
  $script:refreshCount=0
- $process|Add-Member ScriptMethod Refresh { $script:refreshCount++;if($script:refreshCount -ge 2){$this.StartTime=$this.StartTime.AddSeconds(1)} } -Force
+ $process|Add-Member ScriptMethod Refresh { $script:refreshCount++;if($script:refreshCount -ge 3){$this.StartTime=$this.StartTime.AddSeconds(1)} } -Force
  [RkWindowInput]::Messages.Clear();$refused=$false
  try{Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort|Out-Null}catch{$refused=$true}
- Check ($refused -and [RkWindowInput]::Messages.Count -eq 1) 'recycled process identity never receives targeted release'
+ Check ($refused -and [RkWindowInput]::Messages.Count -eq 2 -and [RkWindowInput]::Messages[1] -eq 257) 'identity loss stops input and releases only the injected OS key'
  $process.StartTime=$start;$process|Add-Member ScriptMethod Refresh {} -Force
  [RkWindowInput]::LoseFocus=$true;$refused=$false
  try{Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort|Out-Null}catch{$refused=$true}
@@ -78,6 +80,17 @@ try {
  try{Send-RkWindowKey $process ([IntPtr]::new(10)) $exe $hash $start.Ticks 'confirm' 50 $abort|Out-Null}catch{$refused=$true}
  Check $refused 'recycled process refuses input'
  # Existing transaction + new post-trial fence; all paths are owned fixtures.
+ # Only this production boundary invocation sees a synthetic process query.
+ # The nested function never replaces Get-Process in the caller's scope.
+ function Write-RkE2eGameStopBoundary($State){
+  function Get-Process {
+   [CmdletBinding()]param([string]$Name)
+   if($Name -cne 'UNDERTALE'){throw 'Unexpected process query in synthetic boundary fixture.'}
+   if($script:fakeBoundaryGameRunning){return [pscustomobject]@{Id=4242}}
+   return @()
+  }
+  & $productionGameStopBoundary $State
+ }
  function Assert-RkProcessesClosed {if($script:fakeBusy){throw 'synthetic process still owns trial'}}
  function Assert-RkNetworkOffline {}
  function Assert-RkNativeSaveTree([string]$Path){Assert-RkNoLinks $Path;if(Test-Path -LiteralPath $Path){Assert-RkTreeNoLinks $Path}}
@@ -90,7 +103,11 @@ try {
  Check $refused 'unfenced post-crash trial is preserved, not guessed'
  $script:fakeBusy=$true;$refused=$false;try{Write-RkE2eTrialFence $s}catch{$refused=$true}
  Check $refused 'live process blocks trial closure fence'
- $script:fakeBusy=$false;Write-RkE2eGameStopBoundary $s
+ $script:fakeBusy=$false;$script:fakeBoundaryGameRunning=$true;$refused=$false
+ try{Write-RkE2eGameStopBoundary $s}catch{$refused=$_.Exception.Message -ceq 'Game still running; no stop boundary.'}
+ Check ($refused -and !(Test-Path -LiteralPath (Join-Path $s.root 'game-stop-boundary.json'))) 'synthetic running game blocks stop boundary without creating a fence'
+ $script:fakeBoundaryGameRunning=$false;Write-RkE2eGameStopBoundary $s
+ Check ((Get-Command Get-Process).CommandType -eq 'Cmdlet') 'boundary fixture leaves real Get-Process available outside its invocation'
  [IO.File]::WriteAllText((Join-Path $save 'file0'),'UNRECOGNIZED SHUTDOWN CHANGE')
  $refused=$false;try{Write-RkE2eTrialFence $s}catch{$refused=$true}
  Check $refused 'changes during Steam shutdown cannot be absorbed into a later fence'
@@ -167,6 +184,7 @@ try {
  function Get-CimInstance {return @()}
  Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'
  Check ($s.phase -eq 'Restored') 'closed descendant fixture preserves valid terminal idempotency'
+ Set-Item -LiteralPath Function:\Write-RkE2eGameStopBoundary -Value $productionGameStopBoundary
  $script:answer='decline';$refused=$false
  try{New-RkExperimentalConsent $session $nonce|Out-Null}catch{$refused=$true}
  Check $refused 'missing explicit session phrase cannot authorize'
@@ -202,6 +220,7 @@ Check $true 'real Python child quoting/timeout/output budget; no Windows/game AP
  Complete-RkTestWorkspace $workspace
  $verified=$true
 } finally {
+ Set-Item -LiteralPath Function:\Write-RkE2eGameStopBoundary -Value $productionGameStopBoundary
  if($verified){
   try{Remove-RkTestWorkspace $workspace}
   catch{Write-Warning ('Cleanup failed; synthetic evidence retained: '+$root);throw}

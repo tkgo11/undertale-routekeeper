@@ -74,6 +74,39 @@ class NativeContracts(unittest.TestCase):
         self.plan['scenes']['after']=copy.deepcopy(self.plan['scenes']['before']);self.save()
         with self.assertRaisesRegex(e.StopRun,'observable response'):n.load_plan(self.path,'original')
 
+    def test_os_direction_dispatch_is_scoped_and_never_claims_game_action(self):
+        dispatch=dict(kind='OWNED_FOREGROUND_KEY_DISPATCH',key='left',transport='SendInput-scancode-extended',
+                      releaseScope='GLOBAL_OS_KEYUP_FOR_OWN_INJECTED_KEY',gameAction='UNPROVEN')
+        n.validate_dispatch_kind(dispatch,'left')
+        n.validate_dispatch_kind(dict(kind='WINDOW_MESSAGE_DISPATCH',key='confirm'),'confirm')
+        with self.assertRaises(e.StopRun):
+            n.validate_dispatch_kind(dict(kind='WINDOW_MESSAGE_DISPATCH',key='confirm',gameAction='PASS'),'confirm')
+        for mutation,action in [({'key':'confirm'},'confirm'),({'kind':'SYNTHETIC'},'left'),
+                                ({'gameAction':'PASS'},'left'),({'transport':'GLOBAL_UNBOUNDED'},'left'),
+                                ({'releaseScope':'HWND_ONLY'},'left'),({},'right')]:
+            with self.assertRaises(e.StopRun):
+                n.validate_dispatch_kind(dict(dispatch,**mutation),action)
+
+    def test_os_confirm_and_function_keys_require_nonextended_transport(self):
+        for key in ('confirm', 'cancel', 'enter', 'settings', 'language', 'acknowledge'):
+            dispatch=dict(kind='OWNED_FOREGROUND_KEY_DISPATCH',key=key,transport='SendInput-scancode',
+                          releaseScope='GLOBAL_OS_KEYUP_FOR_OWN_INJECTED_KEY',gameAction='UNPROVEN')
+            n.validate_dispatch_kind(dispatch,key)
+            for mutation in ({'transport':'SendInput-scancode-extended'}, {'gameAction':'PASS'},
+                             {'releaseScope':'HWND_ONLY'}, {'key':'unknown'}):
+                with self.assertRaises(e.StopRun):
+                    n.validate_dispatch_kind(dict(dispatch,**mutation),key)
+        with self.assertRaises(e.StopRun):
+            n.validate_dispatch_kind(dict(dispatch,key='save'),'save')
+
+    def test_long_checkpoint_wait_does_not_extend_input_timeout(self):
+        self.plan['steps'][0].update(action='checkpoint',timeoutMs=60000)
+        self.save();n.load_plan(self.path,'original')
+        for action,timeout in [('confirm',15001),('checkpoint',60001)]:
+            self.plan['steps'][0].update(action=action,timeoutMs=timeout);self.save()
+            with self.assertRaisesRegex(e.StopRun,'timeoutMs'):
+                n.load_plan(self.path,'original')
+
     def test_frame_identity_hash_metadata_and_geometry_mutations(self):
         frame=self.frame('capture.png',self.after)
         with self.assertRaisesRegex(e.StopRun,'process mismatch'):n.match(self.path,'original','after',frame,99)
@@ -141,8 +174,28 @@ class NativeContracts(unittest.TestCase):
         accepted=s.record_review(work/'review-0',review,'accepted','human','synthetic-reviewer','review1')
         self.assertNotEqual(accepted['result'],'PASS')
         self.assertEqual(n.finalize(work,write_review=False)['gameplay'],'UNVERIFIED')
+        # An immutable HTML/JSON summary must not cache a live native verdict.
+        runtime=dict(kind='EXPERIMENTAL_NATIVE_GAMEPLAY',case='original',localRecovery='CONTENT_TREE_VERIFIED',
+                     copyStable=True,cacheStable=True,registeredStable=True)
+        s.put_json(work/'result.json',runtime)
+        s.put_json(work/'result-integrity.json',dict(sha256=s.hash_file(work/'result.json')))
+        cached=dict(kind=runtime['kind'],observations=runtime,nativeReport=result,result='NEEDS_REVIEW')
+        s.put_json(work/'complete-report.json',cached)
+        s.put(work/'complete-report.sha256',(s.hash_file(work/'complete-report.json')+'\n').encode())
+        immutable_summary=s.read(work/'complete-report.json')
+        self.assertEqual(e.report(work)[0]['nativeReport']['kind'],'NATIVE_SCENE_TRANSITIONS')
+        s.record_review(work/'review-0',review,'defect','human','synthetic-reviewer','review2',supersedes='review1')
+        refreshed=e.report(work)[0]
+        self.assertEqual(refreshed['result'],'BLOCKED')
+        self.assertEqual(refreshed['nativeReport']['steps'][0]['result'],'FAIL')
+        self.assertEqual(s.read(work/'complete-report.json'),immutable_summary)
+        for relative in ('native-plan.json','after.png.json','native-observations.json','review-0/decisions/000002.json'):
+            file=work/relative;raw=s.read(file);file.write_bytes(b'{}')
+            with self.subTest(relative=relative),self.assertRaises(s.EvidenceError):e.report(work)
+            file.write_bytes(raw)
         original=(work/'after.png').read_bytes();(work/'after.png').write_bytes(b'CHANGED AFTER REVIEW')
         with self.assertRaises(s.EvidenceError):n.finalize(work,write_review=False)
+        with self.assertRaises(s.EvidenceError):e.report(work)
         (work/'after.png').write_bytes(original)
         observation['steps'][0]['afterFrames']=['after.png','after.png']
         (work/'native-observations.json').write_bytes(s.canonical(observation))

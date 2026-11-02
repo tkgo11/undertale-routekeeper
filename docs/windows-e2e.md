@@ -312,3 +312,20 @@ helpers: changing those shared components requires a fresh preparation, never
 editing an old receipt. On archive validation failure, only unpublished owned
 single-link files have read-only bits cleared for cleanup; a cleanup failure keeps
 the original validation exception and preserves the unsealed private lab.
+
+## Owner-delegated UI acquisition (2026-10-31)
+
+The owner explicitly delegated scoped non-destructive UI approval authority.
+CaptureBootstrap with -OwnerDelegatedUiExperiment records OWNER_CHAT_UI_DELEGATION
+and requires fresh per-action AGENT_DELEGATED reviews bound to actual captures.
+It retains the guarded game/Steam transaction; acquisition is bounded to 240s (within the unchanged 300s external deadline) and
+40 requests. Capture/sidecar drift or preexisting command outputs refuse input.
+The private acquisition-status.json supplies the next sequence and capture hash;
+new acquisition-request-NNN.json files carry the reviewed action and timestamp.
+These are documentary local claims, never human reviews or gameplay PASS.
+Patched acquisition still requires a verified original baseline. SAVE/RESET,
+combat, Forced and endings are outside this acquisition adapter.
+
+Steam startup permits an initially unavailable process path only within its
+existing 30s deadline; wrong paths/multiple clients refuse. Owned foreground
+window stabilization is bounded to 45s with continuing watchdog/identity checks.

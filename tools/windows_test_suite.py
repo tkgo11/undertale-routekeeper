@@ -54,7 +54,8 @@ def commands(skip_desktop=False, private_output=None):
     result.extend([('pyflakes', [py, '-m', 'pyflakes', 'integration', 'tools']),
                    ('audit-inventory', [py, 'tools/audit_inventory.py'])])
     for shell in ('pwsh', 'powershell'):
-        for script in ('test-current-account', 'test-native-filesystem', 'test-e2e', 'test-sandbox', 'test-workspace-cleanup', 'test-addtype-temp', 'test-watchdog'):
+        for script in ('test-current-account', 'test-native-filesystem', 'test-e2e', 'test-sandbox', 'test-workspace-cleanup', 'test-addtype-temp', 'test-watchdog',
+                       'test-native-steam-identity', 'test-native-acquisition', 'test-direction-input', 'test-session-paths'):
             path = 'tools/runtime/' + script + '.ps1'
             if (ROOT / path).is_file():
                 result.append((shell + '-' + script, [shell, '-NoProfile', '-File', path]))

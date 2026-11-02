@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Freeze and review already acquired private captures; never launch or send input.
 
-Local hashes detect drift, not fabricated provenance. An accountable human must
-review the pixels, capture provenance and proposed action meanings separately.
+Local hashes detect drift, not fabricated provenance. A human, or an explicitly
+owner-delegated agent, must review pixels, provenance and action meanings.
 """
 import argparse
 from datetime import datetime, timezone
@@ -83,7 +83,8 @@ def inspect(recipe_path, game_data):
             raise s.EvidenceError('Original has no mod-only scenario')
         if step.get('before') not in scenes or step.get('after') not in scenes or step.get('action') not in ('checkpoint', *e.KEYS):
             raise s.EvidenceError('Unsupported proposed scene/action')
-        for field, low, high in [('holdMs', 50, 500), ('timeoutMs', 100, 15000), ('maxFrames', 2, 100), ('stableFrames', 2, 8)]:
+        timeout_limit = 60000 if step['action'] == 'checkpoint' else 15000
+        for field, low, high in [('holdMs', 50, 500), ('timeoutMs', 100, timeout_limit), ('maxFrames', 2, 100), ('stableFrames', 2, 8)]:
             if type(step.get(field)) is not int or not low <= step[field] <= high:
                 raise s.EvidenceError('Invalid proposed bound ' + field)
         if step['stableFrames'] > step['maxFrames']:
@@ -133,7 +134,7 @@ def intake(recipe_path, game_data, output):
     manifest = dict(schema=1, kind='PRIVATE_CAPTURE_BOOTSTRAP', files=files, case=plan['case'],
                     dataSha256=plan['dataSha256'], runnerSha256=e.lab.RUNNER_SHA,
                     process=dict(pid=identity[0], startedUtc=identity[1], windowHandle=identity[2]),
-                    result='NEEDS_REVIEW', captureProvenance='LOCAL_RECORDS_REQUIRE_HUMAN_REVIEW',
+                    result='NEEDS_REVIEW', captureProvenance='LOCAL_RECORDS_REQUIRE_SCOPED_REVIEW',
                     loadedBytecode='UNVERIFIED', gameplay='UNVERIFIED', overlayIsolation='UNPROVEN')
     s.put_json(output / 'bootstrap.json', manifest)
     s.put_json(output / 'bootstrap-integrity.json', dict(sha256=s.hash_file(output / 'bootstrap.json')))
@@ -157,17 +158,31 @@ def verified(root):
     return manifest
 
 
-def review(root, reviewer, request_id, decision, provenance_checked, actions_checked):
+def review_identity(delegated_agent_review, delegation_statement):
+    if delegated_agent_review:
+        if (not isinstance(delegation_statement, str) or not delegation_statement.strip()
+                or not 30 <= len(delegation_statement) <= 2048):
+            raise s.EvidenceError('Bounded explicit owner delegation statement required')
+        return 'agent', 'AGENT_DELEGATED'
+    if delegation_statement:
+        raise s.EvidenceError('Delegation statement requires explicit delegated-agent review')
+    return 'human', 'HUMAN'
+
+
+def review(root, reviewer, request_id, decision, provenance_checked, actions_checked,
+           delegated_agent_review=False, delegation_statement=''):
     manifest = verified(root)
     s.token(request_id)
     if not isinstance(reviewer, str) or not reviewer.strip() or len(reviewer) > 160:
-        raise s.EvidenceError('Accountable human reviewer required')
+        raise s.EvidenceError('Accountable named reviewer required')
+    reviewer_type, method = review_identity(delegated_agent_review, delegation_statement)
     if decision not in ('accepted', 'uncertain', 'rejected'):
         raise s.EvidenceError('Unknown scoped review decision')
     if decision == 'accepted' and (not provenance_checked or not actions_checked):
         raise s.EvidenceError('Acceptance requires separate provenance and safe-action review')
     record = dict(schema=1, bootstrapSha256=s.hash_file(private(root) / 'bootstrap.json'),
-                  reviewer=reviewer, reviewerType='human', requestId=request_id, decision=decision,
+                  reviewer=reviewer, reviewerType=reviewer_type, method=method,
+                  delegationStatement=delegation_statement, requestId=request_id, decision=decision,
                   provenanceChecked=provenance_checked, nonDestructiveActionsChecked=actions_checked,
                   scope='scene-navigation-only', scenes=sorted(s.load_json(private(root) / 'proposed-plan.json')['scenes']),
                   reviewedUtc=datetime.now(timezone.utc).isoformat(), gameplay='UNVERIFIED')
@@ -182,7 +197,10 @@ def export(root, request_id, output):
     root = private(root); output = private(output); s.token(request_id)
     record = s.load_json(root / ('review-' + request_id + '.json'))
     plan = s.load_json(root / 'proposed-plan.json')
-    if (record.get('decision') != 'accepted' or record.get('reviewerType') != 'human'
+    reviewer_type, method = review_identity(record.get('reviewerType') == 'agent',
+                                            record.get('delegationStatement', ''))
+    if (record.get('decision') != 'accepted' or record.get('reviewerType') != reviewer_type
+            or record.get('method', 'HUMAN') != method
             or record.get('bootstrapSha256') != s.hash_file(root / 'bootstrap.json')
             or record.get('scope') != 'scene-navigation-only'
             or record.get('provenanceChecked') is not True
@@ -198,7 +216,9 @@ def export(root, request_id, output):
         ref['reviewer'] = record['reviewer']
     plan['reviewProvenance'] = dict(bootstrapSha256=record['bootstrapSha256'],
                                   reviewSha256=s.hash_file(root / ('review-' + request_id + '.json')),
-                                  scope='scene-navigation-only', authenticity='ACCOUNTABLE_LOCAL_HUMAN_CLAIM')
+                                  scope='scene-navigation-only', reviewerType=reviewer_type, method=method,
+                                  authenticity=('OWNER_DELEGATED_AGENT_LOCAL_CLAIM' if reviewer_type == 'agent'
+                                                else 'ACCOUNTABLE_LOCAL_HUMAN_CLAIM'))
     s.put_json(output / 'native-plan.json', plan)
     native.load_plan(output / 'native-plan.json', manifest['case'])
     return dict(result='PLAN_EXPORTED', plan=str(output / 'native-plan.json'), gameplay='UNVERIFIED',
@@ -215,6 +235,8 @@ def main():
     p.add_argument('--root', type=Path, required=True); p.add_argument('--reviewer', required=True)
     p.add_argument('--request-id', required=True); p.add_argument('--decision', choices=('accepted', 'uncertain', 'rejected'), required=True)
     p.add_argument('--provenance-checked', action='store_true'); p.add_argument('--non-destructive-actions-checked', action='store_true')
+    p.add_argument('--delegated-agent-review', action='store_true')
+    p.add_argument('--delegation-statement', default='')
     p = commands.add_parser('export')
     p.add_argument('--root', type=Path, required=True); p.add_argument('--request-id', required=True)
     p.add_argument('--output', type=Path, required=True)
@@ -224,7 +246,8 @@ def main():
             result = intake(args.recipe, args.data, args.output)
         elif args.command == 'review':
             result = review(args.root, args.reviewer, args.request_id, args.decision,
-                            args.provenance_checked, args.non_destructive_actions_checked)
+                            args.provenance_checked, args.non_destructive_actions_checked,
+                            args.delegated_agent_review, args.delegation_statement)
         else:
             result = export(args.root, args.request_id, args.output)
         print(json.dumps(result, ensure_ascii=True)); return 0

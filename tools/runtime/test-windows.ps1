@@ -1,11 +1,11 @@
 #requires -Version 5.1
 # One safe entry point. Default Check never launches Steam/game or changes saves.
 param(
- [ValidateSet('Check','Prepare','Preflight','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest','Resume','Recover','Report','Cleanup')][string]$Mode='Check',
+ [ValidateSet('Check','Prepare','Preflight','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','CaptureBootstrap','NativeTest','Resume','Recover','Report','Cleanup')][string]$Mode='Check',
  [string]$Work,[string]$Archive,[string]$Cli,[string]$Builder,[string]$SteamExe,[string]$GameInstall,
  [string]$NativePlan,[string]$OriginalPlan,[string]$PatchedPlan,[string]$Baseline,
  [ValidateSet('focus','identity','abort','crash','unknown-scene','timeout','bad-image')][string]$Failure,
- [switch]$AllowConnectedNetwork,[switch]$OwnerDelegatedOriginalProbe,[string]$ApprovalStatement,[string]$NativeTestReceipt
+ [switch]$AllowConnectedNetwork,[switch]$OwnerDelegatedOriginalProbe,[string]$ApprovalStatement,[string]$NativeTestReceipt,[switch]$OwnerDelegatedUiExperiment,[ValidateSet('original','patched')][string]$CaptureCase='original'
 )
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
@@ -17,6 +17,7 @@ $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 . (Join-Path $PSScriptRoot 'native-selftest.ps1')
 . (Join-Path $PSScriptRoot 'native-gameplay.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
+. (Join-Path $PSScriptRoot 'native-acquisition.ps1')
 . (Join-Path $PSScriptRoot 'sdk-policy.ps1')
 function Invoke-RkPython([string[]]$Arguments) {
  & python (Join-Path $repo 'tools/windows_e2e.py') @Arguments
@@ -36,15 +37,16 @@ function Assert-RkNativeHost {
 
 try {
 if($Work){$Work=[IO.Path]::GetFullPath($Work)}
-if($OwnerDelegatedOriginalProbe -or $ApprovalStatement){
- if($Mode -cne 'Smoke'){throw 'Delegated execution is original no-input Smoke only.'}
- $null=New-RkApprovalRecord -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
+if($OwnerDelegatedOriginalProbe -or $OwnerDelegatedUiExperiment -or $ApprovalStatement){
+ if($OwnerDelegatedUiExperiment -and $Mode -notin @('OriginalBaseline','PatchedSmoke','FullE2E','CaptureBootstrap')){throw 'UI delegation requires UI execution/acquisition mode.'}
+ if(!$OwnerDelegatedUiExperiment -and $Mode -cne 'Smoke'){throw 'Delegated execution is original no-input Smoke only.'}
+ $null=New-RkApprovalRecord -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement -OwnerDelegatedUiExperiment:$OwnerDelegatedUiExperiment
 }
 if($AllowConnectedNetwork){
- if($Mode -notin @('Preflight','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','Recover','Resume','Cleanup')){throw 'Connected-network mode applies only to explicit experimental execution/recovery.'}
- Initialize-RkExperimentalNetwork -AllowConnectedNetwork -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
+ if($Mode -notin @('Preflight','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','CaptureBootstrap','Recover','Resume','Cleanup')){throw 'Connected-network mode applies only to explicit experimental execution/recovery.'}
+ Initialize-RkExperimentalNetwork -AllowConnectedNetwork -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement -OwnerDelegatedUiExperiment:$OwnerDelegatedUiExperiment
 }
-if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','NativeTest')){
+if(!$Work -and $Mode -in @('Prepare','DryRun','Smoke','OriginalBaseline','PatchedSmoke','FullE2E','CaptureBootstrap','NativeTest')){
  $base=if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RoutekeeperE2E'}else{Join-Path $repo 'private-evidence/windows-e2e'}
  Assert-RkNoLinks $base
  New-Item -ItemType Directory -Path $base -Force|Out-Null
@@ -146,7 +148,7 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
   Invoke-RkPython -Arguments @('check-native-test','--work',$Work)
   return
  }
- if($Mode -in @('Smoke','OriginalBaseline','PatchedSmoke','FullE2E') -and !(Test-Path -LiteralPath $Work)){
+ if($Mode -in @('Smoke','OriginalBaseline','PatchedSmoke','FullE2E','CaptureBootstrap') -and !(Test-Path -LiteralPath $Work)){
   if(!$Archive -or !$Cli){throw 'New Smoke work needs the supplied Archive and verified Cli for automatic preparation.'}
   if(!$Builder){$Builder=Join-Path $repo 'src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll'}
   Invoke-RkPython -Arguments @('prepare','--archive',$Archive,'--output',$Work,'--cli',$Cli,'--builder',$Builder)
@@ -194,7 +196,14 @@ if(!$Cli){$found=Get-Command UndertaleModCli -ErrorAction SilentlyContinue;if($f
  }
  Invoke-RkPython -Arguments @('check-native-test','--work',$native)
  $session=[guid]::NewGuid().ToString('N');$nonce=[guid]::NewGuid().ToString('N')
- $consent=New-RkExperimentalConsent $session $nonce -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement
+ $consent=New-RkExperimentalConsent $session $nonce -OwnerDelegatedOriginalProbe:$OwnerDelegatedOriginalProbe -ApprovalStatement $ApprovalStatement -OwnerDelegatedUiExperiment:$OwnerDelegatedUiExperiment
+ if($Mode -eq 'CaptureBootstrap'){
+  if(!$OwnerDelegatedUiExperiment){throw 'CaptureBootstrap requires explicit delegated UI scope.'}
+  $probe=Invoke-RkGameSession $Work $SteamExe $GameInstall $consent $native $CaptureCase '' $Baseline 'active-session' -Acquisition
+  $probe|ConvertTo-Json -Depth 12
+  if($probe.result -eq 'BLOCKED' -or $probe.localRecovery -cne 'CONTENT_TREE_VERIFIED'){throw 'Acquisition/recovery failed; preserve private result.'}
+  return
+ }
  if($Mode -eq 'Smoke'){
   Write-Host 'Original startup probe only; no game input or patched baseline.'
   $probe=Invoke-RkOriginalProbe $Work $SteamExe $GameInstall $consent $native

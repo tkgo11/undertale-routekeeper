@@ -4,7 +4,7 @@ text = argument2; width = argument3; count = 0;
 while (string_length(text) > 0 && count < argument4) {
     take = 0; space = 0;
     for (n = 1; n <= string_length(text); n += 1) {
-        if (string_width(string_copy(text, 1, n)) > width) break;
+        if (scr_routekeeper_ui_width(string_copy(text, 1, n)) > width) break;
         take = n;
         if (string_char_at(text, n) == " ") space = n;
     }

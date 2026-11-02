@@ -4,11 +4,12 @@ pending = global.rk_warning_pending;
 warning = (rk_status == 2 || rk_status == 3) && !rk_dismissed;
 show_hud = rk_safe && global.rk_mode != 0 && (global.rk_mode != 1 || warning);
 if (!pending && !rk_menu && !show_hud) exit;
-var old_color, old_alpha, old_font, old_halign, old_valign;
-old_color = draw_get_color(); old_alpha = draw_get_alpha(); old_font = draw_get_font();
-old_halign = draw_get_halign(); old_valign = draw_get_valign();
-draw_set_alpha(1); draw_set_halign(fa_left); draw_set_valign(fa_top);
-draw_set_font(scr_routekeeper_locale_font(global.rk_language));
+// The verified runner has no font/alignment getters. Atlas glyph drawing leaves
+// those global draw states untouched; only supported color/alpha state is scoped.
+var old_color, old_alpha;
+old_color = draw_get_color(); old_alpha = draw_get_alpha();
+draw_set_alpha(1);
+global.rk_ui_font = global.rk_language;
 var lang, message, row, index, label, value, selected, first, count, pixel_y, key;
 lang = global.rk_language;
 if (pending) {
@@ -79,9 +80,9 @@ if (pending) {
                 pixel_y = global.rk_ui_row_y + row*global.rk_ui_row_height;
                 draw_set_color(c_white);
                 if (index == rk_choice) { scr_routekeeper_ui_heart(27,pixel_y+4); draw_set_color(c_yellow); }
-                if (rk_menu_page == 5) draw_set_font(scr_routekeeper_locale_font(index));
+                if (rk_menu_page == 5) global.rk_ui_font = index;
                 scr_routekeeper_ui_line(global.rk_ui_row_x,pixel_y,scr_routekeeper_ui_option(rk_menu_page,index),252);
-                draw_set_font(scr_routekeeper_locale_font(lang));
+                global.rk_ui_font = lang;
             }
         }
     }
@@ -99,5 +100,4 @@ if (pending) {
     value = string_replace_all(string_replace_all(scr_routekeeper_ui_catalog("progress_compact",lang),"{met}",string(global.rk_progress_met)),"{total}",string(global.rk_progress_total));
     scr_routekeeper_ui_line(global.rk_ui_hud_progress_x,global.rk_ui_hud_y,value,global.rk_ui_hud_progress_width);
 }
-draw_set_font(old_font); draw_set_color(old_color); draw_set_alpha(old_alpha);
-draw_set_halign(old_halign); draw_set_valign(old_valign);
+draw_set_color(old_color); draw_set_alpha(old_alpha);

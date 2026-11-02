@@ -80,6 +80,10 @@ jobs:
           ./tools/runtime/test-workspace-cleanup.ps1
           ./tools/runtime/test-addtype-temp.ps1
           ./tools/runtime/test-watchdog.ps1
+          pwsh -NoProfile -File ./tools/runtime/test-native-steam-identity.ps1
+          pwsh -NoProfile -File ./tools/runtime/test-native-acquisition.ps1
+          pwsh -NoProfile -File ./tools/runtime/test-direction-input.ps1
+          pwsh -NoProfile -File ./tools/runtime/test-session-paths.ps1
       - name: Verify watchdog and owned cleanup under Windows PowerShell 5.1
         if: runner.os == 'Windows'
         shell: powershell
@@ -87,6 +91,10 @@ jobs:
           ./tools/runtime/test-workspace-cleanup.ps1
           ./tools/runtime/test-addtype-temp.ps1
           ./tools/runtime/test-watchdog.ps1
+          powershell -NoProfile -File ./tools/runtime/test-native-steam-identity.ps1
+          powershell -NoProfile -File ./tools/runtime/test-native-acquisition.ps1
+          powershell -NoProfile -File ./tools/runtime/test-direction-input.ps1
+          powershell -NoProfile -File ./tools/runtime/test-session-paths.ps1
       - name: Verify filesystem protocol under Windows PowerShell 5.1 only
         if: runner.os == 'Windows'
         shell: powershell

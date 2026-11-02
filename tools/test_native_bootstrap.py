@@ -77,6 +77,17 @@ class Bootstrap(unittest.TestCase):
             with self.assertRaises(s.EvidenceError):
                 b.inspect(self.path, self.data)
 
+    def test_long_checkpoint_wait_does_not_extend_input_timeout(self):
+        self.recipe['steps'][0].update(action='checkpoint', timeoutMs=60000)
+        self.recipe['actionHistory'][0]['action'] = 'checkpoint'
+        self.save(); b.inspect(self.path, self.data)
+        for action, timeout in [('confirm', 15001), ('checkpoint', 60001)]:
+            self.recipe['steps'][0].update(action=action, timeoutMs=timeout)
+            self.recipe['actionHistory'][0]['action'] = action
+            self.save()
+            with self.assertRaisesRegex(s.EvidenceError, 'timeoutMs'):
+                b.inspect(self.path, self.data)
+
     def test_exact_data_runner_and_screenshot_hashes_required(self):
         self.data.write_bytes(b'WRONG')
         with self.assertRaisesRegex(s.EvidenceError, 'data identity'):
@@ -110,6 +121,44 @@ class Bootstrap(unittest.TestCase):
         b.review(self.output, 'human', 'r1', 'uncertain', True, True)
         with self.assertRaises(s.EvidenceError):
             b.export(self.output, 'r1', self.root / 'export')
+
+    def test_delegated_agent_review_records_exact_authority_without_human_claim(self):
+        self.intake()
+        statement = 'SYNTHETIC owner explicitly delegates non-destructive UI scene review to this agent.'
+        for provenance, actions in [(False, True), (True, False)]:
+            with self.assertRaisesRegex(s.EvidenceError, 'separate provenance'):
+                b.review(self.output, 'synthetic-agent', 'agent', 'accepted', provenance, actions,
+                         True, statement)
+        record = b.review(self.output, 'synthetic-agent', 'agent', 'accepted', True, True,
+                          True, statement)
+        self.assertEqual(record['reviewerType'], 'agent')
+        self.assertEqual(record['method'], 'AGENT_DELEGATED')
+        self.assertEqual(record['delegationStatement'], statement)
+        self.assertEqual(record['gameplay'], 'UNVERIFIED')
+        b.export(self.output, 'agent', self.root / 'export')
+        provenance = s.load_json(self.root / 'export/native-plan.json')['reviewProvenance']
+        self.assertEqual(provenance['authenticity'], 'OWNER_DELEGATED_AGENT_LOCAL_CLAIM')
+        self.assertEqual(provenance['method'], 'AGENT_DELEGATED')
+
+    def test_delegation_requires_explicit_flag_and_bounded_statement(self):
+        self.intake()
+        for flag, statement in [(True, ''), (True, 'short'), (True, 'a' * 2049),
+                                (False, 'Not a human typed review; owner delegation supplied')]:
+            with self.assertRaises(s.EvidenceError):
+                b.review(self.output, 'agent', 'r1', 'accepted', True, True, flag, statement)
+        self.assertFalse((self.output / 'review-r1.json').exists())
+
+    def test_export_refuses_agent_record_relabelled_as_human(self):
+        self.intake()
+        b.review(self.output, 'agent', 'r1', 'accepted', True, True, True,
+                 'SYNTHETIC owner explicitly delegates non-destructive review authority.')
+        path = self.output / 'review-r1.json'
+        record = s.load_json(path)
+        record['reviewerType'] = 'human'
+        path.write_bytes(s.canonical(record))
+        with self.assertRaises(s.EvidenceError):
+            b.export(self.output, 'r1', self.root / 'export')
+        self.assertFalse((self.root / 'export').exists())
 
     def test_review_immutable_and_output_never_overwritten(self):
         self.accepted()

@@ -50,6 +50,10 @@ function Invoke-RkNativeJson([string[]]$Arguments) {
  $output=[RkBoundedObserver]::Run($exe,$argumentsText,20000)
  try{return ($output|ConvertFrom-Json)}catch{throw 'Malformed native observer output.'}
 }
+function Assert-RkNativeSteamIdentity($Context) {
+ if(!$Context.steamProcess -or [string]::IsNullOrWhiteSpace($Context.steamExe) -or $Context.steamTicks -le 0){throw 'Pinned Steam identity is required for native gameplay.'}
+ Assert-RkProcessIdentity @(Get-Process steam -ErrorAction SilentlyContinue) $Context.steamProcess.Id $Context.steamExe $Context.steamTicks
+}
 function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
  $watch=[Diagnostics.Stopwatch]::StartNew();$stable=0;$last=$null;$matched=New-Object 'Collections.Generic.List[string]'
  for($frame=0;$frame -lt $Step.maxFrames -and $watch.ElapsedMilliseconds -lt $Step.timeoutMs;$frame++){
@@ -57,6 +61,7 @@ function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
   if($Context.watch.ElapsedMilliseconds -gt 300000 -or $Context.counter -ge 2000 -or $Context.bytes -ge 64MB){throw 'Native global watchdog/frame budget expired.'}
   if((Get-FileHash -LiteralPath (Join-Path $Context.root 'native-plan.json')).Hash.ToLowerInvariant() -cne $Context.planSha){throw 'Frozen native plan changed; stop inputs.'}
   Assert-RkExperimentalNetwork
+  Assert-RkNativeSteamIdentity $Context
   Assert-RkInputWindow $Context.process $Context.window $Context.runner $Context.hash $Context.ticks $Context.abort
   Assert-RkProcessIdentity @(Get-Process UNDERTALE -ErrorAction SilentlyContinue) $Context.process.Id $Context.runner $Context.ticks
   try{$children=@(Get-CimInstance Win32_Process -Filter ('ParentProcessId='+$Context.process.Id) -OperationTimeoutSec 5 -ErrorAction Stop)}catch{$Context.unknownChildren.Value=$true;throw}
@@ -64,6 +69,7 @@ function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
   $Context.counter++
   $name='frame-'+$Context.counter.ToString('D5')+'.png';$path=Join-Path $Context.root $name
   Save-RkWindowCapture $Context.process $Context.runner $path $Context.hash $Context.window
+  Assert-RkNativeSteamIdentity $Context
   $Context.pending=@{frame=$name;scene=$Scene;scenario=$Step.scenario}
   $Context.bytes+=(Get-Item -LiteralPath $path).Length+(Get-Item -LiteralPath ($path+'.json')).Length
   $result=Invoke-RkNativeJson -Arguments @('match','--plan',(Join-Path $Context.root 'native-plan.json'),'--case',$Context.case,'--scene',$Scene,'--frame',$path,'--pid',([string]$Context.process.Id),'--started',$Context.started)
@@ -75,10 +81,13 @@ function Wait-RkNativeScene($Context,[string]$Scene,$Step) {
  }
  throw 'Unrecognized/unstable scene or bounded timeout; no further input.'
 }
-function Invoke-RkNativePlan($Process,[string]$Runner,[string]$Root,[string]$Case,[string]$Abort,[string]$Save,[ref]$UnknownChildren) {
+function Invoke-RkNativePlan($Process,[string]$Runner,[string]$Root,[string]$Case,[string]$Abort,[string]$Save,[ref]$UnknownChildren,$SteamProcess,[string]$SteamExe,[long]$SteamTicks) {
+ if(!$SteamProcess -or [string]::IsNullOrWhiteSpace($SteamExe) -or $SteamTicks -le 0){throw 'Pinned Steam identity is required before loading a native gameplay plan.'}
  $plan=Get-Content -LiteralPath (Join-Path $Root 'native-plan.json') -Raw -Encoding UTF8|ConvertFrom-Json
  $context=@{process=$Process;window=$Process.MainWindowHandle;runner=$Runner;root=$Root;case=$Case;abort=$Abort;bytes=0;hash='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58';ticks=$Process.StartTime.ToUniversalTime().Ticks;started=$Process.StartTime.ToUniversalTime().ToString('o');counter=0;unknownChildren=$UnknownChildren;watch=[Diagnostics.Stopwatch]::StartNew()}
  $context.planSha=(Get-FileHash -LiteralPath (Join-Path $Root 'native-plan.json')).Hash.ToLowerInvariant()
+ $context.steamProcess=$SteamProcess;$context.steamExe=$SteamExe;$context.steamTicks=$SteamTicks
+ Assert-RkNativeSteamIdentity $context
  $rows=New-Object 'Collections.Generic.List[object]'
  $observations=@{schema=1;kind='WINDOWS_GAMEPLAY_OBSERVATIONS';case=$Case;pid=$Process.Id;processStartedUtc=$context.started;planSha256=(Get-FileHash -LiteralPath (Join-Path $Root 'native-plan.json')).Hash.ToLowerInvariant();steps=@();execution='BLOCKED';implementation='REAL_WINDOWS_ADAPTER';internalState='UNAVAILABLE'}
  try {
@@ -87,8 +96,9 @@ function Invoke-RkNativePlan($Process,[string]$Runner,[string]$Root,[string]$Cas
    $beforeCapture=Wait-RkNativeScene $context $step.before $step
    $dispatch=$null
    if($step.action -ne 'checkpoint'){
+    Assert-RkNativeSteamIdentity $context
     Write-RkAtomicJson (Join-Path $Root ('input-intent-'+$index+'.json')) @{step=$index;key=$step.action;state='ATTEMPTED_NOT_ACKNOWLEDGED';startedUtc=[DateTime]::UtcNow.ToString('o')}
-    $dispatch=Send-RkWindowKey $Process $context.window $Runner $context.hash $context.ticks $step.action $step.holdMs $Abort
+    $dispatch=Send-RkWindowKey $Process $context.window $Runner $context.hash $context.ticks $step.action $step.holdMs $Abort -AdditionalGuard {Assert-RkNativeSteamIdentity $context}
     Write-RkAtomicJson (Join-Path $Root ('input-dispatch-'+$index+'.json')) $dispatch
    }
    $afterCapture=Wait-RkNativeScene $context $step.after $step

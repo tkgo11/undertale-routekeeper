@@ -109,12 +109,54 @@ foreach (var entry in fontManifest.RootElement.EnumerateArray()) {
     if(font.Glyphs.Count!=entry.GetProperty("glyphCount").GetInt32()) throw new Exception("Glyph count mismatch");
     font.RangeEnd=font.Glyphs.Last().Character;Data.Fonts.Add(font);
 }
+// The authentic Windows runner rejects font/alignment getters on load. Render
+// glyphs through mod-owned sprites that alias the exact existing font atlas;
+// never change the original font resources or any vanilla draw-state setters.
+var glyphCode = new System.Text.StringBuilder();
+glyphCode.AppendLine("var character; character = argument0;");
+glyphCode.AppendLine("global.rk_glyph_sprite = -1; global.rk_glyph_x = 0; global.rk_glyph_y = 0;");
+glyphCode.AppendLine("global.rk_glyph_width = 0; global.rk_glyph_height = 0; global.rk_glyph_offset = 0;");
+glyphCode.AppendLine("switch (scr_routekeeper_locale_font(argument1)) {");
+var uiFonts = new[] { Data.Fonts.ByName("fnt_maintext") }
+    .Concat(fontManifest.RootElement.EnumerateArray().Select(entry => Data.Fonts.ByName(entry.GetProperty("resource").GetString())));
+foreach (var font in uiFonts) {
+    var texture = font.Texture;
+    if (font.ScaleX != 1 || font.ScaleY != 1 || font.Ascender != 0 || font.AscenderOffset != 0
+        || texture == null || texture.TargetX != 0 || texture.TargetY != 0
+        || texture.SourceWidth != texture.TargetWidth || texture.SourceHeight != texture.TargetHeight
+        || texture.BoundingWidth != texture.TargetWidth || texture.BoundingHeight != texture.TargetHeight
+        || font.Glyphs.Any(glyph => glyph.Kerning.Count != 0))
+        throw new InvalidOperationException("Unsupported UI glyph atlas geometry; no guessed text metrics.");
+    var spriteName = "spr_routekeeper_glyphs_" + font.Name.Content;
+    if (Data.Sprites.ByName(spriteName) != null) throw new InvalidOperationException("UI glyph sprite conflict.");
+    var sprite = new UndertaleSprite {
+        Name = Data.Strings.MakeString(spriteName), Width = texture.TargetWidth, Height = texture.TargetHeight,
+        MarginLeft = 0, MarginTop = 0, MarginRight = (int)texture.TargetWidth - 1,
+        MarginBottom = (int)texture.TargetHeight - 1, OriginX = 0, OriginY = 0,
+        Transparent = true, Smooth = false, Preload = true
+    };
+    sprite.Textures.Add(new UndertaleSprite.TextureEntry { Texture = texture });
+    Data.Sprites.Add(sprite);
+    glyphCode.AppendLine("case " + font.Name.Content + ":");
+    glyphCode.AppendLine("global.rk_glyph_sprite = " + spriteName + "; switch (character) {");
+    string GlyphMetrics(UndertaleFont.Glyph glyph) {
+        if (glyph.SourceX + glyph.SourceWidth > texture.TargetWidth || glyph.SourceY + glyph.SourceHeight > texture.TargetHeight
+            || glyph.Shift < 0)
+            throw new InvalidOperationException("UI glyph exceeds authenticated atlas or has unsupported advance.");
+        return "global.rk_glyph_x = " + glyph.SourceX + "; global.rk_glyph_y = " + glyph.SourceY
+            + "; global.rk_glyph_width = " + glyph.SourceWidth + "; global.rk_glyph_height = " + glyph.SourceHeight
+            + "; global.rk_glyph_offset = " + glyph.Offset + "; return " + glyph.Shift + ";";
+    }
+    foreach (var glyph in font.Glyphs) glyphCode.AppendLine("case " + glyph.Character + ": " + GlyphMetrics(glyph));
+    var fallback = font.Glyphs.SingleOrDefault(glyph => glyph.Character == 63)
+        ?? throw new InvalidOperationException("UI font lacks an explicit missing-glyph fallback.");
+    glyphCode.AppendLine("default: " + GlyphMetrics(fallback) + " } break;");
+}
+glyphCode.AppendLine("} return 0;");
 var obj = new UndertaleGameObject {
     Name = Data.Strings.MakeString("obj_routekeeper"), Persistent = true, Visible = true, Awake = true
 };
 Data.GameObjects.Add(obj);
-foreach (var function in new[] { "draw_get_font", "draw_get_halign", "draw_get_valign", "room_get_name" })
-    Data.Functions.EnsureDefined(function, Data.Strings);
 var import = new CodeImportGroup(Data) { AutoCreateAssets = true, MainThreadAction = MainThreadAction };
 // Import every maintained script; generated route logic and handwritten adapters
 // share the same resource namespace. Event files are bound explicitly below.
@@ -129,6 +171,7 @@ foreach (var path in Directory.GetFiles(Path.Combine(folder,"gml"),"*.gml").Orde
 import.QueueReplace("gml_Object_obj_routekeeper_Create_0", File.ReadAllText(Path.Combine(folder,"gml","controller_create.gml")));
 import.QueueReplace("gml_Object_obj_routekeeper_Step_0", File.ReadAllText(Path.Combine(folder,"gml","controller_step.gml")));
 import.QueueReplace("gml_Object_obj_routekeeper_Draw_64", File.ReadAllText(Path.Combine(folder,"gml","controller_draw.gml")));
+import.QueueReplace("gml_Script_scr_routekeeper_ui_glyph", glyphCode.ToString());
 var changedHooks = RoutekeeperHooks.Apply(Data, import);
 import.QueueAppend("gml_Object_obj_time_Create_0", "\nif (!instance_exists(obj_routekeeper)) instance_create(0, 0, obj_routekeeper);\n");
 import.Import();

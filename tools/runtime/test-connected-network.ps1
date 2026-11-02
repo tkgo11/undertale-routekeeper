@@ -59,4 +59,26 @@ if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){
  $nativePath=[IO.Path]::GetFullPath($PSScriptRoot)
  CheckNetwork ((Get-RkCanonicalExecutionPath ($nativePath.Replace('\','/')+'/../runtime')) -ceq $nativePath) 'execution path normalizes slash variants before exact process identity comparison'
 }
+# Explicit later UI delegation is separate from original-only documentary consent.
+RefusesNetwork {New-RkApprovalRecord -OwnerDelegatedUiExperiment} 'UI delegation requires statement'
+RefusesNetwork {New-RkApprovalRecord -OwnerDelegatedUiExperiment -OwnerDelegatedOriginalProbe -ApprovalStatement $statement} 'mixed delegated scopes refused'
+Initialize-RkExperimentalNetwork -AllowConnectedNetwork -OwnerDelegatedUiExperiment -ApprovalStatement $statement
+$ui=New-RkExperimentalConsent $session $nonce -OwnerDelegatedUiExperiment -ApprovalStatement $statement
+Assert-RkLaunchNetworkConsent $ui
+CheckNetwork ($ui.approval.method -ceq 'OWNER_CHAT_UI_DELEGATION' -and $ui.approval.reviewMethod -ceq 'AGENT_DELEGATED') 'UI delegation never claims human review'
+Assert-RkDelegatedOriginalScope $ui 'original' '' 'active-session' $true
+Assert-RkDelegatedOriginalScope $ui 'patched' 'VALIDATED_PLAN' 'active-session'
+RefusesNetwork {Assert-RkDelegatedOriginalScope $ui 'original' '' 'active-session'} 'UI scope cannot become unrestricted original no-plan execution'
+. (Join-Path $PSScriptRoot 'native-acquisition.ps1')
+$request=@{schema=1;sequence=1;captureSha256=('a'*64);reviewMethod='AGENT_DELEGATED';reviewStatement='SYNTHETIC recognized safe title screen; Enter only';recordedUtc=[DateTime]::UtcNow.ToString('o');action='enter';holdMs=100}
+# Test actual ConvertFrom-Json integer/date representations on both PS editions.
+$decoded=$request|ConvertTo-Json|ConvertFrom-Json
+Assert-RkAcquisitionRequest $decoded 1 ('a'*64)
+CheckNetwork $true 'actual JSON integer/date request accepted'
+foreach($field in @('captureSha256','reviewMethod','sequence','recordedUtc','action','holdMs')){
+ $bad=$request.Clone()
+ $bad[$field]=switch($field){'sequence'{2};'recordedUtc'{[DateTime]::UtcNow.AddMinutes(-1).ToString('o')};'holdMs'{1000};default{'TAMPER'}}
+ RefusesNetwork {Assert-RkAcquisitionRequest $bad 1 ('a'*64)} ('unsafe/stale acquisition field refused: '+$field)
+}
+Initialize-RkExperimentalNetwork
 Write-Host ('CONNECTED_NETWORK_POLICY '+$checks+' PASS; no native execution')

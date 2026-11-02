@@ -26,7 +26,7 @@ function ContextFixture([string]$Name,[string]$Case='original'){
    $target=Join-Path $path $file;[IO.File]::WriteAllText($target,('SYNTHETIC ONLY '+$file))
    $expected=switch($file){
     'UNDERTALE.exe' {'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'}
-    'data.win' {if($path -ceq $staged -and $Case -eq 'patched'){'4457dbf421230c596df0d2c27754e8e94293c03c8e1106c6c1b07b9552f2c96c'}else{'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'}}
+    'data.win' {if($path -ceq $staged -and $Case -eq 'patched'){'6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f'}else{'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'}}
     'steam_api.dll' {(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash.ToLowerInvariant()}
    }
    $fixtureHashes[[IO.Path]::GetFullPath($target)]=@{expected=$expected;actual=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash}
@@ -35,6 +35,10 @@ function ContextFixture([string]$Name,[string]$Case='original'){
  return @{work=$work;install=$install;pristine=$pristine;staged=$staged;metadata=(Join-Path $staged 'steam_appid.txt');case=$Case}
 }
 try{
+ $registry=@(Get-Content (Join-Path $PSScriptRoot '../../profiles/registry.json') -Raw -Encoding UTF8|ConvertFrom-Json)
+ $contextSource=Get-Content (Join-Path $PSScriptRoot 'steam-launch-context.ps1') -Raw -Encoding UTF8
+ $candidatePin=[regex]::Match($contextSource,"\`$candidateHash='([a-f0-9]{64})'").Groups[1].Value
+ ContextCheck ($registry.Count -eq 1 -and $candidatePin -ceq $registry[0].PatchedSha256) 'launch candidate pin matches reviewed profile'
  foreach($case in @('original','patched')){
   $f=ContextFixture $case $case
   $beforeOriginal=Get-RkTreeDigest $f.pristine;$beforeRegistered=Get-RkTreeDigest $f.install

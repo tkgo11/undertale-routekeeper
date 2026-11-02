@@ -739,3 +739,179 @@ The owner deferred intro reference review; no native plan was approved/exported.
 No native gameplay/input baseline or full E2E PASS is claimed. Private JSON/HTML,
 capture, process identities, failed attempts and recovery receipts are retained
 under ignored evidence directories. Steam account state remains NOT_RESTORED.
+
+## 2026-10-31 delegated native UI testing — interim checkpoint
+
+This checkpoint supersedes the earlier deferred intro review: the owner approved
+that original intro and its recorded provenance, then explicitly delegated scoped
+UI execution and review. Connected-network risk remains recorded separately;
+Cloud-off is owner-reported. Steam account state remains NOT_RESTORED.
+
+The authentic original side copy actually ran in subsequent native sessions,
+including game PIDs 16688 and 34044. Private captures and process/window metadata
+record the real title, instruction screen, name entry and starting room, with
+English UI observed. These observations verify their scoped rendering only;
+they do not constitute a replayed navigation baseline or full gameplay E2E.
+
+Posted direction messages produced identical before/after pixels and no observed
+movement. Source inspection identified keyboard_check_direct as the relevant
+input path. The adapter now supports guarded SendInput; 19 targeted assertions
+passed in PowerShell 7 and Windows PowerShell 5.1. Its actual movement result is
+still pending. The latest native non-game receipt, nativetest-821dd975, passed;
+acquisition refusal (27), Steam identity (9), connected/delegated policy (37)
+and bootstrap checks also passed. These are harness checks, not gameplay PASS.
+
+Collection remains bounded: the startup checkpoint allows 60 seconds without
+input and acquisition allows 240 seconds. The original-resume-run is ongoing at
+this interim checkpoint. ORIGINAL_STARTUP and WINDOWS_NATIVE remain VERIFIED;
+ORIGINAL_NAVIGATION remains BLOCKED pending observed direction response and a
+reviewed-plan replay. PATCHED_STARTUP, PATCHED_UI, COMBAT and FORCED remain
+BLOCKED; ENDINGS remain NOT_RUN. HARNESS remains PARTIAL.
+
+Completed original runs restored all ten original save files with independent
+digest verification. That local-content result does not certify recovery of the
+ongoing run or restoration of Steam Cloud, achievements or account history.
+Authentic screenshots, dispatch/failure records, process identities and recovery
+receipts remain private under ignored .research/gameplay-20261031-delegated-ui/.
+No complete gameplay E2E result or patched execution is claimed here.
+
+
+## 2026-11-02 actual navigation and patched-load failure — interim
+
+Actual original-game evidence has advanced beyond the earlier pending-direction
+checkpoint. The original-glyph-fixed session (PID21996, HWND133774) captured the
+real title, English instruction menu, trial name entry and initial flowerbed.
+Guarded Enter/confirm inputs produced the observed transitions; left and right
+inputs visibly displaced the character within the same room, with input-free
+follow-up frames corroborating the positions. The scoped delegated pixel review
+and live-acquisition certificate retain the exact process/window, images, input
+history and source pins. This certifies observed behaviors, not a replay of the
+exported plan, combat state, focus-loss handling during gameplay or complete E2E.
+Normal stop and independent local restoration checks verified all ten original
+save files. Steam account state remains NOT_RESTORED.
+
+Actual patched execution exposed a loader failure: old candidate `4457dbf4`
+ran in PID16876, but its owned error window reported
+`Unable to find function draw_get_font`. PATCHED_STARTUP is FAILED for that
+candidate; no patched UI PASS is inferred. The original registered installation
+remained unchanged and local recovery completed. The renderer was repaired to
+use exact atlas-sprite glyph metrics without unsupported font/alignment getters
+or setters. Candidate `6b7f0fc6` passed authentic compile/reload/preservation and
+negative glyph-advance/sprite-origin checks; these are not runtime success.
+
+A later prelaunch check caught a stale candidate hash in the separate Steam
+launch-context guard. Its exact pin and regression fixture now match `6b7f0fc6`;
+the failed preparation never launched the game or quarantined personal saves.
+The original-context-fixed retry (PID4564, HWND721186) subsequently stopped on a
+focus/window-owner guard before completing navigation, and its ten-file local
+recovery verified. Failed evidence is retained. A new original-current-resume
+session is collecting the current-source baseline before the corrected patched
+retry. Neither current retry success nor corrected patched rendering is claimed
+at this interim checkpoint. Combat and Forced remain BLOCKED without independent
+live state/side-effect observers; endings remain NOT_RUN. HARNESS remains PARTIAL.
+All native images, logs, exact hashes and JSON/offline HTML stay in ignored private
+evidence directories. No account-state restoration or compatibility promotion is
+claimed.
+
+
+## 2026-11-02 corrected patched startup observed; input repair retry pending
+
+The subsequent original-current-resume session (PID27880, HWND983172; start
+2026-11-01T16:24:16.8581199Z) completed actual startup, English Enter/confirm
+transitions, trial-name entry and starting-room left/right movement with stable
+follow-up frames. All16 native frames received scoped delegated pixel review.
+Normal stop17 produced Restored/CONTENT_TREE_VERIFIED, no cleanup errors, and
+unchanged registered/cache/copy observations. Its current-source live acquisition
+was certified; the exported plan was not replayed.
+
+Corrected candidate `6b7f0fc6` then actually rendered its intro/title in the
+official runner (PID10000, HWND527944; start2026-11-01T16:30:30.8258369Z), without
+the old `draw_get_font` error. PATCHED_STARTUP is VERIFIED for this exact candidate
+and scope; the old candidate4457 failure remains preserved. Posted Enter/Z did
+not change the title. An independently recorded Computer Use SendInput Return
+immediately reached the English instruction screen. That diagnostic is separate
+from the native acquisition chain, not a native-plan PASS. Normal stop13 completed
+CONTENT_TREE_VERIFIED recovery with all registered/cache/copy checks unchanged.
+
+The adapter was therefore repaired to use guarded SendInput for every supported
+key, retaining the extended flag only for arrows. PowerShell7 and5.1 each passed
+67 input assertions, Python passed14, and fresh native non-game receipt24cc
+observed Down/Enter/F10/F12 pairs. Its harmless WinForms fixture had first exposed
+an F10 default-menu hang; handled key events repaired the fixture without changing
+game guards. These tests do not certify patched menu behavior. A fresh
+original-key-fixed baseline is being prepared before patched-key-fixed execution;
+PATCHED_UI remains BLOCKED pending actual menu/locale/input evidence. Combat,
+Forced and ending boundaries remain unchanged; complete gameplay E2E is not claimed.
+
+
+## 2026-11-03 observed guarded-key original and patched UI results
+
+The original-key-fixed acquisition actually ran the official original game
+(PID18280, HWND396882; start2026-11-01T16:43:37.6996836Z). Sixteen authentic
+native frames establish Enter/confirm transitions, English instructions, trial
+name entry, and initial-room left/right movement with stable follow-up frames.
+Scoped AGENT_DELEGATED pixel review and the immutable live-baseline certificate
+cover only those observed behaviors. Normal stop17 completed; the runtime receipt
+remains NEEDS_REVIEW and is not rewritten into a PASS. The separate certificate
+records exportedPlanReplayed=false. Local recovery is CONTENT_TREE_VERIFIED,
+with no cleanup errors and unchanged registered-install/cache/copy observations.
+
+The corrected candidate6b7 actually ran in patched-key-fixed (PID15700,
+HWND200438; start2026-11-01T16:49:52.7408260Z). Twenty native frames and the
+controller's scoped pixel review establish English instruction/input acceptance,
+F10 English menu rendering, cursor down/up, F12 Korean rendering, closing and
+reopening the menu in Korean, and left movement after returning to gameplay.
+The archived authentic routekeeper.ini independently stores locale="ko". An
+initial observer assertion incorrectly expected an unquoted serialization and
+FAILED; that record is preserved. A separate read-only check against the actual
+quoted INI format passed and decoded to ko. This proves a mod setting file and
+in-session menu persistence only, not persistence across process restart.
+
+The 240-second acquisition bound expired before the subsequent right-movement
+request was dispatched. This run therefore remains BLOCKED; its observed UI
+features do not make it a complete scenario PASS. Recovery independently reports
+CONTENT_TREE_VERIFIED, no cleanup errors, and all three stable-tree checks true.
+The patched-ui-final retry is in progress at this documentation checkpoint;
+no result is inferred for it.
+
+The actual old-candidate4457 draw_get_font loader failure remains retained.
+Candidate6b7's atlas-sprite renderer avoids unsupported getters and genuinely
+rendered the menus above. Guarded SendInput now covers every supported key;
+67 input assertions passed in each PowerShell edition, 14 Python checks passed,
+and native non-game receipt24cc observed Down/Enter/F10/F12 key pairs. These
+fixture checks are distinct from the actual game frames.
+
+Current scope: PATCHED_STARTUP VERIFIED for candidate6b7; PATCHED_UI PARTIAL.
+Original startup and the scoped original navigation are VERIFIED. HARNESS remains
+PARTIAL, COMBAT/FORCED BLOCKED without independent live-state/side-effect
+observers, ENDINGS NOT_RUN, completed-session LOCAL_RECOVERY VERIFIED, and
+STEAM_ACCOUNT_STATE NOT_RESTORED. No complete gameplay E2E or profile promotion
+is claimed. Native images, private save observations and runtime evidence remain
+in ignored private directories.
+
+
+## 2026-11-03 bounded patched UI retry reached reviewed normal stop
+
+Patched-ui-final actually ran candidate6b7 in the official runner (PID26420,
+HWND3605118; start2026-11-02T15:44:37.1332005Z). The controller's live Computer
+Use observations and23 native frames cover title/instruction transitions, trial
+name entry, the initial room, English F10 menu, cursor down/up, F12 Korean menu,
+menu close/reopen retaining Korean, return to gameplay, left and right movement,
+and a final stable frame. The first title Enter did not advance; the subsequent
+bounded retry reached English instructions. Dispatch alone is not treated as
+input acceptance, and the unchanged title frames are retained.
+
+Request24 stopped acquisition with STOPPED_BY_REVIEWED_REQUEST before the
+240-second bound. Final local recovery is CONTENT_TREE_VERIFIED in Restored
+phase, with no cleanup errors and registered/cache/copyStable all true. The
+external watchdog recorded OWNED_PROCESS_EXITED with no descendants. Independent
+read-only digest checks matched the original ten-file personal-save tree and
+registered installation; no Steam or game process remained. The archived authentic
+INI passed the quoted-ko assertion. A separate AGENT_DELEGATED post-pixel review
+records SCOPED_UI_OBSERVED; the immutable raw NEEDS_REVIEW receipt is preserved,
+not rewritten into a gameplay PASS. This retry supplies actual core patched UI
+and both-direction response evidence, while PATCHED_UI
+remains PARTIAL for the full requested scope: restart persistence, all glyphs and
+all layouts were not tested. Combat and Forced remain BLOCKED, endings NOT_RUN,
+and Steam account state NOT_RESTORED. Earlier timeout and loader-failure evidence
+remain preserved. No complete gameplay E2E or profile promotion is claimed.
