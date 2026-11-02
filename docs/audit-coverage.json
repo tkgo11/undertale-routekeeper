@@ -124,16 +124,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 59979,
-      "lines": 925,
-      "sha256": "0812c5fefbbb2d1d47c73dc6e339c5fec42a4178b594575a30ad971148a9b55d",
+      "bytes": 59977,
+      "lines": 924,
+      "sha256": "038b56a351a144a8e0ce8d0d91e115b18fbe7f1f005c64db46aac895918834b2",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "4d0a11920fd610c94e7482cc9eb4bbb5ff1854a6"
+      "reviewed_against_head": "9bfa0de9dfbbd3feec1d71355c0b80e0657386de"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -394,16 +394,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 60513,
-      "lines": 878,
-      "sha256": "0d5d2c94a42fc457976643f169ea359624f3bed74dc643afe533af80be6e9622",
+      "bytes": 60511,
+      "lines": 877,
+      "sha256": "6ac0bc9614b53ed4df533220b75cc6bbb0e7c880537fbd283a8d342eda3271bc",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Entire maintained change inspected; pre-fix controls and focused/full offline regressions as applicable, unchanged generated GML/resource comparisons, four-RID packaging. See docs/offline-audit-2026-10-27.md for evidence and limitations.",
       "limitations": "Offline inspection/declared checks only; no native gameplay or Windows API validation; open findings are not cleared by inspection coverage.",
       "findings": [],
-      "reviewed_against_head": "4d0a11920fd610c94e7482cc9eb4bbb5ff1854a6"
+      "reviewed_against_head": "9bfa0de9dfbbd3feec1d71355c0b80e0657386de"
     },
     {
       "path": "docs/ui-fonts.md",

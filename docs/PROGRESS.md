@@ -922,4 +922,3 @@ locale-atlas selection, current-locale restoration before the footer, and absenc
 of global font mutation. All37 localization tests passed (one optional skip).
 Only test/documentation inventory changed; runtime source and genuine evidence
 pins remain unchanged. Hosted rerun status is reported separately.
-
