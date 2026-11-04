@@ -125,16 +125,16 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "bytes": 65533,
+      "bytes": 65810,
       "lines": 1003,
-      "sha256": "e70d90116ed0499f5dc0aa69860ec827b08ab0f8996b462773ee64842dc9dbd5",
+      "sha256": "ea4f7776d23539d091270148fc97b6f74d37673f8c146160785946c42a3ee06d",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "docs/audit-coverage.json",
@@ -170,10 +170,10 @@
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "bytes": 10833,
-      "lines": 129,
-      "sha256": "1eb71178d7cbda75c8b3aed5620a98c65d9b4185a51f4ac61276780a2c145b64",
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "bytes": 11929,
+      "lines": 147,
+      "sha256": "76a61a274826ef859ebd6c1174a792cac35d11d71ce156f89c657df7bd76e72a",
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "docs/beta-tester.md",
@@ -435,16 +435,16 @@
     },
     {
       "path": "docs/test-results.md",
-      "bytes": 66067,
+      "bytes": 66344,
       "lines": 956,
-      "sha256": "6f1e46c768ff952faba7051dfaf470813e2fb60395f6e296cf46582d7d856fb1",
+      "sha256": "43d7fe996cac85ec5de95215abdd3f3724a36370a1ae356ec827233b114a5b28",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "docs/ui-fonts.md",
@@ -1519,9 +1519,9 @@
     },
     {
       "path": "integration/ui/test_ui.py",
-      "bytes": 12431,
-      "lines": 176,
-      "sha256": "29ba987fa8a23e577429079814aee2df2631c171c1de88f4285e6197303ef2c0",
+      "bytes": 12634,
+      "lines": 179,
+      "sha256": "6f959a088635d1d78af78c6f9e789052dd09a622c0bee9344892bdaea32811df",
       "inspection": "COMPLETE",
       "method": "MANUAL_FULL_TEXT",
       "verification": "PASS",
@@ -1530,7 +1530,7 @@
       "findings": [
         "A19"
       ],
-      "reviewed_against_head": "892941c6b3b523ccbd64a3a3d7e2a6903814d86a"
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "integration/verify.csx",
@@ -2175,10 +2175,10 @@
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "bytes": 21044,
-      "lines": 208,
-      "sha256": "3dbd7b83d1a12d8765a55414093dc0b6cbee2f6a2ae2df81136bf7b9be58419f",
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "bytes": 21426,
+      "lines": 213,
+      "sha256": "964fde945f49b25aff7b6a4e2d322382473d23e6959c6aac006977a1b976dc48",
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "src/RouteKeeper.Beta/Screenshot.cs",
@@ -2227,10 +2227,10 @@
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "bytes": 308940,
+      "bytes": 309011,
       "lines": 4478,
-      "sha256": "df8e2b23edf99c816eabec4982c3fc75109571ac53b2c7ce09eab02c53b596b4",
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "sha256": "8b0fa7da257423ff03d7f9a6c62288750d793806098e4c5bc4f5b14cf749f0d7",
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "src/RouteKeeper.Core/Engine.cs",
@@ -2719,10 +2719,10 @@
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "bytes": 5442,
-      "lines": 56,
-      "sha256": "bdf6e6650168ce6b094a548167122863194944f11127adf14e8c9036ac771fe3",
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "bytes": 6222,
+      "lines": 59,
+      "sha256": "22a80a5fbf9f679d9491968329a19fa40e375c7bffd626b40f5f52ac53504d6c",
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "tests/RouteKeeper.Beta.Tests/TestingHistoryContract.cs",
@@ -3618,10 +3618,10 @@
       "verified_scope": "Current maintained source/diff or complete provenance records inspected in the independent beta/audit scopes and root reconciliation; relevant offline contracts in docs/test-results.md. Inspection completion is not native/gameplay verification.",
       "limitations": "Windows/PowerShell5.1 and gameplay evidence remain separately scoped; local hashes are not external authenticity, hostile-writer TOCTOU or power-loss proof.",
       "findings": [],
-      "bytes": 16107,
-      "lines": 155,
-      "sha256": "64e1f136b52fc6c1f5f56f6845a52ae1847df323f771f06b222d8dc4d5d64310",
-      "reviewed_against_head": "e6cfaeb3281244961023ae19bd4af1e636395de1"
+      "bytes": 16237,
+      "lines": 157,
+      "sha256": "ad525387abc43fd54d6631da4ba017dacf67fb21a6c59a221a0fb9bb179f52b2",
+      "reviewed_against_head": "01c5f964b6004372239af10fd300319b4056545c"
     },
     {
       "path": "tools/runtime/test-native-acquisition.ps1",

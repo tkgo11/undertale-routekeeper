@@ -107,6 +107,9 @@ class UiTests(unittest.TestCase):
             self.assertTrue(r.fit('long text',20).endswith('...'))
     def test_preview_bytes_are_reproducible_and_pixels_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
+            # Canonicalize only our disposable system-temp alias (macOS /var).
+            # Production preview output must still reject linked ancestors.
+            directory=Path(directory).resolve()
             for r in self.renderers:
                 r.menu(2);a=Path(directory)/'a.png';b=Path(directory)/'b.png'
                 r.save(a);r.save(b);self.assertEqual(a.read_bytes(),b.read_bytes())

@@ -39,6 +39,14 @@ Interactive/native gameplay acceptance remains separately reported and must not
 be fabricated from those checks. No extra merge
 confirmation is needed if the user's already authorized conditions are all met.
 
+Catalog implementation status describes completion of each declared source scope,
+not a runtime verdict: 79 scenarios are COMPLETE; Forced, Neutral 6 and call-goal 8
+remain PARTIAL for scoped enforcement or unresolved reachability. COMPLETE does not
+promise every possible game interaction is covered. Automated gameplay stays
+NOT_RUN, human results remain separately recorded, independent verification stays
+NOT_RUN and compatibility stays InspectedOnly/UNKNOWN. Fixing prototype PARTIAL
+metadata does not promote those evidence dimensions.
+
 ## Implemented safety and evidence contracts
 
 The human session request binds the Beta session, scenario/step, original/patched
@@ -127,3 +135,13 @@ fork job gating, interrupted restoration, stale summary/review reopening,
 preparation source pins, Steam identity during native input, stabilization interval
 ordering, published-head rollback refusal, exact screenshot review and PNG bounds
 before WPF decode. Retain those regressions while completing new integration.
+
+## Hosted fixture corrections
+
+Candidate01c5f96 passed Linux CI. macOS ARM/Intel correctly rejected the
+preview test's `/var` temporary-directory alias; the fixture now canonicalizes
+only its own disposable path. Windows PowerShell5.1 uses different JSON spacing,
+so the duplicate-field negative fixture had not actually mutated its input. Its
+replacement now tolerates JSON whitespace and separately asserts that mutation
+occurred. Production link and strict-JSON guards are unchanged. Fresh checks are
+required for the corrected head before merging.

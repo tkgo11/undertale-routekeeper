@@ -7,6 +7,9 @@ namespace RouteKeeper.Beta;
 /// Presents existing Core requirements as human checklists. It neither evaluates
 /// new game rules nor collects/invents raw state mappings or gameplay evidence.
 /// The enriched catalog hash binds the exact current Core text/table snapshot.
+/// ImplementationStatus describes the declared source scope, independently of
+/// automated/human gameplay results and compatibility. Known reachability gaps
+/// remain PARTIAL even though refusing to guess those mappings is implemented.
 /// </summary>
 public static class ScenarioRules
 {
@@ -135,6 +138,7 @@ public static class ScenarioRules
         return scenario with
         {
             Version = 2, Feature = "Neutral", Risk = Risk.HighRisk,
+            ImplementationStatus = id == 6 ? "PARTIAL" : "COMPLETE",
             Title = new("Neutral — " + target.English, "중립 — " + target.Korean),
             Purpose = new("Verify the selected canonical Neutral target and each declared boss/count/friendship requirement without equating prediction with an observed ending.", "선택한 원래 중립 목표의 보스·처치 수·우정 조건을 확인하되 예측과 실제 관찰 엔딩을 동일시하지 않습니다."),
             Configuration = "Neutral target " + id.ToString(CultureInfo.InvariantCulture) + "; call goal0 / 중립 목표·추가 통화 목표 없음",
@@ -175,6 +179,7 @@ public static class ScenarioRules
         return template with
         {
             Id = "call-goal-" + goal.Id.ToString(CultureInfo.InvariantCulture), Version = 2, Feature = "NeutralCallGoals", Risk = Risk.HighRisk,
+            ImplementationStatus = goal.Id == 8 ? "PARTIAL" : "COMPLETE",
             Title = new("Optional call — " + goal.English, "선택 통화 — " + goal.Korean),
             Purpose = new("Verify every canonical prerequisite of this selectable call condition, compatibility and shared-dialogue limitations.", "선택 가능한 이 통화 조건의 모든 원래 선행 조건·호환성·공유 대사 한계를 확인합니다."),
             Configuration = "Call goal " + goal.Id.ToString(CultureInfo.InvariantCulture) + "; compatible Neutral targets " + string.Join(",", goal.CompatibleTargets) + " / 호환 중립 목표와 선택 통화 조건",

@@ -33,7 +33,7 @@ never restored. Historical receipts are observations at their timestamps.
 
 Local checks (Linux; SDK10.0.402, pinned Pillow11.3.0/pyflakes3.4.0, PowerShell7):
 
-- Release solution build:0 warnings/errors. Existing C#280 checks plus277 Beta
+- Release solution build:0 warnings/errors. Existing C#280 checks plus280 Beta
   contracts PASS;9325 separately counted original-derived golden/model assertions
   PASS. The actual PowerShell sanitized summary passes the strict C# parser.
 - Python discovery:264 tests,262 passed and2 skipped (opt-in contributor workflow
@@ -41,7 +41,7 @@ Local checks (Linux; SDK10.0.402, pinned Pillow11.3.0/pyflakes3.4.0, PowerShell7
   with `ROUTEKEEPER_LOCALE_E2E=1`; no Windows result is inferred from Linux.
 - Source/localization/font/UI generation and adapter verification PASS. Synthetic
   G3M delta encode/decode, deterministic archive and private-input refusal PASS.
-- New human protocol/filesystem suite51 PASS, including real two-process file
+- New human protocol/filesystem suite52 PASS, including real two-process file
   exclusion, retained crash marker, owned continuation, privacy projection,
   capture-stop and natural-exit races. Shared recovery101, probe cleanup61,
   session paths20, Steam identity9, acquisition27 and direction67 PASS. Synthetic
@@ -66,7 +66,7 @@ are retired before side effects; shared transaction helpers remain maintained.
 
 Independent source audits and scoped rereviews are reconciled in ignored
 `.research/independent-audit`; refreshed inventory hashes are inspection records,
-not runtime proof. Current GitHub `main` is unprotected and has no rulesets. All8
+not runtime proof. The first hosted candidate passed Linux, but macOS exposed a system-temp alias in a preview fixture and Windows PowerShell5.1 exposed spacing-dependent negative-fixture mutation. Both fixtures are corrected without changing production guards; the new head must pass hosted CI. Current GitHub `main` is unprotected and has no rulesets. All8
 review threads were fetched with pagination and are being dispositioned against
 actual source/tests. Qlty's success context still reports92 blocking issues; its
 detail URL redirects to login, so inaccessible findings cannot be claimed resolved.

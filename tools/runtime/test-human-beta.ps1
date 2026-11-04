@@ -16,8 +16,10 @@ foreach($mutation in @(@{schema='1'},@{scope='Smoke'},@{highRiskPhrase=@('AUTHOR
  $value=$base.Clone();foreach($key in $mutation.Keys){$value[$key]=$mutation[$key]}
  Refuses {Assert-RkHumanRequest (ConvertFrom-RkHumanJson ($value|ConvertTo-Json -Depth 8) 'Request')} ('typed request refusal: '+($mutation.Keys -join ','))
 }
-Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema": 1','"schema": 1, "schema": 1') 'Request'} 'duplicate field refused'
-Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema": 1','"schema": 1, "unknown": 1') 'Request'} 'unknown field refused'
+$duplicate=$raw -replace '"schema"\s*:\s*1','"schema": 1, "schema": 1'
+Check ($duplicate -cne $raw) 'duplicate fixture mutates JSON across PowerShell formatting versions'
+Refuses {ConvertFrom-RkHumanJson $duplicate 'Request'} 'duplicate field refused'
+Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema"\s*:\s*1','"schema": 1, "unknown": 1') 'Request'} 'unknown field refused'
 Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema"','"sch\u0065ma"') 'Request'} 'escaped protocol key refused'
 $command='{"schema":1,"session":"'+('a'*32)+'","sequence":1,"action":"capture"}'
 Check ((ConvertFrom-RkHumanJson $command 'Command').action -ceq 'capture') 'typed command JSON parsed'
