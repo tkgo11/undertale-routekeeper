@@ -21,8 +21,10 @@ Check ($duplicate -cne $raw) 'duplicate fixture mutates JSON across PowerShell f
 Refuses {ConvertFrom-RkHumanJson $duplicate 'Request'} 'duplicate field refused'
 Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema"\s*:\s*1','"schema": 1, "unknown": 1') 'Request'} 'unknown field refused'
 Refuses {ConvertFrom-RkHumanJson ($raw -replace '"schema"','"sch\u0065ma"') 'Request'} 'escaped protocol key refused'
+Refuses {ConvertFrom-RkHumanJson ('['+$raw+']') 'Request'} 'single-item request array cannot erase its root type'
 $command='{"schema":1,"session":"'+('a'*32)+'","sequence":1,"action":"capture"}'
 Check ((ConvertFrom-RkHumanJson $command 'Command').action -ceq 'capture') 'typed command JSON parsed'
+Refuses {ConvertFrom-RkHumanJson ('['+$command+']') 'Command'} 'single-item command array refused before pipeline enumeration'
 Refuses {ConvertFrom-RkHumanJson ($command -replace '"sequence":1','"sequence":1,"sequence":2') 'Command'} 'duplicate command sequence refused'
 # Execute the actual sanitized summary function without executing its entrypoint.
 $tokens=$null;$errors=$null

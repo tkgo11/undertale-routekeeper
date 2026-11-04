@@ -2,6 +2,10 @@
 # All protocol objects have globally unique field names; escaped names are refused.
 function ConvertFrom-RkHumanJson([string]$Raw,[ValidateSet('Request','Command')][string]$Kind) {
  if([string]::IsNullOrWhiteSpace($Raw) -or $Raw.Length -gt 65536){throw 'Invalid bounded human JSON.'}
+ # ConvertFrom-Json enumerates a one-item root array in both supported shells.
+ # Check framing before that conversion can erase the root container's type.
+ $framed=$Raw.Trim()
+ if(!$framed.StartsWith('{') -or !$framed.EndsWith('}')){throw 'Human JSON root must be an object.'}
  $allowed=if($Kind -eq 'Request'){@('schema','kind','id','betaSession','scenario','step','nonce','captureConsent','diagnosticConsent','case','scope','risk','phrase','highRiskPhrase','language','mode','maximumSeconds','issuedUtc','policy','disclosureSha256','parent','pid','ticks','path','sha256','continuationSession')}else{@('schema','session','sequence','action')}
  $seen=New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
  foreach($token in [regex]::Matches($Raw,'"(?:[^"\\]|\\.)*"')){

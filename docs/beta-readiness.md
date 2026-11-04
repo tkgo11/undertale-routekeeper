@@ -34,7 +34,7 @@ not authorize a public release.
 | GitHub gates | Latest read-only checks: main `protected=false`, repository rulesets `[]`; PR1 remains subject to exact-head CI/review checks | Fetch current checks after push; no required-review rules proven, and no blanket missing-approval blocker |
 
 Implementation engineering gates passed for source9a105da in both push and PR CI.
-The final documentation/inventory commit must also pass its exact-head checks before
+The final follow-up commit must also pass its exact-head checks before
 merge; current checks/reviews/protections are re-fetched immediately before merging.
 Missing a human playthrough alone does not prevent completing a safe implementation.
 Source presence, successful construction and process receipts do not substitute
@@ -148,7 +148,7 @@ only its own disposable path. Windows PowerShell5.1 uses different JSON spacing,
 so the duplicate-field negative fixture had not actually mutated its input. Its
 replacement now tolerates JSON whitespace and separately asserts that mutation
 occurred. Production link and strict-JSON guards are unchanged. Corrected source9a105da passed all4 operating-system jobs in both push and PR CI.
-The final documentation-only head still receives its own checks before merging.
+The final follow-up head still receives its own checks before merging.
 
 ## Hosted package and beta handoff
 
@@ -172,3 +172,10 @@ real interactive desktop/game acceptance remains NOT_RUN.
 Use the [structured human backlog](beta-backlog.md) after handoff. Eight original
 review threads were independently dispositioned with concrete tests/source and
 resolved. No release or profile promotion is included.
+
+The final human-protocol correction rejects root arrays before PowerShell can
+enumerate them into an apparent object. Object requests/commands are unchanged.
+Two new refusal regressions bring the portable protocol suite to54; independent
+source review and21 E2E/source-pin checks pass. New exact-head Windows5.1/7 and
+package results are required; preparation seals intentionally invalidate when
+this executed helper changes.

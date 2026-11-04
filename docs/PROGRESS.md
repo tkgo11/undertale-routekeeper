@@ -41,7 +41,7 @@ Local checks (Linux; SDK10.0.402, pinned Pillow11.3.0/pyflakes3.4.0, PowerShell7
   with `ROUTEKEEPER_LOCALE_E2E=1`; no Windows result is inferred from Linux.
 - Source/localization/font/UI generation and adapter verification PASS. Synthetic
   G3M delta encode/decode, deterministic archive and private-input refusal PASS.
-- New human protocol/filesystem suite52 PASS, including real two-process file
+- New human protocol/filesystem suite54 PASS, including real two-process file
   exclusion, retained crash marker, owned continuation, privacy projection,
   capture-stop and natural-exit races. Shared recovery101, probe cleanup61,
   session paths20, Steam identity9, acquisition27 and direction67 PASS. Synthetic
@@ -86,8 +86,15 @@ checks per shell and9 real NTFS scenarios per shell, plus actual packaged helper
 and WPF STA construction/redaction/history smoke. The hosted1314-file inner ZIP
 was independently downloaded, digest-checked and reverified; SHA256
 `49aac2f8fe1c0275a18af397528dabe9bc721884fecbe6811ec74a0dad5b0c58`.
-The final documentation/inventory head still requires fresh CI before merge.
+The final follow-up head still requires fresh CI before merge.
 Human tasks and severity/traceability are in [beta-backlog.md](beta-backlog.md).
+
+Final protocol reinspection found that PowerShell enumerates a one-item JSON root
+array, erasing its container type. The human protocol now checks object framing
+before conversion;54 local protocol checks include request/command array refusal.
+Independent whitespace-object/empty/single/multiple-array/null reproductions and
+21 E2E/source-pin contracts PASS. This helper change requires fresh preparation
+seals and exact-head Windows5.1/7 checks before merge; old seals are not rewritten.
 
 ## Native Windows continuation — 2026-10-29 KST
 
