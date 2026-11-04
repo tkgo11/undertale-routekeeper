@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "version": "e2e-v1",
+  "scenarios": {
+    "startup": {
+      "risk": "ui",
+      "blockedReason": "Fresh title-to-room bootstrap has no native source-validated navigation/capture trace; no random confirmation or save injection.",
+      "initialState": "title",
+      "steps": [
+        {
+          "action": "checkpoint",
+          "scene": "title",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "overworld",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": [
+        {
+          "action": "checkpoint",
+          "scene": "title",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "overworld",
+          "holdMs": 50
+        }
+      ]
+    },
+    "english": {
+      "risk": "ui",
+      "blockedReason": null,
+      "initialState": "overworld",
+      "steps": [
+        {
+          "action": "settings",
+          "scene": "overworld",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "settings-en",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": [
+        {
+          "action": "checkpoint",
+          "scene": "overworld",
+          "holdMs": 50
+        }
+      ]
+    },
+    "korean": {
+      "risk": "ui",
+      "blockedReason": null,
+      "initialState": "settings-en",
+      "steps": [
+        {
+          "action": "language",
+          "scene": "settings-en",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "settings-ko",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": null
+    },
+    "settings": {
+      "risk": "ui",
+      "blockedReason": null,
+      "initialState": "settings-ko",
+      "steps": [
+        {
+          "action": "cancel",
+          "scene": "settings-ko",
+          "holdMs": 50
+        },
+        {
+          "action": "settings",
+          "scene": "overworld",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "settings-ko",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": null
+    },
+    "keyboard": {
+      "risk": "ui",
+      "blockedReason": null,
+      "initialState": "settings-ko",
+      "steps": [
+        {
+          "action": "down",
+          "scene": "settings-ko",
+          "holdMs": 50
+        },
+        {
+          "action": "up",
+          "scene": "settings-ko-row1",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "settings-ko",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": [
+        {
+          "action": "right",
+          "scene": "overworld",
+          "holdMs": 50
+        },
+        {
+          "action": "left",
+          "scene": "overworld-step",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "overworld",
+          "holdMs": 50
+        }
+      ]
+    },
+    "battle": {
+      "risk": "combat",
+      "blockedReason": "No independently verified fresh-trial path/encounter starting state; no save injection or speculative movement.",
+      "initialState": "ordinary-battle",
+      "steps": [
+        {
+          "action": "checkpoint",
+          "scene": "ordinary-battle",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": [
+        {
+          "action": "checkpoint",
+          "scene": "ordinary-battle",
+          "holdMs": 50
+        }
+      ]
+    },
+    "warnings": {
+      "risk": "combat",
+      "blockedReason": "Source-supported warning requires a verified encounter/decision state unavailable from a fresh trial.",
+      "initialState": "risk-warning",
+      "steps": [
+        {
+          "action": "checkpoint",
+          "scene": "risk-warning",
+          "holdMs": 50
+        },
+        {
+          "action": "acknowledge",
+          "scene": "risk-warning",
+          "holdMs": 50
+        },
+        {
+          "action": "checkpoint",
+          "scene": "warning-acknowledged",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": null
+    },
+    "forced": {
+      "risk": "combat",
+      "blockedReason": "No independent HP/EXP/inventory observer or verified nonlethal battle starting state; visible refusal cannot prove protection.",
+      "initialState": "forced-warning",
+      "steps": [
+        {
+          "action": "checkpoint",
+          "scene": "forced-warning",
+          "holdMs": 50
+        }
+      ],
+      "timeoutMs": 15000,
+      "maxFrames": 30,
+      "retries": 0,
+      "stopConditions": [
+        "focus-loss",
+        "identity-mismatch",
+        "Pause-or-abort-file",
+        "timeout",
+        "unrecognized-screen",
+        "invalid-evidence"
+      ],
+      "requiredIndependentEvidence": [
+        "exact-process",
+        "capture-sidecars",
+        "private-authentic-scene-contract"
+      ],
+      "recovery": "Stop owned inputs/process; existing verified local transaction only; never Steam account rollback",
+      "originalSteps": null
+    }
+  }
+}

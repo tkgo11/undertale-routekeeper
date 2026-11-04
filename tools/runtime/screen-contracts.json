@@ -1,0 +1,358 @@
+{
+  "schema": 1,
+  "version": "screen-contracts-v1",
+  "scenarios": {
+    "startup": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "startup-visual": "visual",
+        "startup-behavior": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Title/room visibility does not prove Steam history preservation.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "english": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "english-visual": "visual",
+        "english-font": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Native English requires a private authentic font/reference; licensed preview is a proxy.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "korean": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "korean-visual": "visual",
+        "korean-font": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Glyph coverage/metrics do not prove native drawing or missing-glyph absence.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "settings": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "settings-visual": "visual",
+        "settings-persistence": "configuration"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Persisted settings file comparison does not prove active game settings.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "keyboard": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "keyboard-visual": "visual",
+        "keyboard-behavior": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Input dispatch does not prove action execution or input isolation.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "battle": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "battle-visual": "visual",
+        "battle-behavior": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "HP/EXP/inventory and combat state lack an independent observer.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "warnings": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "warnings-visual": "visual",
+        "warnings-behavior": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "A warning frame does not prove one-action replay or event order.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    },
+    "forced": {
+      "preconditions": [
+        "exact-runner-and-candidate-identities",
+        "valid-capture-and-reference",
+        "approved-execution-environment"
+      ],
+      "requiredAssertions": {
+        "forced-visual": "visual",
+        "forced-behavior": "unobservable"
+      },
+      "availableDeterministicAssertions": [
+        "file-sha256",
+        "configuration"
+      ],
+      "requiredEvidence": [
+        "hash-pinned PNG",
+        "reference provenance",
+        "capture sidecar for native-import"
+      ],
+      "optionalEvidence": [
+        "bounded frame sequence",
+        "input-dispatch receipt (not action proof)"
+      ],
+      "unobservable": [
+        "Visible refusal does not prove pre-effect protection or unchanged HP/EXP/inventory.",
+        "Steam account-level RemoteStorage history"
+      ],
+      "timeoutMs": 5000,
+      "maxFrames": 32,
+      "recapture": "Bounded sequence; unstable, obstructed or mismatched evidence requires review/recapture.",
+      "automaticPass": "All mandatory assertions positively established. Native imports remain safety BLOCKED. No gameplay observer is implemented.",
+      "manualReviewTriggers": [
+        "visual mismatch",
+        "proxy font",
+        "CopyFromScreen obstruction risk",
+        "animation instability",
+        "missing observer"
+      ],
+      "blockingConditions": [
+        "same-account execution NO-GO",
+        "missing required assertion",
+        "invalid evidence"
+      ]
+    }
+  }
+}

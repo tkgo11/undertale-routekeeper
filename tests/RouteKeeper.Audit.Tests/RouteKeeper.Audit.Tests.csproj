@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/RouteKeeper.Core/RouteKeeper.Core.csproj" />
+    <ProjectReference Include="../../src/RouteKeeper.Decisions/RouteKeeper.Decisions.csproj" />
+    <ProjectReference Include="../../src/RouteKeeper.History/RouteKeeper.History.csproj" />
+    <Content Include="../golden/original-endings.json" Link="original-endings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

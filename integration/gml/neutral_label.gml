@@ -1,0 +1,21 @@
+// Generated Neutral target labels; selectable IDs 0..18.
+if (argument0 == 0) return scr_routekeeper_text("ending.any_neutral_type",argument1);
+if (argument0 == 1) return scr_routekeeper_text("ending.family",argument1);
+if (argument0 == 2) return scr_routekeeper_text("ending.betrayed_no_friendship_robot_spared",argument1);
+if (argument0 == 3) return scr_routekeeper_text("ending.betrayed_no_friendship_robot_killed",argument1);
+if (argument0 == 4) return scr_routekeeper_text("ending.betrayed_friendship_robot_spared",argument1);
+if (argument0 == 5) return scr_routekeeper_text("ending.betrayed_friendship_robot_killed",argument1);
+if (argument0 == 6) return scr_routekeeper_text("ending.exiled_warrior_and_skeleton_alive",argument1);
+if (argument0 == 7) return scr_routekeeper_text("ending.exiled_warrior_alive_skeleton_dead",argument1);
+if (argument0 == 8) return scr_routekeeper_text("ending.exiled_warrior_dead_skeleton_alive",argument1);
+if (argument0 == 9) return scr_routekeeper_text("ending.exiled_warrior_and_skeleton_dead",argument1);
+if (argument0 == 10) return scr_routekeeper_text("ending.undyne_papyrus_alive",argument1);
+if (argument0 == 11) return scr_routekeeper_text("ending.undyne_papyrus_dead",argument1);
+if (argument0 == 12) return scr_routekeeper_text("ending.mettaton_papyrus_alive",argument1);
+if (argument0 == 13) return scr_routekeeper_text("ending.mettaton_papyrus_dead",argument1);
+if (argument0 == 14) return scr_routekeeper_text("ending.papyrus",argument1);
+if (argument0 == 15) return scr_routekeeper_text("ending.dog_only_four_bosses_killed",argument1);
+if (argument0 == 16) return scr_routekeeper_text("ending.leaderless_total_below_20",argument1);
+if (argument0 == 17) return scr_routekeeper_text("ending.leaderless_total_20",argument1);
+if (argument0 == 18) return scr_routekeeper_text("ending.alphys_aborted_late_genocide",argument1);
+return "";

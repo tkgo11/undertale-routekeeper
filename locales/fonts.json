@@ -1,0 +1,22 @@
+{
+  "native-en": {
+    "kind": "native",
+    "resource": "fnt_maintext",
+    "baseline": 14,
+    "lineHeight": 16
+  },
+  "galmuri14": {
+    "kind": "bdf",
+    "resource": "fnt_routekeeper",
+    "source": "integration/assets/font-source/routekeeper-korean.bdf.gz",
+    "sha256": "316afc1e7b48abf3bbd261b572148610a5fcad9da8e96a7c9de7e910af973bf4",
+    "baseline": 14,
+    "lineHeight": 18,
+    "license": "OFL-1.1",
+    "licenseFile": "integration/assets/FONT-LICENSE.txt",
+    "licenseSha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1",
+    "reviewed": true,
+    "provenance": "https://github.com/quiple/galmuri@71e1cacf1437a11220307120e63e30bc275312d4",
+    "displayName": "Routekeeper Korean Pixel (Galmuri-derived)"
+  }
+}
