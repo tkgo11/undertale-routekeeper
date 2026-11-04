@@ -21,7 +21,6 @@ public sealed partial class MainWindow : Window
     private readonly ComboBox sessions = new() { MinWidth = 330, Margin = new Thickness(4), DisplayMemberPath = "Label" };
     private readonly ComboBox modes = new() { ItemsSource = new[] { "Off", "Passive", "Active", "Forced" }, SelectedIndex = 0, Width = 120, Margin = new Thickness(4) };
     private readonly TextBox build = Input("UNKNOWN"), display = Input("NOT_COLLECTED");
-    private readonly TextBox gameData = Input(), compiler = Input();
     private readonly ListBox scenarios = new() { MinWidth = 240, DisplayMemberPath = "Label" };
     private readonly StackPanel scenarioPanel = new();
     private readonly DataGrid dashboard = Grid();
@@ -111,7 +110,7 @@ public sealed partial class MainWindow : Window
     private void BuildTabs()
     {
         // Release parents before reusing input controls when switching UI language.
-        foreach (var control in new UIElement[] { sessions, modes, build, display, gameData, compiler, scenarios, scenarioPanel, steps, result, actual, expectedBug, reproduce, severity, issues, dashboard, coverage, redact, exportPixels, stepPanel, evidence, historySessions, historyCoverage, historyChanges, historyErrors })
+        foreach (var control in new UIElement[] { sessions, modes, build, display, scenarios, scenarioPanel, steps, result, actual, expectedBug, reproduce, severity, issues, dashboard, coverage, redact, exportPixels, stepPanel, evidence, historySessions, historyCoverage, historyChanges, historyErrors })
             if (VisualTreeHelper.GetParent(control) is Panel parent) parent.Children.Remove(control);
         tabs.Items.Clear();
         var start = new StackPanel();
@@ -218,7 +217,7 @@ public sealed partial class MainWindow : Window
         {
             RefuseWhileNative();
             var s = Current(); string phrase = "DELETE " + s.Id.ToString("N");
-            if (Prompt(T("This permanently deletes results, issue history and attached screenshots. Exported copies remain. Type: ", "결과·오류 이력·첨부 화면을 영구 삭제합니다. 내보낸 복사본은 남습니다. 입력: ") + phrase) != phrase) return;
+            if (Prompt(T("This permanently deletes checklist results, issue history and attached screenshots. Exports and native references/backups remain. Native recovery stays accessible in Preparation through retained native references, even without this checklist. Type: ", "체크리스트 결과·오류 이력·첨부 화면을 영구 삭제합니다. 내보낸 복사본과 네이티브 연결·백업은 남습니다. 체크리스트가 없어도 준비 탭의 보관한 네이티브 연결에서 복구할 수 있습니다. 입력: ") + phrase) != phrase) return;
             store.Delete(s.Id, s.Revision, phrase);
             foreach (string key in drafts.Keys.Where(k => k.StartsWith(s.Id.ToString("N") + "/", StringComparison.Ordinal)).ToArray()) drafts.Remove(key);
             session = null; Refresh(); RefreshSessions();
@@ -418,6 +417,7 @@ public sealed partial class MainWindow : Window
             }
         }
         finally { store.Delete(fixture.Id, store.Load(fixture.Id).Revision, "DELETE " + fixture.Id.ToString("N")); session = null; drafts.Clear(); }
+        SmokeOrphanNativeReference();
     }
     private ExportOptions Options() => new(exportPixels.IsChecked == true, redact.Text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 }

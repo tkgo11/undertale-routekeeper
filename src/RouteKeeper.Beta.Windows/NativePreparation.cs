@@ -11,6 +11,9 @@ public sealed partial class MainWindow
     private readonly NativeController native = new();
     private readonly DataGrid historySessions = Grid(), historyCoverage = Grid(), historyChanges = Grid();
     private readonly TextBlock historyErrors = Text("");
+    private ComboBox? nativeReferencePicker;
+    private Action? refreshPrivateReferences, loadPrivateReference;
+    private Func<NativeController.Binding>? boundPrivateReference;
     private UIElement NativePreparation()
     {
         var panel = new StackPanel();
@@ -20,14 +23,46 @@ public sealed partial class MainWindow
         var trials = new ComboBox { Margin = new Thickness(4), DisplayMemberPath = "Id" };
         NativeController.Binding? binding = null;
         var info = Text("");
+        var references = new ComboBox { Margin = new Thickness(4) };
+        nativeReferencePicker = references;
+        NativeController.Binding Bound()
+        {
+            if (references.SelectedItem is not Guid id) throw new InvalidOperationException(T("Select a retained native reference, including references whose checklist was deleted.", "체크리스트를 삭제한 경우에도 보관한 네이티브 연결을 선택하세요."));
+            return NativeController.Load(id) ?? throw new InvalidOperationException("Selected native reference no longer exists. Preserve its workspace.");
+        }
+        void RefreshReferences()
+        {
+            Guid? prior = references.SelectedItem is Guid id ? id : null;
+            references.ItemsSource = NativeController.ListReferences();
+            if (prior is Guid selected) references.SelectedItem = selected;
+            if (references.SelectedIndex < 0 && references.Items.Count > 0) references.SelectedIndex = 0;
+        }
         void LoadBinding()
         {
-            binding = NativeController.Load(Current().Id);
-            install.Text = binding?.GameInstall ?? ""; steam.Text = binding?.SteamExe ?? "";
-            trials.ItemsSource = binding?.Trials.Reverse().ToArray(); trials.SelectedIndex = 0;
-            info.Text = binding is null ? T("No prepared workspace linked to this checklist.", "이 체크리스트에 연결한 준비 공간이 없습니다.") : binding.Work;
+            binding = null; trials.ItemsSource = null;
+            var loaded = Bound();
+            install.Text = loaded.GameInstall; steam.Text = loaded.SteamExe;
+            trials.ItemsSource = loaded.Trials.Reverse().ToArray(); trials.SelectedIndex = 0;
+            info.Text = loaded.BetaSession.ToString("N") + " · " + loaded.Work;
+            binding = loaded;
         }
-        panel.Children.Add(Button(T("Load private native reference for current checklist", "현재 체크리스트의 비공개 네이티브 연결 불러오기"), LoadBinding));
+        references.SelectionChanged += (_, _) =>
+        {
+            binding = null; trials.ItemsSource = null;
+            info.Text = T("Load the selected private reference before selecting its trial. Corrupt references remain listed; loading refuses and preserves them.", "시험 선택 전에 비공개 연결을 불러오세요. 손상된 연결도 목록에 남으며 불러오기는 거부하고 보존합니다.");
+        };
+        refreshPrivateReferences = RefreshReferences; loadPrivateReference = LoadBinding; boundPrivateReference = Bound;
+        Label(panel, T("Retained native references (checklist deletion does not remove these)", "보관한 네이티브 연결 (체크리스트 삭제 후에도 유지)"), references);
+        panel.Children.Add(Button(T("Refresh retained native references", "보관한 네이티브 연결 새로고침"), RefreshReferences));
+        panel.Children.Add(Button(T("Load selected private native reference", "선택한 비공개 네이티브 연결 불러오기"), LoadBinding));
+        panel.Children.Add(Button(T("Select current checklist's private native reference", "현재 체크리스트의 비공개 네이티브 연결 선택"), () =>
+        {
+            Guid id = Current().Id; RefreshReferences(); references.SelectedItem = id;
+            if (references.SelectedItem is not Guid selected || selected != id) throw new InvalidOperationException("No private native reference for this checklist; prepare it first.");
+            LoadBinding();
+        }));
+        // Listing names does not load records or require a surviving checklist.
+        RefreshReferences();
         Label(panel, T("Legitimate registered game installation folder", "정상 등록 게임 설치 폴더"), install);
         panel.Children.Add(Button(T("Choose installation folder", "설치 폴더 선택"), () =>
         { var picker = new OpenFolderDialog(); if (picker.ShowDialog(this) == true) install.Text = picker.FolderName; }));
@@ -48,7 +83,7 @@ public sealed partial class MainWindow
             if (binding is not null) throw new InvalidOperationException(T("A workspace is already linked. Preserve and recover its trials before preparing another checklist session.", "이미 연결한 작업 공간이 있습니다. 이력을 보존·복구한 뒤 별도 체크리스트 세션을 사용하세요."));
             var next = new NativeController.Binding(current.Id, NativeController.NewWork(), OwnedFiles.NoLinks(install.Text), OwnedFiles.NoLinks(steam.Text), []);
             // Persist before dispatch: even a failed preparation has a discoverable private location.
-            NativeController.Save(next); binding = next; info.Text = next.Work;
+            NativeController.Save(next); RefreshReferences(); references.SelectedItem = next.BetaSession; LoadBinding();
             int code = await native.Invoke("Prepare", next);
             Say(code == 0 ? T("Prepared; game NOT_RUN. Native launch still requires fresh disclosure and typed consent.", "준비 완료, 게임 NOT_RUN. 실행에는 새 고지 검토와 직접 입력 승인이 필요합니다.") : T("Preparation blocked. Preserve this private workspace; no runtime verification.", "준비가 차단됐습니다. 비공개 작업 공간을 보존하세요. 실행 검증이 아닙니다."));
         }));
@@ -56,7 +91,7 @@ public sealed partial class MainWindow
         panel.Children.Add(Text(T("Native references, requests, screenshots, diagnostic logs, trial save copies and recovery journals are private local records, retained separately from checklist deletion/export under RouteKeeper/Beta/native, RouteKeeper/Beta/native-ui and RoutekeeperE2E/native-beta-ID in LocalAppData. Cleanup below removes only a verified owned game copy. Preserve all copies whenever restoration is unknown or blocked; do not manually remove trial saves or journals to bypass guards. After every trial has verified restoration and unchanged registered/cache checks, you may delete the retired workspace and separate native-ui reference/log records yourself in Explorer; this destroys private evidence and backups. Exports remain separate.", "네이티브 연결·요청·화면·진단 로그·시험 세이브 복사본·복구 기록은 체크리스트 삭제·내보내기와 별개로 LocalAppData의 RouteKeeper/Beta/native, RouteKeeper/Beta/native-ui, RoutekeeperE2E/native-beta-ID에 보관하는 비공개 로컬 기록입니다. 아래 정리는 검증한 소유 게임 복사본만 제거합니다. 복구가 미확인·차단이면 모든 복사본을 보존하고 보호를 우회하려고 세이브·기록을 수동 삭제하지 마세요. 모든 시험의 복구와 등록 파일·캐시 무변경을 검증한 뒤에만 폐기할 작업 공간과 별도 native-ui 연결·로그를 탐색기에서 직접 삭제할 수 있습니다. 비공개 증거·백업도 삭제되며 내보낸 복사본은 별개입니다.")));
         panel.Children.Add(Button(T("Open current private workspace for local inspection", "현재 비공개 작업 공간을 로컬 검토용으로 열기"), () =>
         {
-            var owned = NativeController.Load(Current().Id) ?? throw new InvalidOperationException("No private workspace linked.");
+            var owned = Bound();
             var start = new System.Diagnostics.ProcessStartInfo(OwnedFiles.NoLinks(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"))) { UseShellExecute = false };
             start.ArgumentList.Add(OwnedFiles.NoLinks(owned.Work)); System.Diagnostics.Process.Start(start)?.Dispose();
         }));
@@ -74,14 +109,16 @@ public sealed partial class MainWindow
         {
             var current = Current(); var pair = Selected();
             if (current.State != "Active") throw new InvalidOperationException("Native launch requires an active checklist.");
-            binding = NativeController.Load(current.Id) ?? throw new InvalidOperationException("Prepare the current checklist first.");
+            var launchBinding = NativeController.Load(current.Id) ?? throw new InvalidOperationException("Prepare the current checklist first.");
+            if (references.SelectedItem is not Guid selectedReference || selectedReference != current.Id)
+                throw new InvalidOperationException("Select and load the current checklist's exact private reference before launch.");
             string selectedScope = (string)scope.SelectedItem;
             if (!int.TryParse(duration.Text, out int seconds) || seconds < 60 || seconds > (selectedScope == "Smoke" ? 300 : 7200)) throw new InvalidOperationException("Deadline outside scope.");
             if (pair.Scenario.Risk == Risk.HighRisk && selectedScope != "HighRisk" || pair.Scenario.Risk == Risk.Gameplay && selectedScope == "Smoke") throw new InvalidOperationException("Scenario requires a separate broader scope.");
             string prior = "";
             if (continuation.IsChecked == true)
             {
-                if (selectedScope == "Smoke" || trials.SelectedItem is not NativeController.Trial selectedPrior || !binding.Trials.Contains(selectedPrior))
+                if (selectedScope == "Smoke" || trials.SelectedItem is not NativeController.Trial selectedPrior || !launchBinding.Trials.Contains(selectedPrior))
                     throw new InvalidOperationException("Continuation requires explicit matching prior trial and Gameplay / HighRisk scope.");
                 prior = selectedPrior.Id;
             }
@@ -101,26 +138,27 @@ public sealed partial class MainWindow
                 if (highRisk != required) throw new InvalidOperationException("High-risk scope differs.");
             }
             var trial = new NativeController.Trial(Guid.NewGuid().ToString("N"), pair.Scenario.Id, pair.Step.Id);
-            byte[] request = NativeController.Request(binding, trial, current.Configuration, pair.Scenario.Risk, selectedScope, (string)variant.SelectedItem, seconds, pixels.IsChecked == true, nonce, typed, highRisk, prior);
-            string requestPath = NativeController.WriteRequest(binding, trial, request);
-            binding = binding with { Trials = [.. binding.Trials, trial] }; NativeController.Save(binding);
-            trials.ItemsSource = binding.Trials.Reverse().ToArray(); trials.SelectedIndex = 0;
+            byte[] request = NativeController.Request(launchBinding, trial, current.Configuration, pair.Scenario.Risk, selectedScope, (string)variant.SelectedItem, seconds, pixels.IsChecked == true, nonce, typed, highRisk, prior);
+            string requestPath = NativeController.WriteRequest(launchBinding, trial, request);
+            launchBinding = launchBinding with { Trials = [.. launchBinding.Trials, trial] }; NativeController.Save(launchBinding);
+            binding = launchBinding;
+            trials.ItemsSource = launchBinding.Trials.Reverse().ToArray(); trials.SelectedIndex = 0;
             Say(T("Controller starting. Human input only. Stop requests safe shutdown; do not kill the app/controller or Steam. A recovery-required result must remain unresolved until verified.", "조정기를 시작합니다. 입력은 사람만 합니다. 중지는 안전 종료를 요청합니다. 앱·조정기·Steam을 강제 종료하지 마세요. 복구 필요 상태는 검증 전까지 미해결입니다."));
-            int code = await native.Invoke("Run", binding, trial, requestPath);
+            int code = await native.Invoke("Run", launchBinding, trial, requestPath);
             Say(code == 0 ? "CONTROLLER_FINISHED · inspect/import recovery receipt · GAMEPLAY NOT_INDEPENDENTLY_VERIFIED" : "BLOCKED / RECOVERY_MAY_BE_REQUIRED · preserve workspace · inspect locally");
-            ImportNativeReceipt(binding, trial, false);
+            ImportNativeReceipt(launchBinding, trial, false);
         }));
         panel.Children.Add(Button(T("Request safe stop (never kill controller)", "안전 중지 요청 (조정기 강제 종료 없음)"), () => { native.Command("stop"); Say("SAFE_STOP_REQUESTED · wait for recovery receipt"); }));
         panel.Children.Add(Button(T("Request consented local capture", "별도 동의한 로컬 화면 수집 요청"), () => { native.Command("capture"); Say(T("CAPTURE_REQUESTED · return focus to the game within 3 seconds · private unreviewed pixels only", "화면 요청 전송 · 3초 안에 게임으로 초점을 직접 돌리세요 · 검토 전 비공개 화면")); }));
         Label(panel, T("Exact owned native trial for inspection / recovery", "검토·복구할 정확한 소유 네이티브 시험"), trials);
         NativeController.Trial Trial() => trials.SelectedItem as NativeController.Trial ?? throw new InvalidOperationException("Select an exact native trial.");
-        NativeController.Binding Bound() => NativeController.Load(Current().Id) ?? throw new InvalidOperationException("Load a matching native reference.");
         panel.Children.Add(Button(T("Import historical process / recovery receipt", "개인정보 제외 과거 프로세스·복구 관찰 가져오기"), () => ImportNativeReceipt(Bound(), Trial(), true)));
         panel.Children.Add(Button(T("Import optional capture through pixel redaction / review", "선택 화면을 픽셀 가림·검토 후 가져오기"), () =>
         {
+            var owned = Bound(); RequireMatchingChecklist(owned);
             var selected = Trial(); var pair = Selected();
             if (pair.Scenario.Id != selected.Scenario || pair.Step.Id != selected.Step) throw new InvalidOperationException("Select the native trial's exact scenario and step before attaching pixels.");
-            var picker = new OpenFileDialog { Filter = "Private native capture|human-capture-*.png", InitialDirectory = NativeController.TrialRoot(Bound(), selected) };
+            var picker = new OpenFileDialog { Filter = "Private native capture|human-capture-*.png", InitialDirectory = NativeController.TrialRoot(owned, selected) };
             if (picker.ShowDialog(this) == true) AttachPath(picker.FileName);
         }));
         panel.Children.Add(Button(T("Inspect selected trial journal phase and historical recovery exits (not reverified)", "선택 시험의 저널 단계·과거 복구 종료 관찰 확인 (재검증 아님)"), () =>
@@ -157,8 +195,43 @@ public sealed partial class MainWindow
         };
         return button;
     }
+    private void SmokeOrphanNativeReference()
+    {
+        var fixture = store.Create(new("en", "Off", "SYNTHETIC-ORPHAN-REFERENCE-ONLY", Version));
+        bool deleted = false;
+        try
+        {
+            NativeController.WithOwnedSmokeReference(fixture.Id, expected =>
+            {
+                session = fixture;
+                store.Delete(fixture.Id, fixture.Revision, "DELETE " + fixture.Id.ToString("N")); deleted = true; session = null;
+                BuildTabs(); UpdateLayout(); refreshPrivateReferences!();
+                if (nativeReferencePicker is null || !nativeReferencePicker.Items.Cast<Guid>().Contains(fixture.Id))
+                    throw new InvalidOperationException("Deleted-checklist native reference became inaccessible.");
+                nativeReferencePicker.SelectedItem = fixture.Id; loadPrivateReference!();
+                var loaded = boundPrivateReference!();
+                if (session is not null || loaded.BetaSession != fixture.Id || loaded.Work != expected.Work || loaded.Trials.Length != 1 || loaded.Trials[0] != expected.Trials[0])
+                    throw new InvalidOperationException("Independent native recovery selection required an existing checklist or changed identity.");
+                NativeController.TrialRoot(loaded, loaded.Trials[0]); // Same binding consumed by Recover/Cleanup; no invocation.
+                bool refused = false; try { RequireMatchingChecklist(loaded); } catch (InvalidOperationException) { refused = true; }
+                if (!refused) throw new InvalidOperationException("Deleted-checklist native imports must refuse.");
+            });
+        }
+        finally
+        {
+            if (!deleted) store.Delete(fixture.Id, store.Load(fixture.Id).Revision, "DELETE " + fixture.Id.ToString("N"));
+            session = null; drafts.Clear(); refreshPrivateReferences?.Invoke();
+        }
+    }
+    private void RequireMatchingChecklist(NativeController.Binding binding)
+    {
+        if (session is null || session.Id != binding.BetaSession)
+            throw new InvalidOperationException(T("Open this native reference's surviving checklist before importing results or pixels. A deleted checklist cannot accept imports; recovery remains available here.", "결과·화면을 가져오려면 이 네이티브 연결의 남아 있는 체크리스트를 여세요. 삭제한 체크리스트에는 가져올 수 없지만 복구는 여기서 할 수 있습니다."));
+        store.Load(binding.BetaSession); // Revalidate existence/current publication before import.
+    }
     private void ImportNativeReceipt(NativeController.Binding binding, NativeController.Trial trial, bool required)
     {
+        RequireMatchingChecklist(binding);
         string path = Path.Combine(NativeController.TrialRoot(binding, trial), "human-summary.json");
         if (!File.Exists(OwnedFiles.NoLinks(path)))
         { if (required) throw new InvalidOperationException("No completed native summary. Preserve workspace and inspect/recover explicitly."); return; }

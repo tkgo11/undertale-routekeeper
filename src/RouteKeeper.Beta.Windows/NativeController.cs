@@ -19,6 +19,44 @@ internal sealed class NativeController
     private string? activeAction;
     internal static string NewWork() => Path.Combine(NativeBase, "prepared-" + Guid.NewGuid().ToString("N"));
     private static string Reference(Guid id) => Path.Combine(References, id.ToString("N") + ".json");
+    internal static Guid[] ListReferences()
+    {
+        string directory = OwnedFiles.NoLinks(References);
+        if (!Directory.Exists(directory)) return [];
+        // Enumerate names only: corrupt or linked records remain visible by ID;
+        // Load performs content/path validation and refuses them without deletion.
+        var paths = Directory.EnumerateFiles(directory, "*.json", SearchOption.TopDirectoryOnly).Take(10001).ToArray();
+        if (paths.Length > 10000) throw new InvalidDataException("Private native reference scan budget exceeded; preserve and inspect local storage.");
+        var ids = paths.Select(Path.GetFileNameWithoutExtension).Where(name => name is not null &&
+            System.Text.RegularExpressions.Regex.IsMatch(name, "^[a-f0-9]{32}$")).Select(name => Guid.ParseExact(name!, "N")).Take(1001).ToArray();
+        if (ids.Length > 1000) throw new InvalidDataException("Private native reference count exceeds its budget.");
+        return ids.Order().ToArray();
+    }
+    internal static void WithOwnedSmokeReference(Guid id, Action<Binding> inspect)
+    {
+        var binding = new Binding(id, NewWork(), Path.Combine(AppContext.BaseDirectory, "SYNTHETIC-NOT-AN-INSTALL"),
+            Path.Combine(AppContext.BaseDirectory, "SYNTHETIC-NOT-STEAM.exe"), [new Trial(Guid.NewGuid().ToString("N"), "supported-build", "identify")]);
+        bool created = false; byte[]? owned = null;
+        try
+        {
+            Save(binding); created = true; owned = OwnedFiles.Read(Reference(id), 65536);
+            inspect(binding); // Includes checklist deletion and UI selection; no native invocation.
+            File.WriteAllText(OwnedFiles.NoLinks(Reference(id)), "{"); owned = [(byte)'{'];
+            if (!ListReferences().Contains(id)) throw new InvalidOperationException("Corrupt native reference disappeared from recovery selection.");
+            bool refused = false; try { Load(id); } catch (JsonException) { refused = true; }
+            if (!refused || !File.Exists(Reference(id))) throw new InvalidOperationException("Corrupt native reference must refuse loading and remain preserved.");
+        }
+        finally
+        {
+            if (created)
+            {
+                // Remove only this synthetic invocation's unchanged JSON/lock;
+                // never create or remove any game workspace, save or journal.
+                if (owned is null || !OwnedFiles.Read(Reference(id), 65536).SequenceEqual(owned)) throw new InvalidOperationException("Synthetic reference changed; preserve it for inspection.");
+                File.Delete(OwnedFiles.NoLinks(Reference(id))); File.Delete(OwnedFiles.NoLinks(Reference(id) + ".lock"));
+            }
+        }
+    }
     internal static Binding? Load(Guid id)
     {
         if (!File.Exists(OwnedFiles.NoLinks(Reference(id)))) return null;

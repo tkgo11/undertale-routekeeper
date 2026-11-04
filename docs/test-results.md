@@ -96,6 +96,14 @@ Independent whitespace-object/empty/single/multiple-array/null reproductions and
 21 E2E/source-pin contracts PASS. This helper change requires fresh preparation
 seals and exact-head Windows5.1/7 checks before merge; old seals are not rewritten.
 
+Sourceb1e64a4 passed all4 OS jobs in push41816160381 and PR41816167499, including
+54 protocol cases under both Windows shells. A final WPF recovery correction now
+keeps retained native references selectable after checklist deletion, independently
+of Current session. It freezes asynchronous launch identity and refuses cross-
+checklist imports. Independent source review, portable actual-reference lifecycle
+regression and Release compile pass. Windows orphan-reference smoke assertions are
+part of the new exact-head package gate; no actual Steam/game recovery is inferred.
+
 ## Native Windows continuation — 2026-10-29 KST
 
 Current scope and reproduction: [windows-native-2026-10-29.md](windows-native-2026-10-29.md).

@@ -179,3 +179,13 @@ Two new refusal regressions bring the portable protocol suite to54; independent
 source review and21 E2E/source-pin checks pass. New exact-head Windows5.1/7 and
 package results are required; preparation seals intentionally invalidate when
 this executed helper changes.
+
+The final recovery UI now enumerates retained native reference IDs independently
+of checklist storage. Deleting a checklist no longer hides its native recovery
+path: preparation can load its retained reference with no current checklist.
+Recovery still uses the exact owned trial and shared coordinator; imports require
+the matching surviving checklist. Corrupt references stay visible/refused, and
+unknown/private files are preserved. Portable actual-reference regression and
+independent source review pass; the Windows construction smoke additionally tests
+checklist deletion, orphan selection/identity and refused import. Exact-head
+Windows smoke must pass before merge.

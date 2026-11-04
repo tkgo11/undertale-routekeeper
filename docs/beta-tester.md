@@ -31,8 +31,8 @@ successful process receipt is not independent gameplay verification.
    `python/python.exe`, `python/pythonw.exe`, `compiler/UndertaleModCli.exe`,
    corresponding compiler source and notices; no developer installation is needed.
    In Preparation, use Check packaged native prerequisites (no game), then
-   Prepare a new verified separate copy. Load private native reference restores
-   the current checklist’s existing workspace/trial list. One workspace is linked
+   Prepare a new verified separate copy. Select the current checklist’s private
+   reference, then load it to restore the workspace/trial list. One workspace is linked
    to each checklist; a failed preparation remains discoverable for inspection.
    Preparation alone does not authorize launch. See the guarded lifecycle below.
 5. In Guided testing, select a scenario and an individual step. Read its purpose,
@@ -289,3 +289,24 @@ each step result, all-step aggregation, corruption refusal, optional private PNG
 review, issue revisions, redacted exports and explicit deletion on disposable data.
 Then separately test the legitimate game using the existing documented guards.
 Do not upload the resulting personal screenshots or saves to CI.
+
+## Retained recovery references / 보관한 복구 연결
+
+Checklist deletion does not delete private native references/backups. In
+Preparation, refresh **Retained native references**, select its exact checklist ID,
+and load the selected private reference. This works without an open or surviving
+checklist. Select its exact trial for guarded Recover/Cleanup or private journal
+inspection; corrupt references remain listed and refuse loading without deletion.
+Starting a new game still requires the current checklist's own reference and fresh
+consent. Importing results/pixels requires the matching surviving checklist; a
+deleted checklist cannot accept imports. No process is reattached or relaunched
+by selecting a reference. Preserve all copies when recovery is unknown.
+
+체크리스트를 삭제해도 비공개 네이티브 연결·백업은 남습니다. 준비 탭에서 **보관한
+네이티브 연결 새로고침**을 누르고 정확한 체크리스트 ID의 연결을 불러오세요. 열린
+체크리스트가 없거나 삭제됐어도 가능합니다. 해당 시험을 골라 보호된 Recover·Cleanup
+또는 비공개 기록 검토를 진행하세요. 손상된 연결도 목록에 남고 삭제 없이 불러오기를
+거부합니다. 새 게임 실행은 현재 체크리스트 자체의 연결과 새로운 승인이 필요합니다.
+결과·화면은 일치하는 기존 체크리스트에만 가져올 수 있으며 삭제한 체크리스트에는
+가져올 수 없습니다. 연결 선택으로 이전 프로세스에 붙거나 게임을 다시 실행하지
+않습니다. 복구가 미확인이면 모든 복사본을 보존하세요.
