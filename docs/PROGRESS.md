@@ -52,9 +52,9 @@ Local checks (Linux; SDK10.0.402, pinned Pillow11.3.0/pyflakes3.4.0, PowerShell7
   candidate remains `6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f`.
   Source links/hashes and private preview checks retain their scoped evidence.
 - Fresh self-contained win-x64 publish and official cached dependency bundle
-  PASS:750 dependency/source/notice files. Full1314-file directory policy/hash
-  validation PASS. ZIP verification and hosted Windows construction/native
-  fixtures must be checked for the exact pushed candidate before merge.
+  PASS:750 dependency/source/notice files. Full1314-file directory and actual hosted ZIP policy/hash
+  validation PASS. Hosted Windows construction, packaged helpers and native
+  disposable guardian/NTFS fixtures PASS. Interactive acceptance remains NOT_RUN.
 
 Confirmed audit repairs include repeated route-model transitions, CLI corrupt-data
 error handling, native child exit propagation, baseline certificate normalization,
@@ -67,17 +67,27 @@ are retired before side effects; shared transaction helpers remain maintained.
 Independent source audits and scoped rereviews are reconciled in ignored
 `.research/independent-audit`; refreshed inventory hashes are inspection records,
 not runtime proof. The first hosted candidate passed Linux, but macOS exposed a system-temp alias in a preview fixture and Windows PowerShell5.1 exposed spacing-dependent negative-fixture mutation. Both fixtures are corrected without changing production guards; the new head must pass hosted CI. Current GitHub `main` is unprotected and has no rulesets. All8
-review threads were fetched with pagination and are being dispositioned against
-actual source/tests. Qlty's success context still reports92 blocking issues; its
+review threads were fetched with pagination, dispositioned against actual
+source/tests and resolved. Qlty's success context still reports92 blocking issues; its
 detail URL redirects to login, so inaccessible findings cannot be claimed resolved.
 
 Repository visibility remains PUBLIC by the owner's explicit instruction. The
 private draft game-input release stays private; no saves were downloaded, no game
 assets or private runtime evidence enter tracked source/package artifacts. No
-Steam/game was run in Cloud. Hosted Windows/PowerShell5.1, interactive desktop,
+Steam/game was run in Cloud. Hosted Windows/PowerShell5.1/7 engineering checks now PASS. Interactive desktop,
 new human playthroughs, combat/Forced side effects and endings remain NOT_RUN here.
 Earlier limited native UI evidence is preserved as historical documentation, not
 independently repeated. No compatibility promotion or public release is authorized.
+
+Hosted source9a105da passed all4 OS jobs in push run41813553745 and PR run41813978334.
+Public authentic jobs were intentionally skipped. Windows has21 actual harmless
+Python guardian cases,12 PowerShell guardian checks per shell,52 human protocol
+checks per shell and9 real NTFS scenarios per shell, plus actual packaged helpers
+and WPF STA construction/redaction/history smoke. The hosted1314-file inner ZIP
+was independently downloaded, digest-checked and reverified; SHA256
+`49aac2f8fe1c0275a18af397528dabe9bc721884fecbe6811ec74a0dad5b0c58`.
+The final documentation/inventory head still requires fresh CI before merge.
+Human tasks and severity/traceability are in [beta-backlog.md](beta-backlog.md).
 
 ## Native Windows continuation — 2026-10-29 KST
 

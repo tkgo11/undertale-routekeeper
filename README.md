@@ -8,6 +8,7 @@ process, watchdog and save-recovery guards. It sends no game inputs. Python and
 the official compiler are bundled with source/licenses; testers need no SDK.
 See [implementation inventory](docs/beta-readiness.md) for current verification
 gates and the distinction between implemented behavior and gameplay certification.
+Human testing follows the [structured beta backlog](docs/beta-backlog.md).
 Repository visibility is PUBLIC by the owner's 2026-11-03 KST direction; game
 inputs, personal saves and runtime evidence remain excluded from public artifacts.
 

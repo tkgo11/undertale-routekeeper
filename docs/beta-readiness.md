@@ -1,7 +1,9 @@
-# Human-guided beta implementation readiness — 2026-11-03 UTC
+# Human-guided beta implementation readiness — 2026-11-04 UTC
 
-This is a current source/status inventory, not an independent whole-repository
-PASS or a native gameplay certification. Initial development HEAD:
+Maintained source, data/binary provenance and component interactions were inspected
+under independent scopes with root diff/inventory reconciliation and negative-path
+checks. This bounded engineering audit is not native gameplay certification. Initial
+development HEAD:
 `e6cfaeb3281244961023ae19bd4af1e636395de1`. The commit containing this report identifies
 its source snapshot; subsequent CI/review results must refer to that exact head.
 
@@ -16,22 +18,24 @@ not authorize a public release.
 
 | Requirement | Current source/evidence | Remaining work or acceptance |
 |---|---|---|
-| Route engine and modes | Existing Core/Decisions/History reused; source-driven route/prerequisite catalog | Reconcile complete maintained-source audit and exact-head regression evidence |
+| Route engine and modes | Existing Core/Decisions/History reused; source-driven route/prerequisite catalog | Independent maintained-source scope reviews and affected regressions complete; preserve documented unsupported/UNKNOWN conditions |
 | Native preparation | `human_beta.py` uses `runtime_lab.prepare_installed`, exact installed-file identities, shared Tool/compiler and a new sealed private workspace | Windows execution of authentic installed-copy preparation pending |
-| Human launch/stop/recovery | `human-session.ps1`, `human-loop.ps1`, policy and existing native coordinator provide explicit Check/Prepare/Run/Recover/Cleanup; human loop dispatches no inputs | WPF lifecycle integration implemented; exact packaged Windows guard/stop/recovery acceptance pending |
-| No developer installations | Pinned Python 3.12.10, Pillow 11.3.0, official CLI 0.9.2.0 plus corresponding source/notices bundled by `package_beta_dependencies.py`; synthetic packaging contracts and Linux construction evidence | Fresh Windows interpreter/Pillow/compiler/self-contained Tool probes and package integrity verification |
+| Human launch/stop/recovery | `human-session.ps1`, `human-loop.ps1`, policy and existing native coordinator provide explicit Check/Prepare/Run/Recover/Cleanup; human loop dispatches no inputs | Windows protocol, process and filesystem fixtures PASS; genuine installed-game acceptance remains NOT_RUN |
+| No developer installations | Pinned Python 3.12.10, Pillow 11.3.0, official CLI 0.9.2.0 plus corresponding source/notices bundled by `package_beta_dependencies.py`; synthetic packaging contracts and Linux construction evidence | Hosted physical interpreter/Pillow/compiler/Tool source closure and directory/ZIP checks PASS |
 | Guided scenarios | Catalog v2: 82 scenarios, 434 steps; bilingual instructions; Core rules/objectives, Neutral 0..18, all 8 optional call goals, distinct Stay/Leave and RESET/TRUE RESET | Human execution remains NOT_STARTED/NOT_RUN unless recorded; target 6/goal 8 unresolved mapping stays UNKNOWN |
 | Session contracts | Immutable revision chains, published head, exclusive writer, conflict/catalog/corruption refusal; bounded explicit interrupted-publication recovery | Recovery accepts only the exact verified unpublished next revision after review/consent; arbitrary repair/migration remains refused |
 | Evidence | Bounded PNG validation/metadata stripping/review hashes, same-session duplicate refusal; process-only native receipts append separately | Windows capture/receipt integration acceptance pending; imported pixels never establish time/authenticity |
-| Privacy | Local-only records, literal text redaction, reviewed-pixel opt-in, explicit deletion; native paths/backups stay private | Opaque source-pixel rectangle UI implemented; Windows construction and interactive acceptance pending |
-| Issues and exports | Stable IDs/revisions, expected/actual/reproduction/severity; JSON/HTML/CSV; no automatic publishing | Review exact-head literal-field coverage and pixel-redaction behavior; human sharing review remains required |
+| Privacy | Local-only records, literal text redaction, reviewed-pixel opt-in, explicit deletion; native paths/backups stay private | Windows construction/redaction contracts PASS; interactive accessibility/DPI acceptance remains NOT_RUN |
+| Issues and exports | Stable IDs/revisions, expected/actual/reproduction/severity; JSON/HTML/CSV; no automatic publishing | Automated redaction/report contracts PASS; explicit human sharing review remains required |
 | Dashboard | Seven independent dimensions, per-session feature/build/language/configuration coverage | Cross-session coverage and comparable human result changes implemented; no whole-game certification inferred |
-| Backup/watchdog | Existing journal/fence/identity/cache/network/guardian mechanisms reused by human session layer | Real Windows integration and failure-path validation pending; local content recovery cannot undo account/Cloud history |
-| Desktop/package | Ordinary-user bilingual WPF, per-monitor DPI, self-contained packaging and bounded dependency receipt | Fresh hosted Windows build/smoke, real interactive accessibility/DPI and native guarded acceptance pending |
-| Audit/Qlty | Independent scopes and concrete fixes under active reconciliation | Qlty aggregate 92 is not issue-level evidence; inaccessible details remain pending. No full-audit PASS inferred |
+| Backup/watchdog | Existing journal/fence/identity/cache/network/guardian mechanisms reused by human session layer | Windows NTFS9 checks in each shell, Python guardian21 cases and PowerShell guardian12 checks per shell PASS; actual game recovery remains separate |
+| Desktop/package | Ordinary-user bilingual WPF, per-monitor DPI, self-contained packaging and bounded dependency receipt | Hosted self-contained package/WPF construction PASS; interactive desktop and legitimate-game acceptance remain NOT_RUN |
+| Audit/Qlty | Independent source scopes and concrete fixes reconciled with the exact inventory | Qlty aggregate92 is not issue-level clearance; details require unavailable login. No known unresolved P0/P1 remains in inspected source |
 | GitHub gates | Latest read-only checks: main `protected=false`, repository rulesets `[]`; PR1 remains subject to exact-head CI/review checks | Fetch current checks after push; no required-review rules proven, and no blanket missing-approval blocker |
 
-Implementation validation and merge readiness remain **pending exact-head gates**.
+Implementation engineering gates passed for source9a105da in both push and PR CI.
+The final documentation/inventory commit must also pass its exact-head checks before
+merge; current checks/reviews/protections are re-fetched immediately before merging.
 Missing a human playthrough alone does not prevent completing a safe implementation.
 Source presence, successful construction and process receipts do not substitute
 for applicable automated Windows checks or independent engineering audit.
@@ -143,5 +147,28 @@ preview test's `/var` temporary-directory alias; the fixture now canonicalizes
 only its own disposable path. Windows PowerShell5.1 uses different JSON spacing,
 so the duplicate-field negative fixture had not actually mutated its input. Its
 replacement now tolerates JSON whitespace and separately asserts that mutation
-occurred. Production link and strict-JSON guards are unchanged. Fresh checks are
-required for the corrected head before merging.
+occurred. Production link and strict-JSON guards are unchanged. Corrected source9a105da passed all4 operating-system jobs in both push and PR CI.
+The final documentation-only head still receives its own checks before merging.
+
+## Hosted package and beta handoff
+
+Source `9a105dac3a72e1a9a25a8a9cc91765d1138d81e4` passed push run
+[41813553745](https://github.com/tkgo11/undertale-routekeeper/actions/runs/41813553745)
+and PR run
+[41813978334](https://github.com/tkgo11/undertale-routekeeper/actions/runs/41813978334).
+Each has4 successful OS jobs and1 intentionally skipped public authentic job.
+Windows exercised PowerShell5.1/7, native disposable NTFS/guardian checks, actual
+packaged Python/Pillow/compiler probes and the WPF construction/redaction/history
+smoke. No Steam/game or private resources were used by those jobs.
+
+The actual hosted Windows artifact was downloaded and independently checked against
+GitHub's archive digest, then its inner ZIP was checked with the maintained package
+verifier:1314files,139544188bytes, SHA256
+`49aac2f8fe1c0275a18af397528dabe9bc721884fecbe6811ec74a0dad5b0c58`.
+Artifact name: `routekeeper-beta-win-x64`; retention:7days. Select the final successful
+head's artifact in Actions for handoff. These checks verify packaging and construction;
+real interactive desktop/game acceptance remains NOT_RUN.
+
+Use the [structured human backlog](beta-backlog.md) after handoff. Eight original
+review threads were independently dispositioned with concrete tests/source and
+resolved. No release or profile promotion is included.
