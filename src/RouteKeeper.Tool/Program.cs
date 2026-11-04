@@ -54,7 +54,7 @@ try
     }
     return 0;
 }
-catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException or ArgumentException)
+catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or JsonException or ArgumentException)
 {
     Console.Error.WriteLine("FAIL: " + ex.Message);
     return 1;

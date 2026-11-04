@@ -8,6 +8,7 @@ import stat
 import subprocess
 import tempfile
 import zipfile
+from runtime_lab import assert_no_links, safe_entries
 
 VERSION = '0.9.2.0'
 ASSETS = {
@@ -22,7 +23,7 @@ def main():
     parser.add_argument('--directory', type=Path, required=True)
     args = parser.parse_args()
     asset, expected = ASSETS[(platform.system(), platform.machine())]
-    destination = args.directory.resolve()
+    destination = assert_no_links(args.directory)
     if destination.exists():
         raise SystemExit('FAIL: tool destination must be new')
     with tempfile.TemporaryDirectory(prefix='routekeeper-utmt-') as temporary:
@@ -33,12 +34,13 @@ def main():
         if actual != expected:
             raise SystemExit('FAIL: official CLI archive checksum mismatch')
         with zipfile.ZipFile(archive) as zipped:
-            for item in zipped.infolist():
-                path = (destination / item.filename).resolve()
+            for item, relative in safe_entries(zipped):
+                path = assert_no_links(destination.joinpath(*relative.parts))
                 if not path.is_relative_to(destination) or stat.S_ISLNK(item.external_attr >> 16):
                     raise SystemExit('FAIL: unsafe CLI archive entry')
+            assert_no_links(destination)
             zipped.extractall(destination)
-    executable = destination / ('UndertaleModCli.exe' if platform.system() == 'Windows' else 'UndertaleModCli')
+    executable = assert_no_links(destination / ('UndertaleModCli.exe' if platform.system() == 'Windows' else 'UndertaleModCli'))
     executable.chmod(executable.stat().st_mode | stat.S_IXUSR)
     subprocess.run([str(executable), '--version'], check=True)
     print('PASS: official CLI archive verified; upstream license remains in tool directory')

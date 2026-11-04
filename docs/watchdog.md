@@ -15,9 +15,17 @@ identity before arming and rechecks the target before termination. Termination u
 the retained handle, never a new PID lookup or a process name. A recycled PID cannot
 redirect that handle. A failed initial identity check refuses termination.
 
+After successful arming, an observer or evidence-write exception also attempts to
+stop the same still-verified retained target before propagating the failure. Disk
+full/locked/preexisting stop receipts cannot skip that safety action. Missing or
+failed receipts remain non-successful and block automatic recovery. Before arming,
+or if the target identity cannot be verified, termination remains refused. Portable
+mocked failure-injection and a real harmless Windows receipt-failure case cover the
+new branch; Cloud cannot claim the native case passed.
+
 Controller exit, a heartbeat stale for 30 seconds, the Pause key, an emergency-stop
 file, invalid heartbeat sequence, unexpected descendant, unverifiable descendant
-census, premature disarm or an absolute five-minute limit
+census, premature disarm or an absolute five-minute limit for existing automation
 stops the exact target with a bounded five-second wait. The guardian never sends
 keyboard messages, terminates Steam, kills a process tree, rewinds account history
 or restores saves. Unknown descendants remain untouched. Files below the private
@@ -28,6 +36,14 @@ normal closure, including a child whose parent has already exited. The coordinat
 propagates its abort file to the guardian. A guardian stop/failure
 or missing closure receipt blocks automatic recovery even after a later restart.
 Personal snapshots, trial state and unknown descendants remain for review.
+
+An explicitly scoped `HUMAN_BETA` configuration can select60–7200 seconds;
+ordinary Smoke remains limited to300 seconds. Other automation cannot extend the
+five-minute deadline. The human coordinator reserves45 seconds of the selected
+budget for shutdown rather than extending the guardian after gameplay. Pause and
+heartbeat/process guards apply throughout. Human mode sends no game inputs.
+The packaged helper runs with `-B` to avoid creating Python bytecode caches in the
+verified application directory.
 
 This is bounded protection after successful arming, not a system service, job object,
 account sandbox, hostile-writer protection or a power-loss guarantee. A controller

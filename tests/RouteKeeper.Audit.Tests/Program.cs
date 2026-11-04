@@ -145,6 +145,29 @@ var boundedJerry=new RunTransitionModel();boundedJerry.ResolveBoss(false);bounde
 refusedOverflow=false;try{boundedJerry.KillJerry(int.MaxValue);}catch(InvalidOperationException){refusedOverflow=true;}
 Check(refusedOverflow&&boundedJerry.Snapshot()["kills"]==1,"Jerry quota overflow changed state");
 var late=GenocideTransitionModel.Witness(true);
+foreach(bool abandon in new[]{false,true}) {
+    var completed=GenocideTransitionModel.Witness(abandon);var before=completed.Snapshot(false);var events=completed.Events.ToArray();
+    bool duplicateRefused=false;try{completed.Neo();}catch(InvalidOperationException){duplicateRefused=true;}
+    Check(duplicateRefused&&completed.Snapshot(false).Facts.OrderBy(x=>x.Key).SequenceEqual(before.Facts.OrderBy(x=>x.Key))&&completed.Events.SequenceEqual(events),"Already resolved NEO must not create another death or mutate a witness");
+    if(!abandon) {
+        bool sansRefused=false;try{completed.Sans();}catch(InvalidOperationException){sansRefused=true;}
+        Check(sansRefused&&completed.Events.SequenceEqual(events)&&completed.Snapshot(false).Facts.OrderBy(x=>x.Key).SequenceEqual(before.Facts.OrderBy(x=>x.Key)),"Resolved Sans must not append repeated death events");
+    }
+}
+var finale=new RunTransitionModel(false,false);
+for(int region=0;region<4;region++){finale.ResolveBoss(false);if(region==2){finale.GiveWater();finale.BefriendUndyne();}if(region<3)finale.Advance();}
+finale.Save();finale.CompleteNeutralAndReload();finale.LetterAndDate();finale.TrueLabAndFinale(1);
+var finalBefore=finale.Snapshot();var finaleEvents=finale.Events.ToArray();bool finaleRefused=false;
+try{finale.TrueLabAndFinale(2);}catch(InvalidOperationException){finaleRefused=true;}
+Check(finaleRefused&&finale.Events.SequenceEqual(finaleEvents)&&finale.Snapshot().Facts.OrderBy(x=>x.Key).SequenceEqual(finalBefore.Facts.OrderBy(x=>x.Key)),"Committed epilogue cannot be overwritten by a repeated source-witness finale");
+Check(finale.Snapshot()["neutral_alphys_friendship"]==12,"True Lab completion must advance the same raw phase as the native flag493 binding");
+bool dateRefused=false;try{finale.LetterAndDate();}catch(InvalidOperationException){dateRefused=true;}
+Check(dateRefused&&finale.Events.SequenceEqual(finaleEvents)&&finale.Snapshot().Facts.OrderBy(x=>x.Key).SequenceEqual(finalBefore.Facts.OrderBy(x=>x.Key)),"Post-finale letter/date cannot regress the committed original phase");
+var firstPiece=new RunTransitionModel();firstPiece.ResolveBoss(false);firstPiece.Advance();firstPiece.AcquireKeepsake();var pieceEvents=firstPiece.Events.ToArray();
+bool pieceRefused=false;try{firstPiece.AcquireKeepsake();}catch(InvalidOperationException){pieceRefused=true;}
+Check(pieceRefused&&firstPiece.Events.SequenceEqual(pieceEvents),"First-piece acquisition cannot duplicate a carried keepsake trace");
+firstPiece.StoreKeepsake();pieceEvents=firstPiece.Events.ToArray();pieceRefused=false;try{firstPiece.AcquireKeepsake();}catch(InvalidOperationException){pieceRefused=true;}
+Check(pieceRefused&&firstPiece.Events.SequenceEqual(pieceEvents),"Stored first-piece acquisition does not invent another eligible first-piece event");
 Check(late.Flags[205]==40&&late.Flags[27]==1&&late.Stage==15,"NEO settlement must not undo its earlier abandonment decision");
 Check(EndingReachability.Neutral(6,8).Verdict==ReachabilityVerdict.Unknown,"Unproven LV1/high-kill combination falsely proved");
 Check(EndingReachability.Neutral(4,8).Verdict==ReachabilityVerdict.ReachableInSourceModel,"Source-backed post-friendship So Sorry witness missing");

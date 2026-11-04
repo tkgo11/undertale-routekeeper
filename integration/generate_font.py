@@ -115,11 +115,15 @@ def generate(font_id="galmuri14"):
     png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,1,3,0,0,0))+chunk(b'PLTE',b'\0\0\0\xff\xff\xff')+chunk(b'tRNS',b'\0\xff')+chunk(b'IDAT',bytes(compressed))+chunk(b'IEND',b'')
     return {'ui-font.png':png,'ui-font.tsv':('\n'.join(rows)+'\n').encode(),'ui-font-size.txt':f'{width}\t{height}\n'.encode()},len(codes)
 
-def publish(path,data,verify=False):
+def reject_output_links(path):
     # Best-effort ancestor revalidation; not hostile concurrent-path protection.
     for component in (path,*path.parents):
         if component.is_symlink() or (component.exists() and getattr(component.lstat(),'st_file_attributes',0)&stat.FILE_ATTRIBUTE_REPARSE_POINT):
             raise ValueError('Linked generated output refused: '+str(path))
+    return path
+
+def publish(path,data,verify=False):
+    reject_output_links(path)
     if verify:
         if not path.exists() or path.read_bytes()!=data:raise ValueError('Stale generated asset '+str(path))
         return

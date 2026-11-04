@@ -692,21 +692,30 @@ def verify(manifest_path, output):
         WRITE_BUDGET.reset(budget)
 
 
-def open_run(run):
+def check_run_budget(run):
     run = no_links(run)
-    raw = read(run/'summary.json', MAX_JSON)
-    if read(run/'summary.sha256', 128).decode('ascii').strip() != digest(raw):
-        raise EvidenceError('Run summary integrity mismatch')
-    data = decode_json(raw)
-    found = set()
+    found = set(); total = 0; files = 0
     for index, path in enumerate(Path(run).rglob('*')):
         if index > 10000:
             raise EvidenceError('Run tree exceeds bounds')
         no_links(path)
         if path.is_file():
+            total += path.stat().st_size; files += 1
+            if total > MAX_RUN_BYTES or files > 4096:
+                raise EvidenceError('Stored run exceeds cumulative byte/file budget')
             relative = path.relative_to(run).as_posix()
             if relative not in ('summary.json', 'summary.sha256', '.review-lock') and not relative.startswith('decisions/'):
                 found.add(relative)
+    return found
+
+
+def open_run(run):
+    run = no_links(run)
+    found = check_run_budget(run)
+    raw = read(run/'summary.json', MAX_JSON)
+    if read(run/'summary.sha256', 128).decode('ascii').strip() != digest(raw):
+        raise EvidenceError('Run summary integrity mismatch')
+    data = decode_json(raw)
     if found != set(data['evidence']):
         raise EvidenceError('Unexpected or missing evidence files')
     for name, expected in data['evidence'].items():
@@ -716,17 +725,20 @@ def open_run(run):
 
 
 def decisions(run, data):
+    check_run_budget(run)
     directory = no_links(Path(run)/'decisions')
     records = []
     prior = None
+    summary_hash = digest(read(Path(run)/'summary.json', MAX_JSON))
+    review_ids = {x.get('reviewId') for x in data['assertions']}
     for file in sorted(directory.iterdir()):
         if file.name != f'{len(records)+1:06}.json':
             raise EvidenceError('Unexpected review record')
         raw = read(file, MAX_JSON)
         record = decode_json(raw)
-        if record['sequence'] != len(records)+1 or record['previous'] != prior or record['summarySha256'] != digest(read(Path(run)/'summary.json')):
+        if len(records) >= 4096 or record['sequence'] != len(records)+1 or record['previous'] != prior or record['summarySha256'] != summary_hash:
             raise EvidenceError('Review history chain mismatch')
-        if record['reviewId'] not in {x.get('reviewId') for x in data['assertions']} or record['decision'] not in DECISIONS or record['reviewerType'] not in ('human', 'ai'):
+        if record['reviewId'] not in review_ids or record['decision'] not in DECISIONS or record['reviewerType'] not in ('human', 'ai'):
             raise EvidenceError('Invalid decision scope/provenance')
         records.append(record)
         prior = digest(raw)

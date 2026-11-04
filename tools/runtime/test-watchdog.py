@@ -106,6 +106,17 @@ class WatchdogTests(unittest.TestCase):
         self.start()
         (self.root / 'abort.request').write_text('{}', encoding='utf-8', newline='\n')
         self.stopped('emergency-stop')
+    def test_locked_stop_receipt_cannot_prevent_owned_termination(self):
+        self.config['timeoutSeconds'] = 10
+        self.start()
+        # CreateNew must fail: evidence failure is preserved as a nonzero guardian
+        # exit, but the armed retained target still has to stop.
+        (self.root / 'stop.json').write_text('SYNTHETIC PREEXISTING RECEIPT', encoding='utf-8', newline='\n')
+        (self.root / 'abort.request').write_text('{}', encoding='utf-8', newline='\n')
+        self.guardian.wait(timeout=12); self.target.wait(timeout=5)
+        self.assertNotEqual(self.guardian.returncode, 0)
+        self.assertIsNone(self.unrelated.poll())
+        self.assertFalse((self.root / 'result.json').exists())
 
     def test_heartbeat_extends_only_while_progressing(self):
         self.start()

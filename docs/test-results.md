@@ -1,5 +1,84 @@
 # Verification evidence
 
+## Human-guided beta implementation — 2026-11-04 UTC
+
+Initial HEAD `e6cfaeb3281244961023ae19bd4af1e636395de1`. Current source is identified
+by the commit containing this record. Implementation is connected; merge readiness
+awaits the exact committed candidate's inventory and hosted CI gates. This is not
+full gameplay certification. See [beta-readiness.md](beta-readiness.md) and the
+[English/한국어 tester guide](beta-tester.md).
+
+The portable Beta library and bilingual Windows WPF app include82 versioned
+scenarios/434 source-grounded steps; six independent outcomes per step; immutable
+local revisions, corruption refusal and explicit interrupted-publication recovery;
+scenario-specific high-risk authorization; issue revision history; reviewed PNGs
+with opaque rectangle redaction; consented Windows/display/DPI metadata; seven
+separate coverage fields; cross-session comparable human results; and offline
+redacted JSON/HTML/CSV reports. Human PASS never becomes independent PASS.
+
+Native preparation verifies all219 installed-game files, preserves the registered
+installation, builds a separate exact candidate and seals the helper/source set.
+The physical child controller reuses existing Steam/process/file/network/cache,
+backup/fence/restoration and independent-watchdog guards. Human game actions are
+never automated. Fresh scope/nonce/typed consent, mandatory private backup/native
+fixture disclosure and separate optional game-capture consent remain required.
+Prior owned trial saves can be copied into a fresh transaction only after the
+same checklist/build/case/configuration, restored journal, personal baseline,
+archive/stop fence and sealed result are verified. Known permanent-history files
+refuse continuation. A shared account lease and durable active-journal marker
+prevent concurrent workspaces or a crashed trial being adopted as personal state.
+Native summaries contain whitelisted process observations only; raw paths, saves,
+fixture/game pixels and diagnostics stay in private storage. Account history is
+never restored. Historical receipts are observations at their timestamps.
+
+Local checks (Linux; SDK10.0.402, pinned Pillow11.3.0/pyflakes3.4.0, PowerShell7):
+
+- Release solution build:0 warnings/errors. Existing C#280 checks plus277 Beta
+  contracts PASS;9325 separately counted original-derived golden/model assertions
+  PASS. The actual PowerShell sanitized summary passes the strict C# parser.
+- Python discovery:264 tests,262 passed and2 skipped (opt-in contributor workflow
+  and real Windows module isolation). The contributor workflow is run separately
+  with `ROUTEKEEPER_LOCALE_E2E=1`; no Windows result is inferred from Linux.
+- Source/localization/font/UI generation and adapter verification PASS. Synthetic
+  G3M delta encode/decode, deterministic archive and private-input refusal PASS.
+- New human protocol/filesystem suite51 PASS, including real two-process file
+  exclusion, retained crash marker, owned continuation, privacy projection,
+  capture-stop and natural-exit races. Shared recovery101, probe cleanup61,
+  session paths20, Steam identity9, acquisition27 and direction67 PASS. Synthetic
+  E2E has147 OFFLINE_PASS records with native NTFS cleanup explicitly NOT_RUN.
+- Authentic local compile/serialize/reload/resource preservation, accepted control
+  and7 metadata-corruption refusals PASS. Genuine patch path checks now require a
+  positive compile/reload before the3 exact refusal cases; all PASS. Current
+  candidate remains `6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f`.
+  Source links/hashes and private preview checks retain their scoped evidence.
+- Fresh self-contained win-x64 publish and official cached dependency bundle
+  PASS:750 dependency/source/notice files. Full1314-file directory policy/hash
+  validation PASS. ZIP verification and hosted Windows construction/native
+  fixtures must be checked for the exact pushed candidate before merge.
+
+Confirmed audit repairs include repeated route-model transitions, CLI corrupt-data
+error handling, native child exit propagation, baseline certificate normalization,
+watchdog termination after receipt failures, bounded/link-safe tool outputs,
+nonblocking special-file refusal, export path positive controls, screenshot
+payload canonicalization, session publication integrity and native cross-component
+lifecycle/consent/privacy/concurrency defects. Unsafe legacy mutating entrypoints
+are retired before side effects; shared transaction helpers remain maintained.
+
+Independent source audits and scoped rereviews are reconciled in ignored
+`.research/independent-audit`; refreshed inventory hashes are inspection records,
+not runtime proof. Current GitHub `main` is unprotected and has no rulesets. All8
+review threads were fetched with pagination and are being dispositioned against
+actual source/tests. Qlty's success context still reports92 blocking issues; its
+detail URL redirects to login, so inaccessible findings cannot be claimed resolved.
+
+Repository visibility remains PUBLIC by the owner's explicit instruction. The
+private draft game-input release stays private; no saves were downloaded, no game
+assets or private runtime evidence enter tracked source/package artifacts. No
+Steam/game was run in Cloud. Hosted Windows/PowerShell5.1, interactive desktop,
+new human playthroughs, combat/Forced side effects and endings remain NOT_RUN here.
+Earlier limited native UI evidence is preserved as historical documentation, not
+independently repeated. No compatibility promotion or public release is authorized.
+
 ## Native Windows continuation — 2026-10-29 KST
 
 Current scope and reproduction: [windows-native-2026-10-29.md](windows-native-2026-10-29.md).

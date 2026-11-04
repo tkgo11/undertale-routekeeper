@@ -84,7 +84,9 @@ ProbeCheck ((Assert-RkOriginalProbeCompletion $returned[0] $sessionRoot) -ceq 'N
 $refused=$false
 try{Invoke-RkProbeDiagnostic { '{'; '  "failure": true'; '}'; throw 'injected diagnostic failure' }}catch{$refused=$_.Exception.Message -ceq 'injected diagnostic failure'}
 ProbeCheck $refused 'diagnostic exceptions propagate to the coordinator'
-$diagnosticExe=Join-Path $PSHOME $(if($PSVersionTable.PSEdition -eq 'Core'){'pwsh.exe'}else{'powershell.exe'})
+$diagnosticExe=Join-Path $PSHOME $(if($PSVersionTable.PSEdition -eq 'Core'){
+ if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){'pwsh.exe'}else{'pwsh'}
+}else{'powershell.exe'})
 $global:LASTEXITCODE=0;$refused=$false
 try{
  Invoke-RkProbeDiagnostic {

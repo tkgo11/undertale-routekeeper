@@ -56,12 +56,12 @@ public sealed class GenocideTransitionModel
     public void Undying(){if(Stage!=11)throw new InvalidOperationException("Waterfall deadline missed.");flags[251]=flags[350]=1;Kill(1,"Undying");Settle();area=3;}
     public void Neo()
     {
-        if(Stage<12||pending!=0)throw new InvalidOperationException("Not the NEO branch.");
+        if(Stage<12||pending!=0||Get(425)!=0)throw new InvalidOperationException("Not an unresolved NEO branch.");
         // The abandonment check occurs BEFORE the later overworld delta update.
         if(Get(205)<40)flags[27]=1;
         flags[425]=1;Kill(1,"NEO-before-regional-settlement");
     }
-    public void Sans(){if(Stage!=16||pending!=0)throw new InvalidOperationException("Sans unavailable.");sans=true;events.Add("Sans-death-c35:EXP-floor99999");}
+    public void Sans(){if(sans||Stage!=16||pending!=0)throw new InvalidOperationException("Sans unavailable or already resolved.");sans=true;events.Add("Sans-death-c35:EXP-floor99999");}
     public GameState Snapshot(bool sold)
     {
         var f=new Dictionary<string,int?>{["kills"]=kills,["kills_total"]=kills,["murder_level"]=Stage,["genocide_stage"]=Stage,

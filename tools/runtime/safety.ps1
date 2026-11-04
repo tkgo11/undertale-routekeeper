@@ -46,6 +46,14 @@ function Get-RkInventoryDigest($Files) {
     try { return ([BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes(($rows -join ''))))).Replace('-','').ToLowerInvariant() }
     finally { $hash.Dispose() }
 }
+function Assert-RkKnownRuntimeInventory($Inventory) {
+    $digest=Get-RkInventoryDigest $Inventory.files
+    if($digest -ceq 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a'){return}
+    if($digest -ceq '1aacbca88deef745691cbd0ea25d21a3b3c4ff2127f09809e3177a786c2ce732' -and
+       $Inventory.schema -eq 2 -and $Inventory.kind -ceq 'HUMAN_BETA_INSTALLED_COPY' -and
+       $Inventory.gameManifestSha256 -ceq 'ce8a0032fdf89d997c78052c51ec3338e250f8f9ba8bba7a12844507dc482923'){return}
+    throw 'Unknown original runtime inventory; preserve inputs and refuse.'
+}
 # Filesystem-only transaction; callers establish VM/Steam/hash gates first.
 # These functions are exercised on synthetic temp directories outside Windows.
 function Stop-RkDisposableInstall($Transaction) {

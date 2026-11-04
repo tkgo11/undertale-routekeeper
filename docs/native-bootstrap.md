@@ -6,9 +6,11 @@ launch. Acquire captures only through an authorized session and the existing
 capture helper. Its new `windowHandle` sidecar field records the actual checked
 HWND. Older sidecars without HWND cannot be upgraded by guessing a value.
 
-The native adapter uses foreground `SendInput` scan codes only for directions,
-because the original game also checks direct keyboard state. Other keys retain
-HWND messages. PID/start/path/hash, HWND/foreground, Steam identity and emergency
+The current native adapter uses foreground `SendInput` scan codes for every
+whitelisted key. Direction keys use extended scan codes; confirm/cancel/Enter/
+settings/language/acknowledgement use nonextended scan codes. The previous
+directions-only/HWND-message split is historical. PID/start/path/hash,
+HWND/foreground, Steam identity and emergency
 guards apply before down and throughout the bounded hold; already held direction
 keys are refused. After an accepted OS down, matching OS key-up always runs in
 cleanup, including after focus/process loss. That release affects global OS key

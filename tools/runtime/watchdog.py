@@ -144,15 +144,20 @@ def run(config_path):
     timeout = config['timeoutSeconds']
     if type(timeout) not in (int, float) or not 1 <= timeout <= 30:
         raise ValueError('Invalid heartbeat timeout')
+    maximum = config.get('maximumSeconds', 300)
+    if type(maximum) is not int or (config.get('sessionKind') == 'HUMAN_BETA' and not 60 <= maximum <= 7200) or (config.get('sessionKind') != 'HUMAN_BETA' and maximum != 300):
+        raise ValueError('Invalid scoped absolute guardian deadline')
     if config['controller']['pid'] == config['target']['pid']:
         raise ValueError('Controller cannot be termination target')
     controller = Process(config['controller']['pid'])
     target = None
+    armed = False
     try:
         target = Process(config['target']['pid'], terminate=True)
         if not matches(controller.identity(), config['controller']) or not matches(target.identity(), config['target']):
             raise ValueError('Process identity mismatch; no termination authorized')
         publish(root / 'ready.json', {'schema': 1, 'pid': os.getpid(), 'target': config['target'], 'startedUtc': time.time()})
+        armed = True
         last_heartbeat = time.monotonic()
         started = last_heartbeat
         sequence = -1
@@ -173,7 +178,7 @@ def run(config_path):
                 reason = 'controller-exited'
             elif user.GetAsyncKeyState(19) & 0x8000:
                 reason = 'pause-emergency-stop'
-            elif time.monotonic() - started >= 300:
+            elif time.monotonic() - started >= maximum:
                 reason = 'absolute-session-timeout'
             elif safe_path(root / 'abort.request').exists():
                 reason = 'emergency-stop'
@@ -225,6 +230,16 @@ def run(config_path):
         verdict = 'UNKNOWN_DESCENDANTS_PRESERVED' if observed_descendants else 'OWNED_PROCESS_EXITED'
         publish(root / 'result.json', {'schema': 1, 'result': verdict, 'descendants': sorted(observed_descendants),
                                       'descendantPolicy': 'PRESERVED_NOT_TERMINATED', 'saveRecovery': 'NOT_ATTEMPTED'})
+    except Exception:
+        # Once armed, observer/logging failures must not leave a verified owned
+        # target alive when its controller may already be dead. Receipts remain
+        # incomplete/non-successful, so this never authorizes save recovery.
+        # Retain the same identity gate even on this failure path.
+        if armed and target is not None and target.alive():
+            if not matches(target.identity(), config['target']):
+                raise ValueError('Guardian failed and target identity changed; preserve ambiguous process')
+            target.stop()
+        raise
     finally:
         controller.close()
         if target:

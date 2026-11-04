@@ -2,6 +2,14 @@
 import ast,itertools,re,unittest
 from pathlib import Path
 class WorkflowSafety(unittest.TestCase):
+ def test_each_native_safety_child_has_an_immediate_exit_guard(self):
+  lines=(Path(__file__).resolve().parents[1]/'.github/workflows/ci.yml').read_text(encoding='utf-8').splitlines()
+  count=0
+  for index,line in enumerate(lines):
+   if re.match(r'\s+(pwsh|powershell) -NoProfile -File ./tools/runtime/test-(native-steam-identity|native-acquisition|direction-input|session-paths)\.ps1$',line):
+    self.assertRegex(lines[index+1],r'if \(\$LASTEXITCODE -ne 0\) \{ throw ')
+    count+=1
+  self.assertEqual(count,8)
  def test_actions_are_commit_pinned_and_private_inputs_not_uploaded(self):
   self.assertIn('* text=auto eol=lf',(Path(__file__).resolve().parents[1]/'.gitattributes').read_text(encoding='utf-8'))
   workflows=Path(__file__).resolve().parents[1]/'.github/workflows'

@@ -13,6 +13,13 @@ import screen_verify as v
 
 
 class ScreenTests(unittest.TestCase):
+    def test_reopening_valid_run_checks_cumulative_budget_before_evidence_reads(self):
+        self.run_case(); run = self.root/'run'
+        with patch.object(v, 'MAX_RUN_BYTES', 1), self.assertRaisesRegex(v.EvidenceError, 'cumulative'):
+            v.open_run(run)
+        data = v.open_run(run)
+        with patch.object(v, 'MAX_RUN_BYTES', 1), self.assertRaisesRegex(v.EvidenceError, 'cumulative'):
+            v.decisions(run, data)
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

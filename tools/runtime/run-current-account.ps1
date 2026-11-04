@@ -51,7 +51,7 @@ if($Action -in @('Run','Preflight')){
  $profiles=@(Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json | Where-Object OriginalSha256 -eq 'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7')
  if($profiles.Count -ne 1){throw 'Unique exact-build profile required.'};Assert-RkHash $PatchedData $profiles[0].PatchedSha256
  $inventory=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw -Encoding UTF8 | ConvertFrom-Json
- if((Get-RkInventoryDigest $inventory.files) -cne 'd0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a'){throw 'Authorized ZIP inventory mismatch.'}
+ Assert-RkKnownRuntimeInventory $inventory
  Assert-RkNativeSaveTree $save
  if((Test-Path -LiteralPath $save) -and (Get-ChildItem -LiteralPath $save -Recurse -File -Force | Where-Object Name -like 'system_information_*')){throw 'Existing persistent history detected; same-account smoke refused.'}
  $cache=Get-RkSteamCacheInventory (Split-Path $SteamExe)
@@ -62,6 +62,12 @@ if($Action -in @('Run','Preflight')){
 }
 Assert-RkNetworkOffline
 Initialize-RkPrivateRoot $parent $owner
+$account=$null
+if($Action -in @('Recover','Archive','Cleanup')){
+ . (Join-Path $PSScriptRoot 'experimental-session.ps1')
+ $account=Enter-RkNativeAccountLease $save $owner $root
+}
+try {
 $lockName=if($Action -eq 'Observe'){'observation.lock'}else{'session.lock'}
 $observationGuard=$null
 $lock=[IO.File]::Open((Join-Path $parent $lockName),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
@@ -138,6 +144,7 @@ try {
   }
  } else {
   $s=Read-RkJournal $root;Assert-RkJournal $s $root $save $owner
+  if($Action -in @('Recover','Archive','Cleanup')){Set-RkNativeAccountMarker $s}
   if($Action -eq 'Observe'){
    # Observation writes only this owned private report. It does not assert PASS.
    $plan=Get-Content -LiteralPath (Join-Path $root 'observations.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -155,11 +162,13 @@ try {
     $s.registeredStable=(Get-RkTreeDigest $s.gameInstall) -ceq $s.registeredDigest;Save-RkJournal $s
     Write-RkAtomicJson (Join-Path $root 'recovery.json') @{result='NOT_RUN';localRestoration='CONTENT_TREE_VERIFIED';accountHistory='NOT_RESTORED';cacheStable=$s.cacheStable;registeredStable=$s.registeredStable}
     if(!$s.cacheStable -or !$s.registeredStable){throw 'Local restoration verified; Steam cache/install differ. Keep Cloud disabled; no account restoration or safe comparison is claimed.'}
+    Complete-RkNativeAccountMarker $s -LegacyRecovery
    } else {
     if($s.phase -ne 'Restored' -or !$s.cacheStable -or !$s.registeredStable){throw 'Recovery/cache/install checks incomplete; preserve all files.'}
     Restore-RkSaveTransaction $s $root $save $owner
     if(!(Test-RkCacheEqual $s.cacheBefore (Get-RkSteamCacheInventory (Split-Path $s.steamExe))) -or (Get-RkTreeDigest $s.gameInstall) -cne $s.registeredDigest){throw 'Baseline changed since recovery; archive/cleanup refused.'}
     if(Test-Path -LiteralPath (Join-Path $root 'protected-save')){throw 'A protected original remains; do not remove it.'}
+    Complete-RkNativeAccountMarker $s -LegacyRecovery
     $archive=Join-Path $parent ('completed-'+$s.id)
     if(Test-Path -LiteralPath $archive){throw 'Archive exists.'}
     if($Action -eq 'Cleanup'){
@@ -174,3 +183,5 @@ try {
   }
  }
 } finally {if($observationGuard){$observationGuard.Dispose()};$lock.Dispose()}
+
+} finally {if($account){Exit-RkNativeAccountLease $account}}

@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "platform": "win-x64",
+  "pythonPath": "python/python.exe",
+  "pythonWindowlessPath": "python/pythonw.exe",
+  "compilerPath": "compiler/UndertaleModCli.exe",
+  "compilerSourceCommit": "03c7048438347799e0717b6e57a9358d000472e0",
+  "underanalyzerSourceCommit": "4ff50a866b4c1a7acee8cebe6a56d6a48709b453",
+  "artifacts": [
+    {
+      "id": "python",
+      "filename": "python.zip",
+      "url": "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+      "sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "bytes": 11133606,
+      "version": "3.12.10",
+      "license": "Python-2.0",
+      "sourceCommit": null
+    },
+    {
+      "id": "pillow",
+      "filename": "pillow.whl",
+      "url": "https://files.pythonhosted.org/packages/8c/ce/e7dfc873bdd9828f3b6e5c2bbb74e47a98ec23cc5c74fc4e54462f0d9204/pillow-11.3.0-cp312-cp312-win_amd64.whl",
+      "sha256": "a6444696fce635783440b7f7a9fc24b3ad10a9ea3f0ab66c5905be1c19ccf17d",
+      "bytes": 6986324,
+      "version": "11.3.0",
+      "license": "MIT-CMU",
+      "sourceCommit": null
+    },
+    {
+      "id": "compiler",
+      "filename": "utmt.zip",
+      "url": "https://github.com/UnderminersTeam/UndertaleModTool/releases/download/0.9.2.0/UTMT_CLI_v0.9.2.0-Windows.zip",
+      "sha256": "e7573e45d107be34f81f955c6e4afc3c7c8f2628e5a6f307a871e3825b3dfb40",
+      "bytes": 62585935,
+      "version": "0.9.2.0",
+      "license": "GPL-3.0-only",
+      "sourceCommit": "03c7048438347799e0717b6e57a9358d000472e0"
+    },
+    {
+      "id": "compiler-source",
+      "filename": "utmt-source.zip",
+      "url": "https://api.github.com/repos/UnderminersTeam/UndertaleModTool/zipball/03c7048438347799e0717b6e57a9358d000472e0",
+      "sha256": "256a8d83759a644ed14576c5ea15fdfd54cd2e8e4ad77052be7d9290063f9e23",
+      "bytes": 13563392,
+      "version": "03c7048438347799e0717b6e57a9358d000472e0",
+      "license": "GPL-3.0-only",
+      "sourceCommit": "03c7048438347799e0717b6e57a9358d000472e0"
+    },
+    {
+      "id": "underanalyzer-source",
+      "filename": "underanalyzer-source.zip",
+      "url": "https://api.github.com/repos/UnderminersTeam/Underanalyzer/zipball/4ff50a866b4c1a7acee8cebe6a56d6a48709b453",
+      "sha256": "e03f5911d7743247ebed9a9778400a1ff3de8f76a0e8dcd30274423349cdeb22",
+      "bytes": 467549,
+      "version": "4ff50a866b4c1a7acee8cebe6a56d6a48709b453",
+      "license": "MPL-2.0",
+      "sourceCommit": "4ff50a866b4c1a7acee8cebe6a56d6a48709b453"
+    }
+  ]
+}

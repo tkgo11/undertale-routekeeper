@@ -6,6 +6,7 @@ param([ValidateSet('original','patched')][string]$Case='patched',
 $ErrorActionPreference='Stop'
 if ($env:USERNAME -ne 'WDAGUtilityAccount') { throw 'Disposable Sandbox account required.' }
 . (Join-Path $PSScriptRoot 'safety.ps1')
+. (Join-Path $PSScriptRoot 'current-account-state.ps1')
 Assert-RkNoLinks 'C:\RoutekeeperSession'
 $state=Get-Content -LiteralPath 'C:\RoutekeeperSession\session.json' -Raw | ConvertFrom-Json
 if ($state.schema -ne 2 -or $state.case -ne $Case) { throw 'Unknown or different disposable case.' }

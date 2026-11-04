@@ -24,7 +24,10 @@ compatibility-layer execution never promotes it. See runtime-validation.md for
 all archive hashes, isolation and the Steam initialization blocker.
 
 Expected experimental output SHA-256:
-`4457dbf421230c596df0d2c27754e8e94293c03c8e1106c6c1b07b9552f2c96c`.
+`6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f`.
+This is the current registry candidate after the later legacy-renderer/input work.
+The earlier4457dbf4 candidate below is historical. Fresh Cloud compilation on
+2026-11-03 KST reproduced6b7f0fc6 without executing the game; InspectedOnly remains.
 Structural input SHA-256:
 `665a035018ffd7008e7320bfc511ac752ee47baf72b2de080b524c354086c1aa`.
 Full source/output hashes and bytecode identity remain independently checked.

@@ -6,6 +6,7 @@ Only facts, hashes and small dialogue-slot categories leave the private director
 """
 import argparse,ast,hashlib,itertools,json,re
 from pathlib import Path
+import localization
 p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--verify',action='store_true');a=p.parse_args()
 sources={}
 def source_paths(pattern):
@@ -235,10 +236,7 @@ bombOwn=[read(p.stem) for p in source_paths('gml_Object_obj_battlebomb_*.gml')]
 assert all(value.strip()=='0' for text in bombOwn for value in re.findall(r'\bkilled\s*=\s*([^;]+);',text))
 # Hash source evidence without exporting original dialogue, media or saves.
 for name in ['gml_Object_obj_mainchara_Step_0','gml_Script_scr_monsterdefeat','gml_Script_scr_steps','gml_Object_obj_battler_Create_0','gml_Object_obj_torielboss_Alarm_10','gml_Object_obj_torielboss_Destroy_0','gml_Object_obj_papyrusboss_Alarm_10','gml_Object_obj_undyneboss_Step_0','gml_Object_obj_mettatonex_Alarm_6','gml_Object_obj_lesserdoge_Destroy_0','gml_Object_obj_lesserdoge_Other_5','gml_Object_obj_asgore_finalintro_Create_0','gml_Script_scr_namingscreen','gml_Object_obj_intromenu_Create_0','gml_Object_obj_credits_short_Create_0','gml_Object_obj_truechara_Step_0','gml_Object_obj_endmyroom_Create_0','gml_Object_obj_the_end_really_Create_0','gml_Script_scr_storagecheck','gml_Object_obj_gameshake_Create_0','gml_Object_obj_nothingness_event_Step_0']:read(name)
-a.output.parent.mkdir(parents=True,exist_ok=True)
 result={'schema':1,'kind':'ORIGINAL_SOURCE_CONDITIONAL_SLICE','runtime':'NOT_RUN','domain':'Neutral selector cases include counterfactual snapshots; selection is not a reachability proof','inputSha256':'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7','sourceSha256':sources,'neutralColumns':['tDead','pDead','uDead','mDead','totalKills','friendship','murderStage','alphys','carried','saveExists','armor','healingUsed','level'],'neutral':rows,'murderFlagOrder':[k for k,_ in requirements]+[27],'murder':murderrows,'ratings':ratingrows,'letter':letterrows,'snowman':snowrows,'finale':finalrows,'trueReset':resetrows,'levels':levels,'suppression':suppression,'attackWrap':attackrows,'encounterRewards':encounterRewards,'artClubGate':artrows,'settlement':settlement,'soSorryHits':sorryHits,'standardReturns':standardReturns,'killWriteSites':killSites,'zeroExpActors':zeroExpActors}
 serialized=json.dumps(result,separators=(',',':')).replace('],[[','],\n[[').replace('],[','],\n[')+'\n'
-if a.verify:
- if a.output.read_text(encoding='utf-8')!=serialized:raise SystemExit('FAIL original golden fixture/source hash drift')
-else:a.output.write_text(serialized, encoding='utf-8', newline='\n')
+localization.font_module().publish(a.output,serialized.encode('utf-8'),verify=a.verify)
 print(f'PASS original-derived fixtures: Neutral={len(rows)}, murder={len(murderrows)}, ratings={len(ratingrows)}; no dialogue text exported')

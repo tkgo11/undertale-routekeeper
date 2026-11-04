@@ -209,9 +209,12 @@ bytes. This is not Steam account restoration or native game acceptance.
 
 ## Remaining verification and implementation gaps
 
-- No out-of-process guardian currently guarantees release/owned-game termination
-  after the controller host is forcibly killed. Finally blocks cannot survive that
-  event. Recovery records refuse unknown states, but this is not prevention proof.
+- The later [external guardian](watchdog.md) monitors retained owned-process handles
+  after arming and can stop the verified game after controller death. Launch-to-arm,
+  simultaneous guardian/controller failure, inaccessible identity and power loss
+  remain limitations. Finally blocks alone cannot survive controller termination.
+  The 2026-11-03 fix also attempts exact-owned termination after armed observer/log
+  failure; a failed receipt remains a failure and never authorizes recovery.
 - Full NTFS power-loss durability, PS5.1/7 native API behavior, DPI125/150,
   multi-monitor/fullscreen/focus races and same-process HWND reuse need actual native
   tests. Client-space comparisons preserve pixels; they do not establish capture

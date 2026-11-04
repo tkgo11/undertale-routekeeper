@@ -1,6 +1,11 @@
 # Private input handling and cleanup
 
-The main repository is PRIVATE. Authorized input was retrieved from its draft
+The main repository is PUBLIC by explicit owner direction on 2026-11-03 KST.
+This supersedes historical repository-privacy statements, not input/evidence
+privacy. The private authentic Actions job must stay disabled on public/fork
+repositories; authentic validation is performed in the private cloud workspace.
+No draft release is published and no game/save input is included in source or
+ordinary CI artifacts. Authorized input was retrieved from its draft
 `dev-game-data` release using `gh release download`. No separate data repository
 is used. Originals remain in ignored `private-data/`; private analysis and patched
 outputs remain in ignored `.research/`. The private structural job downloads only the pinned data.win into these working

@@ -15,22 +15,24 @@ function Write-RkWatchdogHeartbeat([string]$Path,[int]$Sequence) {
 }
 function Resolve-RkWatchdogPython {
  $python=(Get-Command python -ErrorAction Stop).Source
- $pythonOutput=@(& $python -c 'import os,sys;p,e=os.path.splitext(sys._base_executable);print(p+chr(119)+e)')
+ $pythonOutput=@(& $python -B -c 'import os,sys;p,e=os.path.splitext(sys._base_executable);print(p+chr(119)+e)')
  if($LASTEXITCODE -ne 0 -or $pythonOutput.Count -ne 1 -or !(Test-Path -LiteralPath $pythonOutput[0] -PathType Leaf)){throw 'Cannot resolve direct Python guardian executable.'}
  $python=$pythonOutput[0];Assert-RkNoLinks $python
  return $python
 }
-function Start-RkExternalWatchdog($Target,[string]$Root,[string]$Runner,[string]$Hash) {
+function Start-RkExternalWatchdog($Target,[string]$Root,[string]$Runner,[string]$Hash,[int]$MaximumSeconds=300,[switch]$HumanGuided) {
+ if(($HumanGuided -and ($MaximumSeconds -lt 60 -or $MaximumSeconds -gt 7200)) -or (!$HumanGuided -and $MaximumSeconds -ne 300)){throw 'Invalid scoped absolute watchdog deadline.'}
  if($script:RkWatchdog){throw 'An external watchdog is already active.'}
  $folder=Join-Path $Root 'watchdog';Assert-RkNoLinks $folder
  if(Test-Path -LiteralPath $folder){throw 'Watchdog evidence already exists; do not reuse it.'}
  New-Item -ItemType Directory -Path $folder|Out-Null
  $controller=Get-Process -Id $PID -ErrorAction Stop
  $config=@{schema=1;timeoutSeconds=30;controller=@{pid=$PID;path=$controller.Path;ticks=$controller.StartTime.ToUniversalTime().Ticks;sha256=(Get-FileHash -LiteralPath $controller.Path).Hash.ToLowerInvariant()};target=@{pid=$Target.Id;path=$Runner;ticks=$Target.StartTime.ToUniversalTime().Ticks;sha256=$Hash}}
+ if($HumanGuided){$config.sessionKind='HUMAN_BETA';$config.maximumSeconds=$MaximumSeconds}
  Write-RkAtomicJson (Join-Path $folder 'config.json') $config
  Write-RkWatchdogHeartbeat (Join-Path $folder 'heartbeat.json') 0
  $python=Resolve-RkWatchdogPython
- $arguments='"'+(Join-Path $PSScriptRoot 'watchdog.py')+'" --config "'+(Join-Path $folder 'config.json')+'"'
+ $arguments='-B "'+(Join-Path $PSScriptRoot 'watchdog.py')+'" --config "'+(Join-Path $folder 'config.json')+'"'
  $guardian=New-Object Diagnostics.Process
  $guardian.StartInfo=New-Object Diagnostics.ProcessStartInfo
  $guardian.StartInfo.FileName=$python;$guardian.StartInfo.Arguments=$arguments

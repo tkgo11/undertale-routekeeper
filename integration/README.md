@@ -1,8 +1,11 @@
 # Native ROUTEKEEPER integration
 
 This modifies authentic GameMaker bytecode; it is not an external overlay. The
-original game runner would launch modified data normally. **No official-runner
-scenario has been executed and no live installation is approved.**
+original game runner loads modified data normally. The earlier no-run state is
+historical: later private records report scoped original/patched startup, F10,
+English/Korean UI and limited movement observations. See the latest dated sections
+of [progress](../docs/PROGRESS.md) and [test results](../docs/test-results.md).
+**Those observations do not approve a live installation or full gameplay.**
 
 The exact uploaded input is pinned by SHA-256, structure, original hook hashes
 and state-binding evidence. Development generation accepts a new separate output

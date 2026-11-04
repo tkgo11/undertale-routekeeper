@@ -1,12 +1,23 @@
 # ROUTEKEEPER
 
+Current human-guided beta work: [Beta Tester guide (English/한국어)](docs/beta-tester.md).
+The Windows WPF application prepares an exact verified separate game copy, guides
+human-controlled testing, and records versioned local step results, reviewed
+screenshots, issue history and offline reports. Its native launcher reuses the
+process, watchdog and save-recovery guards. It sends no game inputs. Python and
+the official compiler are bundled with source/licenses; testers need no SDK.
+See [implementation inventory](docs/beta-readiness.md) for current verification
+gates and the distinction between implemented behavior and gameplay certification.
+Repository visibility is PUBLIC by the owner's 2026-11-03 KST direction; game
+inputs, personal saves and runtime evidence remain excluded from public artifacts.
+
 Current experimental Windows UI automation and harness fixes: see
 [docs/e2e-hardening.md](docs/e2e-hardening.md). OriginalBaseline/PatchedSmoke/FullE2E
 use private reviewed scene contracts and the real Windows adapter; missing native
 references/observers remain BLOCKED. Cloud has not run Steam/game. Default legacy
 Run remains NO-GO, and no native/gameplay/compatibility approval is implied.
 
-Private development of native UNDERTALE route guidance. The implementation now
+Development of native UNDERTALE route guidance. The implementation now
 includes five ending families, 18 specific Neutral targets plus Any, Pacifist
 Stay/Leave variants, live state bindings, objectives/progress, bilingual settings
 and scoped pre-decision protections. The pixel UI now uses native-style submenus,

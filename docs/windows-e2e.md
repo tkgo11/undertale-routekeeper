@@ -215,20 +215,25 @@ are impossible. Do not advertise a fully automated native ending test system.
 
 ## Input, capture and stop behavior
 
-`input-window.ps1` targets the original HWND with WM_KEYDOWN/UP and bounded holds.
+`input-window.ps1` uses guarded foreground SendInput scan codes and bounded holds
+for its fixed key whitelist. Directions use extended scan codes; other allowed
+keys use nonextended scan codes. It does not target delivery to the original HWND.
 It verifies current process path/hash/start, HWND ownership, foreground, Pause and
-an abort tombstone before/through a hold. Releases target the original window,
-never global keyboard state; a recycled HWND owner is refused. It uses no global
-hooks, SendInput, controller emulator or input into Steam authentication UI.
+an abort tombstone before/through a hold. A recycled HWND owner is refused. Cleanup
+releases only its successfully injected key through global OS key-up, including
+after focus/process loss; the new foreground can receive that release. It uses no
+global hooks, controller emulator or input into Steam authentication UI.
 Dispatch receipts distinguish requested/observed hold time from actual game action.
 
 [PostMessage](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew)
 queues asynchronously; success does not prove message processing or hardware
 keyboard state. [SendInput](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput)
-is not HWND-targeted and has UIPI/state restrictions. It is not silently substituted.
+is not HWND-targeted and has UIPI/state restrictions. Its current use is explicit
+in each transport/release-scope receipt; older PostMessage-only descriptions are historical.
 The authorized runner imports GetAsyncKeyState/GetKeyState/raw-input/message APIs;
 that read-only import observation does **not** prove which path implements the GML
-keyboard functions. Native GameMaker acceptance of targeted messages is UNKNOWN.
+keyboard functions. A dispatch receipt still does not establish an accepted game
+action; only separately reviewed observed response supplies that bounded evidence.
 
 The capture helper now exposes a common owned-window function for both the harmless
 native test window and its existing UNDERTALE wrapper. NativeTest uses synthetic

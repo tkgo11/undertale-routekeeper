@@ -1,5 +1,6 @@
 """Independent disposable saved-state fixtures; no live game or personal saves."""
 from pathlib import Path
+import json
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -46,6 +47,16 @@ class SaveObserver(unittest.TestCase):
             self.assertEqual(observer.parse_snapshot(self.raw())['level'], level)
             self.lines[1] = str(level-1); self.lines[9] = str(threshold-1)
             self.assertEqual(observer.parse_snapshot(self.raw())['level'], level-1)
+    def test_level_results_against_original_source_hash_bound_golden(self):
+        golden = json.loads((s.ROOT/'tests/golden/original-endings.json').read_text(encoding='utf-8'))
+        self.assertEqual(golden['sourceSha256']['gml_Script_scr_levelup'], observer.SOURCES['gml_Script_scr_levelup.gml'])
+        for experience, level in golden['levels']:
+            self.lines[1] = str(level); self.lines[9] = str(experience)
+            with self.subTest(experience=experience, level=level):
+                if experience > 99999:
+                    with self.assertRaises(s.EvidenceError): observer.parse_snapshot(self.raw())
+                else:
+                    self.assertEqual(observer.parse_snapshot(self.raw())['level'], level)
 
     def test_partial_unknown_extra_binary_and_bad_newline_refused(self):
         for raw in (b'partial', self.raw() + b'UNEXPECTED\n', self.raw().replace(b'SYNTHETIC', b'bad\0name'),

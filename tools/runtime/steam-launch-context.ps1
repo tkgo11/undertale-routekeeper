@@ -4,7 +4,8 @@
 # https://partner.steamgames.com/doc/api/steam_api#SteamAPI_RestartAppIfNecessary
 function Get-RkSteamLaunchContextIdentity([string]$Work,[string]$GameInstall,
  [ValidateSet('original','patched')][string]$Case,
- [ValidateSet('active-session','original-baseline')][string]$SessionName='active-session') {
+ [string]$SessionName='active-session',[switch]$HumanGuided) {
+ if(($HumanGuided -and $SessionName -cnotmatch '^human-[a-f0-9]{32}$') -or (!$HumanGuided -and $SessionName -cnotin @('active-session','original-baseline'))){throw 'Unsupported scoped session namespace.'}
  if($SessionName -eq 'original-baseline' -and $Case -ne 'original'){throw 'Launch context case differs from its staging namespace.'}
  $workPath=[IO.Path]::GetFullPath($Work)
  $registered=[IO.Path]::GetFullPath($GameInstall)
@@ -40,8 +41,8 @@ function Get-RkSteamLaunchContextIdentity([string]$Work,[string]$GameInstall,
 }
 function Assert-RkSteamLaunchContext([string]$Work,[string]$GameInstall,
  [ValidateSet('original','patched')][string]$Case,
- [ValidateSet('active-session','original-baseline')][string]$SessionName='active-session') {
- $identity=Get-RkSteamLaunchContextIdentity $Work $GameInstall $Case $SessionName
+ [string]$SessionName='active-session',[switch]$HumanGuided) {
+ $identity=Get-RkSteamLaunchContextIdentity $Work $GameInstall $Case $SessionName -HumanGuided:$HumanGuided
  $metadata=$identity.metadataPath
  if(!(Test-Path -LiteralPath $metadata -PathType Leaf)){throw 'Exact staged Steam AppID metadata is missing.'}
  $bytes=[IO.File]::ReadAllBytes($metadata)
@@ -54,8 +55,8 @@ function Assert-RkSteamLaunchContext([string]$Work,[string]$GameInstall,
 }
 function New-RkSteamLaunchContext([string]$Work,[string]$GameInstall,
  [ValidateSet('original','patched')][string]$Case,
- [ValidateSet('active-session','original-baseline')][string]$SessionName='active-session') {
- $identity=Get-RkSteamLaunchContextIdentity $Work $GameInstall $Case $SessionName
+ [string]$SessionName='active-session',[switch]$HumanGuided) {
+ $identity=Get-RkSteamLaunchContextIdentity $Work $GameInstall $Case $SessionName -HumanGuided:$HumanGuided
  $metadata=$identity.metadataPath
  # An existing correct file can be independently Assert-ed but is never replaced
  # or silently adopted by creation. Differing/unknown metadata remains untouched.
@@ -63,5 +64,5 @@ function New-RkSteamLaunchContext([string]$Work,[string]$GameInstall,
  $bytes=[Text.Encoding]::ASCII.GetBytes('391540')
  $stream=[IO.File]::Open($metadata,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
  try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
- return (Assert-RkSteamLaunchContext $Work $GameInstall $Case $SessionName)
+ return (Assert-RkSteamLaunchContext $Work $GameInstall $Case $SessionName -HumanGuided:$HumanGuided)
 }

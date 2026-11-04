@@ -33,6 +33,20 @@ try {
  Check $refused 'unknown journal phase still refuses'
  $firstRead=$session.Find({param($node) $node -is [Management.Automation.Language.CommandAst] -and $node.GetCommandName() -ceq 'Read-RkJournal'},$true)
  Check ($normalization[0].Extent.EndOffset -lt $firstRead.Extent.StartOffset) 'normalization precedes baseline journal access'
+ $fixture=Join-Path ([IO.Path]::GetTempPath()) ('rk-baseline-'+[guid]::NewGuid().ToString('N'))
+ $null=New-Item -ItemType Directory -Path $fixture
+ try {
+  $certificate=Join-Path $fixture 'live-baseline-review.json'
+  [IO.File]::WriteAllText($certificate,'SYNTHETIC PATH FIXTURE ONLY')
+  Check ((Get-RkBaselineSessionRoot $certificate) -ceq $fixture) 'certificate path resolves to its session directory'
+  Check ((Get-RkBaselineSessionRoot $fixture) -ceq $fixture) 'directory baseline keeps the same session directory'
+  $refused=$false;try{Get-RkBaselineSessionRoot (Join-Path $fixture 'missing')|Out-Null}catch{$refused=$true}
+  Check $refused 'missing baseline refuses before journal access'
+  $refused=$false;try{Get-RkBaselineSessionRoot (Join-Path $fixture 'other.json')|Out-Null}catch{$refused=$true}
+  Check $refused 'arbitrary file spelling is not a baseline certificate'
+ } finally {Remove-Item -LiteralPath $fixture -Recurse -Force}
+ $readText=$firstRead.Extent.Text
+ Check ($readText -ceq 'Read-RkJournal $baselineRoot') 'production journal reader uses normalized certificate directory'
  $diagnostics=@($session.FindAll({param($node) $node -is [Management.Automation.Language.ThrowStatementAst] -and ($node.Extent.Text -like '*runner exited/redirected*' -or $node.Extent.Text -like '*owned window/focus did not stabilize*')},$true))
  Check ($diagnostics.Count -eq 2) 'two owned launch/window failure diagnostics located'
  foreach($Case in @('original','patched')){
@@ -42,4 +56,4 @@ try {
   }
  }
 } finally {Pop-Location}
-Write-Host ('SESSION_PATHS '+$checks+' PASS; no process launch or filesystem mutation')
+Write-Host ('SESSION_PATHS '+$checks+' PASS; disposable path fixtures only; no game/Steam launch')

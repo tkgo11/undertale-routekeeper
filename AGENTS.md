@@ -21,7 +21,9 @@ No display-version-only matching; unknown builds are diagnostic-only.
 
 Private game data and decompilation stay in ignored private-data/ and .research/.
 Do not log personal save contents, commit proprietary resources, or upload game
-binaries to CI. Keep the repository private. Do not commit generated patched data.
+binaries to CI. The owner explicitly selected PUBLIC repository visibility on
+2026-11-03 KST; source-only public CI is allowed. Private draft game inputs,
+personal saves and runtime pixels remain private. Do not commit generated patched data.
 Structural compilation is not runtime verification. Every result must distinguish
 PASS, FAIL, NOT_RUN and BLOCKED. Update docs/PROGRESS.md and docs/test-results.md.
 Review risky save, Forced and installation changes before merging.
@@ -84,8 +86,10 @@ in a public repository or a fork.
 - `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` checks ASTs/filesystem
   guards and compiles capture interop without Windows API calls. Optional Lab and
   PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
-- Newest candidate4457dbf4 has NOT executed. Prior40d67856 Wine failure is not a
-  runtime result for later candidates. Read the latest dated progress section.
+- Current registry candidate is6b7f0fc6 after later legacy-renderer/input work.
+  Read the latest dated integration/progress records for reported limited native
+  observations; Cloud structural reproduction is not independent gameplay proof.
+  Earlier4457dbf4 and40d67856/Wine records are historical, not current verdicts.
 
 ## Current-account native smoke (experimental, Windows NOT_RUN)
 
@@ -119,8 +123,12 @@ Recovery waits for Steam, steamwebhelper and UNDERTALE to exit; no Steam cache i
 rewound. Changed caches/registered files block comparison/archive/cleanup. Legacy
 schema1 swap sessions are refused, not automatically trusted or rerouted.
 
-PR1 is OPEN and READY, never convert it to Draft. Do not merge/release/promote
-InspectedOnly or retry billing-blocked CI. Refresh paginated reviews/threads/checks
+PR1 is OPEN and READY, never convert it to Draft. The current owner authorizes
+merging PR1 without another confirmation ONLY after every implementation,
+automated-test, required-review and safety gate in the supplied mission passes.
+Incomplete implementation still blocks merge; human playthrough completion alone
+does not. Do not release/promote InspectedOnly or retry billing-blocked CI.
+Refresh paginated reviews/threads/checks
 before push, after push and immediately before final reporting; validate new/edited
 findings against the actual HEAD. Private review evidence lives in .research/.
 Older dedicated-user/Sandbox scripts are historical alternatives, not requirements
@@ -212,7 +220,9 @@ baseline, native compatibility or approval to run patched/progression scenarios.
   startup observation only; no unrecognized-state input or automatic patched run.
 - Reuse existing transactions. New experimental recovery requires a post-trial
   fence before moving any existing trial content; unknown changes fail closed.
-- Targeted HWND messages are not physical input or verified GameMaker actions.
+- Current input uses guarded foreground SendInput scan codes for whitelisted keys;
+  HWND ownership is a guard, not targeted delivery. Cleanup releases only its own
+  injected OS key globally, including after focus loss. Dispatch is not gameplay proof.
 - Capture-only review never becomes PASS. Preserve all private evidence and never
   promote InspectedOnly from receipts, consent or non-game tests.
 

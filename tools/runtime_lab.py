@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Private, hash-pinned staging for the authorized Windows runtime. No installer gate override."""
-import argparse,hashlib,json,re,shutil,stat,struct,zipfile
+import argparse,hashlib,json,os,re,shutil,stat,struct,zipfile
 from pathlib import Path,PurePosixPath
 ZIP_SHA='9c8fa123ede4bad7b39f70ddcd1a8fdfa397df89bb215b18b4635855df2f265d'
 ZIP_SIZE=132054497
@@ -8,6 +8,64 @@ DATA_SHA='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
 RUNNER_SHA='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
 INVENTORY_SHA='d0d633daad4d0c45a3f6761e9627ad7188853219ff96122b426d06b7a345932a'
 MARKER='.routekeeper-disposable-runtime-lab'
+GAME_MANIFEST_SHA='ce8a0032fdf89d997c78052c51ec3338e250f8f9ba8bba7a12844507dc482923'
+def read_metadata(path):
+ path=assert_no_links(path)
+ fd=os.open(path,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
+ with os.fdopen(fd,'rb') as stream:
+  info=os.fstat(stream.fileno())
+  if not stat.S_ISREG(info.st_mode) or info.st_size>1024*1024:raise ValueError('Runtime metadata type/size refused')
+  raw=stream.read(1024*1024+1)
+  if len(raw)>1024*1024:raise ValueError('Runtime metadata exceeds read budget')
+  return raw
+
+def installed_identity():
+ path=assert_no_links(Path(__file__).resolve().parents[1]/'profiles/windows-game-files.json')
+ raw=read_metadata(path)
+ if len(raw)>1024*1024 or hashlib.sha256(raw).hexdigest()!=GAME_MANIFEST_SHA:raise ValueError('Pinned installed-game inventory changed')
+ manifest=json.loads(raw)
+ if manifest['schema']!=1 or manifest['originalSha256']!=DATA_SHA or manifest['runnerSha256']!=RUNNER_SHA:raise ValueError('Installed-game profile mismatch')
+ return dict(schema=2,kind='HUMAN_BETA_INSTALLED_COPY',gameManifestSha256=GAME_MANIFEST_SHA,
+  platform='Windows',architecture='x86',steamBuild=manifest['gameBuild'],depot=manifest['depotId'],depotManifest=manifest['depotManifest'],
+  runnerSha256=RUNNER_SHA,dataSha256=DATA_SHA,files=[dict(f,path='Undertale/'+f['path']) for f in manifest['files']],status='InspectedOnly',runtime='NOT_RUN')
+
+def prepare_installed(source,work):
+ source=assert_no_links(source);work=assert_no_links(work);identity=installed_identity()
+ if source==work or source.is_relative_to(work) or work.is_relative_to(source):raise ValueError('Installed source and owned work must not overlap')
+ if work.exists():raise ValueError('Installed-game preparation requires a new work directory')
+ files=[dict(f,path=f['path'][10:]) for f in identity['files']]
+ verify_original_tree(source,files)
+ work.mkdir(mode=0o700,parents=True)
+ (work/MARKER).write_text('Owned human beta copy. Game assets and private evidence must never be published.\n',encoding='utf-8',newline='\n')
+ # Keep failed/unsealed copies for diagnosis. No registered-install mutation or
+ # implicit cleanup ever follows a changed source or an unknown file.
+ for kind,destination in [('original',work/'original/Undertale'),('run-original',work/'runs/original'),('run-patched',work/'runs/patched')]:
+  destination.mkdir(parents=True)
+  for f in files:
+   src=assert_no_links(source/f['path']);target=assert_no_links(destination/f['path']);target.parent.mkdir(parents=True,exist_ok=True)
+   copy_exact_file(src,target,f['size'],f['sha256'])
+   target.chmod(0o400 if kind=='original' else 0o600)
+  verify_original_tree(destination,files)
+ verify_original_tree(source,files)
+ (work/'evidence').mkdir()
+ (work/'identity-private.json').write_text(json.dumps(identity,indent=2)+'\n',encoding='utf-8',newline='\n')
+ return identity
+def copy_exact_file(source,target,size,sha256):
+ # Exclusive bounded copy: never truncate a file, even if an earlier check raced.
+ source=assert_no_links(source);target=assert_no_links(target)
+ info=source.stat()
+ if not stat.S_ISREG(info.st_mode) or info.st_size!=size or not 0<=size<=256*1024**2:raise ValueError('Copy source type/size mismatch')
+ hashed=hashlib.sha256();remaining=size
+ fd=os.open(source,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
+ with os.fdopen(fd,'rb') as inp,target.open('xb') as out:
+  opened=os.fstat(inp.fileno())
+  if not stat.S_ISREG(opened.st_mode) or opened.st_size!=size:raise ValueError('Copy source changed before open')
+  while remaining:
+   chunk=inp.read(min(1024*1024,remaining))
+   if not chunk:raise ValueError('Copy source truncated')
+   hashed.update(chunk);out.write(chunk);remaining-=len(chunk)
+  if inp.read(1) or hashed.hexdigest()!=sha256:raise ValueError('Copy source identity changed')
+
 def assert_no_links(path):
  # lstat detects NTFS reparse points (including junctions), not only symlinks.
  path=Path(path).absolute()
@@ -20,7 +78,19 @@ def assert_no_links(path):
 def inventory_digest(files):
  return hashlib.sha256(''.join(f"{f['path']}\t{f['size']}\t{f['sha256']}\n" for f in sorted(files,key=lambda f:f['path'])).encode()).hexdigest()
 def digest(path):
- with Path(path).open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
+ path=assert_no_links(path)
+ fd=os.open(path,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
+ with os.fdopen(fd,'rb') as stream:
+  info=os.fstat(stream.fileno())
+  if not stat.S_ISREG(info.st_mode) or info.st_size>1024**3:raise ValueError('Runtime identity file type/size refused')
+  sha=hashlib.sha256();total=0
+  while True:
+   block=stream.read(min(1024*1024,1024**3-total+1))
+   if not block:break
+   total+=len(block)
+   if total>1024**3:raise ValueError('Runtime identity exceeds read budget')
+   sha.update(block)
+  return sha.hexdigest()
 def safe_entries(z):
  seen=set();total=0
  if len(z.infolist())>4096:raise ValueError('Too many archive entries')
@@ -64,9 +134,12 @@ def inspect(archive,expected_sha=ZIP_SHA,expected_size=ZIP_SIZE,expected_data=DA
 
 def verify_original_tree(original,files):
  assert_no_links(original)
- expected={f['path'] for f in files};actual=set()
+ expected={f['path'] for f in files};actual=set();nodes=0
+ if len(files)>4096 or sum(f['size'] for f in files)>1024**3:raise ValueError('Pristine inventory exceeds limits')
  if not original.is_dir():raise ValueError('Pristine original directory missing')
  for path in original.rglob('*'):
+  nodes+=1
+  if nodes>8192:raise ValueError('Pristine tree exceeds node limit')
   assert_no_links(path)
   if path.is_file():actual.add(path.relative_to(original).as_posix())
   elif not path.is_dir():raise ValueError('Unsupported node in pristine tree')
@@ -119,8 +192,10 @@ def verify(work,expected_inventory=INVENTORY_SHA):
  work=assert_no_links(work)
  assert_no_links(work/MARKER);assert_no_links(work/'identity-private.json')
  if not (work/MARKER).is_file():raise ValueError('Not a disposable runtime lab')
- identity=json.loads((work/'identity-private.json').read_text(encoding='utf-8'))
- if inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
+ identity=json.loads(read_metadata(work/'identity-private.json'))
+ if identity.get('kind')=='HUMAN_BETA_INSTALLED_COPY':
+  if expected_inventory!=INVENTORY_SHA or identity!=installed_identity():raise ValueError('Installed-game inventory identity changed')
+ elif inventory_digest(identity['files'])!=expected_inventory:raise ValueError('Original inventory identity changed')
  verify_original_tree(work/'original',identity['files'])
  return identity
 

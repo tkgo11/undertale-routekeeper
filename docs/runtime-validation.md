@@ -1,5 +1,14 @@
 # Authorized Windows runtime validation
 
+The historical `run-without-sandbox.ps1`, `inside-sandbox.ps1`,
+`launch-windows-sandbox.ps1`, `checkpoint-saves.ps1` and `wine-smoke.sh` entry points
+are retired. They refuse before launching, copying or restoring anything. Their
+old examples below are historical evidence, not current commands. Use the
+[Beta Tester guide](beta-tester.md) for human-controlled testing and
+`test-windows.ps1` for the separately scoped maintained diagnostics. The shared
+transaction, snapshot and recovery helpers remain maintained; retirement does
+not replace them with a second save-restoration implementation.
+
 Latest opt-in experimental boundary: [windows-e2e.md](windows-e2e.md). Default
 Run and safety approval remain NO-GO. A separately authorized original-startup
 probe requires native gates/consent; it is not a patched/gameplay baseline. Cloud

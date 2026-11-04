@@ -94,9 +94,23 @@ try {
  function Assert-RkProcessesClosed {if($script:fakeBusy){throw 'synthetic process still owns trial'}}
  function Assert-RkNetworkOffline {}
  function Assert-RkNativeSaveTree([string]$Path){Assert-RkNoLinks $Path;if(Test-Path -LiteralPath $Path){Assert-RkTreeNoLinks $Path}}
+ # Each isolated Save models a separate account. The production account-wide
+ # lease/marker runs against a disposable guard directory; Windows ACL APIs are
+ # mocked here and exercised by the native suite. Never touch the real profile.
+ $script:productionAccountLease=(Get-Command Enter-RkNativeAccountLease).ScriptBlock
+ function Initialize-RkPrivateRoot([string]$Directory,[string]$Owner){Assert-RkNoLinks $Directory;[IO.Directory]::CreateDirectory($Directory)|Out-Null}
+ function Enter-RkNativeAccountLease([string]$Save,[string]$Owner,[string]$RecoveryRoot,[switch]$NewRun,[string]$GuardRoot){
+  $key=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($Save)).Replace('/','_').Replace('+','-').TrimEnd('=')
+  & $script:productionAccountLease $Save $Owner $RecoveryRoot -NewRun:$NewRun -GuardRoot (Join-Path $root ('account-'+$key))
+ }
+ $syntheticGame=Join-Path $root 'registered-SYNTHETIC';New-Item -ItemType Directory -Path $syntheticGame|Out-Null
+ [IO.File]::WriteAllText((Join-Path $syntheticGame 'owned.txt'),'SYNTHETIC REGISTERED TREE')
+ $script:syntheticCache=@{apps=@();appCacheFilesPresent=$false;permanentHistoryPresent=$false}
+ function Get-RkSteamCacheInventory([string]$SteamRoot){return $script:syntheticCache}
+ function New-FixtureMetadata {return @{e2eKind='EXPERIMENTAL_ORIGINAL_PROBE';gameInstall=$syntheticGame;registeredDigest=(Get-RkTreeDigest $syntheticGame);steamExe=$exe;cacheBefore=$script:syntheticCache}}
  $save=Join-Path $root 'fenced-save';New-Item -ItemType Directory -Path $save|Out-Null
  [IO.File]::WriteAllText((Join-Path $save 'file0'),'ORIGINAL SYNTHETIC')
- $s=New-RkSaveTransaction (Join-Path $root 'fenced-transaction') $save 'SYNTHETIC' 'original' @{e2eKind='EXPERIMENTAL_ORIGINAL_PROBE'}
+ $s=New-RkSaveTransaction (Join-Path $root 'fenced-transaction') $save 'SYNTHETIC' 'original' (New-FixtureMetadata)
  Start-RkSaveTransaction $s;New-Item -ItemType Directory -Path $save|Out-Null
  [IO.File]::WriteAllText((Join-Path $save 'file0'),'TRIAL SYNTHETIC')
  $refused=$false;try{Restore-RkE2eSession $s $s.root $save 'SYNTHETIC'}catch{$refused=$true}
@@ -129,7 +143,7 @@ try {
  function New-FencedFixture([string]$Name){
   $localSave=Join-Path $root ($Name+'-save');New-Item -ItemType Directory -Path $localSave|Out-Null
   [IO.File]::WriteAllText((Join-Path $localSave 'file0'),'ORIGINAL '+$Name)
-  $tx=New-RkSaveTransaction (Join-Path $root ($Name+'-tx')) $localSave 'SYNTHETIC' 'original' @{e2eKind='EXPERIMENTAL_ORIGINAL_PROBE'}
+  $tx=New-RkSaveTransaction (Join-Path $root ($Name+'-tx')) $localSave 'SYNTHETIC' 'original' (New-FixtureMetadata)
   Start-RkSaveTransaction $tx;New-Item -ItemType Directory -Path $localSave|Out-Null
   [IO.File]::WriteAllText((Join-Path $localSave 'file0'),'TRIAL '+$Name)
   Write-RkE2eGameStopBoundary $tx;Write-RkE2eTrialFence $tx
@@ -222,8 +236,15 @@ Check $true 'real Python child quoting/timeout/output budget; no Windows/game AP
 } finally {
  Set-Item -LiteralPath Function:\Write-RkE2eGameStopBoundary -Value $productionGameStopBoundary
  if($verified){
-  try{Remove-RkTestWorkspace $workspace}
-  catch{Write-Warning ('Cleanup failed; synthetic evidence retained: '+$root);throw}
+  if([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT){
+   try{Remove-RkTestWorkspace $workspace}
+   catch{Write-Warning ('Cleanup failed; synthetic evidence retained: '+$root);throw}
+  }else{
+   # The owned cleanup helper deliberately uses real CreateFile/NTFS guards.
+   # Keep verified synthetic evidence on non-Windows rather than substituting
+   # a weaker deletion implementation or calling it native cleanup evidence.
+   Write-Host ('NOT_RUN native NTFS cleanup; verified synthetic workspace retained: '+$root)
+  }
  }else{
   # Keep the original assertion/child-process exception and its fixture evidence.
   Write-Warning ('Failed test workspace retained: '+$root)

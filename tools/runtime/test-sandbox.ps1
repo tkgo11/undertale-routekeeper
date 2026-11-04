@@ -71,40 +71,26 @@ try {
     $originalUser=$env:USERNAME
     try {
         $env:USERNAME='ROUTEKEEPER_OFFLINE'
-        $refused=$false; try { & (Join-Path $PSScriptRoot 'inside-sandbox.ps1') } catch { $refused=$_.Exception.Message -eq 'Refusing to use a normal Windows account or its saves.' }
+        $refused=$false; try { & (Join-Path $PSScriptRoot 'inside-sandbox.ps1') } catch { $refused=$_.Exception.Message.StartsWith('RETIRED_LEGACY_RUNTIME:') }
         Check $refused 'normal account cannot enter harness'
     } finally { $env:USERNAME=$originalUser }
 } finally { Remove-Item -LiteralPath $temporary -Recurse -Force }
-# Non-Sandbox native host runner is deliberately never invoked in offline checks.
-# Parse its complete PowerShell AST above and assert critical static safety gates.
-$direct=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'run-without-sandbox.ps1') -Raw
-Check ($direct.Contains("RKTestOriginal") -and $direct.Contains("RKTestPatched")) 'direct runner requires per-case dedicated Windows accounts'
-Check ($direct.Contains('AttestSeparateWindowsAccount') -and $direct.Contains('AttestSteamOfflineAndCloudDisabled')) 'direct runner requires explicit isolation attestations'
-Check ($direct.Contains('Get-NetAdapter') -and !$direct.Contains('Disable-NetAdapter')) 'direct runner never disables host adapters'
-Check ($direct.Contains('Get-RkInventoryDigest') -and $direct.Contains('Assert-RkHash')) 'direct runner pins original/candidate inventory'
-Check ($direct.Contains('Start-RkDisposableInstall') -and $direct.Contains('Stop-RkDisposableInstall')) 'direct runner uses marked reversible installation'
-Check ($direct.Contains('Preexisting UNDERTALE saves') -and $direct.Contains('Preexisting app391540 Steam cache')) 'direct runner refuses prior save and Cloud history'
-Check ($direct.Contains("result='NOT_RUN'") -and !$direct.Contains("result='NATIVE_RUNTIME_PASS'")) 'direct runner does not synthesize gameplay success'
-Check ($direct.Contains('if ($cleanupOk -and') -and $direct.Contains('Original test installation needs review')) 'direct runner retains recovery copies after restore failures'
-
-# Current-account behavior is exercised by synthetic filesystem/failure injection,
-# never by launching Steam or touching this machine's profile.
+# All historical mutation entrypoints refuse before any environment, filesystem,
+# account, network or process inspection. Spoofing the old account name cannot
+# revive them. Pure disposable transaction fixtures above remain exercised.
+$oldUsername=$env:USERNAME
+try {
+ $env:USERNAME='WDAGUtilityAccount'
+ foreach($name in @('run-without-sandbox.ps1','inside-sandbox.ps1','checkpoint-saves.ps1','launch-windows-sandbox.ps1')){
+  $arguments=switch($name){
+   'run-without-sandbox.ps1' {@{Lab='UNREAD';PatchedData='UNREAD';Case='original';AttestSeparateWindowsAccount=$true;AttestSteamOfflineAndCloudDisabled=$true}}
+   'checkpoint-saves.ps1' {@{Name='synthetic'}}
+   'launch-windows-sandbox.ps1' {@{Lab='UNREAD';PatchedData='UNREAD'}}
+   default {@{}}
+  }
+  $refused=$false
+  try{& (Join-Path $PSScriptRoot $name) @arguments}catch{$refused=$_.Exception.Message.StartsWith('RETIRED_LEGACY_RUNTIME:')}
+  Check $refused ('retired legacy mutation refuses even spoofed Sandbox account: '+$name)
+ }
+} finally {$env:USERNAME=$oldUsername}
 & (Join-Path $PSScriptRoot 'test-current-account.ps1')
-
-if ($Lab -or $PatchedData) {
-    if (!$Lab -or !$PatchedData) { throw 'Both private staging arguments are required.' }
-    # The launcher canonicalizes paths; compare physical absolute paths as well.
-    $Lab=(Resolve-Path -LiteralPath $Lab).Path
-    $PatchedData=(Resolve-Path -LiteralPath $PatchedData).Path
-    $global:RkMockDispatch=$false
-    function Start-Process { param([string]$FilePath,[object]$ArgumentList) Check ($FilePath -eq 'WindowsSandbox.exe') 'mocked Sandbox dispatch'; $global:RkMockDispatch=$true }
-    try { & (Join-Path $PSScriptRoot 'launch-windows-sandbox.ps1') -Lab $Lab -PatchedData $PatchedData }
-    finally { Remove-Item Function:Start-Process }
-    Check $global:RkMockDispatch 'private host staging completed without execution'
-    [xml]$xml=Get-Content -LiteralPath (Join-Path $Lab 'routekeeper.wsb') -Raw
-    $maps=@($xml.Configuration.MappedFolders.MappedFolder)
-    Check ($maps.Count -eq 2 -and $maps[0].ReadOnly -eq 'true' -and $maps[1].ReadOnly -eq 'false') 'read-only input and separate evidence mapping'
-    Check ($maps[0].HostFolder -eq (Join-Path $Lab 'sandbox-input')) 'whole host lab is not mapped'
-    Check (!(Test-Path -LiteralPath (Join-Path $Lab 'sandbox-input\identity-private.json'))) 'private inventory/account manifest not mapped'
-    Check (!(Test-Path -LiteralPath (Join-Path $Lab 'sandbox-input\appmanifest_391540.acf'))) 'supplied account manifest excluded from payload'
-}

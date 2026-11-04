@@ -29,6 +29,7 @@ jobs:
       - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Tool.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Saves.Tests -c Release --no-build
+      - run: dotnet run --project tests/RouteKeeper.Beta.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Core.Tests -c Release --no-build -- --verify-gml integration/gml/route_evaluate.gml
       - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build
       - run: dotnet run --project tests/RouteKeeper.Neutral.Tests -c Release --no-build -- --verify-gml integration/gml
@@ -63,6 +64,13 @@ jobs:
       - run: python tools/test_workflow_safety.py
       - run: python tools/test_private_validation.py
       - run: python tools/test_audit_inventory.py
+      - run: python tools/test_beta_package.py
+      - run: python tools/test_beta_dependencies.py
+      - run: python tools/test_human_beta.py
+      - run: python tools/test_watchdog_contract.py
+      - run: python tools/test_install_utmt.py
+      - run: python tools/test_ui_output_paths.py
+      - run: python tools/test_patch_path_contract.py
       - run: python tools/test_source_encoding.py
       - run: python tools/audit_inventory.py
       - name: Verify Windows harness source and filesystem guards only
@@ -80,10 +88,15 @@ jobs:
           ./tools/runtime/test-workspace-cleanup.ps1
           ./tools/runtime/test-addtype-temp.ps1
           ./tools/runtime/test-watchdog.ps1
+          ./tools/runtime/test-human-beta.ps1
           pwsh -NoProfile -File ./tools/runtime/test-native-steam-identity.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Steam identity test failed' }
           pwsh -NoProfile -File ./tools/runtime/test-native-acquisition.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Acquisition test failed' }
           pwsh -NoProfile -File ./tools/runtime/test-direction-input.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Direction input test failed' }
           pwsh -NoProfile -File ./tools/runtime/test-session-paths.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Session paths test failed' }
       - name: Verify watchdog and owned cleanup under Windows PowerShell 5.1
         if: runner.os == 'Windows'
         shell: powershell
@@ -91,10 +104,15 @@ jobs:
           ./tools/runtime/test-workspace-cleanup.ps1
           ./tools/runtime/test-addtype-temp.ps1
           ./tools/runtime/test-watchdog.ps1
+          ./tools/runtime/test-human-beta.ps1
           powershell -NoProfile -File ./tools/runtime/test-native-steam-identity.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Steam identity test failed' }
           powershell -NoProfile -File ./tools/runtime/test-native-acquisition.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Acquisition test failed' }
           powershell -NoProfile -File ./tools/runtime/test-direction-input.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Direction input test failed' }
           powershell -NoProfile -File ./tools/runtime/test-session-paths.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Session paths test failed' }
       - name: Verify filesystem protocol under Windows PowerShell 5.1 only
         if: runner.os == 'Windows'
         shell: powershell
@@ -116,6 +134,39 @@ jobs:
           python tools/test-g3m.py --tool src/RouteKeeper.Tool/bin/Release/net10.0/RouteKeeper.Tool.dll --xdelta /usr/bin/xdelta3
       - name: Package standalone tool for this host
         run: dotnet publish src/RouteKeeper.Tool -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -o artifacts/tool
+      - name: Package and construct Windows Beta Tester (no game or interactive certification)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          dotnet publish src/RouteKeeper.Beta.Windows -c Release -r win-x64 --self-contained true -o artifacts/beta
+          if ($LASTEXITCODE -ne 0) { throw 'Beta publish failed' }
+          python -B tools/package_beta_dependencies.py --output artifacts/beta
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned dependency bundle failed' }
+          $packagedPython = Join-Path $PWD 'artifacts/beta/python/python.exe'
+          & $packagedPython -B artifacts/beta/tools/windows_e2e.py prerequisites
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged Python/Pillow prerequisites failed' }
+          & $packagedPython -B -c "import human_beta, windows_e2e; windows_e2e.source_pins(); print('PASS packaged helper source closure')"
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged helper source closure failed' }
+          & $packagedPython -B artifacts/beta/tools/human_beta.py --help
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged preparation helper failed' }
+          & artifacts/beta/compiler/UndertaleModCli.exe --version
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged compiler version probe failed' }
+          & $packagedPython -B tools/runtime/test-watchdog.py
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged Python harmless guardian fixtures failed' }
+          $app = Start-Process -FilePath artifacts/beta/RouteKeeper.Beta.Windows.exe -ArgumentList '--smoke-package' -PassThru
+          if (!$app.WaitForExit(30000)) { $app.Kill(); throw 'Beta construction smoke timed out' }
+          if ($app.ExitCode -ne 0) { throw 'Beta construction smoke failed' }
+          python tools/verify_beta_package.py artifacts/beta
+          if ($LASTEXITCODE -ne 0) { throw 'Beta package verification failed' }
+          Compress-Archive -Path artifacts/beta/* -DestinationPath artifacts/routekeeper-beta-win-x64.zip
+          python tools/verify_beta_package.py artifacts/routekeeper-beta-win-x64.zip
+          if ($LASTEXITCODE -ne 0) { throw 'Beta archive verification failed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: runner.os == 'Windows'
+        with:
+          name: routekeeper-beta-win-x64
+          path: artifacts/routekeeper-beta-win-x64.zip
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: routekeeper-tool-${{ matrix.rid }}

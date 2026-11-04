@@ -8,7 +8,7 @@ import hashlib
 import struct
 import re
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from generate_font import chunk,stored_deflate
+from generate_font import chunk,stored_deflate,publish,reject_output_links
 from PIL import Image,ImageDraw,__version__ as pillow_version
 from generate import CAT,ROOT,localization
 L = CAT['layout']
@@ -131,10 +131,10 @@ class Renderer:
         png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,bits,3,0,0,0))
         png+=chunk(b'PLTE',bytes(c for p in palette for c in p[:3]))+chunk(b'tRNS',bytes(p[3] for p in palette))
         png+=chunk(b'IDAT',stored_deflate(scan))+chunk(b'IEND',b'')
-        path.write_bytes(png)
+        publish(path,png)
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--native-font',type=Path);args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--native-font',type=Path);args=p.parse_args();reject_output_links(args.output);args.output.mkdir(parents=True,exist_ok=True)
     for lang,_ in enumerate(localization.enabled()):
         for kind in ['menu','warning','protected','hud','targets','neutral','call-settings','call-goals','save-warning','languages']:
             r=Renderer(lang,args.native_font)
@@ -149,6 +149,6 @@ def main():
             else:r.hud(r.text('no_objective'))
             r.save(args.output/f'{kind}-{lang}.png')
     manifest={'pillowVersion':pillow_version,'kind':'OFFLINE_PREVIEW','gameplay':'NOT_RUN','nativeEnglishOutlines':bool(args.native_font),'layoutSha256':hashlib.sha256((ROOT/'ui/catalog.json').read_bytes()).hexdigest(),'fontAtlasSha256':hashlib.sha256((ROOT/'assets/ui-font.png').read_bytes()).hexdigest()}
-    (args.output/'evidence.json').write_text(json.dumps(manifest,indent=2)+'\n', encoding='utf-8', newline='\n')
+    publish(args.output/'evidence.json',(json.dumps(manifest,indent=2)+'\n').encode('utf-8'))
     print('PASS offline previews generated; native English outlines='+str(bool(args.native_font))+'; gameplay NOT_RUN')
 if __name__=='__main__':main()

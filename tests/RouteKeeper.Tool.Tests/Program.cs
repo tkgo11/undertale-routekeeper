@@ -90,6 +90,18 @@ try
     Check("external mod blocks restore", () => { File.WriteAllBytes(original, Data(3)); Reject(() => SafeInstaller.Restore(original)); Assert(File.ReadAllBytes(original)[16] == 3); });
     Check("corrupt backup blocks restore", () => { File.WriteAllBytes(original, Data(2)); File.WriteAllBytes(original + ".routekeeper-original", Data(4)); Reject(() => SafeInstaller.Restore(original)); Assert(File.ReadAllBytes(original)[16] == 2); });
     Check("truncated FORM rejected", () => { var path = Path.Combine(root, "bad.win"); File.WriteAllBytes(path, [70, 79, 82, 77]); Reject(() => BuildInspector.Inspect(path)); });
+    Check("CLI malformed data returns controlled failure without an unhandled stack trace", () => {
+        string bad=Path.Combine(root,"invalid-cli.bin");File.WriteAllText(bad,"SYNTHETIC INVALID GAME DATA");
+        foreach(string command in new[]{"inspect","inspect-runner"}) {
+            var start=new System.Diagnostics.ProcessStartInfo("dotnet") {UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+            foreach(string arg in new[]{typeof(BuildInspector).Assembly.Location,command,bad})start.ArgumentList.Add(arg);
+            using var process=System.Diagnostics.Process.Start(start)!;
+            var stdout=process.StandardOutput.ReadToEndAsync();var stderr=process.StandardError.ReadToEndAsync();
+            if(!process.WaitForExit(30000)){process.Kill(true);throw new Exception("CLI failure test timed out");}
+            string error=stderr.GetAwaiter().GetResult();
+            Assert(process.ExitCode==1 && error.StartsWith("FAIL: ",StringComparison.Ordinal) && !error.Contains("Unhandled exception",StringComparison.Ordinal) && stdout.GetAwaiter().GetResult()=="");
+        }
+    });
     Check("oversized chunk rejected", () => { var path = Path.Combine(root, "bad.win"); var bytes = Data(0); bytes[12] = 250; File.WriteAllBytes(path, bytes); Reject(() => BuildInspector.Inspect(path)); });
     Check("pending update before replacement can restore", () => { File.WriteAllBytes(original + ".routekeeper-original", Data(0)); File.WriteAllBytes(original, Data(1)); var pending = new InstallJournal(1, identity.Sha256, SafeInstaller.Hash(candidate), profile.Id, "Pending", SafeInstaller.Hash(original)); File.WriteAllText(original + ".routekeeper.json", JsonSerializer.Serialize(pending)); SafeInstaller.Restore(original); Assert(SafeInstaller.Hash(original) == identity.Sha256); });
     if (!OperatingSystem.IsWindows()) Check("symbolic-link target rejected", () => { string link = Path.Combine(root, "linked.win"); File.CreateSymbolicLink(link, original); Reject(() => SafeInstaller.Install(link, candidate, [profile], "Synthetic", "test")); });

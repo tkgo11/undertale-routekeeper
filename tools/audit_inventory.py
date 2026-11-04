@@ -2,6 +2,7 @@
 """Verify complete audit coverage; refresh only explicitly reviewed changed paths."""
 import argparse
 from collections import Counter
+from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -61,7 +62,7 @@ def reconcile(root, manifest, reviewed=None):
             row['reviewed_against_head'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root).decode().strip()
         output.append(row)
     result = dict(manifest, files=output, files_count=len(output),
-                  coverage_counts=dict(Counter(r['method'] for r in output)), audit_date='2026-10-27')
+                  coverage_counts=dict(Counter(r['method'] for r in output)), audit_date=datetime.now(timezone.utc).date().isoformat())
     return result
 
 

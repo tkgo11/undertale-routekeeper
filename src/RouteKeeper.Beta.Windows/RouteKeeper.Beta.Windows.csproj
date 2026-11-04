@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Version>0.1.0-beta.1</Version><AssemblyName>RouteKeeper.Beta.Windows</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RouteKeeper.Beta/RouteKeeper.Beta.csproj" />
+    <ProjectReference Include="../RouteKeeper.Tool/RouteKeeper.Tool.csproj" />
+    <Content Include="../../tools/human_beta.py;../../tools/windows_e2e.py;../../tools/runtime_lab.py;../../tools/screen_verify.py;../../tools/native_gameplay.py;../../tools/native_bootstrap.py;../../tools/native_acquisition.py" Link="tools/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../tools/runtime/*.ps1;../../tools/runtime/*.py;../../tools/runtime/*.json" Exclude="../../tools/runtime/test-*.ps1" Link="tools/runtime/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
+    <!-- Source-pin verification requires this maintained entry even though the GUI never invokes it. -->
+    <Content Include="../../tools/runtime/test-windows.ps1" Link="tools/runtime/test-windows.ps1" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../docs/beta-tester.md" Link="BETA-TESTER.md" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

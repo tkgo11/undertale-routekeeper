@@ -1,5 +1,11 @@
 # Disposable filesystem proposal tests. No Steam, game, SDK, account or save use.
 $ErrorActionPreference='Stop'
+# The production mutable-path guard below invokes CreateFile/NTFS identity APIs.
+# Do not replace those guards with portable mocks and call it native evidence.
+if([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT){
+ Write-Host 'NOT_RUN launch-context NTFS integration: native Windows required'
+ return
+}
 . (Join-Path $PSScriptRoot 'test-workspace.ps1')
 . (Join-Path $PSScriptRoot 'current-account-state.ps1')
 . (Join-Path $PSScriptRoot 'steam-launch-context.ps1')

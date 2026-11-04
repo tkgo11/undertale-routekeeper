@@ -15,11 +15,10 @@ def sources():
     for key,value in CAT['layout'].items():layout+=f'global.rk_ui_{key} = {value};\n'
     nav='// Generated single-step wrap navigation; count must be positive.\nif (argument2 < 1) return 0;\nvar next; next = argument0 + argument1;\nif (next < 0) return argument2 - 1;\nif (next >= argument2) return 0;\nreturn next;\n'
     return {'ui_catalog.gml':text,'ui_layout.gml':layout,'ui_nav.gml':nav}
-if __name__=='__main__':
+def main():
     p=argparse.ArgumentParser();p.add_argument('--verify',action='store_true');args=p.parse_args()
     for name,data in sources().items():
         path=ROOT/'gml'/name
-        if args.verify:
-            if path.read_text(encoding='utf-8')!=data:raise SystemExit('Stale UI source '+name)
-        else:path.write_text(data, encoding='utf-8', newline='\n')
+        localization.font_module().publish(path,data.encode('utf-8'),verify=args.verify)
     print('PASS shared UI source '+('verified' if args.verify else 'generated'))
+if __name__=='__main__':main()

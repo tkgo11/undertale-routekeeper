@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/RouteKeeper.Beta.Windows/RouteKeeper.Beta.Windows.csproj" />
+    <Project Path="src/RouteKeeper.Beta/RouteKeeper.Beta.csproj" />
     <Project Path="src/RouteKeeper.Core/RouteKeeper.Core.csproj" />
     <Project Path="src/RouteKeeper.Decisions/RouteKeeper.Decisions.csproj" />
     <Project Path="src/RouteKeeper.History/RouteKeeper.History.csproj" />
@@ -8,6 +10,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/RouteKeeper.Audit.Tests/RouteKeeper.Audit.Tests.csproj" />
+    <Project Path="tests/RouteKeeper.Beta.Tests/RouteKeeper.Beta.Tests.csproj" />
     <Project Path="tests/RouteKeeper.Core.Tests/RouteKeeper.Core.Tests.csproj" />
     <Project Path="tests/RouteKeeper.Decisions.Tests/RouteKeeper.Decisions.Tests.csproj" />
     <Project Path="tests/RouteKeeper.History.Tests/RouteKeeper.History.Tests.csproj" />

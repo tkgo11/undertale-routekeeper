@@ -15,7 +15,7 @@ def main():
   work=Path(tmp);source=work/'input.win';shutil.copyfile(original,source)
   def invoke(folder,expected):
    env=dict(os.environ,ROUTEKEEPER_PREVIEW_FONT=str(folder))
-   r=subprocess.run([a.cli,'load',str(source),'-s',str(ROOT/'integration/export-preview-font.csx')],env=env,capture_output=True,text=True)
+   r=subprocess.run([a.cli,'load',str(source),'-s',str(ROOT/'integration/export-preview-font.csx')],env=env,capture_output=True,text=True,encoding='utf-8',timeout=300)
    if (r.returncode==0)!=expected:raise RuntimeError('Exporter acceptance mismatch; source is not printed')
    if digest(source)!=EXPECTED or digest(original)!=EXPECTED:raise RuntimeError('Exporter modified an input')
   good=work/'new';invoke(good,True)

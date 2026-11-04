@@ -86,7 +86,7 @@ public sealed class RunTransitionModel
     }
     public void BefriendUndyne()
     {
-        if(!resolved[2]||!waterGiven||kills!=0||!hangoutAllowed||facts["neutral_papyrus_dead"]!=0)throw new InvalidOperationException("Friendship prerequisites lost.");
+        if(!resolved[2]||!waterGiven||kills!=0||!hangoutAllowed||friendship>=3||facts["neutral_papyrus_dead"]!=0)throw new InvalidOperationException("Friendship prerequisites lost or already completed.");
         BacktrackTo(1);facts["papyrus_friendship"]=1;events.Add("Papyrus-hangout-completed");ReturnToFrontier();
         facts["undyne_friendship"]=1;friendship=4;events.Add("undyne-hangout-completed");
     }
@@ -129,7 +129,7 @@ public sealed class RunTransitionModel
         ReturnFromBattle();
     }
     public void Save(){facts["save_exists"]=1;events.Add("save-file0");}
-    public void AcquireKeepsake(){if(region!=1)throw new InvalidOperationException("Snowman not accessible in this witness.");facts["snowman_piece_carried"]=1;events.Add("ask-snowman-first-piece");}
+    public void AcquireKeepsake(){if(region!=1||facts.GetValueOrDefault("snowman_piece_carried")==1||facts.GetValueOrDefault("snowman_piece_stored")==1)throw new InvalidOperationException("First Snowman piece not available in this witness.");facts["snowman_piece_carried"]=1;events.Add("ask-snowman-first-piece");}
     public void StoreKeepsake(){if(facts["snowman_piece_carried"]!=1)throw new InvalidOperationException();facts["snowman_piece_carried"]=0;facts["snowman_piece_stored"]=1;events.Add("store-piece");}
     public void RetrieveKeepsake(){if(facts["snowman_piece_stored"]!=1)throw new InvalidOperationException();facts["snowman_piece_carried"]=1;facts["snowman_piece_stored"]=0;events.Add("retrieve-piece");}
     public void CompleteNeutralAndReload()
@@ -139,13 +139,14 @@ public sealed class RunTransitionModel
     }
     public void LetterAndDate()
     {
-        if(!resolved[3]||friendship<3||kills!=0||facts["prior_neutral_completion"]!=1)throw new InvalidOperationException("Original letter gate unavailable.");
+        if(!resolved[3]||friendship<3||kills!=0||facts["prior_neutral_completion"]!=1||facts["neutral_alphys_friendship"]>=8)throw new InvalidOperationException("Original letter gate unavailable.");
         facts["neutral_alphys_friendship"]=10;facts["alphys_friendship"]=1;events.Add("prior-neutral-reload;letter;alphys-date");
     }
     public void TrueLabAndFinale(int epilogue)
     {
-        if(facts["neutral_alphys_friendship"]!=10||epilogue is <1 or >2)throw new InvalidOperationException();
+        if(facts["neutral_alphys_friendship"]!=10||facts.GetValueOrDefault("epilogue_resolved")==1||epilogue is <1 or >2)throw new InvalidOperationException("Finale unavailable or already committed.");
         facts["true_lab_completed"]=facts["barrier_broken"]=facts["epilogue_resolved"]=facts["epilogue_matches"]=1;facts["epilogue_choice"]=epilogue;
+        facts["neutral_alphys_friendship"]=12; // Same original flag493 phase as the native true-lab observation.
         events.Add("true-lab-power;final-intro-special-end;asriel;barrier;epilogue:"+epilogue);
     }
     public GameState Snapshot()
