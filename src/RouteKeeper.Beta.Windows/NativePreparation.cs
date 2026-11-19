@@ -126,7 +126,7 @@ public sealed partial class MainWindow
             string nonce = Guid.NewGuid().ToString("N");
             string phrase = "AUTHORIZE HUMAN BETA " + nonce;
             string? typed = Prompt(disclosure + "\n\n" + T("Private diagnostics are mandatory for safe recovery. A required harmless native fixture tests guarded key dispatch and retains its local window capture; no automatic game inputs are sent. Local restoration does not undo Steam account history. Review the selected scope, scenario, step and deadline; type the fresh phrase yourself.", "안전한 복구를 위해 비공개 진단 기록이 필수입니다. 무해한 소유 네이티브 시험 창에서 보호된 키 전송을 검사하고 해당 창의 로컬 화면을 보관합니다. 게임에는 자동 입력을 보내지 않습니다. 로컬 복구는 Steam 계정 이력을 되돌리지 못합니다. 선택 범위·시나리오·단계·시간을 확인한 뒤 새 문구를 직접 입력하세요.") +
-                $"\n{selectedScope} · {pair.Scenario.Id}/{pair.Step.Id} · {variant.SelectedItem} · {seconds}s\nContinuation: { (prior.Length == 0 ? "NONE_FRESH_TRIAL" : prior) }\n{phrase}");
+                $"\n{selectedScope} · {pair.Scenario.Id}/{pair.Step.Id} · {variant.SelectedItem} · {seconds}s\nContinuation: { (prior.Length == 0 ? "NONE_FRESH_TRIAL" : prior) }", phrase);
             if (typed is null) return;
             if (typed != phrase) throw new InvalidOperationException("Fresh typed native consent differs.");
             string? highRisk = null;

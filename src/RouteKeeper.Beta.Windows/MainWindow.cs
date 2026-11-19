@@ -316,11 +316,29 @@ public sealed partial class MainWindow : Window
         string? typed = Prompt(T("Checklist authorization does not authorize native game launch or remove Steam/save guards. Permanent account changes may not be reversible. Type: ", "체크리스트 승인은 게임 실행을 승인하거나 Steam·세이브 보호를 해제하지 않습니다. 계정의 영구 변경은 복구되지 않을 수 있습니다. 입력: ") + phrase);
         if (typed is not null) Change(s => store.AuthorizeHighRisk(s.Id, s.Revision, pair.Scenario.Id, typed));
     }
-    private string? Prompt(string instruction)
+    private string? Prompt(string instruction, string? expected = null)
     {
         var input = Input(); var panel = new StackPanel { Margin = new Thickness(12) }; panel.Children.Add(Text(instruction)); panel.Children.Add(input);
         var dialog = new Window { Owner = this, Title = Title, Width = 750, Height = Math.Min(750, SystemParameters.WorkArea.Height - 50), Content = Scroll(panel), WindowStartupLocation = WindowStartupLocation.CenterOwner };
-        panel.Children.Add(Button(T("Confirm", "확인"), () => dialog.DialogResult = true));
+        var error = Text("");
+        if (expected is not null)
+        {
+            panel.Children.Insert(1, new TextBox { Text = expected, IsReadOnly = true, Margin = new Thickness(4), FontFamily = new FontFamily("Consolas") });
+            panel.Children.Add(error);
+        }
+        var confirm = Button(T("Confirm", "확인"), () =>
+        {
+            if (expected is not null && input.Text != expected)
+            {
+                error.Text = T("The phrase does not match. Check capitalization and spaces, then correct it here.", "문구가 일치하지 않습니다. 대소문자와 공백을 확인하고 이 창에서 고쳐 주세요.");
+                input.Focus();
+                return;
+            }
+            dialog.DialogResult = true;
+        });
+        confirm.IsDefault = true;
+        panel.Children.Add(confirm);
+        dialog.Loaded += (_, _) => input.Focus();
         return dialog.ShowDialog() == true ? input.Text : null;
     }
     private void Attach()
