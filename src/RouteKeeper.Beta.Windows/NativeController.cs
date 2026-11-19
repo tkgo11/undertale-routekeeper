@@ -236,6 +236,8 @@ internal sealed class NativeController
         string executable = OwnedFiles.NoLinks(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32", "WindowsPowerShell", "v1.0", "powershell.exe"));
         string script = OwnedFiles.NoLinks(Path.Combine(AppContext.BaseDirectory, "tools", "runtime", "human-session.ps1"));
         var start = new ProcessStartInfo(executable) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = AppContext.BaseDirectory, RedirectStandardOutput = true, RedirectStandardError = true };
+        // Windows PowerShell must not load PowerShell 7 modules from the caller's environment.
+        start.Environment["PSModulePath"] = Path.Combine(Path.GetDirectoryName(executable)!, "Modules");
         start.Environment["PATH"] = OwnedFiles.NoLinks(Path.Combine(AppContext.BaseDirectory, "python")) + Path.PathSeparator + (start.Environment["PATH"] ?? "");
         foreach (string argument in new[] { "-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", script, "-Action", action }) start.ArgumentList.Add(argument);
         if (binding is not null)
