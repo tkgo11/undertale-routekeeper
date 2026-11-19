@@ -92,12 +92,14 @@ try {
  $request|Add-Member NoteProperty requestSha256 ((Get-FileHash -LiteralPath $RequestFile).Hash.ToLowerInvariant()) -Force
  $SessionName='human-'+$request.id;$root=Join-Path $Work $SessionName
  if(Test-Path -LiteralPath $root){throw 'Human session already exists; resume means explicit recovery only.'}
- $native=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) ('RoutekeeperE2E/native-beta-'+$request.id)
- Test-RkNativeDesktop $native
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'human-beta-policy.json') -Raw -Encoding UTF8|ConvertFrom-Json
  $hasher=[Security.Cryptography.SHA256]::Create()
  try{$disclosureHash=([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($policy.disclosure)))).Replace('-','').ToLowerInvariant()}finally{$hasher.Dispose()}
  if($request.policy -cne $policy.id -or $request.disclosureSha256 -cne $disclosureHash){throw 'User-reviewed human policy differs from current disclosure.'}
+ Initialize-RkHumanConnectedNetwork $request
+ Assert-RkExperimentalNetwork
+ $native=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) ('RoutekeeperE2E/native-beta-'+$request.id)
+ Test-RkNativeDesktop $native
  $consent=@{schema=1;policy=$policy.id;scope=('human-beta-'+$request.scope.ToLowerInvariant());session=$request.id;nonce=$request.nonce;
   disclosureSha256=$disclosureHash;recordedUtc=$request.issuedUtc;network=(Get-RkExperimentalNetworkRecord);credentialsStored=$false;
   approval=@{method='DIRECT_BETA_UI_PHRASE';statement=$request.phrase;humanScope=$request.scope;scenario=$request.scenario;highRiskPhrase=$request.highRiskPhrase}}

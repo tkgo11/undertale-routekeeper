@@ -103,6 +103,8 @@ public sealed partial class MainWindow
         Label(panel, T("Original / patched copy", "원본 / 패치 복사본"), variant);
         Label(panel, T("Absolute maximum seconds: 60–300 Smoke; 60–7200 other scopes", "최대 실행 시간: Smoke 60~300초, 그 외 60~7200초"), duration);
         panel.Children.Add(pixels);
+        var connected = new CheckBox { Content = T("Keep the Internet connected (separate approval)", "인터넷 연결 유지 (별도 승인)"), Margin = new Thickness(4) };
+        panel.Children.Add(connected);
         var continuation = new CheckBox { Content = T("Continue the selected prior trial's verified private save (Gameplay / HighRisk only; never personal saves)", "선택한 이전 시험의 검증된 비공개 세이브 이어하기 (Gameplay·HighRisk 전용, 개인 세이브 사용 없음)"), Margin = new Thickness(4) };
         panel.Children.Add(continuation);
         panel.Children.Add(AsyncButton(T("Review disclosure and start selected human scenario / step", "고지 검토 후 선택한 사람 시험 시나리오·단계 시작"), async () =>
@@ -115,6 +117,9 @@ public sealed partial class MainWindow
             string selectedScope = (string)scope.SelectedItem;
             if (!int.TryParse(duration.Text, out int seconds) || seconds < 60 || seconds > (selectedScope == "Smoke" ? 300 : 7200)) throw new InvalidOperationException("Deadline outside scope.");
             if (pair.Scenario.Risk == Risk.HighRisk && selectedScope != "HighRisk" || pair.Scenario.Risk == Risk.Gameplay && selectedScope == "Smoke") throw new InvalidOperationException("Scenario requires a separate broader scope.");
+            bool keepConnected = connected.IsChecked == true;
+            if (keepConnected && selectedScope == "HighRisk")
+                throw new InvalidOperationException(T("HighRisk requires a disconnected network.", "HighRisk 범위에서는 인터넷 연결을 끊어야 합니다."));
             string prior = "";
             if (continuation.IsChecked == true)
             {
@@ -126,7 +131,8 @@ public sealed partial class MainWindow
             string nonce = Guid.NewGuid().ToString("N");
             string phrase = "AUTHORIZE HUMAN BETA " + nonce;
             string? typed = Prompt(disclosure + "\n\n" + T("Private diagnostics are mandatory for safe recovery. A required harmless native fixture tests guarded key dispatch and retains its local window capture; no automatic game inputs are sent. Local restoration does not undo Steam account history. Review the selected scope, scenario, step and deadline; type the fresh phrase yourself.", "안전한 복구를 위해 비공개 진단 기록이 필수입니다. 무해한 소유 네이티브 시험 창에서 보호된 키 전송을 검사하고 해당 창의 로컬 화면을 보관합니다. 게임에는 자동 입력을 보내지 않습니다. 로컬 복구는 Steam 계정 이력을 되돌리지 못합니다. 선택 범위·시나리오·단계·시간을 확인한 뒤 새 문구를 직접 입력하세요.") +
-                $"\n{selectedScope} · {pair.Scenario.Id}/{pair.Step.Id} · {variant.SelectedItem} · {seconds}s\nContinuation: { (prior.Length == 0 ? "NONE_FRESH_TRIAL" : prior) }", phrase);
+                $"\n{selectedScope} · {pair.Scenario.Id}/{pair.Step.Id} · {variant.SelectedItem} · {seconds}s\nContinuation: { (prior.Length == 0 ? "NONE_FRESH_TRIAL" : prior) }\n" +
+                (keepConnected ? T("Internet connected", "인터넷 연결 유지") : T("Internet disconnected", "인터넷 연결 끊기")), phrase);
             if (typed is null) return;
             if (typed != phrase) throw new InvalidOperationException("Fresh typed native consent differs.");
             string? highRisk = null;
@@ -137,8 +143,24 @@ public sealed partial class MainWindow
                 if (highRisk is null) return;
                 if (highRisk != required) throw new InvalidOperationException("High-risk scope differs.");
             }
+            string? networkDisclosure = null;
+            string? networkPhrase = null;
+            if (keepConnected)
+            {
+                networkDisclosure = NativeController.PolicyDisclosure("connectedNetworkDisclosure");
+                string required = "ACCEPT CONNECTED NETWORK RISK " + nonce;
+                string koreanDisclosure = "인터넷에 연결하면 Steam을 오프라인으로 준비하고 Cloud를 꺼도 Steam이나 게임이 통신할 수 있습니다. " +
+                    "RemoteStorage, 업적, 대기 중인 동기화 작업, Steam 계정 이력이 바뀔 수 있습니다. 로컬 세이브 백업과 복구로는 계정의 변화를 되돌릴 수 없습니다. " +
+                    "이 승인은 선택한 Smoke 또는 Gameplay 시험과 같은 조정기에서의 종료 및 로컬 복구에만 적용됩니다. " +
+                    "시작 전 Steam을 오프라인 모드로 준비하고 Cloud를 끈 상태로 Steam을 종료하세요. 중단된 시험의 별도 복구와 HighRisk 시험에는 인터넷 연결을 끊어야 합니다.";
+                networkPhrase = Prompt(T(networkDisclosure, koreanDisclosure + "\n\n" + networkDisclosure), required);
+                if (networkPhrase is null) return;
+                if (networkPhrase != required) throw new InvalidOperationException("Connected-network consent differs.");
+            }
             var trial = new NativeController.Trial(Guid.NewGuid().ToString("N"), pair.Scenario.Id, pair.Step.Id);
-            byte[] request = NativeController.Request(launchBinding, trial, current.Configuration, pair.Scenario.Risk, selectedScope, (string)variant.SelectedItem, seconds, pixels.IsChecked == true, nonce, typed, highRisk, prior);
+            byte[] request = NativeController.Request(launchBinding, trial, current.Configuration, pair.Scenario.Risk,
+                selectedScope, (string)variant.SelectedItem, seconds, pixels.IsChecked == true, nonce, typed, highRisk,
+                prior, disclosure, networkPhrase, networkDisclosure);
             string requestPath = NativeController.WriteRequest(launchBinding, trial, request);
             launchBinding = launchBinding with { Trials = [.. launchBinding.Trials, trial] }; NativeController.Save(launchBinding);
             binding = launchBinding;

@@ -91,21 +91,21 @@ internal sealed class NativeController
         { file.Write(bytes); file.Flush(true); }
         File.Move(temporary, path, true);
     }
-    internal static string PolicyDisclosure()
+    internal static string PolicyDisclosure(string property = "disclosure")
     {
         using var policy = JsonDocument.Parse(OwnedFiles.Read(Path.Combine(AppContext.BaseDirectory, "tools", "runtime", "human-beta-policy.json"), 65536));
         if (policy.RootElement.GetProperty("id").GetString() != "routekeeper-human-beta-v1") throw new InvalidDataException("Unknown native policy.");
-        return policy.RootElement.GetProperty("disclosure").GetString() ?? throw new InvalidDataException("Disclosure missing.");
+        return policy.RootElement.GetProperty(property).GetString() ?? throw new InvalidDataException("Disclosure missing.");
     }
     internal static byte[] Request(Binding binding, Trial trial, SessionConfiguration configuration, Risk risk, string scope,
-        string @case, int maximumSeconds, bool capture, string nonce, string phrase, string? highRiskPhrase, string continuationSession = "")
+        string @case, int maximumSeconds, bool capture, string nonce, string phrase, string? highRiskPhrase,
+        string continuationSession, string disclosure, string? connectedNetworkPhrase, string? connectedNetworkDisclosure)
     {
         Validate(binding, binding.BetaSession);
         using var process = Process.GetCurrentProcess();
         string path = OwnedFiles.NoLinks(Environment.ProcessPath ?? throw new InvalidOperationException("Physical app identity unavailable."));
         if (!Path.GetFileName(path).Equals("RouteKeeper.Beta.Windows.exe", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Native launch requires the published physical Windows app, not dotnet or a development host.");
-        string disclosure = PolicyDisclosure();
         return JsonSerializer.SerializeToUtf8Bytes(new
         {
             schema = 1, kind = "HUMAN_BETA_UI_REQUEST", id = trial.Id, betaSession = binding.BetaSession.ToString("N"),
@@ -113,6 +113,9 @@ internal sealed class NativeController
             @case, scope, continuationSession, risk = risk.ToString(), phrase, highRiskPhrase, language = configuration.Language, mode = configuration.Mode,
             maximumSeconds, issuedUtc = DateTimeOffset.UtcNow.ToString("o"), policy = "routekeeper-human-beta-v1",
             disclosureSha256 = Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(disclosure))),
+            connectedNetworkPhrase,
+            connectedNetworkDisclosureSha256 = connectedNetworkDisclosure is null ? null :
+                Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(connectedNetworkDisclosure))),
             parent = new { pid = process.Id, ticks = process.StartTime.ToUniversalTime().Ticks, path, sha256 = OwnedFiles.Hash(OwnedFiles.Read(path, 64 * 1024 * 1024)) }
         });
     }

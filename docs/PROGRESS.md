@@ -1,5 +1,14 @@
 # Progress and resumption
 
+## Connected Internet option for the Windows human beta
+
+Smoke and Gameplay can keep the PC connected after separate approval for each
+trial. The human controller binds that approval to the launch nonce and the
+reviewed policy. Steam Offline preparation, Cloud disabled, and the existing
+process, save and watchdog checks still apply. Standalone recovery after an
+interruption and HighRisk trials require disconnection. See the
+[beta tester guide](beta-tester.md).
+
 ## Human-guided beta implementation — 2026-11-04 UTC
 
 Initial HEAD `e6cfaeb3281244961023ae19bd4af1e636395de1`. Current source is identified

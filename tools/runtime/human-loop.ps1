@@ -6,7 +6,7 @@ function ConvertFrom-RkHumanJson([string]$Raw,[ValidateSet('Request','Command')]
  # Check framing before that conversion can erase the root container's type.
  $framed=$Raw.Trim()
  if(!$framed.StartsWith('{') -or !$framed.EndsWith('}')){throw 'Human JSON root must be an object.'}
- $allowed=if($Kind -eq 'Request'){@('schema','kind','id','betaSession','scenario','step','nonce','captureConsent','diagnosticConsent','case','scope','risk','phrase','highRiskPhrase','language','mode','maximumSeconds','issuedUtc','policy','disclosureSha256','parent','pid','ticks','path','sha256','continuationSession')}else{@('schema','session','sequence','action')}
+ $allowed=if($Kind -eq 'Request'){@('schema','kind','id','betaSession','scenario','step','nonce','captureConsent','diagnosticConsent','case','scope','risk','phrase','highRiskPhrase','language','mode','maximumSeconds','issuedUtc','policy','disclosureSha256','parent','pid','ticks','path','sha256','continuationSession','connectedNetworkPhrase','connectedNetworkDisclosureSha256')}else{@('schema','session','sequence','action')}
  $seen=New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
  foreach($token in [regex]::Matches($Raw,'"(?:[^"\\]|\\.)*"')){
   $tail=$Raw.Substring($token.Index+$token.Length)
@@ -53,6 +53,13 @@ function Assert-RkHumanRequest($Request) {
     $Request.language -cnotin @('en','ko') -or $Request.mode -cnotin @('Off','Passive','Active','Forced')){throw 'Invalid or missing explicit human beta scope/consent.'}
  if($Request.scope -eq 'HighRisk' -and ($Request.highRiskPhrase -isnot [string] -or $Request.highRiskPhrase -cne ('AUTHORIZE HIGH RISK '+$Request.scenario))){throw 'Exact scenario-specific high-risk phrase required.'}
  if($Request.risk -eq 'HighRisk' -and ($Request.scope -cne 'HighRisk' -or $Request.highRiskPhrase -cne ('AUTHORIZE HIGH RISK '+$Request.scenario))){throw 'Ordinary smoke/gameplay consent cannot authorize a high-risk scenario.'}
+ if($null -ne $Request.connectedNetworkPhrase -or $null -ne $Request.connectedNetworkDisclosureSha256){
+  if($Request.scope -cnotin @('Smoke','Gameplay') -or $Request.risk -ceq 'HighRisk' -or
+     $Request.connectedNetworkPhrase -isnot [string] -or $Request.connectedNetworkPhrase -cne ('ACCEPT CONNECTED NETWORK RISK '+$Request.nonce) -or
+     $Request.connectedNetworkDisclosureSha256 -isnot [string] -or $Request.connectedNetworkDisclosureSha256 -cnotmatch '^[a-f0-9]{64}$'){
+   throw 'Connected-network consent requires a fresh exact phrase, reviewed disclosure hash and Smoke or Gameplay scope.'
+  }
+ }
  if($Request.risk -eq 'Gameplay' -and $Request.scope -eq 'Smoke'){throw 'Gameplay requires separate gameplay scope.'}
  if(($Request.maximumSeconds -isnot [int] -and $Request.maximumSeconds -isnot [long]) -or $Request.maximumSeconds -lt 60 -or
     $Request.maximumSeconds -gt 7200 -or ($Request.scope -eq 'Smoke' -and $Request.maximumSeconds -gt 300)){throw 'Human beta deadline outside its disclosed bounded scope.'}

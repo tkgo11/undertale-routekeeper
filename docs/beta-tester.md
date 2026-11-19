@@ -118,9 +118,14 @@ it does not import personal saves, rewrite the source archive or replay inputs.
 Missing, changed or incompatible prior evidence refuses and preserves every copy.
 
 The controller requires its native Windows desktop, verified owned working copy,
-physical-network/offline policy, Steam registration/signature/identity,
-cache/history checks, save transaction and external watchdog. Prepare Steam
-Offline and keep Cloud disabled as disclosed; unknown prerequisites refuse.
+Steam registration/signature/identity, cache/history checks, save transaction and
+external watchdog. Prepare Steam Offline, keep Cloud disabled and close Steam
+before starting. Physical disconnection is the default. For Smoke or Gameplay,
+select **Keep the Internet connected (separate approval)** and enter the fresh
+`ACCEPT CONNECTED NETWORK RISK …` phrase after the launch consent. This covers
+the current trial and its normal shutdown and local recovery. HighRisk and
+separate recovery after an interruption still require physical disconnection.
+Prepare a fresh copy when the app's pinned runtime helpers have changed.
 You control every game action; the human loop dispatches zero automated inputs.
 Steam/game actions can still alter permanent account history or queue Cloud work.
 Local restoration cannot undo achievements, RemoteStorage or account history.
@@ -220,10 +225,13 @@ and recovery evidence are not a license to export private paths or saves.
 입력을 재생하지 않습니다. 증거가 없거나 바뀌거나 맞지 않으면 복사본을 보존하고
 거부합니다.
 
-13. 네이티브 조정기는 물리 네트워크·오프라인 정책, Steam 등록·서명·신원,
-    캐시·기록, 세이브 거래와 외부 watchdog을 검사합니다. Steam 오프라인과 Cloud
-    비활성화 조건을 지키세요. 조건이 불명확하면 거부합니다. 게임 조작은 사람이
-    직접 하며 수동 시험 루프는 자동 입력을 보내지 않습니다.
+13. Steam을 오프라인 모드로 준비하고 Cloud를 끈 상태에서 Steam을 종료하세요.
+    기본값은 인터넷 연결 끊기입니다. Smoke 또는 Gameplay에서 연결을 유지하려면
+    **인터넷 연결 유지 (별도 승인)**를 선택하고, 실행 동의에 이어 새
+    `ACCEPT CONNECTED NETWORK RISK …` 문구를 입력하세요. 이 승인은 해당 시험과
+    같은 조정기에서의 정상 종료 및 로컬 복구에 적용됩니다. HighRisk 및 중단 후
+    별도 복구는 인터넷 연결을 끊어야 합니다. 앱의 실행 도구가 업데이트됐다면
+    새 게임 복사본을 준비하세요. 게임은 사람이 직접 조작합니다.
 14. 종료는 조정기의 Stop 또는 Pause/Break 비상 키를 사용하고 로컬 복구 결과를
     기다리세요. 제한 시간·신원 상실·네트워크 조건 실패·알 수 없는 자식 프로세스는
     보호된 종료 절차로 이어집니다. BLOCKED·RECOVERY_REQUIRED이면 모든 복사본을

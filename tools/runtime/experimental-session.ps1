@@ -73,8 +73,9 @@ function Complete-RkNativeAccountMarker($State,[switch]$LegacyRecovery) {
  Remove-Item -LiteralPath $lease.marker
 }
 $script:RkConnectedNetworkConsent=$null
-function Get-RkNetworkRiskDisclosure {
- $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'experimental-policy.json') -Raw -Encoding UTF8|ConvertFrom-Json
+function Get-RkNetworkRiskDisclosure([switch]$HumanBeta) {
+ $name=if($HumanBeta){'human-beta-policy.json'}else{'experimental-policy.json'}
+ $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot $name) -Raw -Encoding UTF8|ConvertFrom-Json
  return $policy.connectedNetworkDisclosure
 }
 function New-RkApprovalRecord([switch]$OwnerDelegatedOriginalProbe,[string]$ApprovalStatement,[switch]$OwnerDelegatedUiExperiment) {
@@ -108,11 +109,24 @@ function Get-RkExperimentalNetworkRecord {
  if($null -eq $script:RkConnectedNetworkConsent){return @{mode='OFFLINE_REQUIRED';accountHistory='NOT_RESTORED'}}
  return $script:RkConnectedNetworkConsent.Clone()
 }
+function Initialize-RkHumanConnectedNetwork($Request) {
+ $script:RkConnectedNetworkConsent=$null
+ Assert-RkHumanRequest $Request
+ if($null -eq $Request.connectedNetworkPhrase){return}
+ $disclosure=Get-RkNetworkRiskDisclosure -HumanBeta
+ if([string]::IsNullOrWhiteSpace($disclosure)){throw 'Human connected-network risk disclosure is missing.'}
+ $hasher=[Security.Cryptography.SHA256]::Create()
+ try{$hash=([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($disclosure)))).Replace('-','').ToLowerInvariant()}finally{$hasher.Dispose()}
+ if($Request.connectedNetworkDisclosureSha256 -cne $hash){throw 'User-reviewed connected-network disclosure differs from current policy.'}
+ $script:RkConnectedNetworkConsent=@{mode='CONNECTED_RISK_ACCEPTED';nonce=$Request.nonce;controllerPid=$PID;disclosure=$disclosure;
+  recordedUtc=$Request.issuedUtc;accountHistory='NOT_RESTORED';approval=@{method='DIRECT_HUMAN_BETA_NETWORK_PHRASE';scope=$Request.scope}}
+}
 function Assert-RkExperimentalNetwork {
  if($null -eq $script:RkConnectedNetworkConsent){Assert-RkNetworkOffline;return}
  $c=$script:RkConnectedNetworkConsent
+ $humanBeta=$c.approval.method -ceq 'DIRECT_HUMAN_BETA_NETWORK_PHRASE'
  if($c.mode -cne 'CONNECTED_RISK_ACCEPTED' -or $c.controllerPid -ne $PID -or
-    $c.nonce -cnotmatch '^[a-f0-9]{32}$' -or $c.disclosure -cne (Get-RkNetworkRiskDisclosure)){
+    $c.nonce -cnotmatch '^[a-f0-9]{32}$' -or $c.disclosure -cne (Get-RkNetworkRiskDisclosure -HumanBeta:$humanBeta)){
   throw 'Current-controller connected-network consent is invalid; no execution or recovery.'
  }
  # This mode accepts possible connectivity, including uncertain observations.

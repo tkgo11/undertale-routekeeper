@@ -1,5 +1,16 @@
 # Verification evidence
 
+## Connected Internet option for the Windows human beta
+
+- PASS: The Windows x64 WPF app published with the project-local .NET 10 SDK.
+- PASS: Windows PowerShell 5.1 and PowerShell 7 each passed 70 human-beta
+  protocol/filesystem assertions and 37 connected-network policy assertions.
+  The fixtures exercised the physical-offline default, the separate
+  launch-bound approval, invalid disclosure and phrase refusal, and HighRisk
+  refusal while connected.
+- NOT_RUN: Steam startup, original/patched gameplay and live save recovery with
+  this option. The owner deferred live testing.
+
 ## Human-guided beta implementation — 2026-11-04 UTC
 
 Initial HEAD `e6cfaeb3281244961023ae19bd4af1e636395de1`. Current source is identified

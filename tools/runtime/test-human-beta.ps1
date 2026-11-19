@@ -12,6 +12,27 @@ $base=@{schema=1;kind='HUMAN_BETA_UI_REQUEST';id=('a'*32);betaSession=('b'*32);s
 $raw=$base|ConvertTo-Json -Depth 8
 $request=ConvertFrom-RkHumanJson $raw 'Request';Assert-RkHumanRequest $request
 Check $true 'WPF-shaped strict request accepted without process launch'
+& {
+ function Assert-RkNetworkOffline {throw 'SYNTHETIC_ONLINE'}
+ Initialize-RkHumanConnectedNetwork $request
+ Check ((Get-RkExperimentalNetworkRecord).mode -ceq 'OFFLINE_REQUIRED') 'human request defaults to physical offline'
+ Refuses {Assert-RkExperimentalNetwork} 'offline default retains physical verification'
+ $connected=$base.Clone()
+ $connected.scope='Gameplay';$connected.risk='Gameplay';$connected.highRiskPhrase=$null
+ $connected.connectedNetworkPhrase='ACCEPT CONNECTED NETWORK RISK '+$base.nonce
+ $hasher=[Security.Cryptography.SHA256]::Create()
+ try{$connected.connectedNetworkDisclosureSha256=([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes((Get-RkNetworkRiskDisclosure -HumanBeta))))).Replace('-','').ToLowerInvariant()}finally{$hasher.Dispose()}
+ Initialize-RkHumanConnectedNetwork (ConvertFrom-RkHumanJson ($connected|ConvertTo-Json -Depth 8) 'Request')
+ $network=Get-RkExperimentalNetworkRecord
+ Assert-RkLaunchNetworkConsent @{network=$network}
+ Check ($network.mode -ceq 'CONNECTED_RISK_ACCEPTED' -and $network.nonce -ceq $base.nonce -and $network.controllerPid -eq $PID -and $network.approval.method -ceq 'DIRECT_HUMAN_BETA_NETWORK_PHRASE' -and $network.accountHistory -ceq 'NOT_RESTORED') 'separate human consent binds the connected session and skips physical disconnection'
+ Refuses {Assert-RkLaunchNetworkConsent @{network=@{mode=$network.mode;nonce=('f'*32)}}} 'connected consent cannot authorize a different launch nonce'
+ foreach($mutation in @(@{connectedNetworkPhrase=$null},@{connectedNetworkDisclosureSha256=$null},@{connectedNetworkPhrase='wrong'},@{connectedNetworkDisclosureSha256=('f'*64)},@{nonce=('f'*32);phrase=('AUTHORIZE HUMAN BETA '+('f'*32))},@{scope='HighRisk';risk='HighRisk';highRiskPhrase=$base.highRiskPhrase})){
+  $value=$connected.Clone();foreach($key in $mutation.Keys){$value[$key]=$mutation[$key]}
+  Refuses {Initialize-RkHumanConnectedNetwork (ConvertFrom-RkHumanJson ($value|ConvertTo-Json -Depth 8) 'Request')} ('connected-network refusal: '+($mutation.Keys -join ','))
+  Check ((Get-RkExperimentalNetworkRecord).mode -ceq 'OFFLINE_REQUIRED') 'failed approval clears connected scope'
+ }
+}
 foreach($mutation in @(@{schema='1'},@{scope='Smoke'},@{highRiskPhrase=@('AUTHORIZE HIGH RISK save-load')},@{issuedUtc=@('2026-11-03')},@{maximumSeconds=7201},@{maximumSeconds=59},@{captureConsent='false'},@{diagnosticConsent=$false},@{phrase='wrong'},@{issuedUtc=[DateTime]::UtcNow.AddMinutes(-6).ToString('o')},@{parent=@($base.parent)},@{continuationSession=$base.id})){
  $value=$base.Clone();foreach($key in $mutation.Keys){$value[$key]=$mutation[$key]}
  Refuses {Assert-RkHumanRequest (ConvertFrom-RkHumanJson ($value|ConvertTo-Json -Depth 8) 'Request')} ('typed request refusal: '+($mutation.Keys -join ','))
