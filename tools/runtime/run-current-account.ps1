@@ -48,7 +48,8 @@ if($Action -in @('Run','Preflight')){
  # fingerprinted, never executed/patched/approved. Pin the ACTUAL side-copy input.
  Assert-RkHash (Join-Path $Lab 'original/Undertale/UNDERTALE.exe') 'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
  Assert-RkHash (Join-Path $Lab 'original/Undertale/data.win') 'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
- $profiles=@(Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json | Where-Object OriginalSha256 -eq 'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7')
+ $registry=Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\..\profiles\registry.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+ $profiles=@($registry | Where-Object OriginalSha256 -eq 'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7')
  if($profiles.Count -ne 1){throw 'Unique exact-build profile required.'};Assert-RkHash $PatchedData $profiles[0].PatchedSha256
  $inventory=Get-Content -LiteralPath (Join-Path $Lab 'identity-private.json') -Raw -Encoding UTF8 | ConvertFrom-Json
  Assert-RkKnownRuntimeInventory $inventory

@@ -2,6 +2,10 @@
 
 ## Windows human beta CLI
 
+The Windows PowerShell 5.1 profile lookup now filters the parsed registry
+entries explicitly. This fixes a live CLI attempt that stopped at exact-build
+preflight before preparing a save transaction.
+
 The packaged PowerShell entry point exposes prepare, interactive play, status,
 safe stop, optional capture and exact-session recovery. The first CLI scenarios
 cover original/patched startup, the patched menu and movement. The existing

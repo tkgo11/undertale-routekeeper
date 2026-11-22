@@ -2,6 +2,10 @@
 
 ## Windows human beta CLI
 
+- PASS: The corrected read-only preflight completed in Windows PowerShell 5.1
+  against the installed Steam game and the exact prepared patched candidate.
+  The earlier Play attempt stopped at registry lookup before a transaction or
+  game process started.
 - PASS: Windows PowerShell 5.1 passed 82 protocol and filesystem assertions,
   including CLI scenario scope, exact consent bytes, immutable commands, startup
   and running Stop, and capture refusal without consent.
