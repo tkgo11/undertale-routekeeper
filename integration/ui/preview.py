@@ -54,9 +54,11 @@ class Renderer:
             self.image.alpha_composite(im,(x+offset,y))
             x+=self.width(char)
         return text
-    def wrap(self,text,width,lines):
+    def wrap(self,text,width,lines,continuation_width=None):
         result=[]
         while text and len(result)<lines:
+            if result and continuation_width is not None:
+                width=continuation_width
             take=0;space=0
             for n in range(1,len(text)+1):
                 if self.width(text[:n])>width:break
@@ -68,8 +70,10 @@ class Renderer:
             if len(result)==lines-1 and text:line+='...'
             result.append(self.fit(line,width))
         return result
-    def paragraph(self,x,y,text,width,lines):
-        for i,line in enumerate(self.wrap(text,width,lines)):self.line(x,y+i*self.line_height,line,width)
+    def paragraph(self,x,y,text,width,lines,continuation_width=None):
+        for i,line in enumerate(self.wrap(text,width,lines,continuation_width)):
+            line_width=continuation_width if i and continuation_width is not None else width
+            self.line(x,y+i*self.line_height,line,line_width)
     def box(self,left,top,right,bottom):
         self.draw.rectangle((left,top,right-1,bottom-1),fill=WHITE)
         self.draw.rectangle((left+3,top+3,right-4,bottom-4),fill=BLACK)
@@ -117,7 +121,12 @@ class Renderer:
         self.line(28,L['footer_y'],self.text('navigation'),264)
     def hud(self,objective,progress=None):
         if progress is None:progress=self.text('progress_compact').replace('{met}','7').replace('{total}','17')
-        self.box(16,L['hud_top'],304,L['hud_bottom']);self.line(L['hud_x'],L['hud_y'],'* '+objective,L['hud_width']);self.line(L['hud_progress_x'],L['hud_y'],progress,L['hud_progress_width'])
+        objective='* '+objective
+        offset=self.line_height if self.width(objective)<=L['hud_width'] else 0
+        y=L['hud_y']+offset
+        self.box(16,L['hud_top']+offset,304,L['hud_bottom'])
+        self.paragraph(L['hud_x'],y,objective,L['hud_width'],L['hud_lines'],L['hud_continuation_width'])
+        self.line(L['hud_progress_x'],y,progress,L['hud_progress_width'])
     def save(self,path):
         im=self.image.resize((640,480),Image.Resampling.NEAREST)
         pixels=list(im.getdata());palette=sorted(set(pixels));width,height=im.size

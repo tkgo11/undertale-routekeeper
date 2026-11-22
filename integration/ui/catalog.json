@@ -1,6 +1,8 @@
 {
   "layout": {
-    "scale": 2,
+    "canvas_width": 320,
+    "canvas_height": 240,
+    "menu_scale_percent": 75,
     "menu_left": 16,
     "menu_top": 16,
     "menu_right": 304,
@@ -12,7 +14,7 @@
     "visible_rows": 7,
     "value_x": 140,
     "footer_y": 198,
-    "hud_top": 207,
+    "hud_top": 192,
     "hud_bottom": 235,
     "warning_left": 16,
     "warning_top": 5,
@@ -24,8 +26,10 @@
     "warning_lines": 3,
     "warning_footer": 78,
     "hud_x": 26,
-    "hud_y": 213,
+    "hud_y": 196,
     "hud_width": 208,
+    "hud_continuation_width": 264,
+    "hud_lines": 2,
     "hud_progress_x": 244,
     "hud_progress_width": 52
   }

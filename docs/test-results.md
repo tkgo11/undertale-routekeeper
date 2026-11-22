@@ -1,5 +1,17 @@
 # Verification evidence
 
+## Fullscreen playtest UI
+
+- PASS: 23 offline pixel UI tests include a case for the Korean Ruins objective
+  with its full text and separate progress counter. The emitted GML also passed
+  696 UI navigation/localization comparisons.
+- PASS: UndertaleModCli compiled the licensed Windows data to candidate
+  `1f65abe961446b2317572e216f698859f693272d7f7856c674daf909674767fc`.
+  The builder reloaded it and checked preservation of original resources.
+- PASS: The latest human playtest's original local save tree and its completion
+  fence were verified against the pre-test snapshot of ten files.
+- NOT_RUN: Native rendering of this revised candidate.
+
 ## Windows human beta CLI
 
 - PASS: The corrected read-only preflight completed in Windows PowerShell 5.1

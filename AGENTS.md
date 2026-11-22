@@ -86,7 +86,7 @@ in a public repository or a fork.
 - `pwsh -NoProfile -File tools/runtime/test-sandbox.ps1` checks ASTs/filesystem
   guards and compiles capture interop without Windows API calls. Optional Lab and
   PatchedData parameters test private host staging with Sandbox dispatch MOCKED.
-- Current registry candidate is6b7f0fc6 after later legacy-renderer/input work.
+- Read the current candidate hash from `profiles/registry.json`.
   Read the latest dated integration/progress records for reported limited native
   observations; Cloud structural reproduction is not independent gameplay proof.
   Earlier4457dbf4 and40d67856/Wine records are historical, not current verdicts.

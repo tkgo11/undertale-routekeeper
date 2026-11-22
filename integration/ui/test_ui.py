@@ -62,7 +62,18 @@ class UiTests(unittest.TestCase):
                 r.runs=[];r.hud(message)
                 for x,y,w,h,text in r.runs:
                     self.assertLessEqual(x+w,301);self.assertLessEqual(y+h,L['hud_bottom']-3)
-        self.assertLessEqual((L['hud_bottom']-L['hud_top'])/240,0.12)
+        self.assertLessEqual((L['hud_bottom']-L['hud_top'])/L['canvas_height'],0.18)
+    def test_toriel_objective_wraps_without_hiding_counter(self):
+        key='guidance.spare_toriel_and_continue_out_of_the_ruins_without'
+        for r in self.renderers:
+            message=localization.text(key,r.lang)
+            r.runs=[];r.hud(message,'9/15')
+            objective=[run for run in r.runs if run[0]==L['hud_x']]
+            self.assertEqual(' '.join(run[4].strip() for run in objective),'* '+message)
+            x,y,w,h,text=objective[0]
+            self.assertLess(x+w,L['hud_progress_x'])
+            self.assertTrue(all(next_y>=y+h for x,next_y,w,h,text in objective[1:]))
+            self.assertEqual(r.runs[-1][4],'9/15')
     def test_labels_do_not_hide_distinctions(self):
         for r in self.renderers:
             for name in ['neutral_label.gml','greeting_label.gml']:
@@ -80,10 +91,11 @@ class UiTests(unittest.TestCase):
                 self.assertEqual(r.fit(text,L['hud_progress_width']),text)
     def test_geometry_matches_original_dialogue(self):
         self.assertEqual(L['border'],3);self.assertEqual(L['warning_left'],16);self.assertEqual(L['warning_right'],304)
-        self.assertEqual(L['scale'],2)
+        self.assertEqual((L['canvas_width'],L['canvas_height']),(320,240))
     def test_native_source_safety_contract(self):
         draw=(ROOT/'gml/controller_draw.gml').read_text(encoding='utf-8');step=(ROOT/'gml/controller_step.gml').read_text(encoding='utf-8')
         self.assertIn('global.rk_ui_font = global.rk_language;',draw);self.assertNotIn('display_set_gui_size',draw)
+        self.assertIn('display_get_gui_width()',draw);self.assertIn('display_get_gui_height()',draw)
         self.assertNotIn('gameplay tests pending',draw);self.assertIn('control_check_pressed(0)',step);self.assertIn('control_check_pressed(1)',step)
         self.assertGreater(step.index('control_clear(0); control_clear(1); control_clear(2);',step.index('accept = control_check_pressed(0)')),step.index('cancel = control_check_pressed(1)'))
         self.assertIn('obj_routekeeper.rk_menu',(ROOT/'hooks.csx').read_text(encoding='utf-8'))

@@ -32,7 +32,7 @@ function ContextFixture([string]$Name,[string]$Case='original'){
    $target=Join-Path $path $file;[IO.File]::WriteAllText($target,('SYNTHETIC ONLY '+$file))
    $expected=switch($file){
     'UNDERTALE.exe' {'c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'}
-    'data.win' {if($path -ceq $staged -and $Case -eq 'patched'){'6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f'}else{'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'}}
+    'data.win' {if($path -ceq $staged -and $Case -eq 'patched'){'1f65abe961446b2317572e216f698859f693272d7f7856c674daf909674767fc'}else{'b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'}}
     'steam_api.dll' {(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash.ToLowerInvariant()}
    }
    $fixtureHashes[[IO.Path]::GetFullPath($target)]=@{expected=$expected;actual=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash}

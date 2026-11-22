@@ -1,5 +1,7 @@
-// Generated logical 320x240 geometry; native GUI output scales by two.
-global.rk_ui_scale = 2;
+// Generated logical UI geometry; controller_draw fits it to the GUI viewport.
+global.rk_ui_canvas_width = 320;
+global.rk_ui_canvas_height = 240;
+global.rk_ui_menu_scale_percent = 75;
 global.rk_ui_menu_left = 16;
 global.rk_ui_menu_top = 16;
 global.rk_ui_menu_right = 304;
@@ -11,7 +13,7 @@ global.rk_ui_row_height = 20;
 global.rk_ui_visible_rows = 7;
 global.rk_ui_value_x = 140;
 global.rk_ui_footer_y = 198;
-global.rk_ui_hud_top = 207;
+global.rk_ui_hud_top = 192;
 global.rk_ui_hud_bottom = 235;
 global.rk_ui_warning_left = 16;
 global.rk_ui_warning_top = 5;
@@ -23,7 +25,9 @@ global.rk_ui_warning_width = 264;
 global.rk_ui_warning_lines = 3;
 global.rk_ui_warning_footer = 78;
 global.rk_ui_hud_x = 26;
-global.rk_ui_hud_y = 213;
+global.rk_ui_hud_y = 196;
 global.rk_ui_hud_width = 208;
+global.rk_ui_hud_continuation_width = 264;
+global.rk_ui_hud_lines = 2;
 global.rk_ui_hud_progress_x = 244;
 global.rk_ui_hud_progress_width = 52;

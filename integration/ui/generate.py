@@ -11,7 +11,7 @@ CAT=json.loads((ROOT/'ui/catalog.json').read_text(encoding='utf-8'))
 CAT['text']={k[3:]:[localization.text(k,i) for i,_ in enumerate(localization.enabled())] for k in localization.load(ROOT.parent/'locales/en.json') if k.startswith('ui.')}
 def sources():
     text='// Generated locale-independent UI lookup.\nreturn scr_routekeeper_text("ui." + argument0, argument1);\n'
-    layout='// Generated logical 320x240 geometry; native GUI output scales by two.\n'
+    layout='// Generated logical UI geometry; controller_draw fits it to the GUI viewport.\n'
     for key,value in CAT['layout'].items():layout+=f'global.rk_ui_{key} = {value};\n'
     nav='// Generated single-step wrap navigation; count must be positive.\nif (argument2 < 1) return 0;\nvar next; next = argument0 + argument1;\nif (next < 0) return argument2 - 1;\nif (next >= argument2) return 0;\nreturn next;\n'
     return {'ui_catalog.gml':text,'ui_layout.gml':layout,'ui_nav.gml':nav}

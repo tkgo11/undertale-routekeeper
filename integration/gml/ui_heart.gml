@@ -1,6 +1,7 @@
 // Mod-owned 8x7 pixel cursor; no external sprite/font dependency.
-var pixel_x, pixel_y, s, row, col, mask;
-pixel_x = argument0; pixel_y = argument1; s = global.rk_ui_scale;
+var x0, y0, s, row, col, mask, left, top, right, bottom;
+s = global.rk_ui_scale;
+x0 = global.rk_ui_origin_x + argument0*s; y0 = global.rk_ui_origin_y + argument1*s;
 draw_set_color(c_red);
 for (row = 0; row < 7; row += 1) {
     mask = "01100110";
@@ -9,6 +10,11 @@ for (row = 0; row < 7; row += 1) {
     if (row == 4) mask = "00111100";
     if (row == 5) mask = "00011000";
     if (row == 6) mask = "00000000";
-    for (col = 0; col < 8; col += 1) if (string_char_at(mask,col+1) == "1") draw_rectangle((pixel_x+col)*s,(pixel_y+row)*s,(pixel_x+col+1)*s-1,(pixel_y+row+1)*s-1,false);
+    for (col = 0; col < 8; col += 1) {
+        if (string_char_at(mask,col+1) != "1") continue;
+        left = round(x0+col*s); top = round(y0+row*s);
+        right = round(x0+(col+1)*s); bottom = round(y0+(row+1)*s);
+        if (right > left && bottom > top) draw_rectangle(left,top,right-1,bottom-1,false);
+    }
 }
 draw_set_color(c_white);

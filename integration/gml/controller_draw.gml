@@ -1,9 +1,21 @@
-// Native 320x240 pixel layout, drawn at 2x without changing the game's GUI size.
+// Fit the logical layout inside the runner's GUI viewport.
 var pending, warning, show_hud;
 pending = global.rk_warning_pending;
 warning = (rk_status == 2 || rk_status == 3) && !rk_dismissed;
 show_hud = rk_safe && global.rk_mode != 0 && (global.rk_mode != 1 || warning);
 if (!pending && !rk_menu && !show_hud) exit;
+var gui_width, gui_height, canvas_width, canvas_height, center_y;
+gui_width = display_get_gui_width(); gui_height = display_get_gui_height();
+if (gui_width <= 0 || gui_height <= 0) exit;
+canvas_width = global.rk_ui_canvas_width; canvas_height = global.rk_ui_canvas_height;
+global.rk_ui_scale = min(gui_width/canvas_width, gui_height/canvas_height);
+center_y = canvas_height/2;
+if (rk_menu && !pending) {
+    global.rk_ui_scale *= global.rk_ui_menu_scale_percent/100;
+    center_y = (global.rk_ui_menu_top + global.rk_ui_menu_bottom)/2;
+}
+global.rk_ui_origin_x = (gui_width - canvas_width*global.rk_ui_scale)/2;
+global.rk_ui_origin_y = gui_height/2 - center_y*global.rk_ui_scale;
 // The verified runner has no font/alignment getters. Atlas glyph drawing leaves
 // those global draw states untouched; only supported color/alpha state is scoped.
 var old_color, old_alpha;
@@ -91,13 +103,18 @@ if (pending) {
     if (rk_pad_ready) key = "pad_navigation";
     scr_routekeeper_ui_line(28,global.rk_ui_footer_y,scr_routekeeper_ui_catalog(key,lang),264);
 } else {
-    // A single objective line and a small progress mark. Details live in Progress.
-    scr_routekeeper_ui_box(16,global.rk_ui_hud_top,304,global.rk_ui_hud_bottom);
+    // Keep short objectives compact and reserve a separate column for progress.
     message = global.rk_objective_text;
     if (message == "") message = scr_routekeeper_ui_catalog("no_objective",lang);
     if (warning && rk_status == 3) message = scr_routekeeper_ui_catalog("blocked",lang);
-    scr_routekeeper_ui_line(global.rk_ui_hud_x,global.rk_ui_hud_y,"* " + message,global.rk_ui_hud_width);
+    message = "* " + message;
+    pixel_y = global.rk_ui_hud_y;
+    if (scr_routekeeper_ui_width(message) <= global.rk_ui_hud_width) {
+        pixel_y += scr_routekeeper_locale_line_height(lang);
+    }
+    scr_routekeeper_ui_box(16,global.rk_ui_hud_top+pixel_y-global.rk_ui_hud_y,304,global.rk_ui_hud_bottom);
+    scr_routekeeper_ui_paragraph(global.rk_ui_hud_x,pixel_y,message,global.rk_ui_hud_width,global.rk_ui_hud_lines,global.rk_ui_hud_continuation_width);
     value = string_replace_all(string_replace_all(scr_routekeeper_ui_catalog("progress_compact",lang),"{met}",string(global.rk_progress_met)),"{total}",string(global.rk_progress_total));
-    scr_routekeeper_ui_line(global.rk_ui_hud_progress_x,global.rk_ui_hud_y,value,global.rk_ui_hud_progress_width);
+    scr_routekeeper_ui_line(global.rk_ui_hud_progress_x,pixel_y,value,global.rk_ui_hud_progress_width);
 }
 draw_set_color(old_color); draw_set_alpha(old_alpha);

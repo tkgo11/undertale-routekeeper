@@ -12,8 +12,8 @@ for (i = 1; i <= string_length(text); i += 1) {
     advance = scr_routekeeper_ui_glyph(character,global.rk_ui_font);
     if (global.rk_glyph_sprite >= 0 && global.rk_glyph_width > 0 && global.rk_glyph_height > 0) {
         draw_sprite_part_ext(global.rk_glyph_sprite,0,global.rk_glyph_x,global.rk_glyph_y,
-            global.rk_glyph_width,global.rk_glyph_height,(pixel_x+global.rk_glyph_offset)*s,
-            argument1*s,s,s,draw_get_color(),draw_get_alpha());
+            global.rk_glyph_width,global.rk_glyph_height,round(global.rk_ui_origin_x+(pixel_x+global.rk_glyph_offset)*s),
+            round(global.rk_ui_origin_y+argument1*s),s,s,draw_get_color(),draw_get_alpha());
     }
     pixel_x += advance;
 }

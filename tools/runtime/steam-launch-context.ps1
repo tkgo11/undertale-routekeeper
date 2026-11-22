@@ -20,7 +20,7 @@ function Get-RkSteamLaunchContextIdentity([string]$Work,[string]$GameInstall,
  }
  $runnerHash='c8c4191026bf5587a6fad120855b8b82ffb4fa0c3eaf10515be472ad84248e58'
  $originalHash='b718f8223a5bb31979ffeed10be6140c857b882fc0d0462b89d6287ae38c81c7'
- $candidateHash='6b7f0fc69c0ffe7369d7145e6371a4619dfdce63f9b2b2fae9b5c9470c17708f'
+ $candidateHash='1f65abe961446b2317572e216f698859f693272d7f7856c674daf909674767fc'
  $dataHash=if($Case -eq 'original'){$originalHash}else{$candidateHash}
  foreach($path in @($pristine,$registered,$staged)){
   foreach($file in @('UNDERTALE.exe','data.win','steam_api.dll')){Assert-RkMutablePath (Join-Path $path $file)}

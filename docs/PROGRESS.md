@@ -1,5 +1,17 @@
 # Progress and resumption
 
+## Fullscreen playtest UI
+
+The owner reported a small, top-left F10 menu and a truncated Korean Ruins
+objective during a native patched playtest. The overlay now scales within the
+runner's GUI viewport. The F10 panel is centered, and the HUD is anchored near
+the bottom with up to two objective lines and a separate progress counter.
+The Progress page continues to show the full text of longer objectives.
+
+The most recent playtest's local recovery completed. An independent read-only
+check matched all ten live save files to the pre-test backup and validated the
+completion fence. Steam account history remains outside local recovery.
+
 ## Windows human beta CLI
 
 The Windows PowerShell 5.1 profile lookup now filters the parsed registry
