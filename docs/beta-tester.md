@@ -1,6 +1,47 @@
 # ROUTEKEEPER Beta Tester — tester guide / 시험자 안내
 
 Version: 0.1.0-beta.1. Windows 10/11 x64, ordinary user, offline-capable WPF.
+
+## PowerShell CLI
+
+From the root of the portable Windows beta package, open an ordinary Windows
+PowerShell 5.1 console. The CLI supports original/patched startup, the patched
+F10 menu and movement. Use the checklist app for the full catalog, high-risk
+scenarios, evidence review and report exports.
+
+```powershell
+$cli = '.\tools\runtime\human-session.ps1'
+$steam = 'C:\Program Files (x86)\Steam\steam.exe'
+$install = 'D:\SteamLibrary\steamapps\common\Undertale'
+& $cli -Action Help
+& $cli -Action Check
+& $cli -Action Prepare -GameInstall $install -SteamExe $steam
+```
+
+Use the path printed after `PREPARED_WORK=` as `$work`. For a connected trial,
+disable Steam Cloud, prepare Steam in Offline Mode and exit Steam. Keep the PC
+connected and give both approvals at the console. For a disconnected trial,
+omit `-KeepConnected`. Play stays in the foreground and uses a normal
+interactive Windows desktop. Never pipe or redirect the approval input.
+
+```powershell
+& $cli -Action Play -Work $work -GameInstall $install -SteamExe $steam -Case patched -Scenario menu -KeepConnected
+```
+
+From another PowerShell console in the package root, set `$cli` and `$work` to
+the same values and use the `human-…` identifier printed after `TRIAL=` as
+`$trial`. Request Stop and wait for the first console to finish. Capture is
+available only with `-AllowScreenshots` on Play and a running trial. Focus the
+game within three seconds after requesting it.
+
+```powershell
+& $cli -Action Status -Work $work -SessionName $trial
+& $cli -Action Stop -Work $work -SessionName $trial
+```
+
+Status reflects the last controller record. For a separate recovery, disconnect
+the PC, close the game and Steam, then use `-Action Recover` with the exact
+`$work` and `$trial`. Keep the original package for older prepared workspaces.
 The desktop connects preparation, human-controlled launch, stop and guarded local
 recovery. **Fresh Windows CI and interactive/native acceptance are pending.**
 The exact game profile remains InspectedOnly; no compatibility promotion. A

@@ -1,5 +1,12 @@
 # Verification evidence
 
+## Windows human beta CLI
+
+- PASS: Windows PowerShell 5.1 passed 82 protocol and filesystem assertions,
+  including CLI scenario scope, exact consent bytes, immutable commands, startup
+  and running Stop, and capture refusal without consent.
+- NOT_RUN: Original or patched gameplay through CLI Play.
+
 ## Connected Internet option for the Windows human beta
 
 - PASS: The Windows x64 WPF app published with the project-local .NET 10 SDK.

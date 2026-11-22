@@ -17,7 +17,7 @@ REQUIRED = {
     'profiles/registry.json', 'profiles/windows-game-files.json', 'profiles/beta-dependencies.json',
     'integration/patch.csx', 'integration/verify.csx', 'locales/languages.json', 'BETA-TESTER.md',
     'tools/human_beta.py', 'tools/windows_e2e.py', 'tools/runtime_lab.py', 'tools/screen_verify.py',
-    'tools/runtime/human-session.ps1', 'tools/runtime/human-loop.ps1', 'tools/runtime/human-beta-policy.json',
+    'tools/runtime/human-session.ps1', 'tools/runtime/human-loop.ps1', 'tools/runtime/human-cli.ps1', 'tools/runtime/human-beta-policy.json',
     'python/python.exe', 'python/pythonw.exe', 'python/python312.dll', 'python/python312.zip',
     'python/python312._pth', 'compiler/UndertaleModCli.exe', 'compiler/UndertaleModCli.dll',
     'third-party-source/BUILDING.md', 'beta-dependencies-complete.json',

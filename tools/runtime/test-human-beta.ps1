@@ -5,6 +5,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'current-account-state.ps1')
 . (Join-Path $PSScriptRoot 'experimental-session.ps1')
 . (Join-Path $PSScriptRoot 'human-loop.ps1')
+. (Join-Path $PSScriptRoot 'human-cli.ps1')
 $checks=0
 function Check([bool]$Value,[string]$Name){if(!$Value){throw $Name};$script:checks++;Write-Output ('OFFLINE_PASS '+$Name)}
 function Refuses([scriptblock]$Code,[string]$Name){$refused=$false;try{& $Code|Out-Null}catch{$refused=$true};Check $refused $Name}
@@ -12,6 +13,40 @@ $base=@{schema=1;kind='HUMAN_BETA_UI_REQUEST';id=('a'*32);betaSession=('b'*32);s
 $raw=$base|ConvertTo-Json -Depth 8
 $request=ConvertFrom-RkHumanJson $raw 'Request';Assert-RkHumanRequest $request
 Check $true 'WPF-shaped strict request accepted without process launch'
+& {
+ $work=Join-Path ([IO.Path]::GetTempPath()) ('rk-cli-'+[guid]::NewGuid().ToString('N'))
+ $id=$base.id;$session='human-'+$id
+ $root=Join-Path $work $session
+ $requests=Join-Path $work 'requests'
+ $requestPath=Join-Path $requests ('request-'+$id+'.json')
+ $statusPath=Join-Path $root 'human-status.json'
+ [IO.Directory]::CreateDirectory($requests)|Out-Null
+ [IO.Directory]::CreateDirectory($root)|Out-Null
+ function Assert-RkHumanParent($Request){if($Request.parent.pid -ne $PID){throw 'Fixture process mismatch.'}}
+ try{
+  Check ((Get-RkHumanCliScenario startup original).scenario -ceq 'supported-build') 'CLI startup labels original copy correctly'
+  Check ((Get-RkHumanCliScenario movement patched).scope -ceq 'Gameplay') 'CLI movement derives gameplay scope'
+  Refuses {Get-RkHumanCliScenario ending patched} 'CLI refuses unsupported scope'
+  $cli=$base.Clone();$cli.kind='HUMAN_BETA_CLI_REQUEST';$cli.scope='Smoke';$cli.risk='NonDestructive';$cli.maximumSeconds=180
+  $cli.parent=$base.parent.Clone();$cli.parent.pid=$PID
+  $hash=Write-RkHumanNewJson $requestPath $cli -PassHash
+  Check ($hash -ceq (Get-FileHash -LiteralPath $requestPath).Hash.ToLowerInvariant()) 'CLI binds exact published consent bytes'
+  Refuses {Write-RkHumanNewJson $requestPath $base} 'CLI consent cannot replace an existing request'
+  Assert-RkHumanRequest (ConvertFrom-RkHumanJson (Get-Content -LiteralPath $requestPath -Raw) 'Request')
+  Check (((Invoke-RkHumanCliCommand Status $work $session)|ConvertFrom-Json).state -ceq 'NO_STATUS_RECEIPT') 'absence is not reported as a running session'
+  Refuses {Invoke-RkHumanCliCommand Capture $work $session} 'CLI capture requires running status'
+  Check ((Invoke-RkHumanCliCommand Stop $work $session) -ceq 'STOP_REQUESTED' -and (Test-Path -LiteralPath ($requestPath+'.stop.json'))) 'CLI can request guarded startup stop'
+  Write-RkAtomicJson $statusPath @{schema=1;session=$id;betaSession=$cli.betaSession;state='RUNNING_HUMAN';nextSequence=1}
+  Refuses {Invoke-RkHumanCliCommand Capture $work $session} 'CLI requires separate screenshot authorization'
+  Check ((Invoke-RkHumanCliCommand Stop $work $session) -ceq 'STOP_REQUESTED' -and (Read-RkHumanCommand $root 1 $id).action -ceq 'stop') 'CLI stop uses the shared sequencing protocol'
+  Refuses {Invoke-RkHumanCliCommand Stop $work $session} 'CLI refuses to replace a pending command'
+  Write-RkAtomicJson $statusPath @{schema=1;session=$id;betaSession=$cli.betaSession;state='RESTORED';nextSequence=0}
+  Refuses {Invoke-RkHumanCliCommand Stop $work $session} 'CLI refuses stop after terminal status'
+ }finally{
+  Get-ChildItem -LiteralPath $requests,$root -File | Remove-Item
+  Remove-Item -LiteralPath $requests,$root,$work
+ }
+}
 & {
  function Assert-RkNetworkOffline {throw 'SYNTHETIC_ONLINE'}
  Initialize-RkHumanConnectedNetwork $request

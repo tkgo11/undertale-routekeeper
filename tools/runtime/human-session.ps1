@@ -1,13 +1,34 @@
 #requires -Version 5.1
 # The child controller owns the exact game/Steam lifecycle, never the UI thread.
-param([ValidateSet('Check','Prepare','Run','Recover','Cleanup')][string]$Action='Check',
+param([ValidateSet('Help','Check','Prepare','Play','Status','Stop','Capture','Run','Recover','Cleanup')][string]$Action='Check',
  [string]$Work,[string]$GameInstall,[string]$SteamExe,[string]$RequestFile,[string]$SessionName,
- [string]$Python,[string]$Compiler,[string]$Builder)
+ [string]$Python,[string]$Compiler,[string]$Builder,
+ [ValidateSet('startup','menu','movement')][string]$Scenario='startup',
+ [ValidateSet('original','patched')][string]$Case='patched',
+ [ValidateSet('en','ko')][string]$Language='en',
+ [ValidateSet('Off','Passive','Active','Forced')][string]$Mode='Passive',
+ [int]$MaximumSeconds=180,[switch]$AllowScreenshots,[switch]$KeepConnected)
+$Action=@('Help','Check','Prepare','Play','Status','Stop','Capture','Run','Recover','Cleanup') -eq $Action | Select-Object -First 1
+if($Action -ceq 'Help'){
+ @'
+RouteKeeper Windows human beta
+  -Action Check
+  -Action Prepare -GameInstall PATH -SteamExe PATH [-Work PATH]
+  -Action Play -Work PATH -GameInstall PATH -SteamExe PATH
+      [-Scenario startup|menu|movement] [-Case original|patched]
+      [-Language en|ko] [-Mode Off|Passive|Active|Forced]
+      [-MaximumSeconds N] [-KeepConnected] [-AllowScreenshots]
+  -Action Status|Stop|Capture|Recover -Work PATH -SessionName human-ID
+Play requires interactive approval. Use Stop from a second console and wait for
+the first console to finish recovery. See BETA-TESTER.md for Steam preparation.
+'@
+ return
+}
 $ErrorActionPreference='Stop'
 $env:PYTHONDONTWRITEBYTECODE='1'
 $privateErrorRoot=$null
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-foreach($helper in @('safety.ps1','current-account-state.ps1','current-account-windows.ps1','native-host.ps1','capture-client.ps1','input-window.ps1','native-selftest.ps1','native-gameplay.ps1','experimental-session.ps1','human-loop.ps1')){. (Join-Path $PSScriptRoot $helper)}
+foreach($helper in @('safety.ps1','current-account-state.ps1','current-account-windows.ps1','native-host.ps1','capture-client.ps1','input-window.ps1','native-selftest.ps1','native-gameplay.ps1','experimental-session.ps1','human-loop.ps1','human-cli.ps1')){. (Join-Path $PSScriptRoot $helper)}
 function Invoke-RkPython([string[]]$Arguments) {
  & $Python -B (Join-Path $repo 'tools/windows_e2e.py') @Arguments
  if($LASTEXITCODE -ne 0){throw 'Native prerequisite or preparation verification failed; no later operation authorized.'}
@@ -35,17 +56,24 @@ function Write-RkHumanSummary([string]$Root,$Request,$Result) {
 }
 try {
  Assert-RkNativeHost
- if(!$Python){$Python=Join-Path $repo 'python/python.exe'}
- Assert-RkNoLinks $Python
- if(!(Test-Path -LiteralPath $Python -PathType Leaf)){throw 'Packaged physical Python interpreter is missing.'}
- $probe=@(& $Python -B (Join-Path $repo 'tools/windows_e2e.py') prerequisites)
- if($LASTEXITCODE -ne 0){throw 'Pinned Python/Pillow prerequisites unavailable.'}
+ if($Action -cnotin @('Status','Stop','Capture')){
+  if(!$Python){$Python=Join-Path $repo 'python/python.exe'}
+  Assert-RkNoLinks $Python
+  if(!(Test-Path -LiteralPath $Python -PathType Leaf)){throw 'Packaged physical Python interpreter is missing.'}
+  $probe=@(& $Python -B (Join-Path $repo 'tools/windows_e2e.py') prerequisites)
+  if($LASTEXITCODE -ne 0){throw 'Pinned Python/Pillow prerequisites unavailable.'}
+ }
  if($Action -eq 'Check'){Write-Output 'READY_NATIVE_PREREQUISITES_ONLY; GAMEPLAY_NOT_RUN';return}
  $base=Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)) 'RouteKeeper/Beta/native'
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+ if($Action -eq 'Prepare' -and !$Work){$Work=Join-Path $base ('prepared-'+[guid]::NewGuid().ToString('N'))}
  if([string]::IsNullOrWhiteSpace($Work)){throw 'Explicit owned native workspace required.'}
  $Work=[IO.Path]::GetFullPath($Work);Assert-RkNoLinks $Work
  if(!(Test-RkWithin $Work $base) -or [IO.Path]::GetFileName($Work) -cnotmatch '^prepared-[a-f0-9]{32}$'){throw 'Native workspace must be an owned prepared-ID child under Beta native storage.'}
+ if($Action -cin @('Status','Stop','Capture')){
+  Invoke-RkHumanCliCommand $Action $Work $SessionName
+  return
+ }
  Initialize-RkPrivateRoot $base $owner
  $privateErrorRoot=$base
  if($Action -eq 'Prepare'){
@@ -58,6 +86,7 @@ try {
   & $Python -B (Join-Path $repo 'tools/human_beta.py') --source $GameInstall --work $Work --compiler $Compiler --builder $Builder
   if($LASTEXITCODE -ne 0){throw 'Installed-game preparation failed; unsealed private evidence retained.'}
   Initialize-RkPrivateRoot $Work $owner
+  Write-Output ('PREPARED_WORK='+$Work)
   return
  }
  Invoke-RkPython -Arguments @('verify-prepared','--work',$Work)
@@ -83,18 +112,39 @@ try {
   }finally{Exit-RkNativeAccountLease $account}
   return
  }
+ if($Action -ceq 'Play'){
+  foreach($path in @($GameInstall,$SteamExe)){if(!$path){throw 'GameInstall and SteamExe are required.'};Assert-RkNoLinks $path}
+  $caseName=$Case.ToLowerInvariant()
+  $languageName=$Language.ToLowerInvariant()
+  $modeName=@('Off','Passive','Active','Forced') -eq $Mode | Select-Object -First 1
+  $selection=Get-RkHumanCliScenario ($Scenario.ToLowerInvariant()) $caseName
+  $direct=New-RkHumanCliRequest $selection $caseName $languageName $modeName $MaximumSeconds $AllowScreenshots.IsPresent $KeepConnected.IsPresent
+  $requests=Join-Path $Work 'requests';Assert-RkNoLinks $requests
+  [IO.Directory]::CreateDirectory($requests)|Out-Null
+  $RequestFile=Join-Path $requests ('request-'+$direct.id+'.json')
+  $approvedRequestHash=Write-RkHumanNewJson $RequestFile $direct -PassHash
+  Write-Host ('TRIAL=human-'+$direct.id)
+ }
  Assert-RkNoLinks $RequestFile
  if(!(Test-RkWithin $RequestFile (Join-Path $Work 'requests')) -or (Get-Item -LiteralPath $RequestFile).Length -gt 65536){throw 'Human launch request must be a bounded owned local file.'}
- $request=ConvertFrom-RkHumanJson (Get-Content -LiteralPath $RequestFile -Raw -Encoding UTF8) 'Request'
+ $requestBytes=[IO.File]::ReadAllBytes($RequestFile)
+ if($requestBytes.Length -gt 65536){throw 'Human launch request exceeds its byte budget.'}
+ $requestHash=Get-RkHumanBytesHash $requestBytes
+ $request=ConvertFrom-RkHumanJson ([Text.Encoding]::UTF8.GetString($requestBytes).TrimStart([char]0xFEFF)) 'Request'
  Assert-RkHumanRequest $request;Assert-RkHumanParent $request
+ $approvalMethod='DIRECT_BETA_UI_PHRASE'
+ if($Action -ceq 'Play'){
+  if($request.kind -cne 'HUMAN_BETA_CLI_REQUEST' -or $requestHash -cne $approvedRequestHash -or
+     $request.parent.pid -ne $PID){throw 'CLI request differs from the current interactive approval.'}
+  $approvalMethod='DIRECT_BETA_CLI_PHRASE'
+ }elseif($request.kind -cne 'HUMAN_BETA_UI_REQUEST'){throw 'CLI launch consent is usable only by the interactive Play command.'}
  if([IO.Path]::GetFileName($RequestFile) -cne ('request-'+$request.id+'.json')){throw 'Launch request filename/session mismatch.'}
  $request|Add-Member NoteProperty requestFile $RequestFile -Force
- $request|Add-Member NoteProperty requestSha256 ((Get-FileHash -LiteralPath $RequestFile).Hash.ToLowerInvariant()) -Force
+ $request|Add-Member NoteProperty requestSha256 $requestHash -Force
  $SessionName='human-'+$request.id;$root=Join-Path $Work $SessionName
  if(Test-Path -LiteralPath $root){throw 'Human session already exists; resume means explicit recovery only.'}
  $policy=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'human-beta-policy.json') -Raw -Encoding UTF8|ConvertFrom-Json
- $hasher=[Security.Cryptography.SHA256]::Create()
- try{$disclosureHash=([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($policy.disclosure)))).Replace('-','').ToLowerInvariant()}finally{$hasher.Dispose()}
+ $disclosureHash=Get-RkHumanTextHash $policy.disclosure
  if($request.policy -cne $policy.id -or $request.disclosureSha256 -cne $disclosureHash){throw 'User-reviewed human policy differs from current disclosure.'}
  Initialize-RkHumanConnectedNetwork $request
  Assert-RkExperimentalNetwork
@@ -102,9 +152,10 @@ try {
  Test-RkNativeDesktop $native
  $consent=@{schema=1;policy=$policy.id;scope=('human-beta-'+$request.scope.ToLowerInvariant());session=$request.id;nonce=$request.nonce;
   disclosureSha256=$disclosureHash;recordedUtc=$request.issuedUtc;network=(Get-RkExperimentalNetworkRecord);credentialsStored=$false;
-  approval=@{method='DIRECT_BETA_UI_PHRASE';statement=$request.phrase;humanScope=$request.scope;scenario=$request.scenario;highRiskPhrase=$request.highRiskPhrase}}
+  approval=@{method=$approvalMethod;statement=$request.phrase;humanScope=$request.scope;scenario=$request.scenario;highRiskPhrase=$request.highRiskPhrase}}
  $result=Invoke-RkGameSession -Work $Work -SteamExe $SteamExe -GameInstall $GameInstall -Consent $consent -NativeTest $native -Case $request.case -SessionName $SessionName -HumanContext $request
  Write-RkHumanSummary $root $request $result
+ if($Action -ceq 'Play'){Invoke-RkHumanCliCommand 'Status' $Work $SessionName}
  if($result.localRecovery -cne 'CONTENT_TREE_VERIFIED' -or $result.result -ceq 'BLOCKED'){exit 2}
 } catch {
  # Full exception paths/proprietary diagnostics remain local; exported summaries
@@ -119,6 +170,9 @@ try {
    $errorStream=[IO.File]::Open($errorPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
    try{$errorStream.Write($errorBytes,0,$errorBytes.Length);$errorStream.Flush($true)}finally{$errorStream.Dispose()}
   }catch{}
+ }
+ if($Action -cin @('Play','Status','Stop','Capture')){
+  [Console]::Error.WriteLine($failure.Exception.Message)
  }
  [Console]::Error.WriteLine('BLOCKED_NATIVE_GUARD_OR_RECOVERY; preserve private workspace and inspect local private controller-error logs.')
  exit 2

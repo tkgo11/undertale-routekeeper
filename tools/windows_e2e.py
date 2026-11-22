@@ -81,7 +81,7 @@ def source_pins():
              'tools/runtime/current-account-state.ps1','tools/runtime/current-account-windows.ps1',
              'tools/runtime/run-current-account.ps1','tools/runtime/native-acquisition.ps1',
              'profiles/registry.json','profiles/windows-game-files.json','tools/human_beta.py',
-             'tools/runtime/native-host.ps1','tools/runtime/human-loop.ps1','tools/runtime/human-session.ps1','tools/runtime/human-beta-policy.json']
+             'tools/runtime/native-host.ps1','tools/runtime/human-loop.ps1','tools/runtime/human-session.ps1','tools/runtime/human-cli.ps1','tools/runtime/human-beta-policy.json']
     return {f:screen.hash_file(ROOT/f) for f in files}
 
 

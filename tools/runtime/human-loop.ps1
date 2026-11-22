@@ -43,7 +43,7 @@ function Assert-RkHumanRequest($Request) {
     $Request.parent.sha256 -isnot [string] -or
     ($null -ne $Request.continuationSession -and ($Request.continuationSession -isnot [string] -or ($Request.continuationSession -cne '' -and $Request.continuationSession -cnotmatch '^[a-f0-9]{32}$')))) {throw 'Invalid typed human request.'}
  if($Request.continuationSession -and ($Request.scope -eq 'Smoke' -or $Request.continuationSession -ceq $Request.id)){throw 'Continuation needs separate gameplay scope and a prior transaction.'}
- if($Request.schema -ne 1 -or $Request.kind -cne 'HUMAN_BETA_UI_REQUEST' -or
+ if($Request.schema -ne 1 -or $Request.kind -cnotin @('HUMAN_BETA_UI_REQUEST','HUMAN_BETA_CLI_REQUEST') -or
     $Request.id -cnotmatch '^[a-f0-9]{32}$' -or $Request.betaSession -cnotmatch '^[a-f0-9]{32}$' -or
     $Request.scenario -cnotmatch '^[a-z0-9-]{1,80}$' -or $Request.step -cnotmatch '^[a-z0-9-]{1,80}$' -or
     $Request.nonce -cnotmatch '^[a-f0-9]{32}$' -or $Request.captureConsent -isnot [bool] -or

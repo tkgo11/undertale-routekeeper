@@ -1,5 +1,13 @@
 # Progress and resumption
 
+## Windows human beta CLI
+
+The packaged PowerShell entry point exposes prepare, interactive play, status,
+safe stop, optional capture and exact-session recovery. The first CLI scenarios
+cover original/patched startup, the patched menu and movement. The existing
+controller still owns the save transaction and watchdog. New preparation binds
+the updated helpers. The WPF app retains the full scenario catalog and reports.
+
 ## Connected Internet option for the Windows human beta
 
 Smoke and Gameplay can keep the PC connected after separate approval for each
